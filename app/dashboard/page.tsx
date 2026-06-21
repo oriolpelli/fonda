@@ -1,83 +1,120 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  CalendarClock,
-  MessageSquareText,
-  Sparkles,
-  Mail,
-} from "lucide-react";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { SyncNowButton } from "@/components/dashboard/sync-now-button";
-import { FEATURES } from "@/lib/features";
+import { BriefingGenerating } from "@/components/dashboard/briefing-generating";
+import { BriefingRefreshButton } from "@/components/dashboard/briefing-refresh-button";
+import { Button } from "@/components/ui/button";
+import type { BriefingContent } from "@/lib/briefing";
 import { createClient } from "@/lib/supabase/server";
-import type { FeatureKey } from "@/types";
 
-const ICONS: Record<FeatureKey, typeof Sparkles> = {
-  briefing: Sparkles,
-  "email-assistant": Mail,
-  "checkin-chasing": CalendarClock,
-  "hotel-chat": MessageSquareText,
-};
+function localDate(tz: string, d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: tz,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
+}
+
+function formatLongDate(tz: string, d: Date): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: tz,
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(d);
+}
+
+const QUICK_ACTIONS = [
+  { label: "Review emails", href: "/dashboard/email" },
+  { label: "See all arrivals", href: "/dashboard/check-in" },
+  { label: "Open chat", href: "/dashboard/chat" },
+];
+
+/** Renders briefing prose: blank-line-separated paragraphs. */
+function Prose({ text }: { text: string }) {
+  const paragraphs = text.split(/\n{2,}/).filter((p) => p.trim());
+  return (
+    <div className="flex flex-col gap-4">
+      {paragraphs.map((p, i) => (
+        <p key={i} className="text-lg leading-relaxed text-foreground/90">
+          {p.trim()}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function Section({ title, text }: { title: string; text: string }) {
+  return (
+    <section className="border-t border-border pt-6">
+      <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        {title}
+      </h2>
+      <Prose text={text} />
+    </section>
+  );
+}
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  const greetingName = user?.email?.split("@")[0] ?? "there";
+  const { data: hotel } = await supabase
+    .from("hotels")
+    .select("name, timezone")
+    .single();
+
+  const tz = hotel?.timezone || "UTC";
+  const now = new Date();
+
+  // RLS scopes briefings to the caller's hotel.
+  const { data: latest } = await supabase
+    .from("briefings")
+    .select("content_json, generated_at")
+    // Ignore failure-log rows (which carry an `error` key, not `summary`).
+    .not("content_json->>summary", "is", null)
+    .order("generated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const hasTodayBriefing =
+    latest && localDate(tz, new Date(latest.generated_at)) === localDate(tz, now);
+  const briefing = hasTodayBriefing
+    ? (latest!.content_json as unknown as BriefingContent)
+    : null;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Good morning, {greetingName}
+            {hotel?.name ?? "Your hotel"}
           </h1>
-          <p className="text-muted-foreground">
-            Here&apos;s everything Fonda can do for your hotel today.
-          </p>
+          <p className="text-muted-foreground">{formatLongDate(tz, now)}</p>
         </div>
-        <SyncNowButton />
+        {briefing ? <BriefingRefreshButton /> : null}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {FEATURES.map((feature) => {
-          const Icon = ICONS[feature.key];
-          return (
-            <Link
-              key={feature.key}
-              href={feature.href}
-              className="group rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              <Card className="h-full transition-colors group-hover:border-primary/40 group-hover:bg-accent/40">
-                <CardHeader>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                    <Icon className="size-5" />
-                  </div>
-                  <CardTitle className="mt-3 flex items-center justify-between">
-                    {feature.name}
-                    <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
-                  </CardTitle>
-                  <CardDescription>{feature.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    Coming soon
-                  </span>
-                </CardContent>
-              </Card>
-            </Link>
-          );
-        })}
-      </div>
+      {briefing ? (
+        <>
+          <article className="flex flex-col gap-8">
+            <Prose text={briefing.summary} />
+            <Section title="Arrivals & departures" text={briefing.arrivals} />
+            <Section title="Overnight email" text={briefing.emails} />
+            <Section title="Rate alert" text={briefing.rate_alert} />
+          </article>
+
+          <div className="flex flex-wrap gap-3 border-t border-border pt-6">
+            {QUICK_ACTIONS.map((action) => (
+              <Button key={action.href} asChild variant="outline">
+                <Link href={action.href}>{action.label}</Link>
+              </Button>
+            ))}
+          </div>
+        </>
+      ) : (
+        <BriefingGenerating />
+      )}
     </div>
   );
 }
