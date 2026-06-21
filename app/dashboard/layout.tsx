@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { logout } from "@/app/(auth)/actions";
@@ -30,6 +31,9 @@ export default async function DashboardLayout({
             <span className="hidden text-sm text-muted-foreground sm:inline">
               {user.email}
             </span>
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/dashboard/settings">Settings</Link>
+            </Button>
             <form action={logout}>
               <Button type="submit" variant="outline" size="sm">
                 Sign out

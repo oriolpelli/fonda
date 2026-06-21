@@ -27,6 +27,9 @@ export type Database = {
           pms_type: string | null;
           pms_connected: boolean;
           created_at: string;
+          // Server-only: clients lack column privileges (see migration 0002).
+          mews_client_token_encrypted: string | null;
+          mews_access_token_encrypted: string | null;
         };
         Insert: {
           id?: string;
@@ -36,6 +39,8 @@ export type Database = {
           pms_type?: string | null;
           pms_connected?: boolean;
           created_at?: string;
+          mews_client_token_encrypted?: string | null;
+          mews_access_token_encrypted?: string | null;
         };
         Update: {
           id?: string;
@@ -45,6 +50,8 @@ export type Database = {
           pms_type?: string | null;
           pms_connected?: boolean;
           created_at?: string;
+          mews_client_token_encrypted?: string | null;
+          mews_access_token_encrypted?: string | null;
         };
         Relationships: [];
       };
@@ -199,6 +206,130 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "checkin_chasers_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      reservations: {
+        Row: {
+          id: string;
+          hotel_id: string;
+          mews_id: string;
+          service_id: string | null;
+          group_id: string | null;
+          number: string | null;
+          state: string | null;
+          customer_mews_id: string | null;
+          requested_category_id: string | null;
+          assigned_space_id: string | null;
+          rate_id: string | null;
+          start_utc: string | null;
+          end_utc: string | null;
+          adult_count: number | null;
+          child_count: number | null;
+          raw: Json;
+          mews_updated_utc: string | null;
+          synced_at: string;
+        };
+        Insert: {
+          id?: string;
+          hotel_id: string;
+          mews_id: string;
+          service_id?: string | null;
+          group_id?: string | null;
+          number?: string | null;
+          state?: string | null;
+          customer_mews_id?: string | null;
+          requested_category_id?: string | null;
+          assigned_space_id?: string | null;
+          rate_id?: string | null;
+          start_utc?: string | null;
+          end_utc?: string | null;
+          adult_count?: number | null;
+          child_count?: number | null;
+          raw?: Json;
+          mews_updated_utc?: string | null;
+          synced_at?: string;
+        };
+        Update: {
+          id?: string;
+          hotel_id?: string;
+          mews_id?: string;
+          service_id?: string | null;
+          group_id?: string | null;
+          number?: string | null;
+          state?: string | null;
+          customer_mews_id?: string | null;
+          requested_category_id?: string | null;
+          assigned_space_id?: string | null;
+          rate_id?: string | null;
+          start_utc?: string | null;
+          end_utc?: string | null;
+          adult_count?: number | null;
+          child_count?: number | null;
+          raw?: Json;
+          mews_updated_utc?: string | null;
+          synced_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "reservations_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      customers: {
+        Row: {
+          id: string;
+          hotel_id: string;
+          mews_id: string;
+          first_name: string | null;
+          last_name: string | null;
+          email: string | null;
+          phone: string | null;
+          nationality_code: string | null;
+          language_code: string | null;
+          raw: Json;
+          mews_updated_utc: string | null;
+          synced_at: string;
+        };
+        Insert: {
+          id?: string;
+          hotel_id: string;
+          mews_id: string;
+          first_name?: string | null;
+          last_name?: string | null;
+          email?: string | null;
+          phone?: string | null;
+          nationality_code?: string | null;
+          language_code?: string | null;
+          raw?: Json;
+          mews_updated_utc?: string | null;
+          synced_at?: string;
+        };
+        Update: {
+          id?: string;
+          hotel_id?: string;
+          mews_id?: string;
+          first_name?: string | null;
+          last_name?: string | null;
+          email?: string | null;
+          phone?: string | null;
+          nationality_code?: string | null;
+          language_code?: string | null;
+          raw?: Json;
+          mews_updated_utc?: string | null;
+          synced_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "customers_hotel_id_fkey";
             columns: ["hotel_id"];
             isOneToOne: false;
             referencedRelation: "hotels";

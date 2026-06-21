@@ -23,6 +23,10 @@ export type Briefing = Tables<"briefings">;
 export type Email = Tables<"emails">;
 export type CheckinChaser = Tables<"checkin_chasers">;
 export type HotelSettings = Tables<"hotel_settings">;
+/** Locally cached MEWS reservation (synced by lib/mews-sync.ts). */
+export type Reservation = Tables<"reservations">;
+/** Locally cached MEWS guest profile (synced by lib/mews-sync.ts). */
+export type Customer = Tables<"customers">;
 
 // --- Enum aliases ----------------------------------------------------------
 
@@ -44,20 +48,4 @@ export interface Feature {
   name: string;
   description: string;
   href: string;
-}
-
-/**
- * A guest reservation. Reservations live in the hotel's PMS rather than in
- * Fonda's database — this is the normalized shape the app works with after
- * fetching from the PMS. `checkin_chasers.reservation_id` references the PMS id.
- */
-export interface Reservation {
-  id: string;
-  hotelId: string;
-  guestName: string;
-  roomType: string;
-  checkIn: string; // ISO date
-  checkOut: string; // ISO date
-  expectedArrival: string | null; // ISO datetime, once chased/confirmed
-  status: "confirmed" | "checked_in" | "checked_out" | "cancelled" | "no_show";
 }

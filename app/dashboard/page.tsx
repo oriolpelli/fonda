@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { SyncNowButton } from "@/components/dashboard/sync-now-button";
 import { FEATURES } from "@/lib/features";
 import { createClient } from "@/lib/supabase/server";
 import type { FeatureKey } from "@/types";
@@ -35,13 +36,16 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Good morning, {greetingName}
-        </h1>
-        <p className="text-muted-foreground">
-          Here&apos;s everything Fonda can do for your hotel today.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Good morning, {greetingName}
+          </h1>
+          <p className="text-muted-foreground">
+            Here&apos;s everything Fonda can do for your hotel today.
+          </p>
+        </div>
+        <SyncNowButton />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
