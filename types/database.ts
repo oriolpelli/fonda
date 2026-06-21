@@ -27,9 +27,11 @@ export type Database = {
           pms_type: string | null;
           pms_connected: boolean;
           created_at: string;
-          // Server-only: clients lack column privileges (see migration 0002).
+          last_synced_at: string | null;
+          // Server-only: clients lack column privileges (see migrations 0002, 0006).
           mews_client_token_encrypted: string | null;
           mews_access_token_encrypted: string | null;
+          apaleo_refresh_token_encrypted: string | null;
         };
         Insert: {
           id?: string;
@@ -39,8 +41,10 @@ export type Database = {
           pms_type?: string | null;
           pms_connected?: boolean;
           created_at?: string;
+          last_synced_at?: string | null;
           mews_client_token_encrypted?: string | null;
           mews_access_token_encrypted?: string | null;
+          apaleo_refresh_token_encrypted?: string | null;
         };
         Update: {
           id?: string;
@@ -50,8 +54,10 @@ export type Database = {
           pms_type?: string | null;
           pms_connected?: boolean;
           created_at?: string;
+          last_synced_at?: string | null;
           mews_client_token_encrypted?: string | null;
           mews_access_token_encrypted?: string | null;
+          apaleo_refresh_token_encrypted?: string | null;
         };
         Relationships: [];
       };
@@ -337,6 +343,50 @@ export type Database = {
           },
         ];
       };
+      sync_logs: {
+        Row: {
+          id: string;
+          hotel_id: string;
+          status: string;
+          reservations_count: number;
+          customers_count: number;
+          error: string | null;
+          started_at: string;
+          finished_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          hotel_id: string;
+          status: string;
+          reservations_count?: number;
+          customers_count?: number;
+          error?: string | null;
+          started_at?: string;
+          finished_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          hotel_id?: string;
+          status?: string;
+          reservations_count?: number;
+          customers_count?: number;
+          error?: string | null;
+          started_at?: string;
+          finished_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "sync_logs_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       hotel_settings: {
         Row: {
           id: string;
@@ -385,6 +435,17 @@ export type Database = {
       current_user_role: {
         Args: Record<PropertyKey, never>;
         Returns: Database["public"]["Enums"]["user_role"];
+      };
+      provision_hotel: {
+        Args: {
+          p_user_id: string;
+          p_email: string;
+          p_hotel_name: string;
+          p_rooms_count: number;
+          p_timezone: string;
+          p_pms_type: string;
+        };
+        Returns: string;
       };
     };
     Enums: {

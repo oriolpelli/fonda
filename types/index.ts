@@ -27,6 +27,8 @@ export type HotelSettings = Tables<"hotel_settings">;
 export type Reservation = Tables<"reservations">;
 /** Locally cached MEWS guest profile (synced by lib/mews-sync.ts). */
 export type Customer = Tables<"customers">;
+/** A record of one PMS sync run. */
+export type SyncLog = Tables<"sync_logs">;
 
 // --- Enum aliases ----------------------------------------------------------
 

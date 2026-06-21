@@ -3,10 +3,7 @@ import { timingSafeEqual } from "node:crypto";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
-import {
-  syncAllConnectedHotels,
-  syncReservations,
-} from "@/lib/mews-sync";
+import { syncAllConnectedHotels, syncHotel } from "@/lib/mews-sync";
 import { createClient } from "@/lib/supabase/server";
 
 // Always run at request time; never cache the sync result.
@@ -14,7 +11,8 @@ export const dynamic = "force-dynamic";
 // Cron syncs can span many hotels — allow a generous ceiling (Vercel Pro: 300s).
 export const maxDuration = 300;
 
-const DEFAULT_WINDOW_DAYS = 30;
+// Roadmap: sync reservations for today ± 14 days.
+const DEFAULT_WINDOW_DAYS = 14;
 
 function startOfTodayUtc(): Date {
   const now = new Date();
@@ -28,8 +26,8 @@ function addDays(date: Date, days: number): Date {
 }
 
 /**
- * Resolves the sync window from query params, defaulting to [today, +30d].
- * Supports `?from=ISO&to=ISO` or `?days=N`.
+ * Resolves the sync window from query params, defaulting to today ± 14 days.
+ * `?from=ISO` / `?to=ISO` override either bound.
  */
 function resolveWindow(searchParams: URLSearchParams): {
   start: string;
@@ -37,25 +35,16 @@ function resolveWindow(searchParams: URLSearchParams): {
 } {
   const fromParam = searchParams.get("from");
   const toParam = searchParams.get("to");
-  const daysParam = searchParams.get("days");
+  const today = startOfTodayUtc();
 
-  const start = fromParam ? new Date(fromParam) : startOfTodayUtc();
+  const start = fromParam ? new Date(fromParam) : addDays(today, -DEFAULT_WINDOW_DAYS);
   if (Number.isNaN(start.getTime())) {
     throw new Error(`Invalid 'from' date: ${fromParam}`);
   }
 
-  let end: Date;
-  if (toParam) {
-    end = new Date(toParam);
-    if (Number.isNaN(end.getTime())) {
-      throw new Error(`Invalid 'to' date: ${toParam}`);
-    }
-  } else {
-    const days = daysParam ? Number(daysParam) : DEFAULT_WINDOW_DAYS;
-    if (!Number.isFinite(days) || days <= 0) {
-      throw new Error(`Invalid 'days': ${daysParam}`);
-    }
-    end = addDays(start, days);
+  const end = toParam ? new Date(toParam) : addDays(today, DEFAULT_WINDOW_DAYS);
+  if (Number.isNaN(end.getTime())) {
+    throw new Error(`Invalid 'to' date: ${toParam}`);
   }
 
   return { start: start.toISOString(), end: end.toISOString() };
@@ -143,11 +132,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await syncReservations(
-      profile.hotel_id,
-      window.start,
-      window.end
-    );
+    const result = await syncHotel(profile.hotel_id, window.start, window.end);
     return NextResponse.json({ window, hotelId: profile.hotel_id, ...result });
   } catch (err) {
     // e.g. hotel not connected to MEWS, or a MewsApiError.

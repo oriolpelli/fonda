@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { CheckCircle2, Circle } from "lucide-react";
 
 import { disconnectMews } from "@/app/dashboard/settings/actions";
+import {
+  ApaleoConnectionCard,
+  apaleoStatusMessage,
+} from "@/components/dashboard/apaleo-connection-card";
 import { MewsConnectionForm } from "@/components/dashboard/mews-connection-form";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
@@ -9,8 +13,13 @@ import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Settings" };
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ apaleo?: string }>;
+}) {
   const supabase = await createClient();
+  const { apaleo } = await searchParams;
 
   // Select explicit columns — the encrypted token columns are revoked from the
   // client role (migration 0002), so `select('*')` would error here.
@@ -20,6 +29,9 @@ export default async function SettingsPage() {
     .single();
 
   const connected = hotel?.pms_connected ?? false;
+  // Default unconfigured hotels to the MEWS form.
+  const pmsType = hotel?.pms_type ?? "mews";
+  const apaleoBanner = apaleoStatusMessage(apaleo);
 
   return (
     <div className="flex max-w-2xl flex-col gap-8">
@@ -30,6 +42,20 @@ export default async function SettingsPage() {
           system so Fonda can sync reservations and guests.
         </p>
       </div>
+
+      {apaleoBanner ? (
+        <div
+          role="status"
+          className={cn(
+            "rounded-lg border px-4 py-3 text-sm font-medium",
+            apaleoBanner.tone === "success"
+              ? "border-primary/30 bg-accent text-accent-foreground"
+              : "border-destructive/30 bg-destructive/5 text-destructive"
+          )}
+        >
+          {apaleoBanner.text}
+        </div>
+      ) : null}
 
       <div
         className={cn(
@@ -46,20 +72,25 @@ export default async function SettingsPage() {
         )}
         <span className="font-medium">
           {connected
-            ? `Connected to ${hotel?.pms_type?.toUpperCase() ?? "PMS"}`
+            ? `Connected to ${pmsType.toUpperCase()}`
             : "Not connected"}
         </span>
       </div>
 
-      <MewsConnectionForm connected={connected} />
-
-      {connected ? (
-        <form action={disconnectMews}>
-          <Button type="submit" variant="outline">
-            Disconnect MEWS
-          </Button>
-        </form>
-      ) : null}
+      {pmsType === "apaleo" ? (
+        <ApaleoConnectionCard connected={connected} />
+      ) : (
+        <>
+          <MewsConnectionForm connected={connected} />
+          {connected ? (
+            <form action={disconnectMews}>
+              <Button type="submit" variant="outline">
+                Disconnect MEWS
+              </Button>
+            </form>
+          ) : null}
+        </>
+      )}
     </div>
   );
 }

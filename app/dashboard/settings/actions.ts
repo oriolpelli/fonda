@@ -80,17 +80,37 @@ export async function disconnectMews(): Promise<void> {
   const hotelId = await requireHotelId();
 
   const admin = createAdminClient();
+  // Keep pms_type so the UI still shows the right connector; just clear the
+  // tokens and mark disconnected.
   const { error } = await admin
     .from("hotels")
     .update({
       mews_client_token_encrypted: null,
       mews_access_token_encrypted: null,
       pms_connected: false,
-      pms_type: null,
     })
     .eq("id", hotelId);
   if (error) {
     throw new Error(`Failed to disconnect MEWS: ${error.message}`);
+  }
+
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard");
+}
+
+export async function disconnectApaleo(): Promise<void> {
+  const hotelId = await requireHotelId();
+
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("hotels")
+    .update({
+      apaleo_refresh_token_encrypted: null,
+      pms_connected: false,
+    })
+    .eq("id", hotelId);
+  if (error) {
+    throw new Error(`Failed to disconnect Apaleo: ${error.message}`);
   }
 
   revalidatePath("/dashboard/settings");

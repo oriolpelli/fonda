@@ -3,6 +3,10 @@ import { redirect } from "next/navigation";
 
 import { logout } from "@/app/(auth)/actions";
 import { Wordmark } from "@/components/brand/wordmark";
+import {
+  ConnectionStatus,
+  deriveConnectionState,
+} from "@/components/dashboard/connection-status";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 
@@ -22,15 +26,45 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  // A signed-up user without a hotel hasn't onboarded yet.
+  const { data: profile } = await supabase
+    .from("users")
+    .select("hotel_id, role")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (!profile) {
+    redirect("/onboarding");
+  }
+
+  const { data: hotel } = await supabase
+    .from("hotels")
+    .select("pms_connected, last_synced_at")
+    .eq("id", profile.hotel_id)
+    .single();
+
+  const connectionState = deriveConnectionState(
+    hotel?.pms_connected ?? false,
+    hotel?.last_synced_at ?? null
+  );
+  const isOwner = profile.role === "owner";
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
-          <Wordmark href="/dashboard" />
+          <div className="flex items-center gap-3">
+            <Wordmark href="/dashboard" />
+            <ConnectionStatus state={connectionState} />
+          </div>
           <div className="flex items-center gap-4">
             <span className="hidden text-sm text-muted-foreground sm:inline">
               {user.email}
             </span>
+            {isOwner ? (
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/dashboard/admin">Admin</Link>
+              </Button>
+            ) : null}
             <Button asChild variant="ghost" size="sm">
               <Link href="/dashboard/settings">Settings</Link>
             </Button>

@@ -1,11 +1,11 @@
 import "server-only";
 
-import {
-  getMewsClientForHotel,
-  type MewsCustomer,
-  type MewsReservation,
-  type GetReservationsOptions,
+import type {
+  MewsCustomer,
+  MewsReservation,
+  GetReservationsOptions,
 } from "@/lib/mews";
+import { getPmsClientForHotel } from "@/lib/pms";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Json, TablesInsert } from "@/types/database";
 
@@ -115,12 +115,12 @@ export async function syncCustomers(
   const ids = [...new Set(customerIds.filter(Boolean))];
   if (ids.length === 0) return 0;
 
-  const mews = await getMewsClientForHotel(hotelId);
-  if (!mews) {
-    throw new Error(`Hotel ${hotelId} is not connected to MEWS.`);
+  const pms = await getPmsClientForHotel(hotelId);
+  if (!pms) {
+    throw new Error(`Hotel ${hotelId} is not connected to a PMS.`);
   }
 
-  const customers = await mews.getCustomers(ids);
+  const customers = await pms.getCustomers(ids);
   const syncedAt = new Date().toISOString();
   await upsertCustomers(customers.map((c) => customerRow(hotelId, c, syncedAt)));
   return customers.length;
@@ -137,12 +137,12 @@ export async function syncReservations(
   endDate: string | Date,
   options?: GetReservationsOptions
 ): Promise<SyncResult> {
-  const mews = await getMewsClientForHotel(hotelId);
-  if (!mews) {
-    throw new Error(`Hotel ${hotelId} is not connected to MEWS.`);
+  const pms = await getPmsClientForHotel(hotelId);
+  if (!pms) {
+    throw new Error(`Hotel ${hotelId} is not connected to a PMS.`);
   }
 
-  const reservations = await mews.getReservations(startDate, endDate, options);
+  const reservations = await pms.getReservations(startDate, endDate, options);
   const syncedAt = new Date().toISOString();
 
   await upsertReservations(
@@ -157,7 +157,7 @@ export async function syncReservations(
   let customers = 0;
   if (customerIds.length > 0) {
     const ids = [...new Set(customerIds)];
-    const profiles = await mews.getCustomers(ids);
+    const profiles = await pms.getCustomers(ids);
     await upsertCustomers(
       profiles.map((c) => customerRow(hotelId, c, syncedAt))
     );
@@ -165,6 +165,50 @@ export async function syncReservations(
   }
 
   return { reservations: reservations.length, customers };
+}
+
+/**
+ * Syncs one hotel and records the outcome: writes a row to `sync_logs` and, on
+ * success, stamps `hotels.last_synced_at`. Errors are logged and rethrown so
+ * callers can decide how to react.
+ */
+export async function syncHotel(
+  hotelId: string,
+  startDate: string | Date,
+  endDate: string | Date,
+  options?: GetReservationsOptions
+): Promise<SyncResult> {
+  const admin = createAdminClient();
+  const startedAt = new Date().toISOString();
+
+  try {
+    const result = await syncReservations(hotelId, startDate, endDate, options);
+    const finishedAt = new Date().toISOString();
+
+    await admin.from("sync_logs").insert({
+      hotel_id: hotelId,
+      status: "success",
+      reservations_count: result.reservations,
+      customers_count: result.customers,
+      started_at: startedAt,
+      finished_at: finishedAt,
+    });
+    await admin
+      .from("hotels")
+      .update({ last_synced_at: finishedAt })
+      .eq("id", hotelId);
+
+    return result;
+  } catch (err) {
+    await admin.from("sync_logs").insert({
+      hotel_id: hotelId,
+      status: "error",
+      error: (err as Error).message,
+      started_at: startedAt,
+      finished_at: new Date().toISOString(),
+    });
+    throw err;
+  }
 }
 
 export interface HotelSyncOutcome {
@@ -196,7 +240,7 @@ export async function syncAllConnectedHotels(
   const outcomes: HotelSyncOutcome[] = [];
   for (const { id } of data ?? []) {
     try {
-      const result = await syncReservations(id, startDate, endDate, options);
+      const result = await syncHotel(id, startDate, endDate, options);
       outcomes.push({ hotelId: id, result });
     } catch (err) {
       outcomes.push({ hotelId: id, error: (err as Error).message });

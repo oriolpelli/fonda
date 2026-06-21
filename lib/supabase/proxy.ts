@@ -43,7 +43,10 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const isProtected = pathname.startsWith("/dashboard");
+  const isProtected =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/onboarding") ||
+    pathname.startsWith("/connect");
   const isAuthRoute = pathname === "/login" || pathname === "/signup";
 
   // Unauthenticated users hitting a protected route → send to /login.
