@@ -11,7 +11,9 @@ export const dynamic = "force-dynamic";
 // Cron syncs can span many hotels — allow a generous ceiling (Vercel Pro: 300s).
 export const maxDuration = 300;
 
-// Roadmap: sync reservations for today ± 14 days.
+// Sync reservations for today ± N days. The MEWS reservations/getAll interval
+// cap (~100 hours) is handled by chunking inside lib/mews.ts getReservations,
+// so this window can be wide.
 const DEFAULT_WINDOW_DAYS = 14;
 
 function startOfTodayUtc(): Date {

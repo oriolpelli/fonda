@@ -26,6 +26,9 @@ const MEWS_BASE_URL = `${(
 const MEWS_CLIENT = "Fonda_v1";
 const PAGE_SIZE = 1000; // MEWS max Count per page
 const MAX_PAGES = 1000; // safety cap against pathological cursor loops
+// MEWS caps the reservations/getAll interval at ~100 hours. Slice wider ranges
+// into chunks safely under that and merge the results.
+const MAX_RESERVATION_INTERVAL_MS = 96 * 60 * 60 * 1000; // 96 hours
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -392,12 +395,31 @@ interface SpacesResponse extends Paginated {
   SpaceCategoryAssignments?: MewsSpaceCategoryAssignment[];
 }
 
-function toUtc(value: string | Date): string {
+function parseDate(value: string | Date): Date {
   const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) {
     throw new MewsApiError(`Invalid date passed to MEWS client: ${String(value)}`);
   }
-  return date.toISOString();
+  return date;
+}
+
+/** Splits [start, end] into adjacent, non-overlapping slices each ≤ maxMs. */
+function chunkDateRange(
+  start: Date,
+  end: Date,
+  maxMs: number
+): { start: Date; end: Date }[] {
+  if (end.getTime() <= start.getTime()) return [{ start, end }];
+
+  const chunks: { start: Date; end: Date }[] = [];
+  const endMs = end.getTime();
+  let cursor = start.getTime();
+  while (cursor < endMs) {
+    const next = Math.min(cursor + maxMs, endMs);
+    chunks.push({ start: new Date(cursor), end: new Date(next) });
+    cursor = next;
+  }
+  return chunks;
 }
 
 // ---------------------------------------------------------------------------
@@ -416,20 +438,35 @@ export function createMewsClient(
 
   return {
     async getReservations(startDate, endDate, options = {}) {
-      const pages = await getAllPages<ReservationsResponse>(
-        "reservations/getAll",
-        {
-          StartUtc: toUtc(startDate),
-          EndUtc: toUtc(endDate),
-          TimeFilter: options.timeFilter ?? "Colliding",
-          ...(options.states ? { ReservationStates: options.states } : {}),
-          Extent: { Reservations: true },
-        },
-        credentials,
-        "Reservations",
-        cfg
+      // MEWS limits the request interval, so page through ≤96h chunks and merge.
+      const chunks = chunkDateRange(
+        parseDate(startDate),
+        parseDate(endDate),
+        MAX_RESERVATION_INTERVAL_MS
       );
-      return pages.flatMap((p) => p.Reservations ?? []);
+
+      // Dedupe by Id — a reservation spanning a chunk boundary collides with
+      // both adjacent windows under the "Colliding" filter.
+      const byId = new Map<string, MewsReservation>();
+      for (const chunk of chunks) {
+        const pages = await getAllPages<ReservationsResponse>(
+          "reservations/getAll",
+          {
+            StartUtc: chunk.start.toISOString(),
+            EndUtc: chunk.end.toISOString(),
+            TimeFilter: options.timeFilter ?? "Colliding",
+            ...(options.states ? { ReservationStates: options.states } : {}),
+            Extent: { Reservations: true },
+          },
+          credentials,
+          "Reservations",
+          cfg
+        );
+        for (const r of pages.flatMap((p) => p.Reservations ?? [])) {
+          byId.set(r.Id, r);
+        }
+      }
+      return [...byId.values()];
     },
 
     async getCustomers(customerIds) {
