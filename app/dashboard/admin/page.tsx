@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+import { SyncNowButton } from "@/components/dashboard/sync-now-button";
 import {
   Card,
   CardContent,
@@ -68,11 +69,14 @@ export default async function AdminPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Admin · Sync</h1>
-        <p className="text-muted-foreground">
-          Raw view of the last PMS sync for {hotel?.name ?? "your hotel"}.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-semibold tracking-tight">Admin · Sync</h1>
+          <p className="text-muted-foreground">
+            Raw view of the last PMS sync for {hotel?.name ?? "your hotel"}.
+          </p>
+        </div>
+        <SyncNowButton endpoint="/api/sync/pms" />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">

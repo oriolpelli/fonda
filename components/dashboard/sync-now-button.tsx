@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2, RefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -12,14 +13,19 @@ type Status =
   | { state: "done"; reservations: number; customers: number }
   | { state: "error"; message: string };
 
-export function SyncNowButton() {
+export function SyncNowButton({
+  endpoint = "/api/sync",
+}: {
+  endpoint?: string;
+}) {
+  const router = useRouter();
   const [status, setStatus] = useState<Status>({ state: "idle" });
   const isSyncing = status.state === "syncing";
 
   async function handleSync() {
     setStatus({ state: "syncing" });
     try {
-      const res = await fetch("/api/sync", { method: "POST" });
+      const res = await fetch(endpoint, { method: "POST" });
       const data = (await res.json()) as {
         reservations?: number;
         customers?: number;
@@ -39,6 +45,8 @@ export function SyncNowButton() {
         reservations: data.reservations ?? 0,
         customers: data.customers ?? 0,
       });
+      // Re-fetch the server-rendered page data (sync logs, latest reservations).
+      router.refresh();
     } catch {
       setStatus({ state: "error", message: "Couldn't reach the server." });
     }
