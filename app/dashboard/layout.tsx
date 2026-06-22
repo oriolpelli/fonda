@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { logout } from "@/app/(auth)/actions";
 import { Wordmark } from "@/components/brand/wordmark";
+import { AskYourHotel } from "@/components/dashboard/ask-your-hotel";
 import {
   ConnectionStatus,
   deriveConnectionState,
@@ -66,6 +67,7 @@ export default async function DashboardLayout({
             <Button asChild variant="ghost" size="sm">
               <Link href="/dashboard/checkin">Check-in</Link>
             </Button>
+            <AskYourHotel />
             {isOwner ? (
               <Button asChild variant="ghost" size="sm">
                 <Link href="/dashboard/admin">Admin</Link>
