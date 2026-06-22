@@ -396,6 +396,38 @@ export type Database = {
           },
         ];
       };
+      chat_logs: {
+        Row: {
+          id: string;
+          hotel_id: string;
+          role: string;
+          content: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          hotel_id: string;
+          role: string;
+          content: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          hotel_id?: string;
+          role?: string;
+          content?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "chat_logs_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       hotel_settings: {
         Row: {
           id: string;

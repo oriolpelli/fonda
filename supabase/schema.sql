@@ -412,6 +412,27 @@ alter type public.chaser_status add value if not exists 'skipped';
 
 
 -- ############################################################################
+-- 0010 — Ask Your Hotel chat logs
+-- ############################################################################
+
+create table public.chat_logs (
+  id         uuid primary key default gen_random_uuid(),
+  hotel_id   uuid not null references public.hotels (id) on delete cascade,
+  role       text not null check (role in ('user', 'assistant')),
+  content    text not null,
+  created_at timestamptz not null default now()
+);
+
+create index chat_logs_hotel_created_idx on public.chat_logs (hotel_id, created_at desc);
+
+alter table public.chat_logs enable row level security;
+
+create policy "chat_logs: read own hotel"
+  on public.chat_logs for select to authenticated
+  using (hotel_id = public.current_hotel_id());
+
+
+-- ############################################################################
 -- reload PostgREST schema cache so RPCs resolve immediately
 -- ############################################################################
 
