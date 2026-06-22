@@ -17,7 +17,12 @@ import { createAdminClient } from "@/lib/supabase/admin";
  * Docs: https://mews-systems.gitbook.io/connector-api/
  */
 
-const MEWS_BASE_URL = "https://api.mews.com/api/connector/v1/";
+// Base origin for the MEWS Connector API. Override with MEWS_API_URL to point
+// at the demo environment (https://api.mews-demo.com) or a pilot's region. The
+// connector path is always appended, so MEWS_API_URL holds just the origin.
+const MEWS_BASE_URL = `${(
+  process.env.MEWS_API_URL ?? "https://api.mews.com"
+).replace(/\/+$/, "")}/api/connector/v1/`;
 const MEWS_CLIENT = "Fonda_v1";
 const PAGE_SIZE = 1000; // MEWS max Count per page
 const MAX_PAGES = 1000; // safety cap against pathological cursor loops
