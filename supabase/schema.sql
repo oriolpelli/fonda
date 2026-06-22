@@ -399,7 +399,20 @@ revoke insert (gmail_refresh_token_encrypted) on public.hotels from authenticate
 
 
 -- ############################################################################
--- 0007/0009 — reload PostgREST schema cache so RPCs resolve immediately
+-- 0009 — check-in chasing (arrival_time + chaser 'skipped' state)
+-- ############################################################################
+
+alter table public.reservations
+  add column arrival_time timestamptz;
+
+comment on column public.reservations.arrival_time is
+  'Guest''s expected arrival time, if known. Null reservations are chased.';
+
+alter type public.chaser_status add value if not exists 'skipped';
+
+
+-- ############################################################################
+-- reload PostgREST schema cache so RPCs resolve immediately
 -- ############################################################################
 
 notify pgrst, 'reload schema';

@@ -242,6 +242,7 @@ export type Database = {
           end_utc: string | null;
           adult_count: number | null;
           child_count: number | null;
+          arrival_time: string | null;
           raw: Json;
           mews_updated_utc: string | null;
           synced_at: string;
@@ -262,6 +263,7 @@ export type Database = {
           end_utc?: string | null;
           adult_count?: number | null;
           child_count?: number | null;
+          arrival_time?: string | null;
           raw?: Json;
           mews_updated_utc?: string | null;
           synced_at?: string;
@@ -282,6 +284,7 @@ export type Database = {
           end_utc?: string | null;
           adult_count?: number | null;
           child_count?: number | null;
+          arrival_time?: string | null;
           raw?: Json;
           mews_updated_utc?: string | null;
           synced_at?: string;
@@ -455,7 +458,7 @@ export type Database = {
       };
     };
     Enums: {
-      chaser_status: "pending" | "sent" | "replied";
+      chaser_status: "pending" | "sent" | "replied" | "skipped";
       email_status: "pending" | "sent" | "ignored" | "needs_attention";
       user_role: "owner" | "manager";
     };
@@ -485,7 +488,7 @@ export type Enums<T extends keyof PublicSchema["Enums"]> =
 export const Constants = {
   public: {
     Enums: {
-      chaser_status: ["pending", "sent", "replied"],
+      chaser_status: ["pending", "sent", "replied", "skipped"],
       email_status: ["pending", "sent", "ignored", "needs_attention"],
       user_role: ["owner", "manager"],
     },

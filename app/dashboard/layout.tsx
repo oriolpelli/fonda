@@ -63,6 +63,9 @@ export default async function DashboardLayout({
             <Button asChild variant="ghost" size="sm">
               <Link href="/dashboard/emails">Emails</Link>
             </Button>
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/dashboard/checkin">Check-in</Link>
+            </Button>
             {isOwner ? (
               <Button asChild variant="ghost" size="sm">
                 <Link href="/dashboard/admin">Admin</Link>
