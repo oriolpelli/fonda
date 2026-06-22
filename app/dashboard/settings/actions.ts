@@ -151,6 +151,24 @@ export async function disconnectMews(): Promise<void> {
   revalidatePath("/dashboard");
 }
 
+export async function disconnectGmail(): Promise<void> {
+  const hotelId = await requireHotelId();
+
+  const admin = createAdminClient();
+  const { error } = await admin
+    .from("hotels")
+    .update({
+      gmail_refresh_token_encrypted: null,
+      gmail_email: null,
+    })
+    .eq("id", hotelId);
+  if (error) {
+    throw new Error(`Failed to disconnect Gmail: ${error.message}`);
+  }
+
+  revalidatePath("/dashboard/settings");
+}
+
 export async function disconnectApaleo(): Promise<void> {
   const hotelId = await requireHotelId();
 

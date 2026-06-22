@@ -7,6 +7,10 @@ import {
   apaleoStatusMessage,
 } from "@/components/dashboard/apaleo-connection-card";
 import { BriefingSettingsForm } from "@/components/dashboard/briefing-settings-form";
+import {
+  GmailConnectionCard,
+  gmailStatusMessage,
+} from "@/components/dashboard/gmail-connection-card";
 import { MewsConnectionForm } from "@/components/dashboard/mews-connection-form";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
@@ -17,16 +21,16 @@ export const metadata: Metadata = { title: "Settings" };
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ apaleo?: string }>;
+  searchParams: Promise<{ apaleo?: string; gmail?: string; ingested?: string }>;
 }) {
   const supabase = await createClient();
-  const { apaleo } = await searchParams;
+  const { apaleo, gmail, ingested } = await searchParams;
 
   // Select explicit columns — the encrypted token columns are revoked from the
   // client role (migration 0002), so `select('*')` would error here.
   const { data: hotel } = await supabase
     .from("hotels")
-    .select("id, name, pms_type, pms_connected")
+    .select("id, name, pms_type, pms_connected, gmail_email")
     .single();
 
   const { data: settings } = await supabase
@@ -38,6 +42,8 @@ export default async function SettingsPage({
   // Default unconfigured hotels to the MEWS form.
   const pmsType = hotel?.pms_type ?? "mews";
   const apaleoBanner = apaleoStatusMessage(apaleo);
+  const gmailBanner = gmailStatusMessage(gmail);
+  const gmailConnected = gmail === "connected";
 
   return (
     <div className="flex max-w-2xl flex-col gap-8">
@@ -60,6 +66,24 @@ export default async function SettingsPage({
           )}
         >
           {apaleoBanner.text}
+        </div>
+      ) : null}
+
+      {gmailConnected ? (
+        <div
+          role="status"
+          className="rounded-lg border border-primary/30 bg-accent px-4 py-3 text-sm font-medium text-accent-foreground"
+        >
+          Connected to {hotel?.gmail_email ?? "your inbox"}. We found{" "}
+          {ingested ?? "0"} emails from the last 7 days — drafts will be prepared
+          for your review.
+        </div>
+      ) : gmailBanner ? (
+        <div
+          role="status"
+          className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm font-medium text-destructive"
+        >
+          {gmailBanner.text}
         </div>
       ) : null}
 
@@ -97,6 +121,8 @@ export default async function SettingsPage({
           ) : null}
         </>
       )}
+
+      <GmailConnectionCard email={hotel?.gmail_email ?? null} />
 
       <BriefingSettingsForm
         gmName={settings?.gm_name ?? ""}

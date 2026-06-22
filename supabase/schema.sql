@@ -381,7 +381,25 @@ revoke insert (apaleo_refresh_token_encrypted) on public.hotels from authenticat
 
 
 -- ############################################################################
--- 0007 — reload PostgREST schema cache so RPCs resolve immediately
+-- 0008 — Gmail credential columns (encrypted refresh token + connected address)
+-- ############################################################################
+
+alter table public.hotels
+  add column gmail_refresh_token_encrypted text,
+  add column gmail_email text;
+
+comment on column public.hotels.gmail_refresh_token_encrypted is
+  'AES-256-GCM ciphertext of the Gmail OAuth refresh token. Decrypt only server-side.';
+comment on column public.hotels.gmail_email is
+  'The connected Gmail address (safe to show to hotel members).';
+
+revoke select (gmail_refresh_token_encrypted) on public.hotels from authenticated, anon;
+revoke update (gmail_refresh_token_encrypted) on public.hotels from authenticated, anon;
+revoke insert (gmail_refresh_token_encrypted) on public.hotels from authenticated, anon;
+
+
+-- ############################################################################
+-- 0007/0009 — reload PostgREST schema cache so RPCs resolve immediately
 -- ############################################################################
 
 notify pgrst, 'reload schema';

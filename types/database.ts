@@ -32,6 +32,8 @@ export type Database = {
           mews_client_token_encrypted: string | null;
           mews_access_token_encrypted: string | null;
           apaleo_refresh_token_encrypted: string | null;
+          gmail_refresh_token_encrypted: string | null;
+          gmail_email: string | null;
         };
         Insert: {
           id?: string;
@@ -45,6 +47,8 @@ export type Database = {
           mews_client_token_encrypted?: string | null;
           mews_access_token_encrypted?: string | null;
           apaleo_refresh_token_encrypted?: string | null;
+          gmail_refresh_token_encrypted?: string | null;
+          gmail_email?: string | null;
         };
         Update: {
           id?: string;
@@ -58,6 +62,8 @@ export type Database = {
           mews_client_token_encrypted?: string | null;
           mews_access_token_encrypted?: string | null;
           apaleo_refresh_token_encrypted?: string | null;
+          gmail_refresh_token_encrypted?: string | null;
+          gmail_email?: string | null;
         };
         Relationships: [];
       };
