@@ -375,7 +375,20 @@ export async function ingestRecentEmails(
   const ids = await client.listRecentMessageIds(days);
   if (ids.length === 0) return 0;
 
-  const messages = await Promise.all(ids.map((id) => client.getMessage(id)));
+  const admin = createAdminClient();
+
+  // Skip messages we've already ingested so the poller doesn't re-fetch the
+  // whole window from Gmail on every run.
+  const { data: existing } = await admin
+    .from("emails")
+    .select("external_id")
+    .eq("hotel_id", hotelId)
+    .in("external_id", ids);
+  const seen = new Set((existing ?? []).map((e) => e.external_id));
+  const newIds = ids.filter((id) => !seen.has(id));
+  if (newIds.length === 0) return 0;
+
+  const messages = await Promise.all(newIds.map((id) => client.getMessage(id)));
   const rows: TablesInsert<"emails">[] = messages.map((m) => ({
     hotel_id: hotelId,
     external_id: m.id,
@@ -386,8 +399,7 @@ export async function ingestRecentEmails(
     created_at: m.receivedAt,
   }));
 
-  const admin = createAdminClient();
-  // Insert new messages only; skip ones already ingested.
+  // ignoreDuplicates guards against a race with a concurrent run.
   const { data, error } = await admin
     .from("emails")
     .upsert(rows, { onConflict: "hotel_id,external_id", ignoreDuplicates: true })
