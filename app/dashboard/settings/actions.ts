@@ -15,6 +15,59 @@ export type ConnectState =
   | { error: string }
   | undefined;
 
+export type BriefingSettingsState =
+  | { ok: true }
+  | { error: string }
+  | undefined;
+
+const BRIEFING_LANGUAGES = ["en", "es"] as const;
+
+export async function updateBriefingSettings(
+  _prevState: BriefingSettingsState,
+  formData: FormData
+): Promise<BriefingSettingsState> {
+  const gmName = String(formData.get("gmName") ?? "").trim();
+  const briefingTime = String(formData.get("briefingTime") ?? "").trim();
+  const briefingLanguage = String(formData.get("briefingLanguage") ?? "").trim();
+
+  if (!/^\d{2}:\d{2}$/.test(briefingTime)) {
+    return { error: "Enter a valid briefing time." };
+  }
+  if (
+    !BRIEFING_LANGUAGES.includes(
+      briefingLanguage as (typeof BRIEFING_LANGUAGES)[number]
+    )
+  ) {
+    return { error: "Choose a briefing language." };
+  }
+
+  let hotelId: string;
+  try {
+    hotelId = await requireHotelId();
+  } catch (err) {
+    return { error: (err as Error).message };
+  }
+
+  // hotel_settings is client-writable for hotel members (RLS), so the session
+  // client can update it directly.
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("hotel_settings")
+    .update({
+      gm_name: gmName || null,
+      briefing_time: briefingTime,
+      briefing_language: briefingLanguage,
+    })
+    .eq("hotel_id", hotelId);
+  if (error) {
+    return { error: `Couldn't save settings: ${error.message}` };
+  }
+
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard");
+  return { ok: true };
+}
+
 async function requireHotelId(): Promise<string> {
   const supabase = await createClient();
   const {

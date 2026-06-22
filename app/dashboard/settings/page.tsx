@@ -6,6 +6,7 @@ import {
   ApaleoConnectionCard,
   apaleoStatusMessage,
 } from "@/components/dashboard/apaleo-connection-card";
+import { BriefingSettingsForm } from "@/components/dashboard/briefing-settings-form";
 import { MewsConnectionForm } from "@/components/dashboard/mews-connection-form";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
@@ -27,6 +28,11 @@ export default async function SettingsPage({
     .from("hotels")
     .select("id, name, pms_type, pms_connected")
     .single();
+
+  const { data: settings } = await supabase
+    .from("hotel_settings")
+    .select("gm_name, briefing_time, briefing_language")
+    .maybeSingle();
 
   const connected = hotel?.pms_connected ?? false;
   // Default unconfigured hotels to the MEWS form.
@@ -91,6 +97,12 @@ export default async function SettingsPage({
           ) : null}
         </>
       )}
+
+      <BriefingSettingsForm
+        gmName={settings?.gm_name ?? ""}
+        briefingTime={(settings?.briefing_time ?? "07:00:00").slice(0, 5)}
+        briefingLanguage={settings?.briefing_language ?? "en"}
+      />
     </div>
   );
 }
