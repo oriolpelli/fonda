@@ -14,7 +14,7 @@ export const FEATURES: Feature[] = [
     name: "AI email assistant",
     description:
       "Draft and triage guest emails in your hotel's voice, so the front desk spends less time in the inbox.",
-    href: "/dashboard/email",
+    href: "/dashboard/emails",
   },
   {
     key: "checkin-chasing",

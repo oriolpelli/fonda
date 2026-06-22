@@ -26,7 +26,7 @@ function formatLongDate(tz: string, d: Date): string {
 }
 
 const QUICK_ACTIONS = [
-  { label: "Review emails", href: "/dashboard/email" },
+  { label: "Review emails", href: "/dashboard/emails" },
   { label: "See all arrivals", href: "/dashboard/check-in" },
   { label: "Open chat", href: "/dashboard/chat" },
 ];
