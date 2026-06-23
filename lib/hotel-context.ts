@@ -45,6 +45,8 @@ export interface HotelContext {
     currentRates: Record<string, never>; // rate plans aren't cached yet
     occupancyAlerts: { date: string; occupancyRate: number }[];
   };
+  /** Full per-day occupancy across the 14-day horizon (for the dashboard calendar). */
+  occupancyOutlook: { date: string; occupancyRate: number }[];
 }
 
 interface ArrivalSummary {
@@ -227,6 +229,7 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
   // Occupancy per day across the alert horizon.
   const occupancyByDay: Record<string, number> = {};
   const occupancyAlerts: { date: string; occupancyRate: number }[] = [];
+  const occupancyOutlook: { date: string; occupancyRate: number }[] = [];
   for (let i = 0; i < OCCUPANCY_ALERT_HORIZON; i++) {
     const dayStr = addDays(today, i);
     const dayStart = zonedMidnightUtc(tz, dayStr).toISOString();
@@ -235,6 +238,7 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
       (r) => r.start_utc! < dayEnd && r.end_utc! > dayStart
     ).length;
     const rate = rooms > 0 ? occupied / rooms : 0;
+    occupancyOutlook.push({ date: dayStr, occupancyRate: pct(rate) });
     if (i < WEEK_HORIZON) occupancyByDay[dayStr] = pct(rate);
     if (rate < LOW_OCCUPANCY) {
       occupancyAlerts.push({ date: dayStr, occupancyRate: pct(rate) });
@@ -301,5 +305,6 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
     guests: { vipArrivals, specialRequests, missingArrivalTimes },
     emails: { pendingCount, urgentCount, classifications },
     rates: { currentRates: {}, occupancyAlerts },
+    occupancyOutlook,
   };
 }

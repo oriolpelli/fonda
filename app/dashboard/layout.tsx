@@ -62,6 +62,9 @@ export default async function DashboardLayout({
               {user.email}
             </span>
             <Button asChild variant="ghost" size="sm">
+              <Link href="/dashboard/briefing">Briefing</Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm">
               <Link href="/dashboard/emails">Emails</Link>
             </Button>
             <Button asChild variant="ghost" size="sm">
