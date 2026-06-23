@@ -102,30 +102,29 @@ export function AskYourHotel() {
 
   return (
     <>
-      <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
-        <MessageSquareText />
-        Ask your hotel
-      </Button>
-
-      {/* Backdrop */}
-      <div
+      {/* Floating trigger — bottom-right, hidden while the widget is open. */}
+      <button
+        onClick={() => setOpen(true)}
+        aria-label="Ask your hotel"
         className={cn(
-          "fixed inset-0 z-40 bg-black/25 transition-opacity duration-300",
-          open ? "opacity-100" : "pointer-events-none opacity-0"
-        )}
-        onClick={close}
-        aria-hidden
-      />
-
-      {/* Slide-in side panel */}
-      <aside
-        aria-hidden={!open}
-        className={cn(
-          "fixed inset-y-0 right-0 z-50 flex w-[400px] max-w-full flex-col bg-background shadow-2xl ring-1 ring-black/5 transition-transform duration-300 ease-out",
-          open ? "translate-x-0" : "translate-x-full"
+          "fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          open ? "pointer-events-none scale-90 opacity-0" : "opacity-100"
         )}
       >
-        <header className="flex items-center justify-between border-b border-border px-6 py-5">
+        <MessageSquareText className="size-6" />
+      </button>
+
+      {/* Chat widget card — slides up from the bottom-right. */}
+      <div
+        aria-hidden={!open}
+        className={cn(
+          "fixed bottom-6 right-6 z-50 flex h-[550px] max-h-[calc(100dvh-3rem)] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl transition-all duration-300 ease-out",
+          open
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none translate-y-4 opacity-0"
+        )}
+      >
+        <header className="flex items-center justify-between border-b border-border px-5 py-4">
           <div className="flex items-center gap-2.5">
             <span className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <MessageSquareText className="size-4" />
@@ -144,7 +143,7 @@ export function AskYourHotel() {
           </Button>
         </header>
 
-        <div className="flex-1 space-y-5 overflow-y-auto px-6 py-6">
+        <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5">
           {messages.length === 0 ? (
             <p className="text-sm leading-relaxed text-muted-foreground">
               Ask me anything about today&apos;s operations — arrivals, VIPs,
@@ -190,7 +189,7 @@ export function AskYourHotel() {
         </div>
 
         {messages.length === 0 ? (
-          <div className="flex flex-col gap-2.5 px-6 pb-4">
+          <div className="flex flex-col gap-2.5 px-5 pb-3">
             <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Try asking
             </span>
@@ -199,7 +198,7 @@ export function AskYourHotel() {
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="rounded-full border border-border bg-background px-3.5 py-1.5 text-xs text-foreground/80 shadow-sm transition-colors hover:border-primary/40 hover:bg-accent hover:text-accent-foreground"
+                  className="rounded-full border border-border bg-background px-3 py-1.5 text-xs text-foreground/80 shadow-sm transition-colors hover:border-primary/40 hover:bg-accent hover:text-accent-foreground"
                 >
                   {s}
                 </button>
@@ -231,7 +230,7 @@ export function AskYourHotel() {
             {streaming ? <Loader2 className="animate-spin" /> : <Send />}
           </Button>
         </div>
-      </aside>
+      </div>
     </>
   );
 }

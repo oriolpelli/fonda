@@ -67,7 +67,6 @@ export default async function DashboardLayout({
             <Button asChild variant="ghost" size="sm">
               <Link href="/dashboard/checkin">Check-in</Link>
             </Button>
-            <AskYourHotel />
             {isOwner ? (
               <Button asChild variant="ghost" size="sm">
                 <Link href="/dashboard/admin">Admin</Link>
@@ -87,6 +86,8 @@ export default async function DashboardLayout({
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-10">
         {children}
       </main>
+      {/* Floating "Ask your hotel" chat widget (fixed, bottom-right). */}
+      <AskYourHotel />
     </div>
   );
 }
