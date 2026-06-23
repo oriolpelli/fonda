@@ -59,8 +59,18 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-border">
-        <div className="mx-auto w-full max-w-6xl px-6 py-8 text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Fonda. Hotel operations, on autopilot.
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm text-muted-foreground">
+          <span>
+            © {new Date().getFullYear()} Fonda. Hotel operations, on autopilot.
+          </span>
+          <nav className="flex gap-4">
+            <Link href="/privacy" className="hover:text-foreground">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-foreground">
+              Terms
+            </Link>
+          </nav>
         </div>
       </footer>
     </div>
