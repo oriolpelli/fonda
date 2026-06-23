@@ -1,72 +1,51 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 /*
- * Fonda design tokens.
- * Clean, minimal, professional. Primary brand colour: #1A56DB (blue).
+ * Fonda design tokens — see FONDA_DESIGN_IDENTITY.md.
+ * Calm. Intelligent. Boutique. Light only — no dark mode.
+ * Warm off-white backgrounds, navy accent, ink dark CTAs, Playfair + Inter.
  */
 :root {
-  --radius: 0.625rem;
+  /* Raw Fonda palette */
+  --fonda-bg: #fafaf8;
+  --fonda-surface: #f4f2ee;
+  --fonda-inset: #edeae4;
+  --fonda-white: #ffffff;
+  --fonda-border: #e2ddd5;
+  --fonda-text: #1c1915;
+  --fonda-text-2: #6b6057;
+  --fonda-text-3: #a09488;
+  --fonda-text-inv: #fafaf8;
+  --fonda-accent: #1e3a5f;
+  --fonda-accent-hover: #162d4a;
+  --fonda-accent-light: #ebf1f8;
+  --fonda-ink: #1c1915;
+  --fonda-ink-hover: #2e2a24;
 
-  --background: #ffffff;
-  --foreground: #0f172a; /* slate-900 */
+  --radius: 0.75rem; /* 12px — inputs; cards/buttons set explicitly */
 
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
-
-  --primary: #1a56db; /* brand blue */
-  --primary-foreground: #ffffff;
-
-  --secondary: #f1f5f9; /* slate-100 */
-  --secondary-foreground: #0f172a;
-
-  --muted: #f8fafc; /* slate-50 */
-  --muted-foreground: #64748b; /* slate-500 */
-
-  --accent: #eff4ff; /* tinted blue */
-  --accent-foreground: #1a56db;
-
-  --destructive: #dc2626; /* red-600 */
-  --destructive-foreground: #ffffff;
-
-  --border: #e2e8f0; /* slate-200 */
-  --input: #e2e8f0;
-  --ring: #1a56db;
-}
-
-.dark {
-  --background: #0b1120;
-  --foreground: #e2e8f0;
-
-  --card: #111827;
-  --card-foreground: #e2e8f0;
-
-  --popover: #111827;
-  --popover-foreground: #e2e8f0;
-
-  --primary: #3b82f6;
-  --primary-foreground: #0b1120;
-
-  --secondary: #1e293b;
-  --secondary-foreground: #e2e8f0;
-
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-
-  --accent: #1e293b;
-  --accent-foreground: #93c5fd;
-
-  --destructive: #ef4444;
-  --destructive-foreground: #0b1120;
-
-  --border: #1e293b;
-  --input: #334155;
-  --ring: #3b82f6;
+  /* shadcn semantic tokens mapped onto the Fonda palette */
+  --background: var(--fonda-bg);
+  --foreground: var(--fonda-text);
+  --card: var(--fonda-surface);
+  --card-foreground: var(--fonda-text);
+  --popover: var(--fonda-white);
+  --popover-foreground: var(--fonda-text);
+  --primary: var(--fonda-accent);
+  --primary-foreground: var(--fonda-text-inv);
+  --primary-hover: var(--fonda-accent-hover);
+  --secondary: var(--fonda-surface);
+  --secondary-foreground: var(--fonda-text);
+  --muted: var(--fonda-surface);
+  --muted-foreground: var(--fonda-text-2);
+  --accent: var(--fonda-accent-light);
+  --accent-foreground: var(--fonda-accent);
+  --destructive: #c84a4a;
+  --destructive-foreground: var(--fonda-text-inv);
+  --border: var(--fonda-border);
+  --input: var(--fonda-border);
+  --ring: var(--fonda-accent);
 }
 
 @theme inline {
@@ -90,7 +69,14 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Fonda extras */
+  --color-ink: var(--fonda-ink);
+  --color-ink-hover: var(--fonda-ink-hover);
+  --color-surface: var(--fonda-surface);
+  --color-muted-3: var(--fonda-text-3);
+
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: var(--font-playfair), Georgia, serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
