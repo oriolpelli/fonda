@@ -2,10 +2,12 @@ import { cn } from "@/lib/utils";
 
 export type ConnectionState = "green" | "amber" | "red";
 
+// One signal only: navy marks a live/healthy connection, muted marks stale,
+// destructive marks a broken connection. No off-palette traffic-light hues.
 const CONFIG: Record<ConnectionState, { dot: string; label: string }> = {
-  green: { dot: "bg-emerald-500", label: "Synced" },
-  amber: { dot: "bg-amber-500", label: "Stale" },
-  red: { dot: "bg-red-500", label: "Not connected" },
+  green: { dot: "bg-[var(--fonda-accent)]", label: "Synced" },
+  amber: { dot: "bg-[var(--fonda-text-3)]", label: "Stale" },
+  red: { dot: "bg-destructive", label: "Not connected" },
 };
 
 /**

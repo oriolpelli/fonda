@@ -50,7 +50,7 @@ function Prose({ text }: { text: string }) {
 function Section({ title, text }: { title: string; text: string }) {
   return (
     <section className="border-t border-border pt-6">
-      <h2 className="mb-3 text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--fonda-text-3)]">
+      <h2 className="mb-3 font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
         {title}
       </h2>
       <Prose text={text} />
@@ -87,7 +87,7 @@ export default async function BriefingPage() {
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h1 className="font-serif text-3xl font-normal tracking-tight text-foreground">
+          <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
             Morning briefing
           </h1>
           <p className="text-muted-foreground">

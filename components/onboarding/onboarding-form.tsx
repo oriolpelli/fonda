@@ -22,8 +22,8 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 const selectClassName = cn(
-  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors",
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+  "flex h-11 w-full rounded-[10px] border border-input bg-popover px-4 py-2.5 text-sm transition-colors",
+  "focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-accent",
   "disabled:cursor-not-allowed disabled:opacity-50"
 );
 

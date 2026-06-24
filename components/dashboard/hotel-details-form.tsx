@@ -74,7 +74,7 @@ export function HotelDetailsForm({
             </p>
           ) : null}
           {state && "ok" in state ? (
-            <p className="text-sm font-medium text-primary">Saved.</p>
+            <p className="text-sm font-medium text-[var(--fonda-accent)]">Saved.</p>
           ) : null}
         </CardContent>
         <CardFooter>

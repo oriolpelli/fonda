@@ -101,7 +101,7 @@ export function AuthForm({ mode, action, redirectTo }: AuthFormProps) {
                 Don&apos;t have an account?{" "}
                 <Link
                   href="/signup"
-                  className="font-medium text-primary hover:underline"
+                  className="font-medium text-[var(--fonda-accent)] hover:underline"
                 >
                   Sign up
                 </Link>
@@ -111,7 +111,7 @@ export function AuthForm({ mode, action, redirectTo }: AuthFormProps) {
                 Already have an account?{" "}
                 <Link
                   href="/login"
-                  className="font-medium text-primary hover:underline"
+                  className="font-medium text-[var(--fonda-accent)] hover:underline"
                 >
                   Sign in
                 </Link>

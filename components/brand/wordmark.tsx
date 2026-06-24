@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
-/** Fonda wordmark — Playfair Display, weight 400, refined (not heavy). */
+/** Fonda wordmark — Geist, weight 600, tight tracking. */
 export function Wordmark({
   className,
   href = "/",
@@ -14,7 +14,7 @@ export function Wordmark({
     <Link
       href={href}
       className={cn(
-        "font-serif text-xl font-normal tracking-tight text-foreground",
+        "font-sans text-xl font-semibold tracking-[-0.03em] text-foreground",
         className
       )}
     >

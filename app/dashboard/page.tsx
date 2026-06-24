@@ -17,8 +17,8 @@ function localDate(tz: string, d: Date): string {
 
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-[20px] border border-border bg-card p-6">
-      <div className="font-serif text-4xl font-normal leading-none tracking-[-0.03em] text-foreground">
+    <div className="rounded-[16px] border border-border bg-card p-6">
+      <div className="text-4xl font-semibold leading-none tracking-[-0.04em] text-foreground">
         {value}
       </div>
       <div className="mt-2 text-sm text-muted-foreground">{label}</div>
@@ -28,7 +28,7 @@ function Stat({ label, value }: { label: string; value: string | number }) {
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--fonda-text-3)]">
+    <span className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
       {children}
     </span>
   );
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-1">
-        <h1 className="font-serif text-3xl font-normal tracking-tight text-foreground">
+        <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
           Good morning, {greeting}
         </h1>
         <p className="text-muted-foreground">
@@ -106,7 +106,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Briefing summary */}
-      <div className="rounded-[20px] border border-border bg-card p-6">
+      <div className="rounded-[16px] border border-border bg-card p-6">
         <div className="flex items-start justify-between gap-4">
           <Eyebrow>Today&apos;s briefing</Eyebrow>
           <Button asChild size="sm">
@@ -123,7 +123,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Occupancy calendar */}
-      <div className="rounded-[20px] border border-border p-6">
+      <div className="rounded-[16px] border border-border p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <Eyebrow>Occupancy outlook · next 14 days</Eyebrow>
           {context.rates.occupancyAlerts.length > 0 ? (
@@ -150,13 +150,13 @@ export default async function DashboardPage() {
                 key={d.date}
                 className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card p-2 text-center"
               >
-                <span className="text-[10px] uppercase tracking-wide text-[var(--fonda-text-3)]">
+                <span className="font-mono text-[10px] uppercase tracking-wide text-[var(--fonda-text-3)]">
                   {weekday}
                 </span>
                 <span className="text-sm font-medium text-foreground">{dom}</span>
                 <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--fonda-inset)]">
                   <div
-                    className="h-full rounded-full bg-primary"
+                    className="h-full rounded-full bg-[var(--fonda-accent)]"
                     style={{ width: `${d.occupancyRate}%` }}
                   />
                 </div>

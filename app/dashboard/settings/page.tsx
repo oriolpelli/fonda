@@ -49,7 +49,9 @@ export default async function SettingsPage({
   return (
     <div className="flex max-w-2xl flex-col gap-8">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+        <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
+          Settings
+        </h1>
         <p className="text-muted-foreground">
           Connect {hotel?.name ?? "your hotel"}&apos;s property management
           system so Fonda can sync reservations and guests.
@@ -102,7 +104,7 @@ export default async function SettingsPage({
         )}
       >
         {connected ? (
-          <CheckCircle2 className="size-4 text-primary" />
+          <CheckCircle2 className="size-4 text-[var(--fonda-accent)]" />
         ) : (
           <Circle className="size-4" />
         )}

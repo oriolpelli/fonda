@@ -126,7 +126,7 @@ export function AskYourHotel() {
       >
         <header className="flex items-center justify-between border-b border-border px-5 py-4">
           <div className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <span className="flex size-8 items-center justify-center rounded-lg bg-[var(--fonda-accent-light)] text-[var(--fonda-accent)]">
               <MessageSquareText className="size-4" />
             </span>
             <div className="flex flex-col">
@@ -162,7 +162,7 @@ export function AskYourHotel() {
                   className={cn(
                     "max-w-[88%] whitespace-pre-line rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
                     m.role === "user"
-                      ? "rounded-br-md bg-primary text-primary-foreground shadow-sm"
+                      ? "rounded-br-md bg-primary text-primary-foreground"
                       : "rounded-bl-md bg-muted text-foreground"
                   )}
                 >
@@ -177,7 +177,7 @@ export function AskYourHotel() {
                   <Link
                     href="/dashboard/emails"
                     onClick={close}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-transparent bg-[var(--fonda-accent-light)] px-3 py-2 text-xs font-medium text-[var(--fonda-accent)] transition-colors hover:bg-[color-mix(in_srgb,var(--fonda-accent-light)_70%,var(--fonda-accent))]"
                   >
                     Draft created → View in Email inbox
                   </Link>
@@ -190,7 +190,7 @@ export function AskYourHotel() {
 
         {messages.length === 0 ? (
           <div className="flex flex-col gap-2.5 px-5 pb-3">
-            <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
               Try asking
             </span>
             <div className="flex flex-wrap gap-2">
@@ -198,7 +198,7 @@ export function AskYourHotel() {
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="rounded-full border border-border bg-background px-3 py-1.5 text-xs text-foreground/80 shadow-sm transition-colors hover:border-primary/40 hover:bg-accent hover:text-accent-foreground"
+                  className="rounded-full border border-border bg-background px-3 py-1.5 text-xs text-foreground/80 transition-colors hover:border-[var(--fonda-text-3)] hover:bg-accent hover:text-accent-foreground"
                 >
                   {s}
                 </button>
@@ -219,11 +219,11 @@ export function AskYourHotel() {
             }}
             rows={1}
             placeholder="Ask a question…"
-            className="max-h-32 flex-1 resize-none rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="max-h-32 flex-1 resize-none rounded-[10px] border border-input bg-popover px-3.5 py-2.5 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-accent"
           />
           <Button
             size="icon"
-            className="rounded-xl"
+            className="rounded-[10px]"
             onClick={() => send(input)}
             disabled={streaming || !input.trim()}
           >

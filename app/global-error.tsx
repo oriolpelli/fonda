@@ -23,13 +23,21 @@ export default function GlobalError({
           alignItems: "center",
           justifyContent: "center",
           margin: 0,
+          background: "#ffffff",
+          color: "#0a0a0a",
         }}
       >
         <div style={{ textAlign: "center", padding: "2rem" }}>
-          <h1 style={{ fontSize: "1.25rem", fontWeight: 600 }}>
+          <h1
+            style={{
+              fontSize: "1.25rem",
+              fontWeight: 600,
+              letterSpacing: "-0.025em",
+            }}
+          >
             Something went wrong
           </h1>
-          <p style={{ color: "#64748b" }}>
+          <p style={{ color: "#5b5b58" }}>
             Please refresh the page. If it keeps happening, contact support.
           </p>
         </div>

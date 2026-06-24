@@ -64,7 +64,7 @@ function ChaserItem({
           ref={draftRef}
           defaultValue={chaser.draftContent ?? ""}
           rows={5}
-          className="w-full rounded-md border border-input bg-background p-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-accent"
           placeholder="Chase message…"
         />
       </CardContent>

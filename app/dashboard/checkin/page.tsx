@@ -73,7 +73,7 @@ export default async function CheckinPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
           Check-in chasing
         </h1>
         <p className="text-muted-foreground">

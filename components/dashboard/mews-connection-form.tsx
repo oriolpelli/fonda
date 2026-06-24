@@ -74,7 +74,9 @@ export function MewsConnectionForm({ connected }: { connected: boolean }) {
             </p>
           ) : null}
           {state && "ok" in state ? (
-            <p className="text-sm font-medium text-primary">{state.message}</p>
+            <p className="text-sm font-medium text-[var(--fonda-accent)]">
+              {state.message}
+            </p>
           ) : null}
         </CardContent>
         <CardFooter>

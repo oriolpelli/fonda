@@ -24,33 +24,30 @@ export interface InboxEmail {
   sent_at: string | null;
 }
 
+// Quiet, neutral badges (one signal only). Negative categories that need
+// attention get the single destructive tint; everything else stays neutral.
+const NEUTRAL = "bg-[var(--fonda-surface)] text-[var(--fonda-text-2)]";
+const NEGATIVE = "bg-destructive/10 text-destructive";
+const MUTED = "bg-[var(--fonda-surface)] text-[var(--fonda-text-3)]";
+
 const BADGES: Record<string, { label: string; className: string }> = {
-  complaint: { label: "Complaint", className: "bg-red-100 text-red-700" },
-  booking_inquiry: { label: "Booking", className: "bg-blue-100 text-blue-700" },
-  modification_request: {
-    label: "Modification",
-    className: "bg-amber-100 text-amber-700",
-  },
-  cancellation_request: {
-    label: "Cancellation",
-    className: "bg-orange-100 text-orange-700",
-  },
-  special_request: {
-    label: "Special request",
-    className: "bg-purple-100 text-purple-700",
-  },
-  arrival_info: { label: "Arrival info", className: "bg-emerald-100 text-emerald-700" },
-  general_inquiry: { label: "General", className: "bg-slate-100 text-slate-700" },
-  irrelevant: { label: "Irrelevant", className: "bg-slate-100 text-slate-500" },
+  complaint: { label: "Complaint", className: NEGATIVE },
+  booking_inquiry: { label: "Booking", className: NEUTRAL },
+  modification_request: { label: "Modification", className: NEUTRAL },
+  cancellation_request: { label: "Cancellation", className: NEGATIVE },
+  special_request: { label: "Special request", className: NEUTRAL },
+  arrival_info: { label: "Arrival info", className: NEUTRAL },
+  general_inquiry: { label: "General", className: NEUTRAL },
+  irrelevant: { label: "Irrelevant", className: MUTED },
 };
 
 function badge(classification: string | null) {
   if (!classification) {
-    return { label: "Processing…", className: "bg-slate-100 text-slate-500" };
+    return { label: "Processing…", className: MUTED };
   }
   return BADGES[classification] ?? {
     label: classification,
-    className: "bg-slate-100 text-slate-700",
+    className: NEUTRAL,
   };
 }
 
@@ -194,7 +191,9 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
                       {b.label}
                     </span>
                     {email.status === "sent" ? (
-                      <span className="text-xs text-emerald-600">Sent</span>
+                      <span className="text-xs font-medium text-[var(--fonda-accent)]">
+                        Sent
+                      </span>
                     ) : email.status === "ignored" ? (
                       <span className="text-xs text-muted-foreground">
                         Ignored
@@ -226,7 +225,7 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
               </div>
 
               {selected.status === "sent" ? (
-                <p className="text-sm font-medium text-emerald-600">
+                <p className="text-sm font-medium text-[var(--fonda-accent)]">
                   Reply sent
                   {selected.sent_at ? ` · ${shortTime(selected.sent_at)}` : ""}.
                 </p>
@@ -248,7 +247,7 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
                     ref={draftRef}
                     defaultValue={selected.draft_reply ?? ""}
                     rows={10}
-                    className="w-full rounded-md border border-input bg-background p-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-accent"
                     placeholder="Write your reply…"
                   />
                   <div className="flex flex-wrap gap-2">

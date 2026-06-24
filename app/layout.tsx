@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+// Fonda v2 "Signal" — one grotesque for everything. No serif.
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
-// Editorial serif for headlines and the wordmark (Fonda's typographic signature).
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+// Geist Mono — eyebrows, labels, metadata, code.
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -34,7 +35,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} h-full`}
+      className={`${geist.variable} ${geistMono.variable} h-full`}
     >
       <body className="min-h-full antialiased">{children}</body>
     </html>

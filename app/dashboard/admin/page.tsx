@@ -71,7 +71,9 @@ export default async function AdminPage() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Admin · Sync</h1>
+          <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
+            Admin · Sync
+          </h1>
           <p className="text-muted-foreground">
             Raw view of the last PMS sync for {hotel?.name ?? "your hotel"}.
           </p>
@@ -88,7 +90,9 @@ export default async function AdminPage() {
               <span
                 className={cn(
                   "ml-2 text-sm font-normal",
-                  hotel?.pms_connected ? "text-emerald-600" : "text-red-600"
+                  hotel?.pms_connected
+                    ? "text-[var(--fonda-accent)]"
+                    : "text-destructive"
                 )}
               >
                 {hotel?.pms_connected ? "connected" : "disconnected"}
@@ -118,7 +122,7 @@ export default async function AdminPage() {
       </div>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        <h2 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
           Recent sync runs
         </h2>
         <div className="overflow-x-auto rounded-lg border border-border">
@@ -150,8 +154,8 @@ export default async function AdminPage() {
                         className={cn(
                           "inline-flex rounded-full px-2 py-0.5 text-xs font-medium",
                           log.status === "success"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-red-100 text-red-700"
+                            ? "bg-[var(--fonda-surface)] text-[var(--fonda-text-2)]"
+                            : "bg-destructive/10 text-destructive"
                         )}
                       >
                         {log.status}
@@ -162,7 +166,7 @@ export default async function AdminPage() {
                     <td className="px-3 py-2 text-muted-foreground">
                       {formatTime(log.finished_at)}
                     </td>
-                    <td className="px-3 py-2 text-red-600">
+                    <td className="px-3 py-2 text-destructive">
                       {log.error ?? ""}
                     </td>
                   </tr>
@@ -174,7 +178,7 @@ export default async function AdminPage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        <h2 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
           Latest reservations
         </h2>
         <div className="overflow-x-auto rounded-lg border border-border">
