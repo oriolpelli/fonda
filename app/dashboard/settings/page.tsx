@@ -11,6 +11,7 @@ import {
   GmailConnectionCard,
   gmailStatusMessage,
 } from "@/components/dashboard/gmail-connection-card";
+import { HotelDetailsForm } from "@/components/dashboard/hotel-details-form";
 import { MewsConnectionForm } from "@/components/dashboard/mews-connection-form";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
@@ -30,7 +31,7 @@ export default async function SettingsPage({
   // client role (migration 0002), so `select('*')` would error here.
   const { data: hotel } = await supabase
     .from("hotels")
-    .select("id, name, pms_type, pms_connected, gmail_email")
+    .select("id, name, rooms_count, pms_type, pms_connected, gmail_email")
     .single();
 
   const { data: settings } = await supabase
@@ -86,6 +87,11 @@ export default async function SettingsPage({
           {gmailBanner.text}
         </div>
       ) : null}
+
+      <HotelDetailsForm
+        name={hotel?.name ?? ""}
+        roomsCount={hotel?.rooms_count ?? 1}
+      />
 
       <div
         className={cn(

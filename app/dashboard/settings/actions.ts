@@ -15,6 +15,50 @@ export type ConnectState =
   | { error: string }
   | undefined;
 
+export type HotelDetailsState = { ok: true } | { error: string } | undefined;
+
+export async function updateHotelDetails(
+  _prevState: HotelDetailsState,
+  formData: FormData
+): Promise<HotelDetailsState> {
+  const name = String(formData.get("name") ?? "").trim();
+  const roomsRaw = String(formData.get("roomsCount") ?? "").trim();
+
+  if (!name) {
+    return { error: "Enter your hotel name." };
+  }
+  const rooms = Number.parseInt(roomsRaw, 10);
+  if (!Number.isInteger(rooms) || rooms < 1 || rooms > 1000) {
+    return { error: "Number of rooms must be between 1 and 1000." };
+  }
+
+  let hotelId: string;
+  try {
+    hotelId = await requireHotelId();
+  } catch (err) {
+    return { error: (err as Error).message };
+  }
+
+  // Session client respects RLS (hotel updates are owner-only). The .select()
+  // lets us detect when RLS filtered the row out (i.e. a non-owner).
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("hotels")
+    .update({ name, rooms_count: rooms })
+    .eq("id", hotelId)
+    .select("id");
+  if (error) {
+    return { error: `Couldn't save: ${error.message}` };
+  }
+  if (!data || data.length === 0) {
+    return { error: "Only the hotel owner can change hotel details." };
+  }
+
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard");
+  return { ok: true };
+}
+
 export type BriefingSettingsState =
   | { ok: true }
   | { error: string }
