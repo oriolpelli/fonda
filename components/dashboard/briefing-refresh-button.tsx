@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, RefreshCw } from "lucide-react";
 
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 
 export function BriefingRefreshButton() {
   const router = useRouter();
+  const { dict } = useDictionary();
   const [pending, setPending] = useState(false);
 
   async function refresh() {
@@ -23,7 +25,7 @@ export function BriefingRefreshButton() {
   return (
     <Button onClick={refresh} disabled={pending} variant="outline" size="sm">
       {pending ? <Loader2 className="animate-spin" /> : <RefreshCw />}
-      {pending ? "Refreshing…" : "Refresh"}
+      {pending ? dict.briefing.refreshing : dict.briefing.refresh}
     </Button>
   );
 }

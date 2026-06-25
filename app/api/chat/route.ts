@@ -8,7 +8,11 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const CHAT_MODEL = "claude-opus-4-8";
-const LANGUAGES: Record<string, string> = { en: "English", es: "Spanish" };
+const LANGUAGES: Record<string, string> = {
+  en: "English",
+  es: "Spanish",
+  ca: "Catalan",
+};
 
 // Sentinel appended to the stream when a draft email was created from the chat.
 // The UI splits on this to render the "View in inbox" card.

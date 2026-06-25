@@ -3,6 +3,8 @@ import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 
 import { APALEO_AUTHORIZE_URL } from "@/lib/apaleo";
+import { localeFromRequestCookie } from "@/lib/i18n/get-locale";
+import { localizedHref } from "@/lib/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -26,14 +28,20 @@ export async function GET(request: Request) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const locale = localeFromRequestCookie(request);
   if (!user) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(
+      new URL(localizedHref(locale, "/login"), request.url)
+    );
   }
 
   const clientId = process.env.APALEO_CLIENT_ID;
   if (!clientId) {
     return NextResponse.redirect(
-      new URL("/dashboard/settings?apaleo=misconfigured", request.url)
+      new URL(
+        `${localizedHref(locale, "/dashboard/settings")}?apaleo=misconfigured`,
+        request.url
+      )
     );
   }
 

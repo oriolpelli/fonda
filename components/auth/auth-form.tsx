@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
-import { type AuthState } from "@/app/(auth)/actions";
+import { type AuthState } from "@/app/[lang]/(auth)/actions";
+import { useDictionary } from "@/components/i18n/dictionary-provider";
+import { LocaleLink } from "@/components/i18n/locale-link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,14 +31,16 @@ interface AuthFormProps {
 
 function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
+  const { dict } = useDictionary();
   return (
     <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? "Please wait…" : label}
+      {pending ? dict.common.pleaseWait : label}
     </Button>
   );
 }
 
 export function AuthForm({ mode, action, redirectTo }: AuthFormProps) {
+  const { dict, locale } = useDictionary();
   const [state, formAction] = useActionState<AuthState, FormData>(
     action,
     undefined
@@ -49,32 +52,31 @@ export function AuthForm({ mode, action, redirectTo }: AuthFormProps) {
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle className="text-xl">
-          {isLogin ? "Welcome back" : "Create your account"}
+          {isLogin ? dict.auth.loginTitle : dict.auth.signupTitle}
         </CardTitle>
         <CardDescription>
-          {isLogin
-            ? "Sign in to your Fonda dashboard."
-            : "Start running your hotel on autopilot."}
+          {isLogin ? dict.auth.loginDesc : dict.auth.signupDesc}
         </CardDescription>
       </CardHeader>
       <form action={formAction}>
         <CardContent className="flex flex-col gap-4">
+          <input type="hidden" name="locale" value={locale} />
           {redirectTo ? (
             <input type="hidden" name="redirectTo" value={redirectTo} />
           ) : null}
           <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{dict.auth.email}</Label>
             <Input
               id="email"
               name="email"
               type="email"
               autoComplete="email"
-              placeholder="gm@hotel.com"
+              placeholder={dict.auth.emailPlaceholder}
               required
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{dict.auth.password}</Label>
             <Input
               id="password"
               name="password"
@@ -85,36 +87,33 @@ export function AuthForm({ mode, action, redirectTo }: AuthFormProps) {
             />
           </div>
           {state?.error ? (
-            <p
-              role="alert"
-              className="text-sm font-medium text-destructive"
-            >
+            <p role="alert" className="text-sm font-medium text-destructive">
               {state.error}
             </p>
           ) : null}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
-          <SubmitButton label={isLogin ? "Sign in" : "Create account"} />
+          <SubmitButton label={isLogin ? dict.auth.signIn : dict.auth.createAccount} />
           <p className="text-sm text-muted-foreground">
             {isLogin ? (
               <>
-                Don&apos;t have an account?{" "}
-                <Link
+                {dict.auth.noAccount}{" "}
+                <LocaleLink
                   href="/signup"
                   className="font-medium text-[var(--fonda-accent)] hover:underline"
                 >
-                  Sign up
-                </Link>
+                  {dict.auth.signUpLink}
+                </LocaleLink>
               </>
             ) : (
               <>
-                Already have an account?{" "}
-                <Link
+                {dict.auth.haveAccount}{" "}
+                <LocaleLink
                   href="/login"
                   className="font-medium text-[var(--fonda-accent)] hover:underline"
                 >
-                  Sign in
-                </Link>
+                  {dict.auth.signInLink}
+                </LocaleLink>
               </>
             )}
           </p>

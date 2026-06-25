@@ -15,10 +15,11 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
+     * - api, connect (endpoints / OAuth callbacks — not localized pages)
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico, and common static asset extensions
+     * - favicon.ico, sitemap.xml, robots.txt, and common static asset extensions
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|connect|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

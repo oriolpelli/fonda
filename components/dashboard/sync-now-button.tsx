@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, RefreshCw } from "lucide-react";
 
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n/format";
 import { cn } from "@/lib/utils";
 
 type Status =
@@ -19,6 +21,7 @@ export function SyncNowButton({
   endpoint?: string;
 }) {
   const router = useRouter();
+  const { dict } = useDictionary();
   const [status, setStatus] = useState<Status>({ state: "idle" });
   const isSyncing = status.state === "syncing";
 
@@ -35,7 +38,7 @@ export function SyncNowButton({
       if (!res.ok) {
         setStatus({
           state: "error",
-          message: data.error ?? `Sync failed (${res.status}).`,
+          message: data.error ?? t(dict.admin.syncFailed, { status: res.status }),
         });
         return;
       }
@@ -48,7 +51,7 @@ export function SyncNowButton({
       // Re-fetch the server-rendered page data (sync logs, latest reservations).
       router.refresh();
     } catch {
-      setStatus({ state: "error", message: "Couldn't reach the server." });
+      setStatus({ state: "error", message: dict.common.serverUnreachable });
     }
   }
 
@@ -60,7 +63,7 @@ export function SyncNowButton({
         ) : (
           <RefreshCw />
         )}
-        {isSyncing ? "Syncing…" : "Sync now"}
+        {isSyncing ? dict.admin.syncing : dict.admin.syncNow}
       </Button>
       <p
         aria-live="polite"
@@ -72,7 +75,10 @@ export function SyncNowButton({
         )}
       >
         {status.state === "done"
-          ? `Synced ${status.reservations} reservations, ${status.customers} guests.`
+          ? t(dict.admin.syncDone, {
+              reservations: status.reservations,
+              customers: status.customers,
+            })
           : status.state === "error"
             ? status.message
             : ""}

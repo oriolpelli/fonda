@@ -7,14 +7,20 @@ import {
   ingestRecentEmails,
   storeGmailCredentials,
 } from "@/lib/gmail";
+import { localeFromRequestCookie } from "@/lib/i18n/get-locale";
+import { localizedHref } from "@/lib/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // ingesting 7 days of email can take a moment
 
 function settingsRedirect(request: Request, params: string): NextResponse {
+  const locale = localeFromRequestCookie(request);
   const response = NextResponse.redirect(
-    new URL(`/dashboard/settings?${params}`, request.url)
+    new URL(
+      `${localizedHref(locale, "/dashboard/settings")}?${params}`,
+      request.url
+    )
   );
   response.cookies.delete("gmail_oauth_state");
   return response;
@@ -47,7 +53,9 @@ export async function GET(request: Request) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(
+      new URL(localizedHref(localeFromRequestCookie(request), "/login"), request.url)
+    );
   }
 
   const { data: profile } = await supabase

@@ -6,7 +6,8 @@ import { useFormStatus } from "react-dom";
 import {
   updateHotelDetails,
   type HotelDetailsState,
-} from "@/app/dashboard/settings/actions";
+} from "@/app/[lang]/dashboard/settings/actions";
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,9 +22,10 @@ import { Label } from "@/components/ui/label";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  const { dict } = useDictionary();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Saving…" : "Save changes"}
+      {pending ? dict.common.saving : dict.common.save}
     </Button>
   );
 }
@@ -35,6 +37,7 @@ export function HotelDetailsForm({
   name: string;
   roomsCount: number;
 }) {
+  const { dict } = useDictionary();
   const [state, formAction] = useActionState<HotelDetailsState, FormData>(
     updateHotelDetails,
     undefined
@@ -43,20 +46,17 @@ export function HotelDetailsForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Hotel details</CardTitle>
-        <CardDescription>
-          Your hotel&apos;s name and room count. Room count drives occupancy
-          across briefings and the dashboard.
-        </CardDescription>
+        <CardTitle>{dict.settings.hotelDetailsTitle}</CardTitle>
+        <CardDescription>{dict.settings.hotelDetailsDesc}</CardDescription>
       </CardHeader>
       <form action={formAction}>
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="name">Hotel name</Label>
+            <Label htmlFor="name">{dict.onboarding.hotelName}</Label>
             <Input id="name" name="name" defaultValue={name} required />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="roomsCount">Number of rooms</Label>
+            <Label htmlFor="roomsCount">{dict.onboarding.rooms}</Label>
             <Input
               id="roomsCount"
               name="roomsCount"
@@ -74,7 +74,9 @@ export function HotelDetailsForm({
             </p>
           ) : null}
           {state && "ok" in state ? (
-            <p className="text-sm font-medium text-[var(--fonda-accent)]">Saved.</p>
+            <p className="text-sm font-medium text-[var(--fonda-accent)]">
+              {dict.common.saved}
+            </p>
           ) : null}
         </CardContent>
         <CardFooter>

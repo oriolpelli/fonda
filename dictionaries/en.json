@@ -1,0 +1,338 @@
+{
+  "meta": {
+    "title": "Fonda — Hotel operations, on autopilot",
+    "description": "Fonda gives independent hotel GMs a morning AI briefing, an AI email assistant, check-in time chasing, and natural-language hotel queries."
+  },
+  "common": {
+    "signOut": "Sign out",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "saved": "Saved.",
+    "tryAgain": "Try again",
+    "pleaseWait": "Please wait…",
+    "loading": "Loading…",
+    "disconnect": "Disconnect",
+    "serverUnreachable": "Couldn't reach the server."
+  },
+  "nav": {
+    "features": "Features",
+    "signIn": "Sign in",
+    "getEarlyAccess": "Get early access"
+  },
+  "hero": {
+    "badge": "AI for boutique hotels · Private beta",
+    "headlineLine1": "Your hotel,",
+    "headlineLine2": "running itself.",
+    "subhead": "An AI operations layer that handles the daily grind — morning briefings, OTA emails, check-in chasing, and live hotel data — in 90 seconds.",
+    "ctaPrimary": "Get early access",
+    "ctaSecondary": "See how it works →"
+  },
+  "trust": {
+    "worksWith": "Works with"
+  },
+  "featuresSection": {
+    "eyebrow": "What Fonda does",
+    "headline": "Five features. One calm morning."
+  },
+  "features": {
+    "briefing": {
+      "name": "Morning AI briefing",
+      "description": "A daily summary of arrivals, departures, VIPs, and anything that needs your attention — ready before your first coffee."
+    },
+    "email-assistant": {
+      "name": "AI email assistant",
+      "description": "Draft and triage guest emails in your hotel's voice, so the front desk spends less time in the inbox."
+    },
+    "checkin-chasing": {
+      "name": "Check-in time chasing",
+      "description": "Automatically nudge guests for their expected arrival time and keep housekeeping one step ahead."
+    },
+    "hotel-chat": {
+      "name": "Hotel query chat",
+      "description": "Ask anything about your hotel in plain language — occupancy, revenue, who's arriving late — and get an instant answer."
+    }
+  },
+  "briefingPreview": {
+    "windowTitle": "Fonda · Morning Briefing",
+    "dateLine": "Tuesday, 24 June · 6:32 AM",
+    "greeting": "Good morning. Here's your hotel today.",
+    "row1strong": "12 arrivals today.",
+    "row1rest": " 3 haven't shared arrival times — chased automatically.",
+    "row2strong": "4 new OTA emails overnight.",
+    "row2rest": " Drafts are ready for your review.",
+    "row3strong": "Occupancy tonight: 87%.",
+    "row3rest": " Consider checking weekend pricing."
+  },
+  "stats": {
+    "headline": "Quiet mornings, measurable hours.",
+    "lead": "Fonda pays for itself in reclaimed time — here's what independent hotels get back once the daily busywork runs itself.",
+    "adminTop": "Daily admin, handled",
+    "adminLabel": "saved per GM, every day",
+    "catchupTop": "The morning catch-up",
+    "catchupLabel": "briefing replaces an hour",
+    "setupTop": "Set it up once",
+    "setupLabel": "then fully automated",
+    "onboardingTop": "Onboarding cost",
+    "onboardingLabel": "your team starts the same day"
+  },
+  "cta": {
+    "eyebrow": "Join the beta",
+    "headline": "Ready to get your mornings back?",
+    "subhead": "Free for the first 20 hotels. No credit card. Works the same day.",
+    "button": "Get started →"
+  },
+  "footer": {
+    "rights": "© {year} Fonda. Hotel operations, on autopilot.",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "signupTitle": "Create your account",
+    "loginDesc": "Sign in to your Fonda dashboard.",
+    "signupDesc": "Start running your hotel on autopilot.",
+    "email": "Email",
+    "password": "Password",
+    "emailPlaceholder": "gm@hotel.com",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign up",
+    "haveAccount": "Already have an account?",
+    "signInLink": "Sign in"
+  },
+  "onboarding": {
+    "title": "Set up your hotel",
+    "desc": "A few details so Fonda can tailor briefings and sync your PMS.",
+    "hotelName": "Hotel name",
+    "hotelNamePlaceholder": "The Grand Riverside",
+    "rooms": "Number of rooms",
+    "roomsPlaceholder": "80",
+    "timezone": "Timezone",
+    "pms": "Property management system",
+    "settingUp": "Setting up…",
+    "createHotel": "Create hotel"
+  },
+  "dashboardNav": {
+    "briefing": "Briefing",
+    "emails": "Emails",
+    "checkin": "Check-in",
+    "admin": "Admin",
+    "settings": "Settings"
+  },
+  "connection": {
+    "synced": "Synced",
+    "stale": "Stale",
+    "notConnected": "Not connected"
+  },
+  "home": {
+    "goodMorning": "Good morning, {name}",
+    "arrivalsToday": "Arrivals today",
+    "departuresToday": "Departures today",
+    "inHouseTonight": "In-house tonight",
+    "occupancyTonight": "Occupancy tonight",
+    "draftsReady": "Email drafts ready",
+    "needAttention": "Need attention",
+    "todaysBriefing": "Today's briefing",
+    "readFullBriefing": "Read full briefing →",
+    "openBriefing": "Open briefing →",
+    "noBriefing": "Your morning briefing hasn't been generated yet today. Open it to generate a fresh summary of arrivals, emails, and rate alerts.",
+    "occupancyOutlook": "Occupancy outlook · next 14 days",
+    "daysBelowOne": "{count} day below 60%",
+    "daysBelowOther": "{count} days below 60%",
+    "occupancyNote": "Occupancy is computed from synced reservations. Rate-plan pricing isn't connected yet.",
+    "reviewEmails": "Review emails",
+    "checkinChasing": "Check-in chasing"
+  },
+  "briefing": {
+    "title": "Morning briefing",
+    "fallbackHotel": "Your hotel",
+    "arrivals": "Arrivals & departures",
+    "overnightEmail": "Overnight email",
+    "rateAlert": "Rate alert",
+    "reviewEmails": "Review emails",
+    "seeArrivals": "See all arrivals",
+    "refresh": "Refresh",
+    "refreshing": "Refreshing…",
+    "generating": "Generating your briefing…",
+    "generateError": "Couldn't generate your briefing."
+  },
+  "emails": {
+    "title": "Emails",
+    "draftsReadyOne": "{count} draft ready",
+    "draftsReadyOther": "{count} drafts ready",
+    "sentToday": "{count} sent today",
+    "avgResponse": "Average response time: {time}",
+    "hours": "{count} hours",
+    "noData": "—",
+    "countOne": "{count} email",
+    "countOther": "{count} emails",
+    "approveAllStandard": "Approve all standard replies ({count})",
+    "needAttentionBannerOne": "{count} email needs your personal attention — no AI draft was generated.",
+    "needAttentionBannerOther": "{count} emails need your personal attention — no AI draft was generated.",
+    "noEmails": "No emails yet.",
+    "selectPrompt": "Select an email to review.",
+    "unknownSender": "Unknown sender",
+    "noSubject": "(no subject)",
+    "emptyMessage": "(empty message)",
+    "from": "From {sender} · {time}",
+    "draftLabel": "AI draft — edit before sending",
+    "replyPlaceholder": "Write your reply…",
+    "needsAttentionNote": "This email needs your personal attention — write a reply below.",
+    "send": "Send",
+    "sending": "Sending…",
+    "needsAttention": "Needs attention",
+    "ignore": "Ignore",
+    "sent": "Sent",
+    "ignored": "Ignored",
+    "replySent": "Reply sent",
+    "replySentAt": "Reply sent · {time}",
+    "confirmBulkOne": "Send {count} standard reply (arrival info & general inquiries)?",
+    "confirmBulkOther": "Send {count} standard replies (arrival info & general inquiries)?",
+    "badges": {
+      "processing": "Processing…",
+      "complaint": "Complaint",
+      "booking_inquiry": "Booking",
+      "modification_request": "Modification",
+      "cancellation_request": "Cancellation",
+      "special_request": "Special request",
+      "arrival_info": "Arrival info",
+      "general_inquiry": "General",
+      "irrelevant": "Irrelevant"
+    }
+  },
+  "checkin": {
+    "title": "Check-in chasing",
+    "desc": "Arrival-time requests for confirmed guests arriving in the next 7 days.",
+    "pendingOne": "{count} pending chaser",
+    "pendingOther": "{count} pending chasers",
+    "generateNow": "Generate now",
+    "approveAll": "Approve all ({count})",
+    "noChasers": "No pending chasers. Use “Generate now” to draft requests for guests arriving in the next 7 days.",
+    "send": "Send",
+    "skip": "Skip",
+    "chasePlaceholder": "Chase message…",
+    "guest": "Guest",
+    "arrives": "Arrives {date}",
+    "confirmBulkOne": "Send all {count} pending chaser?",
+    "confirmBulkOther": "Send all {count} pending chasers?"
+  },
+  "askYourHotel": {
+    "label": "Ask your hotel",
+    "title": "Ask your hotel",
+    "subtitle": "Answers from your live data",
+    "empty": "Ask me anything about today's operations — arrivals, VIPs, occupancy, or your inbox.",
+    "tryAsking": "Try asking",
+    "placeholder": "Ask a question…",
+    "draftCreated": "Draft created → View in Email inbox",
+    "errorPrefix": "Sorry — {message}",
+    "suggestion1": "Who are my arrivals today?",
+    "suggestion2": "Do I have any VIP guests this week?",
+    "suggestion3": "Which dates have low occupancy in the next 14 days?",
+    "suggestion4": "Any guests missing an arrival time?",
+    "suggestion5": "How many emails need my attention?"
+  },
+  "settings": {
+    "title": "Settings",
+    "desc": "Connect {hotel}'s property management system so Fonda can sync reservations and guests.",
+    "fallbackHotel": "your hotel",
+    "notConnected": "Not connected",
+    "connectedTo": "Connected to {pms}",
+    "disconnectMews": "Disconnect MEWS",
+    "gmailConnected": "Connected to {email}. We found {count} emails from the last 7 days — drafts will be prepared for your review.",
+    "gmailFallbackInbox": "your inbox",
+    "hotelDetailsTitle": "Hotel details",
+    "hotelDetailsDesc": "Your hotel's name and room count. Room count drives occupancy across briefings and the dashboard.",
+    "mewsTitle": "MEWS Connector API",
+    "mewsDesc": "Paste the Client and Access tokens from your MEWS integration. We verify them with MEWS, then store them encrypted at rest.",
+    "clientToken": "Client token",
+    "accessToken": "Access token",
+    "tokenStored": "•••••••• (stored)",
+    "connectMews": "Connect MEWS",
+    "updateTokens": "Update tokens",
+    "verifying": "Verifying…",
+    "apaleoTitle": "Apaleo",
+    "apaleoDesc": "Connect your Apaleo account with OAuth. You'll be sent to Apaleo to grant Fonda read access; we store only an encrypted refresh token.",
+    "apaleoConnected": "Fonda is connected to your Apaleo account.",
+    "apaleoNotConnected": "No Apaleo account connected yet.",
+    "reconnectApaleo": "Reconnect Apaleo",
+    "connectApaleo": "Connect Apaleo",
+    "gmailTitle": "Gmail inbox",
+    "gmailDesc": "Connect the hotel inbox so Fonda can classify guest emails and draft replies for your review. We request read and send access and store only an encrypted refresh token.",
+    "gmailConnectedAs": "Connected as {email}.",
+    "gmailNotConnected": "No inbox connected yet.",
+    "reconnectGmail": "Reconnect Gmail",
+    "connectGmail": "Connect Gmail",
+    "briefingTitle": "Morning briefing",
+    "briefingDesc": "When and how Fonda prepares your daily briefing.",
+    "gmName": "GM name",
+    "gmNamePlaceholder": "e.g. Maria",
+    "briefingTime": "Briefing time",
+    "language": "Language",
+    "languageEn": "English",
+    "languageEs": "Spanish",
+    "languageCa": "Catalan",
+    "settingsSaved": "Settings saved."
+  },
+  "apaleoStatus": {
+    "connected": "Apaleo connected.",
+    "denied": "Apaleo authorization was declined.",
+    "invalid_state": "The connection link expired or was invalid. Please try again.",
+    "misconfigured": "Apaleo isn't configured on the server (missing client ID).",
+    "no_hotel": "No hotel associated with this user.",
+    "error": "Couldn't complete the Apaleo connection."
+  },
+  "gmailStatus": {
+    "denied": "Gmail access was declined.",
+    "invalid_state": "The connection link expired or was invalid. Please try again.",
+    "misconfigured": "Gmail isn't configured on the server (missing Google client ID).",
+    "no_hotel": "No hotel associated with this user.",
+    "error": "Couldn't complete the Gmail connection."
+  },
+  "admin": {
+    "title": "Admin · Sync",
+    "desc": "Raw view of the last PMS sync for {hotel}.",
+    "syncNow": "Sync now",
+    "syncing": "Syncing…",
+    "syncDone": "Synced {reservations} reservations, {customers} guests.",
+    "syncFailed": "Sync failed ({status}).",
+    "pms": "PMS",
+    "connected": "connected",
+    "disconnected": "disconnected",
+    "lastSynced": "Last synced {time}",
+    "reservations": "Reservations",
+    "guests": "Guests",
+    "recentSyncRuns": "Recent sync runs",
+    "latestReservations": "Latest reservations",
+    "colStatus": "Status",
+    "colReservations": "Reservations",
+    "colGuests": "Guests",
+    "colFinished": "Finished",
+    "colError": "Error",
+    "colMewsId": "MEWS ID",
+    "colState": "State",
+    "colStart": "Start",
+    "colEnd": "End",
+    "noSyncs": "No syncs yet.",
+    "noReservations": "No reservations synced yet."
+  },
+  "legal": {
+    "home": "Home",
+    "privacyTitle": "Privacy Policy",
+    "termsTitle": "Terms of Service",
+    "englishNotice": "Our legal documents are provided in English."
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page not found",
+    "body": "The page you're looking for doesn't exist or has moved.",
+    "backToDashboard": "Back to dashboard"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "body": "An unexpected error occurred. You can try again, and we've been notified if it keeps happening.",
+    "dashboardTitle": "We couldn't load this page",
+    "dashboardBody": "Something went wrong fetching your hotel data — this can happen if the PMS or email connection is temporarily unavailable.",
+    "retry": "Try again"
+  }
+}

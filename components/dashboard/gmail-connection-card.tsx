@@ -1,4 +1,7 @@
-import { disconnectGmail } from "@/app/dashboard/settings/actions";
+"use client";
+
+import { disconnectGmail } from "@/app/[lang]/dashboard/settings/actions";
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,35 +11,37 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { t } from "@/lib/i18n/format";
 
 export function GmailConnectionCard({ email }: { email: string | null }) {
+  const { dict } = useDictionary();
   const connected = Boolean(email);
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Gmail inbox</CardTitle>
-        <CardDescription>
-          Connect the hotel inbox so Fonda can classify guest emails and draft
-          replies for your review. We request read and send access and store
-          only an encrypted refresh token.
-        </CardDescription>
+        <CardTitle>{dict.settings.gmailTitle}</CardTitle>
+        <CardDescription>{dict.settings.gmailDesc}</CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
-          {connected ? `Connected as ${email}.` : "No inbox connected yet."}
+          {connected
+            ? t(dict.settings.gmailConnectedAs, { email: email ?? "" })
+            : dict.settings.gmailNotConnected}
         </p>
       </CardContent>
       <CardFooter className="flex gap-3">
         <Button asChild>
-          {/* Full-page navigation (OAuth redirect), so a plain anchor. */}
+          {/* Full-page navigation to an OAuth route handler (not a page), so a
+              plain anchor — next/link would prefetch/SPA-navigate incorrectly. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a href="/connect/gmail">
-            {connected ? "Reconnect Gmail" : "Connect Gmail"}
+            {connected ? dict.settings.reconnectGmail : dict.settings.connectGmail}
           </a>
         </Button>
         {connected ? (
           <form action={disconnectGmail}>
             <Button type="submit" variant="outline">
-              Disconnect
+              {dict.common.disconnect}
             </Button>
           </form>
         ) : null}
@@ -45,27 +50,28 @@ export function GmailConnectionCard({ email }: { email: string | null }) {
   );
 }
 
-/** Maps the `?gmail=` callback status to an error banner (success handled separately). */
+export type GmailStatusKey =
+  | "denied"
+  | "invalid_state"
+  | "misconfigured"
+  | "no_hotel"
+  | "error";
+
+/** Maps the `?gmail=` callback status to a dictionary key (success handled separately). */
 export function gmailStatusMessage(
   status: string | undefined
-): { tone: "error"; text: string } | null {
+): { tone: "error"; key: GmailStatusKey } | null {
   switch (status) {
     case "denied":
-      return { tone: "error", text: "Gmail access was declined." };
+      return { tone: "error", key: "denied" };
     case "invalid_state":
-      return {
-        tone: "error",
-        text: "The connection link expired or was invalid. Please try again.",
-      };
+      return { tone: "error", key: "invalid_state" };
     case "misconfigured":
-      return {
-        tone: "error",
-        text: "Gmail isn't configured on the server (missing Google client ID).",
-      };
+      return { tone: "error", key: "misconfigured" };
     case "no_hotel":
-      return { tone: "error", text: "No hotel associated with this user." };
+      return { tone: "error", key: "no_hotel" };
     case "error":
-      return { tone: "error", text: "Couldn't complete the Gmail connection." };
+      return { tone: "error", key: "error" };
     default:
       return null;
   }

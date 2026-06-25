@@ -144,7 +144,11 @@ function readVip(raw: Json): boolean {
   );
 }
 
-const LANGUAGES: Record<string, string> = { en: "English", es: "Spanish" };
+const LANGUAGES: Record<string, string> = {
+  en: "English",
+  es: "Spanish",
+  ca: "Catalan",
+};
 
 // ---------------------------------------------------------------------------
 // Generator

@@ -1,0 +1,338 @@
+{
+  "meta": {
+    "title": "Fonda — Operacions hoteleres, en pilot automàtic",
+    "description": "Fonda ofereix als directors d'hotels independents un resum matinal amb IA, un assistent de correu amb IA, seguiment d'hores d'arribada i consultes sobre l'hotel en llenguatge natural."
+  },
+  "common": {
+    "signOut": "Tancar la sessió",
+    "save": "Desar els canvis",
+    "saving": "Desant…",
+    "saved": "Desat.",
+    "tryAgain": "Torna-ho a provar",
+    "pleaseWait": "Espera un moment…",
+    "loading": "S'està carregant…",
+    "disconnect": "Desconnectar",
+    "serverUnreachable": "No s'ha pogut connectar amb el servidor."
+  },
+  "nav": {
+    "features": "Funcions",
+    "signIn": "Inicia la sessió",
+    "getEarlyAccess": "Demana accés anticipat"
+  },
+  "hero": {
+    "badge": "IA per a hotels boutique · Beta privada",
+    "headlineLine1": "El teu hotel,",
+    "headlineLine2": "funcionant sol.",
+    "subhead": "Una capa d'operacions amb IA que s'encarrega de la feina diària —resums matinals, correus d'OTA, seguiment de check-ins i dades de l'hotel en directe— en 90 segons.",
+    "ctaPrimary": "Demana accés anticipat",
+    "ctaSecondary": "Com funciona →"
+  },
+  "trust": {
+    "worksWith": "Compatible amb"
+  },
+  "featuresSection": {
+    "eyebrow": "Què fa Fonda",
+    "headline": "Cinc funcions. Un matí tranquil."
+  },
+  "features": {
+    "briefing": {
+      "name": "Resum matinal amb IA",
+      "description": "Un resum diari d'arribades, sortides, VIPs i tot allò que necessita la teva atenció, a punt abans del primer cafè."
+    },
+    "email-assistant": {
+      "name": "Assistent de correu amb IA",
+      "description": "Redacta i classifica els correus dels hostes amb la veu del teu hotel, perquè la recepció passi menys temps a la safata d'entrada."
+    },
+    "checkin-chasing": {
+      "name": "Seguiment d'hores d'arribada",
+      "description": "Demana automàticament als hostes la seva hora prevista d'arribada i mantén pisos un pas per davant."
+    },
+    "hotel-chat": {
+      "name": "Xat de consultes de l'hotel",
+      "description": "Pregunta qualsevol cosa sobre el teu hotel en llenguatge natural —ocupació, ingressos, qui arriba tard— i obtén una resposta a l'instant."
+    }
+  },
+  "briefingPreview": {
+    "windowTitle": "Fonda · Resum matinal",
+    "dateLine": "Dimarts, 24 de juny · 6:32",
+    "greeting": "Bon dia. Així està el teu hotel avui.",
+    "row1strong": "12 arribades avui.",
+    "row1rest": " 3 no han indicat l'hora d'arribada — seguiment automàtic.",
+    "row2strong": "4 correus nous d'OTA durant la nit.",
+    "row2rest": " Els esborranys estan a punt per a la teva revisió.",
+    "row3strong": "Ocupació aquesta nit: 87%.",
+    "row3rest": " Potser convé revisar les tarifes del cap de setmana."
+  },
+  "stats": {
+    "headline": "Matins tranquils, hores mesurables.",
+    "lead": "Fonda s'amortitza en temps recuperat — això és el que recuperen els hotels independents quan la feina diària es fa sola.",
+    "adminTop": "Gestió diària, resolta",
+    "adminLabel": "estalviades per director, cada dia",
+    "catchupTop": "La posada al dia matinal",
+    "catchupLabel": "el resum substitueix una hora",
+    "setupTop": "Configura-ho un cop",
+    "setupLabel": "i queda totalment automatitzat",
+    "onboardingTop": "Cost d'implantació",
+    "onboardingLabel": "el teu equip comença el mateix dia"
+  },
+  "cta": {
+    "eyebrow": "Uneix-te a la beta",
+    "headline": "A punt per recuperar els teus matins?",
+    "subhead": "Gratis per als primers 20 hotels. Sense targeta. Funciona el mateix dia.",
+    "button": "Comença →"
+  },
+  "footer": {
+    "rights": "© {year} Fonda. Operacions hoteleres, en pilot automàtic.",
+    "privacy": "Privadesa",
+    "terms": "Termes"
+  },
+  "auth": {
+    "loginTitle": "Benvingut de nou",
+    "signupTitle": "Crea el teu compte",
+    "loginDesc": "Inicia la sessió al teu tauler de Fonda.",
+    "signupDesc": "Comença a gestionar el teu hotel en pilot automàtic.",
+    "email": "Correu electrònic",
+    "password": "Contrasenya",
+    "emailPlaceholder": "director@hotel.com",
+    "signIn": "Inicia la sessió",
+    "createAccount": "Crea el compte",
+    "noAccount": "No tens compte?",
+    "signUpLink": "Registra't",
+    "haveAccount": "Ja tens compte?",
+    "signInLink": "Inicia la sessió"
+  },
+  "onboarding": {
+    "title": "Configura el teu hotel",
+    "desc": "Uns quants detalls perquè Fonda adapti els resums i sincronitzi el teu PMS.",
+    "hotelName": "Nom de l'hotel",
+    "hotelNamePlaceholder": "El Gran Ribera",
+    "rooms": "Nombre d'habitacions",
+    "roomsPlaceholder": "80",
+    "timezone": "Zona horària",
+    "pms": "Sistema de gestió hotelera (PMS)",
+    "settingUp": "Configurant…",
+    "createHotel": "Crea l'hotel"
+  },
+  "dashboardNav": {
+    "briefing": "Resum",
+    "emails": "Correus",
+    "checkin": "Check-in",
+    "admin": "Admin",
+    "settings": "Configuració"
+  },
+  "connection": {
+    "synced": "Sincronitzat",
+    "stale": "Desactualitzat",
+    "notConnected": "Sense connexió"
+  },
+  "home": {
+    "goodMorning": "Bon dia, {name}",
+    "arrivalsToday": "Arribades avui",
+    "departuresToday": "Sortides avui",
+    "inHouseTonight": "Allotjats aquesta nit",
+    "occupancyTonight": "Ocupació aquesta nit",
+    "draftsReady": "Esborranys de correu a punt",
+    "needAttention": "Requereixen atenció",
+    "todaysBriefing": "Resum d'avui",
+    "readFullBriefing": "Llegeix el resum complet →",
+    "openBriefing": "Obre el resum →",
+    "noBriefing": "El teu resum matinal encara no s'ha generat avui. Obre'l per generar un resum actualitzat d'arribades, correus i alertes de tarifes.",
+    "occupancyOutlook": "Previsió d'ocupació · pròxims 14 dies",
+    "daysBelowOne": "{count} dia per sota del 60%",
+    "daysBelowOther": "{count} dies per sota del 60%",
+    "occupancyNote": "L'ocupació es calcula a partir de les reserves sincronitzades. Els preus per pla de tarifa encara no estan connectats.",
+    "reviewEmails": "Revisa els correus",
+    "checkinChasing": "Seguiment de check-in"
+  },
+  "briefing": {
+    "title": "Resum matinal",
+    "fallbackHotel": "El teu hotel",
+    "arrivals": "Arribades i sortides",
+    "overnightEmail": "Correu nocturn",
+    "rateAlert": "Alerta de tarifes",
+    "reviewEmails": "Revisa els correus",
+    "seeArrivals": "Mostra totes les arribades",
+    "refresh": "Actualitza",
+    "refreshing": "Actualitzant…",
+    "generating": "S'està generant el teu resum…",
+    "generateError": "No s'ha pogut generar el teu resum."
+  },
+  "emails": {
+    "title": "Correus",
+    "draftsReadyOne": "{count} esborrany a punt",
+    "draftsReadyOther": "{count} esborranys a punt",
+    "sentToday": "{count} enviats avui",
+    "avgResponse": "Temps mitjà de resposta: {time}",
+    "hours": "{count} hores",
+    "noData": "—",
+    "countOne": "{count} correu",
+    "countOther": "{count} correus",
+    "approveAllStandard": "Aprova totes les respostes estàndard ({count})",
+    "needAttentionBannerOne": "{count} correu necessita la teva atenció personal — no s'ha generat cap esborrany amb IA.",
+    "needAttentionBannerOther": "{count} correus necessiten la teva atenció personal — no s'ha generat cap esborrany amb IA.",
+    "noEmails": "Encara no hi ha correus.",
+    "selectPrompt": "Selecciona un correu per revisar-lo.",
+    "unknownSender": "Remitent desconegut",
+    "noSubject": "(sense assumpte)",
+    "emptyMessage": "(missatge buit)",
+    "from": "De {sender} · {time}",
+    "draftLabel": "Esborrany amb IA — edita'l abans d'enviar",
+    "replyPlaceholder": "Escriu la teva resposta…",
+    "needsAttentionNote": "Aquest correu necessita la teva atenció personal — escriu una resposta a sota.",
+    "send": "Envia",
+    "sending": "Enviant…",
+    "needsAttention": "Requereix atenció",
+    "ignore": "Ignora",
+    "sent": "Enviat",
+    "ignored": "Ignorat",
+    "replySent": "Resposta enviada",
+    "replySentAt": "Resposta enviada · {time}",
+    "confirmBulkOne": "Vols enviar {count} resposta estàndard (informació d'arribada i consultes generals)?",
+    "confirmBulkOther": "Vols enviar {count} respostes estàndard (informació d'arribada i consultes generals)?",
+    "badges": {
+      "processing": "Processant…",
+      "complaint": "Queixa",
+      "booking_inquiry": "Reserva",
+      "modification_request": "Modificació",
+      "cancellation_request": "Cancel·lació",
+      "special_request": "Petició especial",
+      "arrival_info": "Info d'arribada",
+      "general_inquiry": "General",
+      "irrelevant": "Irrellevant"
+    }
+  },
+  "checkin": {
+    "title": "Seguiment de check-in",
+    "desc": "Sol·licituds d'hora d'arribada per a hostes confirmats que arriben en els pròxims 7 dies.",
+    "pendingOne": "{count} seguiment pendent",
+    "pendingOther": "{count} seguiments pendents",
+    "generateNow": "Genera ara",
+    "approveAll": "Aprova'ls tots ({count})",
+    "noChasers": "No hi ha cap seguiment pendent. Fes servir «Genera ara» per redactar sol·licituds als hostes que arriben en els pròxims 7 dies.",
+    "send": "Envia",
+    "skip": "Omet",
+    "chasePlaceholder": "Missatge de seguiment…",
+    "guest": "Hoste",
+    "arrives": "Arriba el {date}",
+    "confirmBulkOne": "Vols enviar el {count} seguiment pendent?",
+    "confirmBulkOther": "Vols enviar els {count} seguiments pendents?"
+  },
+  "askYourHotel": {
+    "label": "Pregunta al teu hotel",
+    "title": "Pregunta al teu hotel",
+    "subtitle": "Respostes a partir de les teves dades en directe",
+    "empty": "Pregunta'm el que vulguis sobre les operacions d'avui — arribades, VIPs, ocupació o la teva safata d'entrada.",
+    "tryAsking": "Prova de preguntar",
+    "placeholder": "Fes una pregunta…",
+    "draftCreated": "Esborrany creat → Mostra'l a la safata de correu",
+    "errorPrefix": "Ho sento — {message}",
+    "suggestion1": "Qui són les meves arribades d'avui?",
+    "suggestion2": "Tinc hostes VIP aquesta setmana?",
+    "suggestion3": "Quins dies tenen baixa ocupació en els pròxims 14 dies?",
+    "suggestion4": "Hi ha hostes sense hora d'arribada?",
+    "suggestion5": "Quants correus necessiten la meva atenció?"
+  },
+  "settings": {
+    "title": "Configuració",
+    "desc": "Connecta el sistema de gestió de {hotel} perquè Fonda pugui sincronitzar reserves i hostes.",
+    "fallbackHotel": "el teu hotel",
+    "notConnected": "Sense connexió",
+    "connectedTo": "Connectat a {pms}",
+    "disconnectMews": "Desconnecta MEWS",
+    "gmailConnected": "Connectat a {email}. Hem trobat {count} correus dels últims 7 dies — es prepararan esborranys per a la teva revisió.",
+    "gmailFallbackInbox": "la teva safata d'entrada",
+    "hotelDetailsTitle": "Dades de l'hotel",
+    "hotelDetailsDesc": "El nom del teu hotel i el nombre d'habitacions. El nombre d'habitacions determina l'ocupació als resums i al tauler.",
+    "mewsTitle": "API Connector de MEWS",
+    "mewsDesc": "Enganxa els tokens Client i Access de la teva integració de MEWS. Els verifiquem amb MEWS i els emmagatzemem xifrats.",
+    "clientToken": "Token Client",
+    "accessToken": "Token Access",
+    "tokenStored": "•••••••• (desat)",
+    "connectMews": "Connecta MEWS",
+    "updateTokens": "Actualitza els tokens",
+    "verifying": "Verificant…",
+    "apaleoTitle": "Apaleo",
+    "apaleoDesc": "Connecta el teu compte d'Apaleo amb OAuth. Se t'enviarà a Apaleo per concedir accés de lectura a Fonda; només desem un token d'actualització xifrat.",
+    "apaleoConnected": "Fonda està connectat al teu compte d'Apaleo.",
+    "apaleoNotConnected": "Encara no hi ha cap compte d'Apaleo connectat.",
+    "reconnectApaleo": "Reconnecta Apaleo",
+    "connectApaleo": "Connecta Apaleo",
+    "gmailTitle": "Safata de Gmail",
+    "gmailDesc": "Connecta la safata de l'hotel perquè Fonda classifiqui els correus dels hostes i redacti respostes per a la teva revisió. Demanem accés de lectura i enviament i només desem un token d'actualització xifrat.",
+    "gmailConnectedAs": "Connectat com a {email}.",
+    "gmailNotConnected": "Encara no hi ha cap safata connectada.",
+    "reconnectGmail": "Reconnecta Gmail",
+    "connectGmail": "Connecta Gmail",
+    "briefingTitle": "Resum matinal",
+    "briefingDesc": "Quan i com prepara Fonda el teu resum diari.",
+    "gmName": "Nom del director",
+    "gmNamePlaceholder": "p. ex. Maria",
+    "briefingTime": "Hora del resum",
+    "language": "Idioma",
+    "languageEn": "Anglès",
+    "languageEs": "Espanyol",
+    "languageCa": "Català",
+    "settingsSaved": "Configuració desada."
+  },
+  "apaleoStatus": {
+    "connected": "Apaleo connectat.",
+    "denied": "S'ha rebutjat l'autorització d'Apaleo.",
+    "invalid_state": "L'enllaç de connexió ha caducat o no era vàlid. Torna-ho a provar.",
+    "misconfigured": "Apaleo no està configurat al servidor (falta el client ID).",
+    "no_hotel": "No hi ha cap hotel associat a aquest usuari.",
+    "error": "No s'ha pogut completar la connexió amb Apaleo."
+  },
+  "gmailStatus": {
+    "denied": "S'ha rebutjat l'accés a Gmail.",
+    "invalid_state": "L'enllaç de connexió ha caducat o no era vàlid. Torna-ho a provar.",
+    "misconfigured": "Gmail no està configurat al servidor (falta el client ID de Google).",
+    "no_hotel": "No hi ha cap hotel associat a aquest usuari.",
+    "error": "No s'ha pogut completar la connexió amb Gmail."
+  },
+  "admin": {
+    "title": "Admin · Sincronització",
+    "desc": "Vista en brut de l'última sincronització del PMS de {hotel}.",
+    "syncNow": "Sincronitza ara",
+    "syncing": "Sincronitzant…",
+    "syncDone": "Sincronitzades {reservations} reserves, {customers} hostes.",
+    "syncFailed": "Ha fallat la sincronització ({status}).",
+    "pms": "PMS",
+    "connected": "connectat",
+    "disconnected": "desconnectat",
+    "lastSynced": "Última sincronització {time}",
+    "reservations": "Reserves",
+    "guests": "Hostes",
+    "recentSyncRuns": "Sincronitzacions recents",
+    "latestReservations": "Últimes reserves",
+    "colStatus": "Estat",
+    "colReservations": "Reserves",
+    "colGuests": "Hostes",
+    "colFinished": "Finalitzada",
+    "colError": "Error",
+    "colMewsId": "ID de MEWS",
+    "colState": "Estat",
+    "colStart": "Inici",
+    "colEnd": "Fi",
+    "noSyncs": "Encara no hi ha sincronitzacions.",
+    "noReservations": "Encara no hi ha reserves sincronitzades."
+  },
+  "legal": {
+    "home": "Inici",
+    "privacyTitle": "Política de privadesa",
+    "termsTitle": "Termes del servei",
+    "englishNotice": "Els nostres documents legals s'ofereixen en anglès."
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Pàgina no trobada",
+    "body": "La pàgina que busques no existeix o s'ha mogut.",
+    "backToDashboard": "Torna al tauler"
+  },
+  "error": {
+    "title": "Alguna cosa ha anat malament",
+    "body": "S'ha produït un error inesperat. Pots tornar-ho a provar; se'ns ha notificat per si continua passant.",
+    "dashboardTitle": "No hem pogut carregar aquesta pàgina",
+    "dashboardBody": "Hi ha hagut un problema en obtenir les dades del teu hotel — pot passar si la connexió amb el PMS o el correu no està disponible temporalment.",
+    "retry": "Torna-ho a provar"
+  }
+}

@@ -1,0 +1,338 @@
+{
+  "meta": {
+    "title": "Fonda — Operaciones hoteleras, en piloto automático",
+    "description": "Fonda ofrece a los directores de hoteles independientes un resumen matutino con IA, un asistente de correo con IA, seguimiento de horas de llegada y consultas sobre el hotel en lenguaje natural."
+  },
+  "common": {
+    "signOut": "Cerrar sesión",
+    "save": "Guardar cambios",
+    "saving": "Guardando…",
+    "saved": "Guardado.",
+    "tryAgain": "Reintentar",
+    "pleaseWait": "Espera un momento…",
+    "loading": "Cargando…",
+    "disconnect": "Desconectar",
+    "serverUnreachable": "No se pudo conectar con el servidor."
+  },
+  "nav": {
+    "features": "Funciones",
+    "signIn": "Iniciar sesión",
+    "getEarlyAccess": "Solicitar acceso anticipado"
+  },
+  "hero": {
+    "badge": "IA para hoteles boutique · Beta privada",
+    "headlineLine1": "Tu hotel,",
+    "headlineLine2": "funcionando solo.",
+    "subhead": "Una capa de operaciones con IA que se encarga del trabajo diario —resúmenes matutinos, correos de OTAs, seguimiento de check-ins y datos del hotel en vivo— en 90 segundos.",
+    "ctaPrimary": "Solicitar acceso anticipado",
+    "ctaSecondary": "Cómo funciona →"
+  },
+  "trust": {
+    "worksWith": "Compatible con"
+  },
+  "featuresSection": {
+    "eyebrow": "Qué hace Fonda",
+    "headline": "Cinco funciones. Una mañana tranquila."
+  },
+  "features": {
+    "briefing": {
+      "name": "Resumen matutino con IA",
+      "description": "Un resumen diario de llegadas, salidas, VIPs y todo lo que requiere tu atención, listo antes de tu primer café."
+    },
+    "email-assistant": {
+      "name": "Asistente de correo con IA",
+      "description": "Redacta y clasifica los correos de huéspedes con la voz de tu hotel, para que la recepción pase menos tiempo en la bandeja de entrada."
+    },
+    "checkin-chasing": {
+      "name": "Seguimiento de horas de llegada",
+      "description": "Pide automáticamente a los huéspedes su hora prevista de llegada y mantén a pisos un paso por delante."
+    },
+    "hotel-chat": {
+      "name": "Chat de consultas del hotel",
+      "description": "Pregunta cualquier cosa sobre tu hotel en lenguaje natural —ocupación, ingresos, quién llega tarde— y obtén una respuesta al instante."
+    }
+  },
+  "briefingPreview": {
+    "windowTitle": "Fonda · Resumen matutino",
+    "dateLine": "Martes, 24 de junio · 6:32",
+    "greeting": "Buenos días. Así está tu hotel hoy.",
+    "row1strong": "12 llegadas hoy.",
+    "row1rest": " 3 no han indicado su hora de llegada — seguimiento automático.",
+    "row2strong": "4 correos nuevos de OTAs durante la noche.",
+    "row2rest": " Los borradores están listos para tu revisión.",
+    "row3strong": "Ocupación esta noche: 87%.",
+    "row3rest": " Quizá convenga revisar las tarifas del fin de semana."
+  },
+  "stats": {
+    "headline": "Mañanas tranquilas, horas medibles.",
+    "lead": "Fonda se amortiza en tiempo recuperado — esto es lo que recuperan los hoteles independientes cuando el trabajo diario se hace solo.",
+    "adminTop": "Gestión diaria, resuelta",
+    "adminLabel": "ahorradas por director, cada día",
+    "catchupTop": "La puesta al día matutina",
+    "catchupLabel": "el resumen sustituye una hora",
+    "setupTop": "Configúralo una vez",
+    "setupLabel": "y queda totalmente automatizado",
+    "onboardingTop": "Coste de implantación",
+    "onboardingLabel": "tu equipo empieza el mismo día"
+  },
+  "cta": {
+    "eyebrow": "Únete a la beta",
+    "headline": "¿Listo para recuperar tus mañanas?",
+    "subhead": "Gratis para los primeros 20 hoteles. Sin tarjeta. Funciona el mismo día.",
+    "button": "Empezar →"
+  },
+  "footer": {
+    "rights": "© {year} Fonda. Operaciones hoteleras, en piloto automático.",
+    "privacy": "Privacidad",
+    "terms": "Términos"
+  },
+  "auth": {
+    "loginTitle": "Bienvenido de nuevo",
+    "signupTitle": "Crea tu cuenta",
+    "loginDesc": "Inicia sesión en tu panel de Fonda.",
+    "signupDesc": "Empieza a gestionar tu hotel en piloto automático.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "emailPlaceholder": "director@hotel.com",
+    "signIn": "Iniciar sesión",
+    "createAccount": "Crear cuenta",
+    "noAccount": "¿No tienes cuenta?",
+    "signUpLink": "Regístrate",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "signInLink": "Inicia sesión"
+  },
+  "onboarding": {
+    "title": "Configura tu hotel",
+    "desc": "Unos pocos datos para que Fonda adapte los resúmenes y sincronice tu PMS.",
+    "hotelName": "Nombre del hotel",
+    "hotelNamePlaceholder": "El Gran Ribera",
+    "rooms": "Número de habitaciones",
+    "roomsPlaceholder": "80",
+    "timezone": "Zona horaria",
+    "pms": "Sistema de gestión hotelera (PMS)",
+    "settingUp": "Configurando…",
+    "createHotel": "Crear hotel"
+  },
+  "dashboardNav": {
+    "briefing": "Resumen",
+    "emails": "Correos",
+    "checkin": "Check-in",
+    "admin": "Admin",
+    "settings": "Ajustes"
+  },
+  "connection": {
+    "synced": "Sincronizado",
+    "stale": "Desactualizado",
+    "notConnected": "Sin conexión"
+  },
+  "home": {
+    "goodMorning": "Buenos días, {name}",
+    "arrivalsToday": "Llegadas hoy",
+    "departuresToday": "Salidas hoy",
+    "inHouseTonight": "Alojados esta noche",
+    "occupancyTonight": "Ocupación esta noche",
+    "draftsReady": "Borradores de correo listos",
+    "needAttention": "Requieren atención",
+    "todaysBriefing": "Resumen de hoy",
+    "readFullBriefing": "Leer el resumen completo →",
+    "openBriefing": "Abrir resumen →",
+    "noBriefing": "Tu resumen matutino aún no se ha generado hoy. Ábrelo para generar un resumen actualizado de llegadas, correos y alertas de tarifas.",
+    "occupancyOutlook": "Previsión de ocupación · próximos 14 días",
+    "daysBelowOne": "{count} día por debajo del 60%",
+    "daysBelowOther": "{count} días por debajo del 60%",
+    "occupancyNote": "La ocupación se calcula a partir de las reservas sincronizadas. Los precios por plan de tarifa aún no están conectados.",
+    "reviewEmails": "Revisar correos",
+    "checkinChasing": "Seguimiento de check-in"
+  },
+  "briefing": {
+    "title": "Resumen matutino",
+    "fallbackHotel": "Tu hotel",
+    "arrivals": "Llegadas y salidas",
+    "overnightEmail": "Correo nocturno",
+    "rateAlert": "Alerta de tarifas",
+    "reviewEmails": "Revisar correos",
+    "seeArrivals": "Ver todas las llegadas",
+    "refresh": "Actualizar",
+    "refreshing": "Actualizando…",
+    "generating": "Generando tu resumen…",
+    "generateError": "No se pudo generar tu resumen."
+  },
+  "emails": {
+    "title": "Correos",
+    "draftsReadyOne": "{count} borrador listo",
+    "draftsReadyOther": "{count} borradores listos",
+    "sentToday": "{count} enviados hoy",
+    "avgResponse": "Tiempo medio de respuesta: {time}",
+    "hours": "{count} horas",
+    "noData": "—",
+    "countOne": "{count} correo",
+    "countOther": "{count} correos",
+    "approveAllStandard": "Aprobar todas las respuestas estándar ({count})",
+    "needAttentionBannerOne": "{count} correo necesita tu atención personal — no se generó borrador con IA.",
+    "needAttentionBannerOther": "{count} correos necesitan tu atención personal — no se generó borrador con IA.",
+    "noEmails": "Aún no hay correos.",
+    "selectPrompt": "Selecciona un correo para revisarlo.",
+    "unknownSender": "Remitente desconocido",
+    "noSubject": "(sin asunto)",
+    "emptyMessage": "(mensaje vacío)",
+    "from": "De {sender} · {time}",
+    "draftLabel": "Borrador con IA — edítalo antes de enviar",
+    "replyPlaceholder": "Escribe tu respuesta…",
+    "needsAttentionNote": "Este correo necesita tu atención personal — escribe una respuesta abajo.",
+    "send": "Enviar",
+    "sending": "Enviando…",
+    "needsAttention": "Requiere atención",
+    "ignore": "Ignorar",
+    "sent": "Enviado",
+    "ignored": "Ignorado",
+    "replySent": "Respuesta enviada",
+    "replySentAt": "Respuesta enviada · {time}",
+    "confirmBulkOne": "¿Enviar {count} respuesta estándar (información de llegada y consultas generales)?",
+    "confirmBulkOther": "¿Enviar {count} respuestas estándar (información de llegada y consultas generales)?",
+    "badges": {
+      "processing": "Procesando…",
+      "complaint": "Queja",
+      "booking_inquiry": "Reserva",
+      "modification_request": "Modificación",
+      "cancellation_request": "Cancelación",
+      "special_request": "Petición especial",
+      "arrival_info": "Info de llegada",
+      "general_inquiry": "General",
+      "irrelevant": "Irrelevante"
+    }
+  },
+  "checkin": {
+    "title": "Seguimiento de check-in",
+    "desc": "Solicitudes de hora de llegada para huéspedes confirmados que llegan en los próximos 7 días.",
+    "pendingOne": "{count} seguimiento pendiente",
+    "pendingOther": "{count} seguimientos pendientes",
+    "generateNow": "Generar ahora",
+    "approveAll": "Aprobar todos ({count})",
+    "noChasers": "No hay seguimientos pendientes. Usa «Generar ahora» para redactar solicitudes a los huéspedes que llegan en los próximos 7 días.",
+    "send": "Enviar",
+    "skip": "Omitir",
+    "chasePlaceholder": "Mensaje de seguimiento…",
+    "guest": "Huésped",
+    "arrives": "Llega el {date}",
+    "confirmBulkOne": "¿Enviar el {count} seguimiento pendiente?",
+    "confirmBulkOther": "¿Enviar los {count} seguimientos pendientes?"
+  },
+  "askYourHotel": {
+    "label": "Pregunta a tu hotel",
+    "title": "Pregunta a tu hotel",
+    "subtitle": "Respuestas a partir de tus datos en vivo",
+    "empty": "Pregúntame lo que quieras sobre las operaciones de hoy — llegadas, VIPs, ocupación o tu bandeja de entrada.",
+    "tryAsking": "Prueba a preguntar",
+    "placeholder": "Haz una pregunta…",
+    "draftCreated": "Borrador creado → Ver en la bandeja de correo",
+    "errorPrefix": "Lo siento — {message}",
+    "suggestion1": "¿Quiénes son mis llegadas de hoy?",
+    "suggestion2": "¿Tengo huéspedes VIP esta semana?",
+    "suggestion3": "¿Qué días tienen baja ocupación en los próximos 14 días?",
+    "suggestion4": "¿Hay huéspedes sin hora de llegada?",
+    "suggestion5": "¿Cuántos correos necesitan mi atención?"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "desc": "Conecta el sistema de gestión de {hotel} para que Fonda pueda sincronizar reservas y huéspedes.",
+    "fallbackHotel": "tu hotel",
+    "notConnected": "Sin conexión",
+    "connectedTo": "Conectado a {pms}",
+    "disconnectMews": "Desconectar MEWS",
+    "gmailConnected": "Conectado a {email}. Encontramos {count} correos de los últimos 7 días — se prepararán borradores para tu revisión.",
+    "gmailFallbackInbox": "tu bandeja de entrada",
+    "hotelDetailsTitle": "Datos del hotel",
+    "hotelDetailsDesc": "El nombre de tu hotel y su número de habitaciones. El número de habitaciones determina la ocupación en los resúmenes y el panel.",
+    "mewsTitle": "API Connector de MEWS",
+    "mewsDesc": "Pega los tokens Client y Access de tu integración de MEWS. Los verificamos con MEWS y los almacenamos cifrados.",
+    "clientToken": "Token Client",
+    "accessToken": "Token Access",
+    "tokenStored": "•••••••• (guardado)",
+    "connectMews": "Conectar MEWS",
+    "updateTokens": "Actualizar tokens",
+    "verifying": "Verificando…",
+    "apaleoTitle": "Apaleo",
+    "apaleoDesc": "Conecta tu cuenta de Apaleo con OAuth. Se te enviará a Apaleo para conceder a Fonda acceso de lectura; solo guardamos un token de actualización cifrado.",
+    "apaleoConnected": "Fonda está conectado a tu cuenta de Apaleo.",
+    "apaleoNotConnected": "Aún no hay ninguna cuenta de Apaleo conectada.",
+    "reconnectApaleo": "Reconectar Apaleo",
+    "connectApaleo": "Conectar Apaleo",
+    "gmailTitle": "Bandeja de Gmail",
+    "gmailDesc": "Conecta la bandeja del hotel para que Fonda clasifique los correos de huéspedes y redacte respuestas para tu revisión. Pedimos acceso de lectura y envío y solo guardamos un token de actualización cifrado.",
+    "gmailConnectedAs": "Conectado como {email}.",
+    "gmailNotConnected": "Aún no hay ninguna bandeja conectada.",
+    "reconnectGmail": "Reconectar Gmail",
+    "connectGmail": "Conectar Gmail",
+    "briefingTitle": "Resumen matutino",
+    "briefingDesc": "Cuándo y cómo prepara Fonda tu resumen diario.",
+    "gmName": "Nombre del director",
+    "gmNamePlaceholder": "p. ej. María",
+    "briefingTime": "Hora del resumen",
+    "language": "Idioma",
+    "languageEn": "Inglés",
+    "languageEs": "Español",
+    "languageCa": "Catalán",
+    "settingsSaved": "Ajustes guardados."
+  },
+  "apaleoStatus": {
+    "connected": "Apaleo conectado.",
+    "denied": "Se rechazó la autorización de Apaleo.",
+    "invalid_state": "El enlace de conexión caducó o no era válido. Inténtalo de nuevo.",
+    "misconfigured": "Apaleo no está configurado en el servidor (falta el client ID).",
+    "no_hotel": "No hay ningún hotel asociado a este usuario.",
+    "error": "No se pudo completar la conexión con Apaleo."
+  },
+  "gmailStatus": {
+    "denied": "Se rechazó el acceso a Gmail.",
+    "invalid_state": "El enlace de conexión caducó o no era válido. Inténtalo de nuevo.",
+    "misconfigured": "Gmail no está configurado en el servidor (falta el client ID de Google).",
+    "no_hotel": "No hay ningún hotel asociado a este usuario.",
+    "error": "No se pudo completar la conexión con Gmail."
+  },
+  "admin": {
+    "title": "Admin · Sincronización",
+    "desc": "Vista en bruto de la última sincronización del PMS de {hotel}.",
+    "syncNow": "Sincronizar ahora",
+    "syncing": "Sincronizando…",
+    "syncDone": "Sincronizadas {reservations} reservas, {customers} huéspedes.",
+    "syncFailed": "Falló la sincronización ({status}).",
+    "pms": "PMS",
+    "connected": "conectado",
+    "disconnected": "desconectado",
+    "lastSynced": "Última sincronización {time}",
+    "reservations": "Reservas",
+    "guests": "Huéspedes",
+    "recentSyncRuns": "Sincronizaciones recientes",
+    "latestReservations": "Últimas reservas",
+    "colStatus": "Estado",
+    "colReservations": "Reservas",
+    "colGuests": "Huéspedes",
+    "colFinished": "Finalizada",
+    "colError": "Error",
+    "colMewsId": "ID de MEWS",
+    "colState": "Estado",
+    "colStart": "Inicio",
+    "colEnd": "Fin",
+    "noSyncs": "Aún no hay sincronizaciones.",
+    "noReservations": "Aún no hay reservas sincronizadas."
+  },
+  "legal": {
+    "home": "Inicio",
+    "privacyTitle": "Política de privacidad",
+    "termsTitle": "Términos del servicio",
+    "englishNotice": "Nuestros documentos legales se ofrecen en inglés."
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Página no encontrada",
+    "body": "La página que buscas no existe o se ha movido.",
+    "backToDashboard": "Volver al panel"
+  },
+  "error": {
+    "title": "Algo ha salido mal",
+    "body": "Se ha producido un error inesperado. Puedes reintentarlo; se nos ha notificado por si sigue ocurriendo.",
+    "dashboardTitle": "No pudimos cargar esta página",
+    "dashboardBody": "Hubo un problema al obtener los datos de tu hotel — puede ocurrir si la conexión con el PMS o el correo no está disponible temporalmente.",
+    "retry": "Reintentar"
+  }
+}

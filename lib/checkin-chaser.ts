@@ -19,6 +19,7 @@ const DEDUPE_DAYS = 7;
 const LANGUAGES: Record<string, string> = {
   en: "English",
   es: "Spanish",
+  ca: "Catalan",
 };
 
 function startOfDayUtc(offsetDays = 0): Date {

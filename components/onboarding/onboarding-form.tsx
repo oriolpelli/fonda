@@ -7,7 +7,8 @@ import { useFormStatus } from "react-dom";
 import {
   provisionHotel,
   type OnboardingState,
-} from "@/app/onboarding/actions";
+} from "@/app/[lang]/onboarding/actions";
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,14 +30,16 @@ const selectClassName = cn(
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  const { dict } = useDictionary();
   return (
     <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? "Setting up…" : "Create hotel"}
+      {pending ? dict.onboarding.settingUp : dict.onboarding.createHotel}
     </Button>
   );
 }
 
 export function OnboardingForm({ timezones }: { timezones: string[] }) {
+  const { dict, locale } = useDictionary();
   const [state, formAction] = useActionState<OnboardingState, FormData>(
     provisionHotel,
     undefined
@@ -57,38 +60,37 @@ export function OnboardingForm({ timezones }: { timezones: string[] }) {
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle className="text-xl">Set up your hotel</CardTitle>
-        <CardDescription>
-          A few details so Fonda can tailor briefings and sync your PMS.
-        </CardDescription>
+        <CardTitle className="text-xl">{dict.onboarding.title}</CardTitle>
+        <CardDescription>{dict.onboarding.desc}</CardDescription>
       </CardHeader>
       <form action={formAction}>
         <CardContent className="flex flex-col gap-4">
+          <input type="hidden" name="locale" value={locale} />
           <div className="flex flex-col gap-2">
-            <Label htmlFor="hotelName">Hotel name</Label>
+            <Label htmlFor="hotelName">{dict.onboarding.hotelName}</Label>
             <Input
               id="hotelName"
               name="hotelName"
-              placeholder="The Grand Riverside"
+              placeholder={dict.onboarding.hotelNamePlaceholder}
               required
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="roomsCount">Number of rooms</Label>
+            <Label htmlFor="roomsCount">{dict.onboarding.rooms}</Label>
             <Input
               id="roomsCount"
               name="roomsCount"
               type="number"
               min={1}
               max={1000}
-              placeholder="80"
+              placeholder={dict.onboarding.roomsPlaceholder}
               required
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="timezone">Timezone</Label>
+            <Label htmlFor="timezone">{dict.onboarding.timezone}</Label>
             <select
               id="timezone"
               name="timezone"
@@ -105,7 +107,7 @@ export function OnboardingForm({ timezones }: { timezones: string[] }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="pmsType">Property management system</Label>
+            <Label htmlFor="pmsType">{dict.onboarding.pms}</Label>
             <select
               id="pmsType"
               name="pmsType"

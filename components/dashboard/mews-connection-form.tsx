@@ -3,7 +3,8 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
-import { connectMews, type ConnectState } from "@/app/dashboard/settings/actions";
+import { connectMews, type ConnectState } from "@/app/[lang]/dashboard/settings/actions";
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,18 +19,20 @@ import { Label } from "@/components/ui/label";
 
 function SubmitButton({ connected }: { connected: boolean }) {
   const { pending } = useFormStatus();
+  const { dict } = useDictionary();
   return (
     <Button type="submit" disabled={pending}>
       {pending
-        ? "Verifying…"
+        ? dict.settings.verifying
         : connected
-          ? "Update tokens"
-          : "Connect MEWS"}
+          ? dict.settings.updateTokens
+          : dict.settings.connectMews}
     </Button>
   );
 }
 
 export function MewsConnectionForm({ connected }: { connected: boolean }) {
+  const { dict } = useDictionary();
   const [state, formAction] = useActionState<ConnectState, FormData>(
     connectMews,
     undefined
@@ -38,33 +41,34 @@ export function MewsConnectionForm({ connected }: { connected: boolean }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>MEWS Connector API</CardTitle>
-        <CardDescription>
-          Paste the Client and Access tokens from your MEWS integration. We
-          verify them with MEWS, then store them encrypted at rest.
-        </CardDescription>
+        <CardTitle>{dict.settings.mewsTitle}</CardTitle>
+        <CardDescription>{dict.settings.mewsDesc}</CardDescription>
       </CardHeader>
       <form action={formAction}>
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="clientToken">Client token</Label>
+            <Label htmlFor="clientToken">{dict.settings.clientToken}</Label>
             <Input
               id="clientToken"
               name="clientToken"
               type="password"
               autoComplete="off"
-              placeholder={connected ? "•••••••• (stored)" : "Client token"}
+              placeholder={
+                connected ? dict.settings.tokenStored : dict.settings.clientToken
+              }
               required
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="accessToken">Access token</Label>
+            <Label htmlFor="accessToken">{dict.settings.accessToken}</Label>
             <Input
               id="accessToken"
               name="accessToken"
               type="password"
               autoComplete="off"
-              placeholder={connected ? "•••••••• (stored)" : "Access token"}
+              placeholder={
+                connected ? dict.settings.tokenStored : dict.settings.accessToken
+              }
               required
             />
           </div>

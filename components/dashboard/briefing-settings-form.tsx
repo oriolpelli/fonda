@@ -6,7 +6,8 @@ import { useFormStatus } from "react-dom";
 import {
   updateBriefingSettings,
   type BriefingSettingsState,
-} from "@/app/dashboard/settings/actions";
+} from "@/app/[lang]/dashboard/settings/actions";
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -34,9 +35,10 @@ interface BriefingSettingsFormProps {
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  const { dict } = useDictionary();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Saving…" : "Save changes"}
+      {pending ? dict.common.saving : dict.common.save}
     </Button>
   );
 }
@@ -46,6 +48,7 @@ export function BriefingSettingsForm({
   briefingTime,
   briefingLanguage,
 }: BriefingSettingsFormProps) {
+  const { dict } = useDictionary();
   const [state, formAction] = useActionState<BriefingSettingsState, FormData>(
     updateBriefingSettings,
     undefined
@@ -54,26 +57,24 @@ export function BriefingSettingsForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Morning briefing</CardTitle>
-        <CardDescription>
-          When and how Fonda prepares your daily briefing.
-        </CardDescription>
+        <CardTitle>{dict.settings.briefingTitle}</CardTitle>
+        <CardDescription>{dict.settings.briefingDesc}</CardDescription>
       </CardHeader>
       <form action={formAction}>
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="gmName">GM name</Label>
+            <Label htmlFor="gmName">{dict.settings.gmName}</Label>
             <Input
               id="gmName"
               name="gmName"
               defaultValue={gmName}
-              placeholder="e.g. Maria"
+              placeholder={dict.settings.gmNamePlaceholder}
             />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <Label htmlFor="briefingTime">Briefing time</Label>
+              <Label htmlFor="briefingTime">{dict.settings.briefingTime}</Label>
               <Input
                 id="briefingTime"
                 name="briefingTime"
@@ -83,15 +84,16 @@ export function BriefingSettingsForm({
               />
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="briefingLanguage">Language</Label>
+              <Label htmlFor="briefingLanguage">{dict.settings.language}</Label>
               <select
                 id="briefingLanguage"
                 name="briefingLanguage"
                 className={selectClassName}
                 defaultValue={briefingLanguage}
               >
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
+                <option value="en">{dict.settings.languageEn}</option>
+                <option value="es">{dict.settings.languageEs}</option>
+                <option value="ca">{dict.settings.languageCa}</option>
               </select>
             </div>
           </div>
@@ -103,7 +105,7 @@ export function BriefingSettingsForm({
           ) : null}
           {state && "ok" in state ? (
             <p className="text-sm font-medium text-[var(--fonda-accent)]">
-              Settings saved.
+              {dict.settings.settingsSaved}
             </p>
           ) : null}
         </CardContent>

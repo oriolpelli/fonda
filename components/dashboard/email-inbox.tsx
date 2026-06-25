@@ -8,8 +8,11 @@ import {
   flagEmail,
   ignoreEmail,
   sendReply,
-} from "@/app/dashboard/emails/actions";
+} from "@/app/[lang]/dashboard/emails/actions";
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
+import { intlLocale } from "@/lib/i18n/config";
+import { plural, t } from "@/lib/i18n/format";
 import { cn } from "@/lib/utils";
 
 export interface InboxEmail {
@@ -30,51 +33,47 @@ const NEUTRAL = "bg-[var(--fonda-surface)] text-[var(--fonda-text-2)]";
 const NEGATIVE = "bg-destructive/10 text-destructive";
 const MUTED = "bg-[var(--fonda-surface)] text-[var(--fonda-text-3)]";
 
-const BADGES: Record<string, { label: string; className: string }> = {
-  complaint: { label: "Complaint", className: NEGATIVE },
-  booking_inquiry: { label: "Booking", className: NEUTRAL },
-  modification_request: { label: "Modification", className: NEUTRAL },
-  cancellation_request: { label: "Cancellation", className: NEGATIVE },
-  special_request: { label: "Special request", className: NEUTRAL },
-  arrival_info: { label: "Arrival info", className: NEUTRAL },
-  general_inquiry: { label: "General", className: NEUTRAL },
-  irrelevant: { label: "Irrelevant", className: MUTED },
+const BADGE_CLASS: Record<string, string> = {
+  complaint: NEGATIVE,
+  cancellation_request: NEGATIVE,
+  irrelevant: MUTED,
 };
 
-function badge(classification: string | null) {
-  if (!classification) {
-    return { label: "Processing…", className: MUTED };
-  }
-  return BADGES[classification] ?? {
-    label: classification,
-    className: NEUTRAL,
-  };
-}
-
-function senderName(email: string | null): string {
-  if (!email) return "Unknown sender";
-  return email;
-}
-
-function shortTime(iso: string): string {
-  const d = new Date(iso);
-  const today = new Date();
-  const sameDay = d.toDateString() === today.toDateString();
-  return new Intl.DateTimeFormat("en-GB", {
-    ...(sameDay
-      ? { hour: "2-digit", minute: "2-digit" }
-      : { day: "numeric", month: "short" }),
-  }).format(d);
+function badgeClass(classification: string | null): string {
+  if (!classification) return MUTED;
+  return BADGE_CLASS[classification] ?? NEUTRAL;
 }
 
 export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
   const router = useRouter();
+  const { dict, locale } = useDictionary();
   const [selectedId, setSelectedId] = useState<string | null>(
     emails[0]?.id ?? null
   );
   const [actionError, setActionError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const draftRef = useRef<HTMLTextAreaElement>(null);
+
+  const badges = dict.emails.badges as Record<string, string>;
+  function badgeLabel(classification: string | null): string {
+    if (!classification) return dict.emails.badges.processing;
+    return badges[classification] ?? classification;
+  }
+
+  function senderName(email: string | null): string {
+    return email || dict.emails.unknownSender;
+  }
+
+  function shortTime(iso: string): string {
+    const d = new Date(iso);
+    const today = new Date();
+    const sameDay = d.toDateString() === today.toDateString();
+    return new Intl.DateTimeFormat(intlLocale[locale], {
+      ...(sameDay
+        ? { hour: "2-digit", minute: "2-digit" }
+        : { day: "numeric", month: "short" }),
+    }).format(d);
+  }
 
   const selected = emails.find((e) => e.id === selectedId) ?? null;
   const complaints = emails.filter((e) => e.status === "needs_attention");
@@ -108,9 +107,11 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
     if (standardCount === 0) return;
     if (
       !window.confirm(
-        `Send ${standardCount} standard ${
-          standardCount === 1 ? "reply" : "replies"
-        } (arrival info & general inquiries)?`
+        plural(
+          standardCount,
+          dict.emails.confirmBulkOne,
+          dict.emails.confirmBulkOther
+        )
       )
     ) {
       return;
@@ -125,14 +126,17 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
     <div className="flex flex-col gap-4">
       {complaints.length > 0 ? (
         <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm font-medium text-destructive">
-          {complaints.length} email{complaints.length === 1 ? "" : "s"} need your
-          personal attention — no AI draft was generated.
+          {plural(
+            complaints.length,
+            dict.emails.needAttentionBannerOne,
+            dict.emails.needAttentionBannerOther
+          )}
         </div>
       ) : null}
 
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm text-muted-foreground">
-          {emails.length} email{emails.length === 1 ? "" : "s"}
+          {plural(emails.length, dict.emails.countOne, dict.emails.countOther)}
         </p>
         <Button
           onClick={handleBulk}
@@ -140,7 +144,7 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
           variant="outline"
           size="sm"
         >
-          Approve all standard replies ({standardCount})
+          {t(dict.emails.approveAllStandard, { count: standardCount })}
         </Button>
       </div>
 
@@ -155,11 +159,10 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
         <div className="flex max-h-[70vh] flex-col divide-y divide-border overflow-y-auto rounded-lg border border-border">
           {emails.length === 0 ? (
             <p className="p-6 text-center text-sm text-muted-foreground">
-              No emails yet.
+              {dict.emails.noEmails}
             </p>
           ) : (
             emails.map((email) => {
-              const b = badge(email.classification);
               const isSelected = email.id === selectedId;
               return (
                 <button
@@ -179,24 +182,24 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
                     </span>
                   </div>
                   <span className="truncate text-sm text-muted-foreground">
-                    {email.subject || "(no subject)"}
+                    {email.subject || dict.emails.noSubject}
                   </span>
                   <div className="flex items-center gap-2">
                     <span
                       className={cn(
                         "rounded-full px-2 py-0.5 text-xs font-medium",
-                        b.className
+                        badgeClass(email.classification)
                       )}
                     >
-                      {b.label}
+                      {badgeLabel(email.classification)}
                     </span>
                     {email.status === "sent" ? (
                       <span className="text-xs font-medium text-[var(--fonda-accent)]">
-                        Sent
+                        {dict.emails.sent}
                       </span>
                     ) : email.status === "ignored" ? (
                       <span className="text-xs text-muted-foreground">
-                        Ignored
+                        {dict.emails.ignored}
                       </span>
                     ) : null}
                   </div>
@@ -212,33 +215,37 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
             <div className="flex flex-col gap-4">
               <div>
                 <h2 className="font-semibold">
-                  {selected.subject || "(no subject)"}
+                  {selected.subject || dict.emails.noSubject}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  From {senderName(selected.from_email)} ·{" "}
-                  {shortTime(selected.created_at)}
+                  {t(dict.emails.from, {
+                    sender: senderName(selected.from_email),
+                    time: shortTime(selected.created_at),
+                  })}
                 </p>
               </div>
 
               <div className="max-h-48 overflow-y-auto whitespace-pre-line rounded-md bg-muted p-3 text-sm">
-                {selected.body || "(empty message)"}
+                {selected.body || dict.emails.emptyMessage}
               </div>
 
               {selected.status === "sent" ? (
                 <p className="text-sm font-medium text-[var(--fonda-accent)]">
-                  Reply sent
-                  {selected.sent_at ? ` · ${shortTime(selected.sent_at)}` : ""}.
+                  {selected.sent_at
+                    ? t(dict.emails.replySentAt, {
+                        time: shortTime(selected.sent_at),
+                      })
+                    : dict.emails.replySent}
                 </p>
               ) : (
                 <>
                   {selected.status === "needs_attention" ? (
                     <p className="text-sm font-medium text-destructive">
-                      This email needs your personal attention — write a reply
-                      below.
+                      {dict.emails.needsAttentionNote}
                     </p>
                   ) : (
                     <label className="text-sm font-medium" htmlFor="draft">
-                      AI draft — edit before sending
+                      {dict.emails.draftLabel}
                     </label>
                   )}
                   <textarea
@@ -248,11 +255,11 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
                     defaultValue={selected.draft_reply ?? ""}
                     rows={10}
                     className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-accent"
-                    placeholder="Write your reply…"
+                    placeholder={dict.emails.replyPlaceholder}
                   />
                   <div className="flex flex-wrap gap-2">
                     <Button onClick={handleSend} disabled={pending}>
-                      {pending ? "Sending…" : "Send"}
+                      {pending ? dict.emails.sending : dict.emails.send}
                     </Button>
                     {selected.status !== "needs_attention" ? (
                       <Button
@@ -260,7 +267,7 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
                         disabled={pending}
                         variant="outline"
                       >
-                        Needs attention
+                        {dict.emails.needsAttention}
                       </Button>
                     ) : null}
                     <Button
@@ -268,7 +275,7 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
                       disabled={pending}
                       variant="ghost"
                     >
-                      Ignore
+                      {dict.emails.ignore}
                     </Button>
                   </div>
                 </>
@@ -276,7 +283,7 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Select an email to review.
+              {dict.emails.selectPrompt}
             </p>
           )}
         </div>

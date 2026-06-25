@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
  */
 export function BriefingGenerating() {
   const router = useRouter();
+  const { dict } = useDictionary();
   const started = useRef(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,19 +30,19 @@ export function BriefingGenerating() {
           const data = (await res.json().catch(() => null)) as {
             error?: string;
           } | null;
-          setError(data?.error ?? "Couldn't generate your briefing.");
+          setError(data?.error ?? dict.briefing.generateError);
           return;
         }
         router.refresh();
       } catch {
-        if (!cancelled) setError("Couldn't reach the server.");
+        if (!cancelled) setError(dict.common.serverUnreachable);
       }
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [router]);
+  }, [router, dict]);
 
   function retry() {
     started.current = false;
@@ -53,7 +55,7 @@ export function BriefingGenerating() {
       <div className="flex flex-col items-center gap-4 py-20 text-center">
         <p className="text-sm font-medium text-destructive">{error}</p>
         <Button onClick={retry} variant="outline">
-          Try again
+          {dict.common.tryAgain}
         </Button>
       </div>
     );
@@ -62,7 +64,7 @@ export function BriefingGenerating() {
   return (
     <div className="flex flex-col items-center gap-4 py-20 text-center text-muted-foreground">
       <Loader2 className="size-6 animate-spin text-primary" />
-      <p className="text-lg">Generating your briefing…</p>
+      <p className="text-lg">{dict.briefing.generating}</p>
     </div>
   );
 }

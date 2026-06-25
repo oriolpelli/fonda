@@ -1,4 +1,7 @@
-import { disconnectApaleo } from "@/app/dashboard/settings/actions";
+"use client";
+
+import { disconnectApaleo } from "@/app/[lang]/dashboard/settings/actions";
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,33 +13,35 @@ import {
 } from "@/components/ui/card";
 
 export function ApaleoConnectionCard({ connected }: { connected: boolean }) {
+  const { dict } = useDictionary();
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Apaleo</CardTitle>
-        <CardDescription>
-          Connect your Apaleo account with OAuth. You&apos;ll be sent to Apaleo
-          to grant Fonda read access; we store only an encrypted refresh token.
-        </CardDescription>
+        <CardTitle>{dict.settings.apaleoTitle}</CardTitle>
+        <CardDescription>{dict.settings.apaleoDesc}</CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
           {connected
-            ? "Fonda is connected to your Apaleo account."
-            : "No Apaleo account connected yet."}
+            ? dict.settings.apaleoConnected
+            : dict.settings.apaleoNotConnected}
         </p>
       </CardContent>
       <CardFooter className="flex gap-3">
         <Button asChild>
-          {/* Full-page navigation (OAuth redirect), so a plain anchor. */}
+          {/* Full-page navigation to an OAuth route handler (not a page), so a
+              plain anchor — next/link would prefetch/SPA-navigate incorrectly. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a href="/connect/apaleo">
-            {connected ? "Reconnect Apaleo" : "Connect Apaleo"}
+            {connected
+              ? dict.settings.reconnectApaleo
+              : dict.settings.connectApaleo}
           </a>
         </Button>
         {connected ? (
           <form action={disconnectApaleo}>
             <Button type="submit" variant="outline">
-              Disconnect
+              {dict.common.disconnect}
             </Button>
           </form>
         ) : null}
@@ -45,29 +50,31 @@ export function ApaleoConnectionCard({ connected }: { connected: boolean }) {
   );
 }
 
-/** Maps the `?apaleo=` callback status to a human-readable banner message. */
+export type ApaleoStatusKey =
+  | "connected"
+  | "denied"
+  | "invalid_state"
+  | "misconfigured"
+  | "no_hotel"
+  | "error";
+
+/** Maps the `?apaleo=` callback status to a tone + dictionary key. */
 export function apaleoStatusMessage(
   status: string | undefined
-): { tone: "success" | "error"; text: string } | null {
+): { tone: "success" | "error"; key: ApaleoStatusKey } | null {
   switch (status) {
     case "connected":
-      return { tone: "success", text: "Apaleo connected." };
+      return { tone: "success", key: "connected" };
     case "denied":
-      return { tone: "error", text: "Apaleo authorization was declined." };
+      return { tone: "error", key: "denied" };
     case "invalid_state":
-      return {
-        tone: "error",
-        text: "The connection link expired or was invalid. Please try again.",
-      };
+      return { tone: "error", key: "invalid_state" };
     case "misconfigured":
-      return {
-        tone: "error",
-        text: "Apaleo isn't configured on the server (missing client ID).",
-      };
+      return { tone: "error", key: "misconfigured" };
     case "no_hotel":
-      return { tone: "error", text: "No hotel associated with this user." };
+      return { tone: "error", key: "no_hotel" };
     case "error":
-      return { tone: "error", text: "Couldn't complete the Apaleo connection." };
+      return { tone: "error", key: "error" };
     default:
       return null;
   }

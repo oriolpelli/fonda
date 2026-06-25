@@ -2,13 +2,19 @@ import { NextResponse } from "next/server";
 
 import { apaleoRedirectUri } from "@/app/connect/apaleo/route";
 import { exchangeApaleoCode, storeApaleoCredentials } from "@/lib/apaleo";
+import { localeFromRequestCookie } from "@/lib/i18n/get-locale";
+import { localizedHref } from "@/lib/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
 function settingsRedirect(request: Request, status: string): NextResponse {
+  const locale = localeFromRequestCookie(request);
   const response = NextResponse.redirect(
-    new URL(`/dashboard/settings?apaleo=${status}`, request.url)
+    new URL(
+      `${localizedHref(locale, "/dashboard/settings")}?apaleo=${status}`,
+      request.url
+    )
   );
   // The state cookie has served its purpose.
   response.cookies.delete("apaleo_oauth_state");
@@ -41,7 +47,9 @@ export async function GET(request: Request) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(
+      new URL(localizedHref(localeFromRequestCookie(request), "/login"), request.url)
+    );
   }
 
   const { data: profile } = await supabase

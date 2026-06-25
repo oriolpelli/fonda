@@ -4,10 +4,10 @@ export type ConnectionState = "green" | "amber" | "red";
 
 // One signal only: navy marks a live/healthy connection, muted marks stale,
 // destructive marks a broken connection. No off-palette traffic-light hues.
-const CONFIG: Record<ConnectionState, { dot: string; label: string }> = {
-  green: { dot: "bg-[var(--fonda-accent)]", label: "Synced" },
-  amber: { dot: "bg-[var(--fonda-text-3)]", label: "Stale" },
-  red: { dot: "bg-destructive", label: "Not connected" },
+const DOTS: Record<ConnectionState, string> = {
+  green: "bg-[var(--fonda-accent)]",
+  amber: "bg-[var(--fonda-text-3)]",
+  red: "bg-destructive",
 };
 
 /**
@@ -26,12 +26,19 @@ export function deriveConnectionState(
   return age <= freshnessMs ? "green" : "amber";
 }
 
-export function ConnectionStatus({ state }: { state: ConnectionState }) {
-  const { dot, label } = CONFIG[state];
+export function ConnectionStatus({
+  state,
+  labels,
+}: {
+  state: ConnectionState;
+  labels: Record<ConnectionState, string>;
+}) {
+  const dot = DOTS[state];
+  const label = labels[state];
   return (
     <span
       className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
-      title={`PMS connection: ${label}`}
+      title={`PMS: ${label}`}
     >
       <span className={cn("size-2 rounded-full", dot)} aria-hidden />
       <span className="hidden sm:inline">{label}</span>

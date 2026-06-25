@@ -1,21 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { Loader2, MessageSquareText, Send, X } from "lucide-react";
 
+import { useDictionary } from "@/components/i18n/dictionary-provider";
+import { LocaleLink } from "@/components/i18n/locale-link";
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n/format";
 import { cn } from "@/lib/utils";
 
 const DRAFT_SENTINEL = "__FONDA_DRAFT__";
-
-const SUGGESTIONS = [
-  "Who are my arrivals today?",
-  "Do I have any VIP guests this week?",
-  "Which dates have low occupancy in the next 14 days?",
-  "Any guests missing an arrival time?",
-  "How many emails need my attention?",
-];
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -24,11 +18,20 @@ interface ChatMessage {
 }
 
 export function AskYourHotel() {
+  const { dict } = useDictionary();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+
+  const SUGGESTIONS = [
+    dict.askYourHotel.suggestion1,
+    dict.askYourHotel.suggestion2,
+    dict.askYourHotel.suggestion3,
+    dict.askYourHotel.suggestion4,
+    dict.askYourHotel.suggestion5,
+  ];
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -91,7 +94,9 @@ export function AskYourHotel() {
         const next = [...prev];
         next[next.length - 1] = {
           role: "assistant",
-          content: `Sorry — ${(err as Error).message}`,
+          content: t(dict.askYourHotel.errorPrefix, {
+            message: (err as Error).message,
+          }),
         };
         return next;
       });
@@ -105,7 +110,7 @@ export function AskYourHotel() {
       {/* Floating trigger — bottom-right, hidden while the widget is open. */}
       <button
         onClick={() => setOpen(true)}
-        aria-label="Ask your hotel"
+        aria-label={dict.askYourHotel.label}
         className={cn(
           "fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           open ? "pointer-events-none scale-90 opacity-0" : "opacity-100"
@@ -131,10 +136,10 @@ export function AskYourHotel() {
             </span>
             <div className="flex flex-col">
               <span className="text-sm font-semibold leading-tight">
-                Ask your hotel
+                {dict.askYourHotel.title}
               </span>
               <span className="text-xs text-muted-foreground">
-                Answers from your live data
+                {dict.askYourHotel.subtitle}
               </span>
             </div>
           </div>
@@ -146,8 +151,7 @@ export function AskYourHotel() {
         <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5">
           {messages.length === 0 ? (
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Ask me anything about today&apos;s operations — arrivals, VIPs,
-              occupancy, or your inbox.
+              {dict.askYourHotel.empty}
             </p>
           ) : (
             messages.map((m, i) => (
@@ -174,13 +178,13 @@ export function AskYourHotel() {
                     ))}
                 </div>
                 {m.draftId ? (
-                  <Link
+                  <LocaleLink
                     href="/dashboard/emails"
                     onClick={close}
                     className="inline-flex items-center gap-1.5 rounded-lg border border-transparent bg-[var(--fonda-accent-light)] px-3 py-2 text-xs font-medium text-[var(--fonda-accent)] transition-colors hover:bg-[color-mix(in_srgb,var(--fonda-accent-light)_70%,var(--fonda-accent))]"
                   >
-                    Draft created → View in Email inbox
-                  </Link>
+                    {dict.askYourHotel.draftCreated}
+                  </LocaleLink>
                 ) : null}
               </div>
             ))
@@ -191,7 +195,7 @@ export function AskYourHotel() {
         {messages.length === 0 ? (
           <div className="flex flex-col gap-2.5 px-5 pb-3">
             <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-              Try asking
+              {dict.askYourHotel.tryAsking}
             </span>
             <div className="flex flex-wrap gap-2">
               {SUGGESTIONS.map((s) => (
@@ -218,7 +222,7 @@ export function AskYourHotel() {
               }
             }}
             rows={1}
-            placeholder="Ask a question…"
+            placeholder={dict.askYourHotel.placeholder}
             className="max-h-32 flex-1 resize-none rounded-[10px] border border-input bg-popover px-3.5 py-2.5 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-accent"
           />
           <Button
