@@ -12,13 +12,15 @@ import type { EmailStatus } from "@/types";
  * matching reservation/guest, draft a reply (for non-complaints), and persist
  * the result to the emails table.
  *
- * Model note: the roadmap specified temperature 0.3 for drafts, but the current
- * default model (claude-opus-4-8) no longer accepts `temperature` (it 400s), so
- * consistency is steered via low effort + explicit instructions instead. Switch
- * EMAIL_MODEL to a temperature-capable model (e.g. claude-sonnet-4-5) if you
- * need the literal sampling control.
+ * Model split (cost/quality): classification is a cheap, structured task, so it
+ * runs on Haiku; drafting is guest-facing, so it runs on Sonnet — a strong
+ * balance of quality and cost. Dial either up (e.g. claude-opus-4-8) or down as
+ * needed. Sonnet/Haiku accept `temperature` again, so you can add
+ * `temperature: 0.3` to the draft call to restore the intended warmth (test
+ * first — it may interact with `output_config.effort`).
  */
-const EMAIL_MODEL = "claude-opus-4-8";
+const EMAIL_CLASSIFY_MODEL = "claude-haiku-4-5-20251001";
+const EMAIL_DRAFT_MODEL = "claude-sonnet-4-6";
 
 export const EMAIL_CLASSIFICATIONS = [
   "booking_inquiry",
@@ -92,7 +94,7 @@ async function classify(
   emailText: string
 ): Promise<Classification> {
   const response = await client.messages.create({
-    model: EMAIL_MODEL,
+    model: EMAIL_CLASSIFY_MODEL,
     max_tokens: 1024,
     output_config: {
       effort: "low",
@@ -208,7 +210,7 @@ async function generateDraft(
   ].join("\n");
 
   const response = await client.messages.create({
-    model: EMAIL_MODEL,
+    model: EMAIL_DRAFT_MODEL,
     max_tokens: 1500,
     output_config: { effort: "low" },
     system,

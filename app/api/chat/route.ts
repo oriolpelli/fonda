@@ -7,7 +7,11 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const CHAT_MODEL = "claude-opus-4-8";
+// Interactive Q&A over the hotel's own data. Sonnet gives strong reasoning at a
+// fraction of Opus's cost — important because chat resends context each turn and
+// is the highest-token surface. Bump to claude-opus-4-8 if you later offer a
+// premium tier.
+const CHAT_MODEL = "claude-sonnet-4-6";
 const LANGUAGES: Record<string, string> = {
   en: "English",
   es: "Spanish",

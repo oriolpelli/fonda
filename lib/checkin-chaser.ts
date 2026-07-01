@@ -10,9 +10,11 @@ import type { TablesInsert } from "@/types/database";
  * confirmed guests arriving in the next 7 days whose arrival time we don't know
  * yet. Drafts are saved as pending checkin_chasers for the GM to review + send.
  *
- * Model note: claude-opus-4-8 (no temperature param — see lib/email-processor).
+ * Model note: check-in chasers are short, formulaic guest messages, so Sonnet
+ * is plenty — and much cheaper than Opus at this volume. Drop to
+ * claude-haiku-4-5-20251001 for further savings if quality holds.
  */
-const CHASER_MODEL = "claude-opus-4-8";
+const CHASER_MODEL = "claude-sonnet-4-6";
 const HORIZON_DAYS = 7;
 const DEDUPE_DAYS = 7;
 

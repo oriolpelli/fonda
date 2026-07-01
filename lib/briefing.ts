@@ -12,10 +12,11 @@ import type { Json } from "@/types/database";
  * and asks Claude to write a plain-language briefing for the GM. The result is
  * saved to the `briefings` table and returned.
  *
- * Model note: the roadmap specified `claude-sonnet-4-5`, but that is now a
- * legacy model. We default to the latest, most capable model for this
- * customer-facing output. Change BRIEFING_MODEL to trade quality for cost
- * (e.g. "claude-sonnet-4-6").
+ * Model note: intentionally kept on Opus. The morning briefing is the flagship,
+ * customer-facing output GMs judge Fonda on, and it runs only once per day per
+ * hotel — so the quality is worth the cost even though other surfaces have been
+ * moved to Sonnet/Haiku. Change BRIEFING_MODEL to trade quality for cost
+ * (e.g. "claude-sonnet-4-6") if needed.
  */
 const BRIEFING_MODEL = "claude-opus-4-8";
 const LOW_OCCUPANCY_THRESHOLD = 0.6; // flag days under 60% occupancy
