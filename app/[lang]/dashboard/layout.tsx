@@ -1,14 +1,4 @@
 import { redirect } from "next/navigation";
-import {
-  BarChart3,
-  ConciergeBell,
-  DoorOpen,
-  LayoutDashboard,
-  MessageSquare,
-  Send,
-  Settings,
-  Sunrise,
-} from "lucide-react";
 
 import { logout } from "@/app/[lang]/(auth)/actions";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
@@ -65,43 +55,36 @@ export default async function DashboardLayout({
       key: "dashboard",
       label: dict.sidebar.dashboard,
       href: localizedHref(locale, "/dashboard"),
-      icon: LayoutDashboard,
     },
     {
       key: "brief",
       label: dict.sidebar.brief,
       href: localizedHref(locale, "/dashboard/brief"),
-      icon: Sunrise,
     },
     {
       key: "checkins",
       label: dict.sidebar.checkins,
       href: localizedHref(locale, "/dashboard/checkins"),
-      icon: DoorOpen,
     },
     {
       key: "concierge",
       label: dict.sidebar.concierge,
       href: localizedHref(locale, "/dashboard/concierge"),
-      icon: ConciergeBell,
     },
     {
       key: "communications",
       label: dict.sidebar.communications,
       href: localizedHref(locale, "/dashboard/communications"),
-      icon: Send,
     },
     {
       key: "analytics",
       label: dict.sidebar.analytics,
       href: localizedHref(locale, "/dashboard/analytics"),
-      icon: BarChart3,
     },
     {
       key: "chat",
       label: dict.sidebar.chat,
       href: localizedHref(locale, "/dashboard/chat"),
-      icon: MessageSquare,
     },
   ];
 
@@ -109,7 +92,6 @@ export default async function DashboardLayout({
     key: "settings",
     label: dict.dashboardNav.settings,
     href: localizedHref(locale, "/dashboard/settings"),
-    icon: Settings,
   };
 
   const adminItem: NavItem | null = isOwner
@@ -117,7 +99,6 @@ export default async function DashboardLayout({
         key: "admin",
         label: dict.dashboardNav.admin,
         href: localizedHref(locale, "/dashboard/admin"),
-        icon: Settings,
       }
     : null;
 

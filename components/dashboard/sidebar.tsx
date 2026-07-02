@@ -2,8 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { LucideIcon } from "lucide-react";
-import { LogOut } from "lucide-react";
+import {
+  BarChart3,
+  ConciergeBell,
+  DoorOpen,
+  LayoutDashboard,
+  LogOut,
+  MessageSquare,
+  Send,
+  Settings,
+  Sunrise,
+  type LucideIcon,
+} from "lucide-react";
 
 import {
   ConnectionStatus,
@@ -18,11 +28,25 @@ export interface NavItem {
   key: string;
   label: string;
   href: string;
-  icon: LucideIcon;
 }
 
+// Icons live here in the Client Component and are looked up by key. They must
+// NOT be passed as props from the Server layout — component functions can't
+// cross the server/client boundary (doing so throws at render).
+const ICONS: Record<string, LucideIcon> = {
+  dashboard: LayoutDashboard,
+  brief: Sunrise,
+  checkins: DoorOpen,
+  concierge: ConciergeBell,
+  communications: Send,
+  analytics: BarChart3,
+  chat: MessageSquare,
+  settings: Settings,
+  admin: Settings,
+};
+
 function NavLink({ item, active }: { item: NavItem; active: boolean }) {
-  const Icon = item.icon;
+  const Icon = ICONS[item.key] ?? Settings;
   return (
     <Link
       href={item.href}
