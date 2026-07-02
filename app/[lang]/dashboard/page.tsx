@@ -121,7 +121,7 @@ export default async function DashboardPage({
         <div className="flex items-start justify-between gap-4">
           <Eyebrow>{dict.home.todaysBriefing}</Eyebrow>
           <Button asChild size="sm">
-            <Link href={localizedHref(locale, "/dashboard/briefing")}>
+            <Link href={localizedHref(locale, "/dashboard/brief")}>
               {briefing ? dict.home.readFullBriefing : dict.home.openBriefing}
             </Link>
           </Button>
@@ -188,12 +188,12 @@ export default async function DashboardPage({
       {/* Quick actions */}
       <div className="flex flex-wrap gap-3">
         <Button asChild variant="outline">
-          <Link href={localizedHref(locale, "/dashboard/emails")}>
+          <Link href={localizedHref(locale, "/dashboard/communications")}>
             {dict.home.reviewEmails}
           </Link>
         </Button>
         <Button asChild variant="outline">
-          <Link href={localizedHref(locale, "/dashboard/checkin")}>
+          <Link href={localizedHref(locale, "/dashboard/checkins")}>
             {dict.home.checkinChasing}
           </Link>
         </Button>

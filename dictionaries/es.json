@@ -120,6 +120,30 @@
     "admin": "Admin",
     "settings": "Ajustes"
   },
+  "sidebar": {
+    "dashboard": "Panel",
+    "brief": "Resumen matutino",
+    "checkins": "Check-ins",
+    "concierge": "Conserjería",
+    "communications": "Comunicaciones",
+    "analytics": "Analítica",
+    "chat": "Chat"
+  },
+  "concierge": {
+    "eyebrow": "Huéspedes alojados",
+    "title": "Conserjería",
+    "emptyState": "Las solicitudes de conserjería aparecerán aquí cuando esta página esté lista."
+  },
+  "analytics": {
+    "eyebrow": "Rendimiento",
+    "title": "Analítica",
+    "emptyState": "La analítica y los informes estarán disponibles próximamente."
+  },
+  "chat": {
+    "eyebrow": "Pregunta a tu hotel",
+    "title": "Chat",
+    "emptyState": "Una experiencia de chat a pantalla completa estará disponible próximamente."
+  },
   "connection": {
     "synced": "Sincronizado",
     "stale": "Desactualizado",

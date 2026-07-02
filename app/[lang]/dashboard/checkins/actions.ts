@@ -62,7 +62,7 @@ export async function generateChasers(): Promise<{ created: number; error?: stri
   }
   try {
     const created = await runCheckinChaser(hotelId);
-    revalidatePath("/dashboard/checkin");
+    revalidatePath("/dashboard/checkins");
     return { created };
   } catch (err) {
     return { created: 0, error: (err as Error).message };
@@ -99,7 +99,7 @@ export async function sendChaser(
     return { error: (err as Error).message };
   }
 
-  revalidatePath("/dashboard/checkin");
+  revalidatePath("/dashboard/checkins");
   return {};
 }
 
@@ -111,7 +111,7 @@ export async function skipChaser(chaserId: string): Promise<void> {
     .update({ status: "skipped" })
     .eq("id", chaserId)
     .eq("hotel_id", hotelId);
-  revalidatePath("/dashboard/checkin");
+  revalidatePath("/dashboard/checkins");
 }
 
 export async function approveAllChasers(): Promise<{ sent: number; error?: string }> {
@@ -140,6 +140,6 @@ export async function approveAllChasers(): Promise<{ sent: number; error?: strin
     }
   }
 
-  revalidatePath("/dashboard/checkin");
+  revalidatePath("/dashboard/checkins");
   return { sent };
 }

@@ -1,16 +1,20 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import {
+  BarChart3,
+  ConciergeBell,
+  DoorOpen,
+  LayoutDashboard,
+  MessageSquare,
+  Send,
+  Settings,
+  Sunrise,
+} from "lucide-react";
 
 import { logout } from "@/app/[lang]/(auth)/actions";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
-import { Wordmark } from "@/components/brand/wordmark";
 import { AskYourHotel } from "@/components/dashboard/ask-your-hotel";
-import {
-  ConnectionStatus,
-  deriveConnectionState,
-} from "@/components/dashboard/connection-status";
-import { LanguageSwitcher } from "@/components/i18n/language-switcher";
-import { Button } from "@/components/ui/button";
+import { deriveConnectionState } from "@/components/dashboard/connection-status";
+import { Sidebar, type NavItem } from "@/components/dashboard/sidebar";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -56,65 +60,90 @@ export default async function DashboardLayout({
   );
   const isOwner = profile.role === "owner";
 
+  const navItems: NavItem[] = [
+    {
+      key: "dashboard",
+      label: dict.sidebar.dashboard,
+      href: localizedHref(locale, "/dashboard"),
+      icon: LayoutDashboard,
+    },
+    {
+      key: "brief",
+      label: dict.sidebar.brief,
+      href: localizedHref(locale, "/dashboard/brief"),
+      icon: Sunrise,
+    },
+    {
+      key: "checkins",
+      label: dict.sidebar.checkins,
+      href: localizedHref(locale, "/dashboard/checkins"),
+      icon: DoorOpen,
+    },
+    {
+      key: "concierge",
+      label: dict.sidebar.concierge,
+      href: localizedHref(locale, "/dashboard/concierge"),
+      icon: ConciergeBell,
+    },
+    {
+      key: "communications",
+      label: dict.sidebar.communications,
+      href: localizedHref(locale, "/dashboard/communications"),
+      icon: Send,
+    },
+    {
+      key: "analytics",
+      label: dict.sidebar.analytics,
+      href: localizedHref(locale, "/dashboard/analytics"),
+      icon: BarChart3,
+    },
+    {
+      key: "chat",
+      label: dict.sidebar.chat,
+      href: localizedHref(locale, "/dashboard/chat"),
+      icon: MessageSquare,
+    },
+  ];
+
+  const settingsItem: NavItem = {
+    key: "settings",
+    label: dict.dashboardNav.settings,
+    href: localizedHref(locale, "/dashboard/settings"),
+    icon: Settings,
+  };
+
+  const adminItem: NavItem | null = isOwner
+    ? {
+        key: "admin",
+        label: dict.dashboardNav.admin,
+        href: localizedHref(locale, "/dashboard/admin"),
+        icon: Settings,
+      }
+    : null;
+
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-10 border-b border-border bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
-          <div className="flex items-center gap-3">
-            <Wordmark href={localizedHref(locale, "/dashboard")} />
-            <ConnectionStatus
-              state={connectionState}
-              labels={{
-                green: dict.connection.synced,
-                amber: dict.connection.stale,
-                red: dict.connection.notConnected,
-              }}
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="hidden text-sm text-muted-foreground sm:inline">
-              {user.email}
-            </span>
-            <Button asChild variant="ghost" size="sm">
-              <Link href={localizedHref(locale, "/dashboard/briefing")}>
-                {dict.dashboardNav.briefing}
-              </Link>
-            </Button>
-            <Button asChild variant="ghost" size="sm">
-              <Link href={localizedHref(locale, "/dashboard/emails")}>
-                {dict.dashboardNav.emails}
-              </Link>
-            </Button>
-            <Button asChild variant="ghost" size="sm">
-              <Link href={localizedHref(locale, "/dashboard/checkin")}>
-                {dict.dashboardNav.checkin}
-              </Link>
-            </Button>
-            {isOwner ? (
-              <Button asChild variant="ghost" size="sm">
-                <Link href={localizedHref(locale, "/dashboard/admin")}>
-                  {dict.dashboardNav.admin}
-                </Link>
-              </Button>
-            ) : null}
-            <Button asChild variant="ghost" size="sm">
-              <Link href={localizedHref(locale, "/dashboard/settings")}>
-                {dict.dashboardNav.settings}
-              </Link>
-            </Button>
-            <LanguageSwitcher />
-            <form action={logout}>
-              <input type="hidden" name="locale" value={locale} />
-              <Button type="submit" variant="outline" size="sm">
-                {dict.common.signOut}
-              </Button>
-            </form>
-          </div>
-        </div>
-      </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-10">
-        {children}
-      </main>
+    <div className="flex min-h-screen">
+      <Sidebar
+        navItems={navItems}
+        settingsItem={settingsItem}
+        adminItem={adminItem}
+        dashboardHref={localizedHref(locale, "/dashboard")}
+        connectionState={connectionState}
+        connectionLabels={{
+          green: dict.connection.synced,
+          amber: dict.connection.stale,
+          red: dict.connection.notConnected,
+        }}
+        userEmail={user.email ?? ""}
+        signOutAction={logout}
+        signOutLabel={dict.common.signOut}
+        locale={locale}
+      />
+      <div className="flex flex-1 flex-col pl-64">
+        <main className="mx-auto w-full max-w-[1120px] flex-1 px-8 py-10">
+          {children}
+        </main>
+      </div>
       {/* Floating "Ask your hotel" chat widget (fixed, bottom-right). */}
       <AskYourHotel />
     </div>

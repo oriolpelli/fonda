@@ -8,7 +8,7 @@ import {
   generateChasers,
   sendChaser,
   skipChaser,
-} from "@/app/[lang]/dashboard/checkin/actions";
+} from "@/app/[lang]/dashboard/checkins/actions";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import {

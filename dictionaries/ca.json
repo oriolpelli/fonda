@@ -120,6 +120,30 @@
     "admin": "Admin",
     "settings": "Configuració"
   },
+  "sidebar": {
+    "dashboard": "Tauler",
+    "brief": "Resum matinal",
+    "checkins": "Check-ins",
+    "concierge": "Consergeria",
+    "communications": "Comunicacions",
+    "analytics": "Analítica",
+    "chat": "Chat"
+  },
+  "concierge": {
+    "eyebrow": "Hostes allotjats",
+    "title": "Consergeria",
+    "emptyState": "Les sol·licituds de consergeria apareixeran aquí quan aquesta pàgina estigui a punt."
+  },
+  "analytics": {
+    "eyebrow": "Rendiment",
+    "title": "Analítica",
+    "emptyState": "L'analítica i els informes estaran disponibles properament."
+  },
+  "chat": {
+    "eyebrow": "Pregunta al teu hotel",
+    "title": "Chat",
+    "emptyState": "Una experiència de xat a pantalla completa estarà disponible properament."
+  },
   "connection": {
     "synced": "Sincronitzat",
     "stale": "Desactualitzat",

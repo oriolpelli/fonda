@@ -93,7 +93,7 @@ export async function sendReply(
     return { error: (err as Error).message };
   }
 
-  revalidatePath("/dashboard/emails");
+  revalidatePath("/dashboard/communications");
   return {};
 }
 
@@ -108,7 +108,7 @@ async function setStatus(
     .update({ status })
     .eq("id", emailId)
     .eq("hotel_id", hotelId);
-  revalidatePath("/dashboard/emails");
+  revalidatePath("/dashboard/communications");
 }
 
 export async function flagEmail(emailId: string): Promise<void> {
@@ -148,6 +148,6 @@ export async function approveAllStandard(): Promise<{
     }
   }
 
-  revalidatePath("/dashboard/emails");
+  revalidatePath("/dashboard/communications");
   return { sent };
 }

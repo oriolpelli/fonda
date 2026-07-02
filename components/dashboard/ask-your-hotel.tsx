@@ -179,7 +179,7 @@ export function AskYourHotel() {
                 </div>
                 {m.draftId ? (
                   <LocaleLink
-                    href="/dashboard/emails"
+                    href="/dashboard/communications"
                     onClick={close}
                     className="inline-flex items-center gap-1.5 rounded-lg border border-transparent bg-[var(--fonda-accent-light)] px-3 py-2 text-xs font-medium text-[var(--fonda-accent)] transition-colors hover:bg-[color-mix(in_srgb,var(--fonda-accent-light)_70%,var(--fonda-accent))]"
                   >

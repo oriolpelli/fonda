@@ -8,7 +8,7 @@ import {
   flagEmail,
   ignoreEmail,
   sendReply,
-} from "@/app/[lang]/dashboard/emails/actions";
+} from "@/app/[lang]/dashboard/communications/actions";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import { intlLocale } from "@/lib/i18n/config";

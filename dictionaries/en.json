@@ -120,6 +120,30 @@
     "admin": "Admin",
     "settings": "Settings"
   },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "brief": "Morning Brief",
+    "checkins": "Check-ins",
+    "concierge": "Concierge",
+    "communications": "Communications",
+    "analytics": "Analytics",
+    "chat": "Chat"
+  },
+  "concierge": {
+    "eyebrow": "In-house guests",
+    "title": "Concierge",
+    "emptyState": "Concierge requests will appear here once this page is built out."
+  },
+  "analytics": {
+    "eyebrow": "Performance",
+    "title": "Analytics",
+    "emptyState": "Analytics and reporting are coming soon."
+  },
+  "chat": {
+    "eyebrow": "Ask your hotel",
+    "title": "Chat",
+    "emptyState": "A full-page chat experience is coming soon."
+  },
   "connection": {
     "synced": "Synced",
     "stale": "Stale",

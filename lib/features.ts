@@ -7,21 +7,21 @@ export const FEATURES: Feature[] = [
     name: "Morning AI briefing",
     description:
       "A daily summary of arrivals, departures, VIPs, and anything that needs your attention — ready before your first coffee.",
-    href: "/dashboard/briefing",
+    href: "/dashboard/brief",
   },
   {
     key: "email-assistant",
     name: "AI email assistant",
     description:
       "Draft and triage guest emails in your hotel's voice, so the front desk spends less time in the inbox.",
-    href: "/dashboard/emails",
+    href: "/dashboard/communications",
   },
   {
     key: "checkin-chasing",
     name: "Check-in time chasing",
     description:
       "Automatically nudge guests for their expected arrival time and keep housekeeping one step ahead.",
-    href: "/dashboard/check-in",
+    href: "/dashboard/checkins",
   },
   {
     key: "hotel-chat",
