@@ -8,7 +8,10 @@ import { FEATURES } from "@/lib/features";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { t } from "@/lib/i18n/format";
 
-const INTEGRATIONS = ["MEWS", "Apaleo", "Gmail", "Outlook", "Booking.com", "SiteMinder"];
+// Only list integrations that are actually built. Add Outlook / Booking.com /
+// SiteMinder here (or a "coming soon" variant) once they ship — don't advertise
+// what we can't connect yet.
+const INTEGRATIONS = ["MEWS", "Apaleo", "Gmail"];
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
