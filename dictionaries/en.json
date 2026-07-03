@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Fonda — Hotel operations, on autopilot",
-    "description": "Fonda gives independent hotel GMs a morning AI briefing, an AI email assistant, check-in time chasing, and natural-language hotel queries."
+    "title": "Fondas — Hotel operations, on autopilot",
+    "description": "Fondas gives independent hotel GMs a morning AI briefing, an AI email assistant, check-in time chasing, and natural-language hotel queries."
   },
   "common": {
     "signOut": "Sign out",
@@ -31,7 +31,7 @@
     "worksWith": "Works with"
   },
   "featuresSection": {
-    "eyebrow": "What Fonda does",
+    "eyebrow": "What Fondas does",
     "headline": "Five features. One calm morning."
   },
   "features": {
@@ -53,7 +53,7 @@
     }
   },
   "briefingPreview": {
-    "windowTitle": "Fonda · Morning Briefing",
+    "windowTitle": "Fondas · Morning Briefing",
     "dateLine": "Tuesday, 24 June · 6:32 AM",
     "greeting": "Good morning. Here's your hotel today.",
     "row1strong": "12 arrivals today.",
@@ -65,7 +65,7 @@
   },
   "stats": {
     "headline": "Quiet mornings, measurable hours.",
-    "lead": "Fonda pays for itself in reclaimed time — here's what independent hotels get back once the daily busywork runs itself.",
+    "lead": "Fondas pays for itself in reclaimed time — here's what independent hotels get back once the daily busywork runs itself.",
     "adminTop": "Daily admin, handled",
     "adminLabel": "saved per GM, every day",
     "catchupTop": "The morning catch-up",
@@ -82,14 +82,14 @@
     "button": "Get started →"
   },
   "footer": {
-    "rights": "© {year} Fonda. Hotel operations, on autopilot.",
+    "rights": "© {year} Fondas. Hotel operations, on autopilot.",
     "privacy": "Privacy",
     "terms": "Terms"
   },
   "auth": {
     "loginTitle": "Welcome back",
     "signupTitle": "Create your account",
-    "loginDesc": "Sign in to your Fonda dashboard.",
+    "loginDesc": "Sign in to your Fondas dashboard.",
     "signupDesc": "Start running your hotel on autopilot.",
     "email": "Email",
     "password": "Password",
@@ -103,7 +103,7 @@
   },
   "onboarding": {
     "title": "Set up your hotel",
-    "desc": "A few details so Fonda can tailor briefings and sync your PMS.",
+    "desc": "A few details so Fondas can tailor briefings and sync your PMS.",
     "hotelName": "Hotel name",
     "hotelNamePlaceholder": "The Grand Riverside",
     "rooms": "Number of rooms",
@@ -258,7 +258,7 @@
   },
   "settings": {
     "title": "Settings",
-    "desc": "Connect {hotel}'s property management system so Fonda can sync reservations and guests.",
+    "desc": "Connect {hotel}'s property management system so Fondas can sync reservations and guests.",
     "fallbackHotel": "your hotel",
     "notConnected": "Not connected",
     "connectedTo": "Connected to {pms}",
@@ -276,19 +276,19 @@
     "updateTokens": "Update tokens",
     "verifying": "Verifying…",
     "apaleoTitle": "Apaleo",
-    "apaleoDesc": "Connect your Apaleo account with OAuth. You'll be sent to Apaleo to grant Fonda read access; we store only an encrypted refresh token.",
-    "apaleoConnected": "Fonda is connected to your Apaleo account.",
+    "apaleoDesc": "Connect your Apaleo account with OAuth. You'll be sent to Apaleo to grant Fondas read access; we store only an encrypted refresh token.",
+    "apaleoConnected": "Fondas is connected to your Apaleo account.",
     "apaleoNotConnected": "No Apaleo account connected yet.",
     "reconnectApaleo": "Reconnect Apaleo",
     "connectApaleo": "Connect Apaleo",
     "gmailTitle": "Gmail inbox",
-    "gmailDesc": "Connect the hotel inbox so Fonda can classify guest emails and draft replies for your review. We request read and send access and store only an encrypted refresh token.",
+    "gmailDesc": "Connect the hotel inbox so Fondas can classify guest emails and draft replies for your review. We request read and send access and store only an encrypted refresh token.",
     "gmailConnectedAs": "Connected as {email}.",
     "gmailNotConnected": "No inbox connected yet.",
     "reconnectGmail": "Reconnect Gmail",
     "connectGmail": "Connect Gmail",
     "briefingTitle": "Morning briefing",
-    "briefingDesc": "When and how Fonda prepares your daily briefing.",
+    "briefingDesc": "When and how Fondas prepares your daily briefing.",
     "gmName": "GM name",
     "gmNamePlaceholder": "e.g. Maria",
     "briefingTime": "Briefing time",
@@ -296,7 +296,54 @@
     "languageEn": "English",
     "languageEs": "Spanish",
     "languageCa": "Catalan",
-    "settingsSaved": "Settings saved."
+    "settingsSaved": "Settings saved.",
+    "profileTitle": "Hotel profile & tone",
+    "profileDesc": "Details about your hotel and its voice — the AI uses this to write briefings, emails, and chat answers that sound like you.",
+    "starRating": "Star rating",
+    "starRatingUnrated": "Unrated",
+    "propertyType": "Property type",
+    "propertyTypePlaceholder": "e.g. Boutique hotel, B&B, hostel",
+    "checkInTime": "Check-in time",
+    "checkOutTime": "Check-out time",
+    "policies": "Policies",
+    "policiesPlaceholder": "Cancellation, pets, children…",
+    "positioningVibe": "Positioning & vibe",
+    "positioningVibePlaceholder": "How would you describe the hotel's style and atmosphere?",
+    "targetGuest": "Target guest",
+    "targetGuestPlaceholder": "Who is this hotel for?",
+    "localRecommendations": "Local recommendations",
+    "localRecommendationsPlaceholder": "Restaurants, sights, and signature local tips to mention to guests",
+    "preferredGreeting": "Preferred greeting",
+    "preferredGreetingPlaceholder": "e.g. Dear guest,",
+    "signoffName": "Sign-off name",
+    "signoffNamePlaceholder": "e.g. The Front Desk Team",
+    "languagesSpoken": "Languages spoken",
+    "languagesSpokenPlaceholder": "e.g. English, Spanish, Catalan",
+    "parkingTransport": "Parking & transport",
+    "parkingTransportPlaceholder": "Parking options, nearest station, airport transfer info…",
+    "wifiInfo": "Wifi",
+    "wifiInfoPlaceholder": "Wifi network and password info to share with guests",
+    "breakfastInfo": "Breakfast",
+    "breakfastInfoPlaceholder": "Breakfast hours, location, and options",
+    "roomTypesTitle": "Room types",
+    "roomTypesDesc": "The room types your hotel offers, so the AI can refer to them by name.",
+    "roomTypeName": "Name",
+    "roomTypeCount": "Count",
+    "roomTypeCategory": "Category",
+    "addRoomType": "Add room type",
+    "removeRoomType": "Remove room type",
+    "pullFromPms": "Pull from PMS",
+    "pullFromPmsSoon": "Coming soon",
+    "reviewsTitle": "Reputation & reviews",
+    "reviewsDesc": "Store your TripAdvisor link and paste a few reviews to generate a short summary — we never scrape live.",
+    "tripadvisorUrl": "TripAdvisor URL",
+    "tripadvisorUrlPlaceholder": "https://www.tripadvisor.com/...",
+    "reviewHighlights": "Paste review highlights",
+    "reviewHighlightsPlaceholder": "Paste a few guest reviews here",
+    "reviewSummaryLabel": "Review summary",
+    "reviewSummaryEmpty": "No summary yet — paste some reviews and summarize.",
+    "summarize": "Summarize",
+    "summarizing": "Summarizing…"
   },
   "apaleoStatus": {
     "connected": "Apaleo connected.",

@@ -1,8 +1,8 @@
 /**
- * Single source of truth for Fonda's supported locales. Dependency-free and
+ * Single source of truth for Fondas's supported locales. Dependency-free and
  * safe to import from anywhere — the proxy, server components, and client
  * components all use this (it must NOT pull in `server-only` or the JSON
- * dictionaries). See FONDA i18n: URL-path locales `/en`, `/es`, `/ca`.
+ * dictionaries). See FONDAS i18n: URL-path locales `/en`, `/es`, `/ca`.
  */
 export const locales = ["en", "es", "ca"] as const;
 

@@ -1,5 +1,6 @@
 "use server";
 
+import Anthropic from "@anthropic-ai/sdk";
 import { revalidatePath } from "next/cache";
 
 import {
@@ -9,6 +10,8 @@ import {
 } from "@/lib/mews";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import type { RoomType } from "@/types";
+import type { Json } from "@/types/database";
 
 export type ConnectState =
   | { ok: true; message: string }
@@ -110,6 +113,157 @@ export async function updateBriefingSettings(
   revalidatePath("/dashboard/settings");
   revalidatePath("/dashboard");
   return { ok: true };
+}
+
+export type HotelProfileState = { ok: true } | { error: string } | undefined;
+
+function parseRoomTypes(raw: string): RoomType[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(parsed)) return [];
+  return parsed
+    .filter(
+      (r): r is RoomType =>
+        !!r &&
+        typeof r === "object" &&
+        typeof (r as RoomType).name === "string" &&
+        typeof (r as RoomType).category === "string"
+    )
+    .map((r) => ({
+      name: r.name.trim(),
+      count: Number.isFinite(r.count) && r.count >= 0 ? Math.trunc(r.count) : 0,
+      category: r.category.trim(),
+    }))
+    .filter((r) => r.name.length > 0)
+    .slice(0, 30);
+}
+
+export async function updateHotelProfile(
+  _prevState: HotelProfileState,
+  formData: FormData
+): Promise<HotelProfileState> {
+  const text = (key: string) => String(formData.get(key) ?? "").trim() || null;
+
+  const starRatingRaw = String(formData.get("starRating") ?? "").trim();
+  let starRating: number | null = null;
+  if (starRatingRaw) {
+    starRating = Number.parseInt(starRatingRaw, 10);
+    if (!Number.isInteger(starRating) || starRating < 1 || starRating > 5) {
+      return { error: "Star rating must be between 1 and 5." };
+    }
+  }
+
+  const timePattern = /^\d{2}:\d{2}$/;
+  const checkInRaw = String(formData.get("checkInTime") ?? "").trim();
+  const checkOutRaw = String(formData.get("checkOutTime") ?? "").trim();
+  if (checkInRaw && !timePattern.test(checkInRaw)) {
+    return { error: "Enter a valid check-in time." };
+  }
+  if (checkOutRaw && !timePattern.test(checkOutRaw)) {
+    return { error: "Enter a valid check-out time." };
+  }
+
+  const roomTypes = parseRoomTypes(String(formData.get("roomTypes") ?? "[]"));
+
+  let hotelId: string;
+  try {
+    hotelId = await requireHotelId();
+  } catch (err) {
+    return { error: (err as Error).message };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("hotel_settings")
+    .update({
+      star_rating: starRating,
+      property_type: text("propertyType"),
+      check_in_time: checkInRaw || null,
+      check_out_time: checkOutRaw || null,
+      policies: text("policies"),
+      positioning_vibe: text("positioningVibe"),
+      target_guest: text("targetGuest"),
+      local_recommendations: text("localRecommendations"),
+      preferred_greeting: text("preferredGreeting"),
+      signoff_name: text("signoffName"),
+      languages_spoken: text("languagesSpoken"),
+      parking_transport: text("parkingTransport"),
+      wifi_info: text("wifiInfo"),
+      breakfast_info: text("breakfastInfo"),
+      room_types: roomTypes as unknown as Json,
+    })
+    .eq("hotel_id", hotelId);
+  if (error) {
+    return { error: `Couldn't save settings: ${error.message}` };
+  }
+
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard");
+  return { ok: true };
+}
+
+export type TripAdvisorState =
+  | { ok: true; summary: string | null }
+  | { error: string }
+  | undefined;
+
+export async function summarizeReviews(
+  _prevState: TripAdvisorState,
+  formData: FormData
+): Promise<TripAdvisorState> {
+  const tripadvisorUrl = String(formData.get("tripadvisorUrl") ?? "").trim();
+  const reviewHighlights = String(formData.get("reviewHighlights") ?? "")
+    .trim()
+    .slice(0, 6000);
+
+  let hotelId: string;
+  try {
+    hotelId = await requireHotelId();
+  } catch (err) {
+    return { error: (err as Error).message };
+  }
+
+  let reviewSummary: string | null = null;
+  if (reviewHighlights) {
+    try {
+      const client = new Anthropic();
+      const response = await client.messages.create({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 300,
+        output_config: { effort: "low" },
+        system:
+          "Condense these pasted guest reviews into a short, upbeat 2-3 sentence " +
+          "summary of what guests consistently praise. Use only what's in the " +
+          "text — never invent details. Output plain prose, no bullet points, " +
+          "no preamble.",
+        messages: [{ role: "user", content: reviewHighlights }],
+      });
+      const block = response.content.find((b) => b.type === "text");
+      reviewSummary = block && block.type === "text" ? block.text.trim() : null;
+    } catch (err) {
+      return { error: `Couldn't summarize reviews: ${(err as Error).message}` };
+    }
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("hotel_settings")
+    .update({
+      tripadvisor_url: tripadvisorUrl || null,
+      review_highlights: reviewHighlights || null,
+      review_summary: reviewSummary,
+    })
+    .eq("hotel_id", hotelId);
+  if (error) {
+    return { error: `Couldn't save: ${error.message}` };
+  }
+
+  revalidatePath("/dashboard/settings");
+  return { ok: true, summary: reviewSummary };
 }
 
 async function requireHotelId(): Promise<string> {

@@ -13,11 +13,14 @@ import {
   gmailStatusMessage,
 } from "@/components/dashboard/gmail-connection-card";
 import { HotelDetailsForm } from "@/components/dashboard/hotel-details-form";
+import { HotelProfileForm } from "@/components/dashboard/hotel-profile-form";
 import { MewsConnectionForm } from "@/components/dashboard/mews-connection-form";
+import { TripAdvisorForm } from "@/components/dashboard/tripadvisor-form";
 import { Button } from "@/components/ui/button";
 import { t } from "@/lib/i18n/format";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
+import type { RoomType } from "@/types";
 
 export async function generateMetadata({
   params,
@@ -48,7 +51,9 @@ export default async function SettingsPage({
 
   const { data: settings } = await supabase
     .from("hotel_settings")
-    .select("gm_name, briefing_time, briefing_language")
+    .select(
+      "gm_name, briefing_time, briefing_language, star_rating, property_type, check_in_time, check_out_time, policies, positioning_vibe, target_guest, local_recommendations, preferred_greeting, signoff_name, languages_spoken, tripadvisor_url, review_highlights, review_summary, parking_transport, wifi_info, breakfast_info, room_types"
+    )
     .maybeSingle();
 
   const connected = hotel?.pms_connected ?? false;
@@ -150,6 +155,30 @@ export default async function SettingsPage({
         gmName={settings?.gm_name ?? ""}
         briefingTime={(settings?.briefing_time ?? "07:00:00").slice(0, 5)}
         briefingLanguage={settings?.briefing_language ?? "en"}
+      />
+
+      <HotelProfileForm
+        starRating={settings?.star_rating ?? null}
+        propertyType={settings?.property_type ?? ""}
+        checkInTime={(settings?.check_in_time ?? "").slice(0, 5)}
+        checkOutTime={(settings?.check_out_time ?? "").slice(0, 5)}
+        policies={settings?.policies ?? ""}
+        positioningVibe={settings?.positioning_vibe ?? ""}
+        targetGuest={settings?.target_guest ?? ""}
+        localRecommendations={settings?.local_recommendations ?? ""}
+        preferredGreeting={settings?.preferred_greeting ?? ""}
+        signoffName={settings?.signoff_name ?? ""}
+        languagesSpoken={settings?.languages_spoken ?? ""}
+        parkingTransport={settings?.parking_transport ?? ""}
+        wifiInfo={settings?.wifi_info ?? ""}
+        breakfastInfo={settings?.breakfast_info ?? ""}
+        roomTypes={(settings?.room_types as RoomType[] | null) ?? []}
+      />
+
+      <TripAdvisorForm
+        tripadvisorUrl={settings?.tripadvisor_url ?? ""}
+        reviewHighlights={settings?.review_highlights ?? ""}
+        reviewSummary={settings?.review_summary ?? null}
       />
     </div>
   );

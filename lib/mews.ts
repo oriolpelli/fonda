@@ -11,7 +11,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
  * paginated; the helpers here transparently page through all results.
  *
  * The entity interfaces below are intentionally *partial* — MEWS returns many
- * more fields than Fonda uses. Extend them as features need more data, or
+ * more fields than Fondas uses. Extend them as features need more data, or
  * regenerate from MEWS's published schema.
  *
  * Docs: https://mews-systems.gitbook.io/connector-api/

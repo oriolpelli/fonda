@@ -30,7 +30,7 @@ to bottom. Items marked **(required)** must be done for the core product
 - [ ] **Resend** — https://resend.com (required to *email* briefings; the app works without it, just won't send mail)
 - [ ] **MEWS** Connector integration (from your pilot hotel) and/or **Apaleo** dev app — https://apaleo.dev
 - [ ] **Sentry** project — https://sentry.io (optional)
-- [ ] A **domain** (e.g. fonda.app) (optional but recommended)
+- [ ] A **domain** (e.g. fondas.app) (optional but recommended)
 
 ---
 
@@ -173,7 +173,7 @@ Set these in **Vercel → Project → Settings → Environment Variables** (and 
 | `/api/cron/emails` | `*/5 * * * *` | Ingest new Gmail + classify/draft |
 | `/api/cron/checkin` | `0 9 * * *` | Daily check-in chaser drafts |
 
-6. **Custom domain** (optional): Vercel → Domains → add `fonda.app`, set the DNS
+6. **Custom domain** (optional): Vercel → Domains → add `fondas.app`, set the DNS
    records at your registrar. Re-check the OAuth redirect URIs use the final domain.
 
 ---

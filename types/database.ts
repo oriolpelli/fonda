@@ -1,5 +1,5 @@
 /**
- * Database types for Fonda.
+ * Database types for Fondas.
  *
  * Mirrors `supabase/migrations/0001_init.sql` in the shape produced by
  * `supabase gen types typescript --local`. Regenerate with that command once
@@ -437,6 +437,24 @@ export type Database = {
           gm_name: string | null;
           arrival_instructions: string | null;
           tone_guidelines: string | null;
+          star_rating: number | null;
+          property_type: string | null;
+          check_in_time: string | null;
+          check_out_time: string | null;
+          policies: string | null;
+          positioning_vibe: string | null;
+          target_guest: string | null;
+          local_recommendations: string | null;
+          preferred_greeting: string | null;
+          signoff_name: string | null;
+          languages_spoken: string | null;
+          tripadvisor_url: string | null;
+          review_highlights: string | null;
+          review_summary: string | null;
+          parking_transport: string | null;
+          wifi_info: string | null;
+          breakfast_info: string | null;
+          room_types: Json;
         };
         Insert: {
           id?: string;
@@ -446,6 +464,24 @@ export type Database = {
           gm_name?: string | null;
           arrival_instructions?: string | null;
           tone_guidelines?: string | null;
+          star_rating?: number | null;
+          property_type?: string | null;
+          check_in_time?: string | null;
+          check_out_time?: string | null;
+          policies?: string | null;
+          positioning_vibe?: string | null;
+          target_guest?: string | null;
+          local_recommendations?: string | null;
+          preferred_greeting?: string | null;
+          signoff_name?: string | null;
+          languages_spoken?: string | null;
+          tripadvisor_url?: string | null;
+          review_highlights?: string | null;
+          review_summary?: string | null;
+          parking_transport?: string | null;
+          wifi_info?: string | null;
+          breakfast_info?: string | null;
+          room_types?: Json;
         };
         Update: {
           id?: string;
@@ -455,6 +491,24 @@ export type Database = {
           gm_name?: string | null;
           arrival_instructions?: string | null;
           tone_guidelines?: string | null;
+          star_rating?: number | null;
+          property_type?: string | null;
+          check_in_time?: string | null;
+          check_out_time?: string | null;
+          policies?: string | null;
+          positioning_vibe?: string | null;
+          target_guest?: string | null;
+          local_recommendations?: string | null;
+          preferred_greeting?: string | null;
+          signoff_name?: string | null;
+          languages_spoken?: string | null;
+          tripadvisor_url?: string | null;
+          review_highlights?: string | null;
+          review_summary?: string | null;
+          parking_transport?: string | null;
+          wifi_info?: string | null;
+          breakfast_info?: string | null;
+          room_types?: Json;
         };
         Relationships: [
           {

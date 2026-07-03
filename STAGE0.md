@@ -51,12 +51,12 @@ the app. It takes weeks, so submit early.
 - [ ] User type: **External**. Publishing status: start in **Testing** (add each
       pilot's Google account under *Test users*), submit for verification in
       parallel.
-- [ ] App name: **Fonda**. User support email: `hello@fonda.app`.
+- [ ] App name: **Fondas**. User support email: `hello@fondas.app`.
 - [ ] App logo: upload the Fonda mark (required for verification).
-- [ ] App domain / homepage: `https://fonda.app`
-- [ ] Privacy policy URL: `https://fonda.app/en/privacy`
-- [ ] Terms of service URL: `https://fonda.app/en/terms`
-- [ ] Authorised domain: `fonda.app`
+- [ ] App domain / homepage: `https://fondas.app`
+- [ ] Privacy policy URL: `https://fondas.app/en/privacy`
+- [ ] Terms of service URL: `https://fondas.app/en/terms`
+- [ ] Authorised domain: `fondas.app`
 - [ ] Developer contact: your email.
 
 **Scopes — request the minimum and be ready to justify each:**
@@ -68,7 +68,7 @@ the app. It takes weeks, so submit early.
 
 - [ ] Because restricted scopes are involved, Google may require a **security
       assessment / CASA** and a short **demo video** showing the OAuth flow and
-      how the data is used. Record it once the flow is live on `fonda.app`.
+      how the data is used. Record it once the flow is live on `fondas.app`.
 - [ ] Keep scopes exactly to the two above — do not add broader Gmail scopes, or
       verification gets slower and harder.
 
@@ -78,10 +78,10 @@ the app. It takes weeks, so submit early.
 
 ### Domain
 
-- [ ] Buy / confirm **fonda.app** (it's a Google-run `.app` TLD — HTTPS is
+- [ ] Buy / confirm **fondas.app** (it's a Google-run `.app` TLD — HTTPS is
       enforced, which is fine for us).
-- [ ] In **Vercel → Project → Settings → Domains**, add `fonda.app` and
-      `www.fonda.app`. Vercel will show the exact DNS records — typically:
+- [ ] In **Vercel → Project → Settings → Domains**, add `fondas.app` and
+      `www.fondas.app`. Vercel will show the exact DNS records — typically:
   - `A` record for the apex `@` → `76.76.21.21`, **or** follow Vercel's
     "nameservers" option to delegate DNS to Vercel (simplest).
   - `CNAME` for `www` → `cname.vercel-dns.com`.
@@ -93,25 +93,25 @@ the app. It takes weeks, so submit early.
 Without a verified sending domain, briefing emails only reach your own Resend
 account — not real GMs.
 
-- [ ] In **Resend → Domains → Add domain**, add `fonda.app` (or a subdomain like
-      `send.fonda.app`).
+- [ ] In **Resend → Domains → Add domain**, add `fondas.app` (or a subdomain like
+      `send.fondas.app`).
 - [ ] Add the DNS records Resend generates. You will get:
   - an **SPF** record (`TXT` on the sending domain),
   - **DKIM** records (usually `CNAME` or `TXT` — copy the exact values Resend
     shows),
-  - a recommended **DMARC** record (`TXT` at `_dmarc.fonda.app`, e.g.
-    `v=DMARC1; p=none; rua=mailto:dmarc@fonda.app`).
+  - a recommended **DMARC** record (`TXT` at `_dmarc.fondas.app`, e.g.
+    `v=DMARC1; p=none; rua=mailto:dmarc@fondas.app`).
 - [ ] Wait for Resend to show the domain **Verified**, then set:
-      `RESEND_FROM="Fonda <briefings@fonda.app>"`.
+      `RESEND_FROM="Fondas <briefings@fondas.app>"`.
 - [ ] Send a test briefing to a non-Resend inbox (e.g. a Gmail address) and
       confirm it lands and isn't flagged as spam.
 
 ### Register production OAuth redirect URIs (once the domain is final)
 
 - [ ] Google OAuth client → Authorised redirect URI:
-      `https://fonda.app/connect/gmail/callback`
+      `https://fondas.app/connect/gmail/callback`
       (keep `http://localhost:3000/connect/gmail/callback` for local dev).
-- [ ] Apaleo app → Redirect URI: `https://fonda.app/connect/apaleo/callback`.
+- [ ] Apaleo app → Redirect URI: `https://fondas.app/connect/apaleo/callback`.
 
 ---
 
@@ -129,7 +129,7 @@ been replaced with real, GDPR-aware documents:
 - [ ] Open `company.ts` and replace every `[BRACKETED]` placeholder with your real
       SL details: legal name, CIF, registered office, commercial-registry entry,
       contact emails, and the courts city for jurisdiction.
-- [ ] Confirm the email addresses (`hello@fonda.app`, `privacy@fonda.app`) exist
+- [ ] Confirm the email addresses (`hello@fondas.app`, `privacy@fondas.app`) exist
       and are monitored.
 - [ ] **Have a Spanish lawyer review both documents and produce a Data Processing
       Agreement (DPA)** — hotels will ask for one, and Google's review expects a
@@ -180,7 +180,7 @@ Result of reviewing the repo. **Good news: the code side is in good shape.**
 
 - [ ] Old GitHub token revoked; `git push` works via gh/SSH.
 - [ ] Google verification **submitted** (status: in review).
-- [ ] `fonda.app` live on Vercel; Resend domain **Verified**; test briefing email
+- [ ] `fondas.app` live on Vercel; Resend domain **Verified**; test briefing email
       lands in a real inbox; OAuth redirect URIs registered.
 - [ ] `company.ts` filled in; legal pages live at `/en/privacy` and `/en/terms`;
       lawyer review booked or done.

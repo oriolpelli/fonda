@@ -3,6 +3,8 @@ import Link from "next/link";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { Wordmark } from "@/components/brand/wordmark";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { BriefingPreviewWindow } from "@/components/marketing/briefing-preview-window";
+import { Reveal } from "@/components/marketing/reveal";
 import { Button } from "@/components/ui/button";
 import { FEATURES } from "@/lib/features";
 import { localizedHref } from "@/lib/i18n/navigation";
@@ -52,13 +54,13 @@ export default async function Home({
           <nav className="flex items-center gap-6">
             <Link
               href="#features"
-              className="hidden text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline"
+              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground sm:inline"
             >
               {dict.nav.features}
             </Link>
             <Link
               href={localizedHref(locale, "/login")}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground"
             >
               {dict.nav.signIn}
             </Link>
@@ -74,20 +76,20 @@ export default async function Home({
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative overflow-hidden px-6 py-24 md:px-8 md:py-32">
-          <div className="mx-auto max-w-3xl text-center">
+        <section className="relative overflow-hidden px-6 py-20 md:px-8 md:py-40">
+          <Reveal className="mx-auto max-w-3xl text-center">
             <Eyebrow>
               <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden>
                 <circle cx="3" cy="3" r="3" fill="var(--fonda-accent)" />
               </svg>
               {dict.hero.badge}
             </Eyebrow>
-            <h1 className="mt-6 text-[clamp(2.75rem,7vw,5.25rem)] font-semibold leading-[0.98] tracking-[-0.035em] text-foreground">
+            <h1 className="mt-6 text-[clamp(3.25rem,7vw,5.75rem)] font-semibold leading-none tracking-[-0.035em] text-foreground">
               {dict.hero.headlineLine1}
               <br />
               {dict.hero.headlineLine2}
             </h1>
-            <p className="mx-auto mt-7 max-w-xl text-[19px] leading-[1.6] text-muted-foreground">
+            <p className="mx-auto mt-7 max-w-xl text-[20px] leading-[1.6] text-muted-foreground">
               {dict.hero.subhead}
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -100,12 +102,25 @@ export default async function Home({
                 <Link href="#features">{dict.hero.ctaSecondary}</Link>
               </Button>
             </div>
-          </div>
+          </Reveal>
+
+          <Reveal
+            index={1}
+            className="mx-auto mt-16 max-w-[960px] sm:mt-20 lg:mt-24"
+          >
+            <BriefingPreviewWindow
+              size="lg"
+              windowTitle={dict.briefingPreview.windowTitle}
+              dateLine={dict.briefingPreview.dateLine}
+              greeting={dict.briefingPreview.greeting}
+              rows={BRIEFING}
+            />
+          </Reveal>
         </section>
 
         {/* Trust bar */}
         <section className="border-y border-border px-6 py-5">
-          <div className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-center gap-2.5">
+          <Reveal className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-center gap-2.5">
             <span className="mr-1 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
               {dict.trust.worksWith}
             </span>
@@ -117,7 +132,7 @@ export default async function Home({
                 {name}
               </span>
             ))}
-          </div>
+          </Reveal>
         </section>
 
         {/* Features */}
@@ -125,21 +140,24 @@ export default async function Home({
           id="features"
           className="mx-auto max-w-[1120px] scroll-mt-20 px-6 py-24 md:px-8"
         >
-          <Eyebrow>{dict.featuresSection.eyebrow}</Eyebrow>
-          <h2 className="mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
-            {dict.featuresSection.headline}
-          </h2>
+          <Reveal>
+            <Eyebrow>{dict.featuresSection.eyebrow}</Eyebrow>
+            <h2 className="mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
+              {dict.featuresSection.headline}
+            </h2>
+          </Reveal>
 
           <div className="mt-14 grid gap-10 lg:grid-cols-[5fr_7fr] lg:items-start">
             {/* Feature list */}
             <div className="flex flex-col gap-2">
-              {FEATURES.map((feature) => {
+              {FEATURES.map((feature, i) => {
                 const copy =
                   dict.features[feature.key as keyof typeof dict.features];
                 return (
-                  <div
+                  <Reveal
                     key={feature.key}
-                    className="rounded-[14px] border border-transparent px-5 py-4 transition-colors hover:border-border hover:bg-card"
+                    index={i}
+                    className="rounded-[14px] border border-transparent px-5 py-4 transition-colors duration-[180ms] ease-out hover:border-border hover:bg-card"
                   >
                     <h3 className="text-[17px] font-semibold tracking-[-0.01em] text-foreground">
                       {copy.name}
@@ -147,64 +165,37 @@ export default async function Home({
                     <p className="mt-1.5 text-sm leading-[1.55] text-muted-foreground">
                       {copy.description}
                     </p>
-                  </div>
+                  </Reveal>
                 );
               })}
             </div>
 
             {/* Briefing preview (app window) */}
-            <div className="overflow-hidden rounded-[18px] border border-border bg-popover shadow-[0_12px_48px_rgba(10,10,10,0.06)] lg:sticky lg:top-24">
-              <div className="flex items-center gap-1.5 border-b border-border bg-card px-4 py-3">
-                <span className="size-2.5 rounded-full bg-[#FF5F57]" />
-                <span className="size-2.5 rounded-full bg-[#FEBC2E]" />
-                <span className="size-2.5 rounded-full bg-[#28C840]" />
-                <span className="ml-2 font-mono text-xs text-[var(--fonda-text-3)]">
-                  {dict.briefingPreview.windowTitle}
-                </span>
-              </div>
-              <div className="p-6">
-                <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-accent)]">
-                  {dict.briefingPreview.dateLine}
-                </p>
-                <p className="mt-2.5 text-lg font-semibold leading-snug tracking-[-0.015em] text-foreground">
-                  {dict.briefingPreview.greeting}
-                </p>
-                <div className="mt-4 flex flex-col">
-                  {BRIEFING.map(([strong, rest], i, arr) => (
-                    <div
-                      key={i}
-                      className={`flex items-start gap-3 py-2.5 ${
-                        i < arr.length - 1 ? "border-b border-border" : ""
-                      }`}
-                    >
-                      <span className="mt-[7px] size-[7px] shrink-0 rounded-[2px] bg-[var(--fonda-accent)]" />
-                      <p className="text-[13px] leading-[1.55] text-muted-foreground">
-                        <strong className="font-semibold text-foreground">
-                          {strong}
-                        </strong>
-                        {rest}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <Reveal>
+              <BriefingPreviewWindow
+                windowTitle={dict.briefingPreview.windowTitle}
+                dateLine={dict.briefingPreview.dateLine}
+                greeting={dict.briefingPreview.greeting}
+                rows={BRIEFING}
+              />
+            </Reveal>
           </div>
 
           {/* ROI stats — Sana style */}
           <div className="mt-16">
-            <div className="grid gap-8 border-t border-[var(--fonda-border-2)] pb-10 pt-12 md:grid-cols-2 md:items-end">
+            <Reveal className="grid gap-8 border-t border-[var(--fonda-border-2)] pb-10 pt-12 md:grid-cols-2 md:items-end">
               <h2 className="max-w-[13ch] text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-[1.05] tracking-[-0.028em] text-foreground">
                 {dict.stats.headline}
               </h2>
               <p className="max-w-[42ch] text-[17px] leading-[1.6] text-muted-foreground">
                 {dict.stats.lead}
               </p>
-            </div>
+            </Reveal>
             <div className="grid grid-cols-2 md:grid-cols-4">
               {STATS.map((stat, i) => (
-                <div
+                <Reveal
                   key={stat.value}
+                  index={i}
                   className={`flex min-h-[200px] flex-col justify-between px-6 py-8 ${
                     i % 2 === 0 ? "border-r border-border" : ""
                   } ${i < STATS.length - 1 ? "md:border-r md:border-border" : "md:border-r-0"} ${
@@ -222,7 +213,7 @@ export default async function Home({
                       {stat.label}
                     </p>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -230,7 +221,7 @@ export default async function Home({
 
         {/* CTA */}
         <section className="px-6 pb-24 md:px-8">
-          <div className="relative mx-auto max-w-[1120px] overflow-hidden rounded-[28px] bg-ink px-6 py-24 text-center md:px-24">
+          <Reveal className="relative mx-auto max-w-[1120px] overflow-hidden rounded-[28px] bg-ink px-6 py-24 text-center md:px-24">
             <Eyebrow>
               <span className="text-[color-mix(in_srgb,white_55%,transparent)]">
                 {dict.cta.eyebrow}
@@ -247,7 +238,7 @@ export default async function Home({
                 <Link href={localizedHref(locale, "/signup")}>{dict.cta.button}</Link>
               </Button>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
 
@@ -258,13 +249,13 @@ export default async function Home({
           <nav className="flex gap-4">
             <Link
               href={localizedHref(locale, "/privacy")}
-              className="hover:text-foreground"
+              className="transition-colors duration-[180ms] hover:text-foreground"
             >
               {dict.footer.privacy}
             </Link>
             <Link
               href={localizedHref(locale, "/terms")}
-              className="hover:text-foreground"
+              className="transition-colors duration-[180ms] hover:text-foreground"
             >
               {dict.footer.terms}
             </Link>

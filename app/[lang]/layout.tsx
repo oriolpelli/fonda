@@ -38,7 +38,7 @@ export async function generateMetadata({
   return {
     title: {
       default: dict.meta.title,
-      template: "%s · Fonda",
+      template: "%s · Fondas",
     },
     description: dict.meta.description,
   };

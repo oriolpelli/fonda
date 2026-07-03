@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 
 import { buildHotelContext } from "@/lib/hotel-context";
+import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -65,17 +66,20 @@ export async function POST(request: Request) {
   const context = await buildHotelContext(hotelId);
   const { data: settings } = await supabase
     .from("hotel_settings")
-    .select("briefing_language")
+    .select(`briefing_language, ${HOTEL_PROFILE_COLUMNS}`)
     .eq("hotel_id", hotelId)
     .maybeSingle();
   const language = LANGUAGES[settings?.briefing_language ?? "en"] ?? "English";
+  const profileBlock = buildHotelProfileSummary(settings);
 
   const system =
-    `You are Fonda, the operations assistant for ${context.hotel.name}. ` +
+    `You are Fondas, the operations assistant for ${context.hotel.name}. ` +
     "Answer questions about the hotel using ONLY the data provided below. " +
     "If the answer is not in the data, say so clearly and suggest where the GM " +
     "might find it. Never invent or estimate data. Be concise and answer directly. " +
-    `Speak in ${language}.\n\nHOTEL DATA (JSON):\n${JSON.stringify(context)}`;
+    `Speak in ${language}.` +
+    (profileBlock ? `\n\n${profileBlock}` : "") +
+    `\n\nHOTEL DATA (JSON):\n${JSON.stringify(context)}`;
 
   const client = new Anthropic();
   const encoder = new TextEncoder();

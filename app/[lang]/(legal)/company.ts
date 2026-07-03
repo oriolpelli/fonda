@@ -9,9 +9,9 @@
 
 export const COMPANY = {
   /** Registered legal name of the Sociedad Limitada. */
-  legalName: "[Fonda Technologies, S.L.]",
+  legalName: "[Fondas Technologies, S.L.]",
   /** Trading / product name shown to users. */
-  brand: "Fonda",
+  brand: "Fondas",
   /** Spanish tax id. */
   taxId: "[CIF: B-00000000]",
   /** Registered office address. */
@@ -19,10 +19,10 @@ export const COMPANY = {
   /** Commercial registry entry, if available. */
   registry: "[Registro Mercantil de —, Tomo —, Folio —, Hoja —]",
   /** General + privacy contact addresses. */
-  contactEmail: "hello@fonda.app",
-  privacyEmail: "privacy@fonda.app",
+  contactEmail: "hello@fondas.app",
+  privacyEmail: "privacy@fondas.app",
   /** Public site + governing jurisdiction. */
-  domain: "fonda.app",
+  domain: "fondas.app",
   governingLawCountry: "Spain",
   courtsCity: "[Barcelona]",
   /** Headline subscription price (keep in sync with the pricing page / Stripe). */

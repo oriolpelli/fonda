@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
-/** Fonda wordmark — Geist, weight 600, tight tracking. */
+/** Fondas wordmark — Geist, weight 600, tight tracking. */
 export function Wordmark({
   className,
   href = "/",
@@ -18,7 +18,7 @@ export function Wordmark({
         className
       )}
     >
-      Fonda
+      FONDAS
     </Link>
   );
 }

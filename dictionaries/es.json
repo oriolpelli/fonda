@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Fonda — Operaciones hoteleras, en piloto automático",
-    "description": "Fonda ofrece a los directores de hoteles independientes un resumen matutino con IA, un asistente de correo con IA, seguimiento de horas de llegada y consultas sobre el hotel en lenguaje natural."
+    "title": "Fondas — Operaciones hoteleras, en piloto automático",
+    "description": "Fondas ofrece a los directores de hoteles independientes un resumen matutino con IA, un asistente de correo con IA, seguimiento de horas de llegada y consultas sobre el hotel en lenguaje natural."
   },
   "common": {
     "signOut": "Cerrar sesión",
@@ -31,7 +31,7 @@
     "worksWith": "Compatible con"
   },
   "featuresSection": {
-    "eyebrow": "Qué hace Fonda",
+    "eyebrow": "Qué hace Fondas",
     "headline": "Cinco funciones. Una mañana tranquila."
   },
   "features": {
@@ -53,7 +53,7 @@
     }
   },
   "briefingPreview": {
-    "windowTitle": "Fonda · Resumen matutino",
+    "windowTitle": "Fondas · Resumen matutino",
     "dateLine": "Martes, 24 de junio · 6:32",
     "greeting": "Buenos días. Así está tu hotel hoy.",
     "row1strong": "12 llegadas hoy.",
@@ -65,7 +65,7 @@
   },
   "stats": {
     "headline": "Mañanas tranquilas, horas medibles.",
-    "lead": "Fonda se amortiza en tiempo recuperado — esto es lo que recuperan los hoteles independientes cuando el trabajo diario se hace solo.",
+    "lead": "Fondas se amortiza en tiempo recuperado — esto es lo que recuperan los hoteles independientes cuando el trabajo diario se hace solo.",
     "adminTop": "Gestión diaria, resuelta",
     "adminLabel": "ahorradas por director, cada día",
     "catchupTop": "La puesta al día matutina",
@@ -82,14 +82,14 @@
     "button": "Empezar →"
   },
   "footer": {
-    "rights": "© {year} Fonda. Operaciones hoteleras, en piloto automático.",
+    "rights": "© {year} Fondas. Operaciones hoteleras, en piloto automático.",
     "privacy": "Privacidad",
     "terms": "Términos"
   },
   "auth": {
     "loginTitle": "Bienvenido de nuevo",
     "signupTitle": "Crea tu cuenta",
-    "loginDesc": "Inicia sesión en tu panel de Fonda.",
+    "loginDesc": "Inicia sesión en tu panel de Fondas.",
     "signupDesc": "Empieza a gestionar tu hotel en piloto automático.",
     "email": "Correo electrónico",
     "password": "Contraseña",
@@ -103,7 +103,7 @@
   },
   "onboarding": {
     "title": "Configura tu hotel",
-    "desc": "Unos pocos datos para que Fonda adapte los resúmenes y sincronice tu PMS.",
+    "desc": "Unos pocos datos para que Fondas adapte los resúmenes y sincronice tu PMS.",
     "hotelName": "Nombre del hotel",
     "hotelNamePlaceholder": "El Gran Ribera",
     "rooms": "Número de habitaciones",
@@ -258,7 +258,7 @@
   },
   "settings": {
     "title": "Ajustes",
-    "desc": "Conecta el sistema de gestión de {hotel} para que Fonda pueda sincronizar reservas y huéspedes.",
+    "desc": "Conecta el sistema de gestión de {hotel} para que Fondas pueda sincronizar reservas y huéspedes.",
     "fallbackHotel": "tu hotel",
     "notConnected": "Sin conexión",
     "connectedTo": "Conectado a {pms}",
@@ -276,19 +276,19 @@
     "updateTokens": "Actualizar tokens",
     "verifying": "Verificando…",
     "apaleoTitle": "Apaleo",
-    "apaleoDesc": "Conecta tu cuenta de Apaleo con OAuth. Se te enviará a Apaleo para conceder a Fonda acceso de lectura; solo guardamos un token de actualización cifrado.",
-    "apaleoConnected": "Fonda está conectado a tu cuenta de Apaleo.",
+    "apaleoDesc": "Conecta tu cuenta de Apaleo con OAuth. Se te enviará a Apaleo para conceder a Fondas acceso de lectura; solo guardamos un token de actualización cifrado.",
+    "apaleoConnected": "Fondas está conectado a tu cuenta de Apaleo.",
     "apaleoNotConnected": "Aún no hay ninguna cuenta de Apaleo conectada.",
     "reconnectApaleo": "Reconectar Apaleo",
     "connectApaleo": "Conectar Apaleo",
     "gmailTitle": "Bandeja de Gmail",
-    "gmailDesc": "Conecta la bandeja del hotel para que Fonda clasifique los correos de huéspedes y redacte respuestas para tu revisión. Pedimos acceso de lectura y envío y solo guardamos un token de actualización cifrado.",
+    "gmailDesc": "Conecta la bandeja del hotel para que Fondas clasifique los correos de huéspedes y redacte respuestas para tu revisión. Pedimos acceso de lectura y envío y solo guardamos un token de actualización cifrado.",
     "gmailConnectedAs": "Conectado como {email}.",
     "gmailNotConnected": "Aún no hay ninguna bandeja conectada.",
     "reconnectGmail": "Reconectar Gmail",
     "connectGmail": "Conectar Gmail",
     "briefingTitle": "Resumen matutino",
-    "briefingDesc": "Cuándo y cómo prepara Fonda tu resumen diario.",
+    "briefingDesc": "Cuándo y cómo prepara Fondas tu resumen diario.",
     "gmName": "Nombre del director",
     "gmNamePlaceholder": "p. ej. María",
     "briefingTime": "Hora del resumen",
@@ -296,7 +296,54 @@
     "languageEn": "Inglés",
     "languageEs": "Español",
     "languageCa": "Catalán",
-    "settingsSaved": "Ajustes guardados."
+    "settingsSaved": "Ajustes guardados.",
+    "profileTitle": "Perfil y tono del hotel",
+    "profileDesc": "Detalles sobre tu hotel y su voz — la IA los usa para escribir resúmenes, correos y respuestas del chat que suenen como tú.",
+    "starRating": "Categoría (estrellas)",
+    "starRatingUnrated": "Sin categoría",
+    "propertyType": "Tipo de alojamiento",
+    "propertyTypePlaceholder": "p. ej. Hotel boutique, B&B, hostal",
+    "checkInTime": "Hora de entrada",
+    "checkOutTime": "Hora de salida",
+    "policies": "Políticas",
+    "policiesPlaceholder": "Cancelación, mascotas, niños…",
+    "positioningVibe": "Posicionamiento y estilo",
+    "positioningVibePlaceholder": "¿Cómo describirías el estilo y el ambiente del hotel?",
+    "targetGuest": "Huésped objetivo",
+    "targetGuestPlaceholder": "¿Para quién es este hotel?",
+    "localRecommendations": "Recomendaciones locales",
+    "localRecommendationsPlaceholder": "Restaurantes, lugares de interés y recomendaciones propias para los huéspedes",
+    "preferredGreeting": "Saludo preferido",
+    "preferredGreetingPlaceholder": "p. ej. Estimado/a huésped,",
+    "signoffName": "Firma de despedida",
+    "signoffNamePlaceholder": "p. ej. El equipo de recepción",
+    "languagesSpoken": "Idiomas que se hablan",
+    "languagesSpokenPlaceholder": "p. ej. Español, inglés, catalán",
+    "parkingTransport": "Aparcamiento y transporte",
+    "parkingTransportPlaceholder": "Opciones de aparcamiento, estación más cercana, traslado al aeropuerto…",
+    "wifiInfo": "Wifi",
+    "wifiInfoPlaceholder": "Red wifi y contraseña para compartir con los huéspedes",
+    "breakfastInfo": "Desayuno",
+    "breakfastInfoPlaceholder": "Horario, ubicación y opciones del desayuno",
+    "roomTypesTitle": "Tipos de habitación",
+    "roomTypesDesc": "Los tipos de habitación de tu hotel, para que la IA pueda referirse a ellos por su nombre.",
+    "roomTypeName": "Nombre",
+    "roomTypeCount": "Cantidad",
+    "roomTypeCategory": "Categoría",
+    "addRoomType": "Añadir tipo de habitación",
+    "removeRoomType": "Eliminar tipo de habitación",
+    "pullFromPms": "Importar del PMS",
+    "pullFromPmsSoon": "Próximamente",
+    "reviewsTitle": "Reputación y reseñas",
+    "reviewsDesc": "Guarda tu enlace de TripAdvisor y pega algunas reseñas para generar un resumen breve — nunca hacemos scraping en vivo.",
+    "tripadvisorUrl": "URL de TripAdvisor",
+    "tripadvisorUrlPlaceholder": "https://www.tripadvisor.com/...",
+    "reviewHighlights": "Pega los aspectos destacados de las reseñas",
+    "reviewHighlightsPlaceholder": "Pega aquí algunas reseñas de huéspedes",
+    "reviewSummaryLabel": "Resumen de reseñas",
+    "reviewSummaryEmpty": "Aún no hay resumen — pega algunas reseñas y resume.",
+    "summarize": "Resumir",
+    "summarizing": "Resumiendo…"
   },
   "apaleoStatus": {
     "connected": "Apaleo conectado.",

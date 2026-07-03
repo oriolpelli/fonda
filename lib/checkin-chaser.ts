@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { TablesInsert } from "@/types/database";
 
@@ -58,11 +59,18 @@ async function generateChase(
     guestFirstName: string | null;
     checkInDate: string;
     arrivalInstructions: string | null;
+    profileSummary: string | null;
     language: string;
   }
 ): Promise<string> {
-  const { hotelName, guestFirstName, checkInDate, arrivalInstructions, language } =
-    args;
+  const {
+    hotelName,
+    guestFirstName,
+    checkInDate,
+    arrivalInstructions,
+    profileSummary,
+    language,
+  } = args;
 
   const system = [
     `You are writing a short, warm email from ${hotelName} to a guest arriving on ${formatDate(
@@ -73,6 +81,7 @@ async function generateChase(
     arrivalInstructions
       ? `Include these arrival instructions where helpful: ${arrivalInstructions}`
       : "",
+    profileSummary,
     `Write in ${language}.`,
     "Output ONLY the email body — no subject line, no preamble, no commentary. Keep it to a few sentences.",
   ]
@@ -107,9 +116,10 @@ export async function runCheckinChaser(hotelId: string): Promise<number> {
     .single();
   const { data: settings } = await admin
     .from("hotel_settings")
-    .select("arrival_instructions, briefing_language")
+    .select(`arrival_instructions, briefing_language, ${HOTEL_PROFILE_COLUMNS}`)
     .eq("hotel_id", hotelId)
     .maybeSingle();
+  const profileSummary = buildHotelProfileSummary(settings);
 
   // Confirmed arrivals from tomorrow through +7 days, with no known arrival time.
   // (Excluding today's arrivals == "no same-day chasing".)
@@ -175,6 +185,7 @@ export async function runCheckinChaser(hotelId: string): Promise<number> {
       guestFirstName: guest.first_name ?? null,
       checkInDate: r.start_utc!,
       arrivalInstructions: settings?.arrival_instructions ?? null,
+      profileSummary,
       language: LANGUAGES[langCode] ?? "English",
     });
 

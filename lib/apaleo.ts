@@ -16,7 +16,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
  * Apaleo PMS client. Implements the shared {@link PmsClient} contract, mapping
- * Apaleo's REST API onto Fonda's canonical (MEWS-shaped) types so downstream
+ * Apaleo's REST API onto Fondas's canonical (MEWS-shaped) types so downstream
  * code works with either PMS unchanged.
  *
  * Auth: OAuth2. A long-lived refresh token (obtained via the authorization-code
@@ -24,7 +24,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
  * on demand.
  *
  * Entity mappings are partial and defensive — Apaleo returns more fields than
- * Fonda uses, and shapes vary slightly across API versions.
+ * Fondas uses, and shapes vary slightly across API versions.
  *
  * Docs: https://apaleo.dev/
  */

@@ -36,7 +36,7 @@ const SECTIONS: Section[] = [
       "We handle personal data in two distinct roles, and it matters which applies:",
     ],
     bullets: [
-      "Controller — for data about our direct customers: the hotel staff who create accounts and use Fonda (name, work email, login credentials, settings, and usage/diagnostic data). We decide how this data is used.",
+      "Controller — for data about our direct customers: the hotel staff who create accounts and use Fondas (name, work email, login credentials, settings, and usage/diagnostic data). We decide how this data is used.",
       "Processor — for the hotel operational data we handle on a hotel's behalf: reservations, guest profiles, and mailbox contents pulled from the systems a hotel connects. The hotel is the controller of that data; we only process it to provide the service under the hotel's instructions and our Data Processing Agreement.",
     ],
   },
@@ -54,7 +54,7 @@ const SECTIONS: Section[] = [
   {
     heading: "How and why we use data (legal bases)",
     paragraphs: [
-      "We use account data to provide, secure, and support the service, and to communicate with you about it — on the basis of performance of our contract with you and our legitimate interests in running and improving Fonda. We process hotel and mailbox data solely to deliver the features the hotel has enabled (morning briefings, email drafting, check-in chasing, and answering questions about the hotel's own data), on the documented instructions of the hotel as controller. Where required, we rely on the hotel having obtained any necessary consent from its guests.",
+      "We use account data to provide, secure, and support the service, and to communicate with you about it — on the basis of performance of our contract with you and our legitimate interests in running and improving Fondas. We process hotel and mailbox data solely to deliver the features the hotel has enabled (morning briefings, email drafting, check-in chasing, and answering questions about the hotel's own data), on the documented instructions of the hotel as controller. Where required, we rely on the hotel having obtained any necessary consent from its guests.",
     ],
   },
   {
@@ -66,7 +66,7 @@ const SECTIONS: Section[] = [
   {
     heading: "Sub-processors",
     paragraphs: [
-      "We rely on the following sub-processors to run Fonda. We maintain contracts with each requiring appropriate data-protection safeguards, and we will keep this list current:",
+      "We rely on the following sub-processors to run Fondas. We maintain contracts with each requiring appropriate data-protection safeguards, and we will keep this list current:",
     ],
     bullets: [
       "Supabase — database and authentication (hosting of account and hotel data).",
@@ -105,7 +105,7 @@ const SECTIONS: Section[] = [
   {
     heading: "Cookies",
     paragraphs: [
-      "Fonda uses only the cookies strictly necessary to keep you signed in and to keep the service secure. We do not use advertising cookies. If we add analytics in future, we will update this policy and request consent where required.",
+      "Fondas uses only the cookies strictly necessary to keep you signed in and to keep the service secure. We do not use advertising cookies. If we add analytics in future, we will update this policy and request consent where required.",
     ],
   },
   {

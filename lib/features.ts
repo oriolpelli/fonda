@@ -1,6 +1,6 @@
 import type { Feature } from "@/types";
 
-/** The four core Fonda product surfaces. */
+/** The four core Fondas product surfaces. */
 export const FEATURES: Feature[] = [
   {
     key: "briefing",

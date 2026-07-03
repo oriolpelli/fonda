@@ -136,7 +136,7 @@ Subject: `Fonda — morning briefing for [Hotel Name]`
 > Best,
 > Oriol
 > oriolpelli@icloud.com
-> fonda.app
+> fondas.app
 
 ---
 

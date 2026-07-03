@@ -28,7 +28,7 @@ const SECTIONS: Section[] = [
   {
     heading: "2. The service",
     paragraphs: [
-      "Fonda is AI-assisted operations software for hotels. It connects to a hotel's property management system (MEWS or Apaleo) and, optionally, its Gmail inbox, to provide a morning operations briefing, email classification and draft replies, check-in-time chasing, and natural-language answers about the hotel's own data. Features may evolve over time.",
+      "Fondas is AI-assisted operations software for hotels. It connects to a hotel's property management system (MEWS or Apaleo) and, optionally, its Gmail inbox, to provide a morning operations briefing, email classification and draft replies, check-in-time chasing, and natural-language answers about the hotel's own data. Features may evolve over time.",
     ],
   },
   {
@@ -40,14 +40,14 @@ const SECTIONS: Section[] = [
   {
     heading: "4. Your data and connected accounts",
     paragraphs: [
-      "As between you and us, you (the hotel) are the controller of the reservation, guest, and mailbox data processed through Fonda, and we act as your processor under our Data Processing Agreement and Privacy Policy. You confirm that you have the authority and any necessary legal basis or guest consent to connect your PMS and mailbox and to have us process that data on your behalf. You are responsible for the accuracy of the data in your connected systems.",
+      "As between you and us, you (the hotel) are the controller of the reservation, guest, and mailbox data processed through Fondas, and we act as your processor under our Data Processing Agreement and Privacy Policy. You confirm that you have the authority and any necessary legal basis or guest consent to connect your PMS and mailbox and to have us process that data on your behalf. You are responsible for the accuracy of the data in your connected systems.",
     ],
   },
   {
     heading: "5. AI-generated content — your responsibility to review",
     paragraphs: [
-      "Fonda uses automated systems to generate briefings, drafts, and answers. This output may occasionally be incomplete or inaccurate. It is provided to assist you, not to replace your judgement.",
-      "You are responsible for reviewing all AI-generated drafts and outputs before acting on them or sending them to guests. We are not liable for content you choose to send. Do not rely on Fonda for decisions that require professional, legal, or financial advice.",
+      "Fondas uses automated systems to generate briefings, drafts, and answers. This output may occasionally be incomplete or inaccurate. It is provided to assist you, not to replace your judgement.",
+      "You are responsible for reviewing all AI-generated drafts and outputs before acting on them or sending them to guests. We are not liable for content you choose to send. Do not rely on Fondas for decisions that require professional, legal, or financial advice.",
     ],
   },
   {
@@ -70,13 +70,13 @@ const SECTIONS: Section[] = [
   {
     heading: "8. Third-party services",
     paragraphs: [
-      "Fonda relies on third-party services (including your PMS, Google, and our infrastructure and AI providers). Your use of those services is subject to their own terms, and we are not responsible for their availability or acts.",
+      "Fondas relies on third-party services (including your PMS, Google, and our infrastructure and AI providers). Your use of those services is subject to their own terms, and we are not responsible for their availability or acts.",
     ],
   },
   {
     heading: "9. Intellectual property",
     paragraphs: [
-      "We retain all rights in the Fonda software and brand. You retain all rights in your hotel and guest data. You grant us the limited rights needed to process that data to provide the service.",
+      "We retain all rights in the Fondas software and brand. You retain all rights in your hotel and guest data. You grant us the limited rights needed to process that data to provide the service.",
     ],
   },
   {

@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Json } from "@/types/database";
 
@@ -13,7 +14,7 @@ import type { Json } from "@/types/database";
  * saved to the `briefings` table and returned.
  *
  * Model note: intentionally kept on Opus. The morning briefing is the flagship,
- * customer-facing output GMs judge Fonda on, and it runs only once per day per
+ * customer-facing output GMs judge Fondas on, and it runs only once per day per
  * hotel — so the quality is worth the cost even though other surfaces have been
  * moved to Sonnet/Haiku. Change BRIEFING_MODEL to trade quality for cost
  * (e.g. "claude-sonnet-4-6") if needed.
@@ -171,7 +172,7 @@ export async function generateBriefing(
 
   const { data: settings } = await admin
     .from("hotel_settings")
-    .select("gm_name, briefing_language")
+    .select(`gm_name, briefing_language, ${HOTEL_PROFILE_COLUMNS}`)
     .eq("hotel_id", hotelId)
     .maybeSingle();
 
@@ -292,12 +293,13 @@ export async function generateBriefing(
   };
 
   const system = [
-    `You are Fonda, an operations assistant for ${hotel.name}.`,
+    `You are Fondas, an operations assistant for ${hotel.name}.`,
     `Write the general manager's morning briefing in ${language}.`,
     settings?.gm_name ? `Address the GM as ${settings.gm_name}.` : "",
     "Write in warm, professional prose — full sentences and short paragraphs, NOT bullet points.",
     `Always refer to the hotel by name (${hotel.name}).`,
     "Cover: today's arrivals and departures, any VIP guests, special requests, an overnight email summary, and occupancy/rate alerts for the next 14 days.",
+    buildHotelProfileSummary(settings),
     "If a section has nothing noteworthy, say so briefly rather than inventing detail.",
     "Guest surnames have already been reduced to initials for privacy — keep them that way.",
     "Do not expose internal IDs.",

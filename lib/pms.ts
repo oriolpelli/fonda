@@ -5,7 +5,7 @@ import { getMewsClientForHotel } from "@/lib/mews";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
- * PMS-agnostic contract. Fonda supports multiple property management systems
+ * PMS-agnostic contract. Fondas supports multiple property management systems
  * (MEWS, Apaleo); every client maps its native API onto these canonical types
  * so downstream code (sync, briefings, chat) works with any PMS unchanged.
  *

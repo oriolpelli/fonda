@@ -1,5 +1,5 @@
 /**
- * Shared domain types for Fonda — a hotel operations SaaS for independent
+ * Shared domain types for Fondas — a hotel operations SaaS for independent
  * hotel GMs (20–200 rooms).
  *
  * Database-backed types are derived from the generated schema in
@@ -38,7 +38,7 @@ export type ChaserStatus = Enums<"chaser_status">;
 
 // --- App-level types (not persisted in the database) -----------------------
 
-/** The Fonda product surfaces, used to drive dashboard navigation. */
+/** The Fondas product surfaces, used to drive dashboard navigation. */
 export type FeatureKey =
   | "briefing"
   | "email-assistant"
@@ -50,4 +50,11 @@ export interface Feature {
   name: string;
   description: string;
   href: string;
+}
+
+/** One row of `hotel_settings.room_types` (jsonb array). */
+export interface RoomType {
+  name: string;
+  count: number;
+  category: string;
 }

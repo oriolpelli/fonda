@@ -122,7 +122,7 @@ function briefingEmailHtml(
         ${section("Overnight email", content.emails)}
         ${section("Rate alert", content.rate_alert)}
         <tr><td style="padding-top:24px;">
-          <p style="margin:0;font-size:12px;color:#94a3b8;">Sent by Fonda — hotel operations, on autopilot.</p>
+          <p style="margin:0;font-size:12px;color:#94a3b8;">Sent by Fondas — hotel operations, on autopilot.</p>
         </td></tr>
       </table>
     </td></tr>
@@ -136,11 +136,11 @@ async function sendBriefingEmail(
   content: BriefingContent
 ): Promise<void> {
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const from = process.env.RESEND_FROM ?? "Fonda <onboarding@resend.dev>";
+  const from = process.env.RESEND_FROM ?? "Fondas <onboarding@resend.dev>";
   const { error } = await resend.emails.send({
     from,
     to,
-    subject: `Your Fonda briefing — ${dateLabel}`,
+    subject: `Your Fondas briefing — ${dateLabel}`,
     html: briefingEmailHtml(hotelName, dateLabel, content),
   });
   if (error) {

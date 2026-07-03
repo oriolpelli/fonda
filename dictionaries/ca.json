@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Fonda — Operacions hoteleres, en pilot automàtic",
-    "description": "Fonda ofereix als directors d'hotels independents un resum matinal amb IA, un assistent de correu amb IA, seguiment d'hores d'arribada i consultes sobre l'hotel en llenguatge natural."
+    "title": "Fondas — Operacions hoteleres, en pilot automàtic",
+    "description": "Fondas ofereix als directors d'hotels independents un resum matinal amb IA, un assistent de correu amb IA, seguiment d'hores d'arribada i consultes sobre l'hotel en llenguatge natural."
   },
   "common": {
     "signOut": "Tancar la sessió",
@@ -31,7 +31,7 @@
     "worksWith": "Compatible amb"
   },
   "featuresSection": {
-    "eyebrow": "Què fa Fonda",
+    "eyebrow": "Què fa Fondas",
     "headline": "Cinc funcions. Un matí tranquil."
   },
   "features": {
@@ -53,7 +53,7 @@
     }
   },
   "briefingPreview": {
-    "windowTitle": "Fonda · Resum matinal",
+    "windowTitle": "Fondas · Resum matinal",
     "dateLine": "Dimarts, 24 de juny · 6:32",
     "greeting": "Bon dia. Així està el teu hotel avui.",
     "row1strong": "12 arribades avui.",
@@ -65,7 +65,7 @@
   },
   "stats": {
     "headline": "Matins tranquils, hores mesurables.",
-    "lead": "Fonda s'amortitza en temps recuperat — això és el que recuperen els hotels independents quan la feina diària es fa sola.",
+    "lead": "Fondas s'amortitza en temps recuperat — això és el que recuperen els hotels independents quan la feina diària es fa sola.",
     "adminTop": "Gestió diària, resolta",
     "adminLabel": "estalviades per director, cada dia",
     "catchupTop": "La posada al dia matinal",
@@ -82,14 +82,14 @@
     "button": "Comença →"
   },
   "footer": {
-    "rights": "© {year} Fonda. Operacions hoteleres, en pilot automàtic.",
+    "rights": "© {year} Fondas. Operacions hoteleres, en pilot automàtic.",
     "privacy": "Privadesa",
     "terms": "Termes"
   },
   "auth": {
     "loginTitle": "Benvingut de nou",
     "signupTitle": "Crea el teu compte",
-    "loginDesc": "Inicia la sessió al teu tauler de Fonda.",
+    "loginDesc": "Inicia la sessió al teu tauler de Fondas.",
     "signupDesc": "Comença a gestionar el teu hotel en pilot automàtic.",
     "email": "Correu electrònic",
     "password": "Contrasenya",
@@ -103,7 +103,7 @@
   },
   "onboarding": {
     "title": "Configura el teu hotel",
-    "desc": "Uns quants detalls perquè Fonda adapti els resums i sincronitzi el teu PMS.",
+    "desc": "Uns quants detalls perquè Fondas adapti els resums i sincronitzi el teu PMS.",
     "hotelName": "Nom de l'hotel",
     "hotelNamePlaceholder": "El Gran Ribera",
     "rooms": "Nombre d'habitacions",
@@ -258,7 +258,7 @@
   },
   "settings": {
     "title": "Configuració",
-    "desc": "Connecta el sistema de gestió de {hotel} perquè Fonda pugui sincronitzar reserves i hostes.",
+    "desc": "Connecta el sistema de gestió de {hotel} perquè Fondas pugui sincronitzar reserves i hostes.",
     "fallbackHotel": "el teu hotel",
     "notConnected": "Sense connexió",
     "connectedTo": "Connectat a {pms}",
@@ -276,19 +276,19 @@
     "updateTokens": "Actualitza els tokens",
     "verifying": "Verificant…",
     "apaleoTitle": "Apaleo",
-    "apaleoDesc": "Connecta el teu compte d'Apaleo amb OAuth. Se t'enviarà a Apaleo per concedir accés de lectura a Fonda; només desem un token d'actualització xifrat.",
-    "apaleoConnected": "Fonda està connectat al teu compte d'Apaleo.",
+    "apaleoDesc": "Connecta el teu compte d'Apaleo amb OAuth. Se t'enviarà a Apaleo per concedir accés de lectura a Fondas; només desem un token d'actualització xifrat.",
+    "apaleoConnected": "Fondas està connectat al teu compte d'Apaleo.",
     "apaleoNotConnected": "Encara no hi ha cap compte d'Apaleo connectat.",
     "reconnectApaleo": "Reconnecta Apaleo",
     "connectApaleo": "Connecta Apaleo",
     "gmailTitle": "Safata de Gmail",
-    "gmailDesc": "Connecta la safata de l'hotel perquè Fonda classifiqui els correus dels hostes i redacti respostes per a la teva revisió. Demanem accés de lectura i enviament i només desem un token d'actualització xifrat.",
+    "gmailDesc": "Connecta la safata de l'hotel perquè Fondas classifiqui els correus dels hostes i redacti respostes per a la teva revisió. Demanem accés de lectura i enviament i només desem un token d'actualització xifrat.",
     "gmailConnectedAs": "Connectat com a {email}.",
     "gmailNotConnected": "Encara no hi ha cap safata connectada.",
     "reconnectGmail": "Reconnecta Gmail",
     "connectGmail": "Connecta Gmail",
     "briefingTitle": "Resum matinal",
-    "briefingDesc": "Quan i com prepara Fonda el teu resum diari.",
+    "briefingDesc": "Quan i com prepara Fondas el teu resum diari.",
     "gmName": "Nom del director",
     "gmNamePlaceholder": "p. ex. Maria",
     "briefingTime": "Hora del resum",
@@ -296,7 +296,54 @@
     "languageEn": "Anglès",
     "languageEs": "Espanyol",
     "languageCa": "Català",
-    "settingsSaved": "Configuració desada."
+    "settingsSaved": "Configuració desada.",
+    "profileTitle": "Perfil i to de l'hotel",
+    "profileDesc": "Detalls sobre el teu hotel i la seva veu — la IA els fa servir per escriure resums, correus i respostes del xat que sonin com tu.",
+    "starRating": "Categoria (estrelles)",
+    "starRatingUnrated": "Sense categoria",
+    "propertyType": "Tipus d'allotjament",
+    "propertyTypePlaceholder": "p. ex. Hotel boutique, B&B, hostal",
+    "checkInTime": "Hora d'entrada",
+    "checkOutTime": "Hora de sortida",
+    "policies": "Polítiques",
+    "policiesPlaceholder": "Cancel·lació, mascotes, nens…",
+    "positioningVibe": "Posicionament i estil",
+    "positioningVibePlaceholder": "Com descriuries l'estil i l'ambient de l'hotel?",
+    "targetGuest": "Hoste objectiu",
+    "targetGuestPlaceholder": "Per a qui és aquest hotel?",
+    "localRecommendations": "Recomanacions locals",
+    "localRecommendationsPlaceholder": "Restaurants, llocs d'interès i recomanacions pròpies per als hostes",
+    "preferredGreeting": "Salutació preferida",
+    "preferredGreetingPlaceholder": "p. ex. Benvolgut/da hoste,",
+    "signoffName": "Signatura de comiat",
+    "signoffNamePlaceholder": "p. ex. L'equip de recepció",
+    "languagesSpoken": "Idiomes que es parlen",
+    "languagesSpokenPlaceholder": "p. ex. Català, castellà, anglès",
+    "parkingTransport": "Aparcament i transport",
+    "parkingTransportPlaceholder": "Opcions d'aparcament, estació més propera, trasllat a l'aeroport…",
+    "wifiInfo": "Wifi",
+    "wifiInfoPlaceholder": "Xarxa wifi i contrasenya per compartir amb els hostes",
+    "breakfastInfo": "Esmorzar",
+    "breakfastInfoPlaceholder": "Horari, ubicació i opcions de l'esmorzar",
+    "roomTypesTitle": "Tipus d'habitació",
+    "roomTypesDesc": "Els tipus d'habitació del teu hotel, perquè la IA hi pugui fer referència pel seu nom.",
+    "roomTypeName": "Nom",
+    "roomTypeCount": "Quantitat",
+    "roomTypeCategory": "Categoria",
+    "addRoomType": "Afegeix tipus d'habitació",
+    "removeRoomType": "Elimina tipus d'habitació",
+    "pullFromPms": "Importa del PMS",
+    "pullFromPmsSoon": "Properament",
+    "reviewsTitle": "Reputació i ressenyes",
+    "reviewsDesc": "Desa l'enllaç de TripAdvisor i enganxa algunes ressenyes per generar un resum breu — mai fem scraping en directe.",
+    "tripadvisorUrl": "URL de TripAdvisor",
+    "tripadvisorUrlPlaceholder": "https://www.tripadvisor.com/...",
+    "reviewHighlights": "Enganxa els punts destacats de les ressenyes",
+    "reviewHighlightsPlaceholder": "Enganxa aquí algunes ressenyes d'hostes",
+    "reviewSummaryLabel": "Resum de ressenyes",
+    "reviewSummaryEmpty": "Encara no hi ha resum — enganxa algunes ressenyes i resumeix.",
+    "summarize": "Resumeix",
+    "summarizing": "Resumint…"
   },
   "apaleoStatus": {
     "connected": "Apaleo connectat.",

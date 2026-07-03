@@ -202,7 +202,7 @@ and the demo (your own design principle and outreach script already say this —
 - Confirm Anthropic's data-use terms and state "your data is not used to train models."
 
 **Domains / infra**
-- Acquire/confirm **fonda.app**; set DNS on Vercel.
+- Acquire/confirm **fondas.app**; set DNS on Vercel.
 - Verify the **Resend sending domain** (briefings@…) — without it, mail only reaches your own inbox.
 - Register production OAuth redirect URIs (Google, Apaleo) on the final domain.
 - Daily Supabase backups on (Pro); confirm `MEWS_TOKEN_ENCRYPTION_KEY` is stable and backed up.
@@ -226,7 +226,7 @@ Code at ~5–6 focused hours/week, with build work compressible if you have more
 |---|---|---|---|
 | 0.1 | **Rotate leaked GitHub token**, reset remote, scrub if in history | Active credential exposure | New token works; old one revoked |
 | 0.2 | **Start Google app verification** (consent screen, scopes, privacy URL) | Weeks-long lead; gates public Gmail | Submitted to Google |
-| 0.3 | **Acquire fonda.app + verify Resend domain** | Email deliverability; OAuth URIs | Test briefing email lands in a real inbox |
+| 0.3 | **Acquire fondas.app + verify Resend domain** | Email deliverability; OAuth URIs | Test briefing email lands in a real inbox |
 | 0.4 | **Replace Terms/Privacy placeholders** with real GDPR copy | Trust + legal exposure | Lawyer-reviewed or solid template live |
 | 0.5 | **Confirm Vercel Pro + crons firing + Sentry alerting** | Reliability foundation | All 4 crons green; alert on failure |
 

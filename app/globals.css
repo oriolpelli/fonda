@@ -131,3 +131,22 @@
   background: var(--fonda-accent);
   color: #fff;
 }
+
+/* Respect prefers-reduced-motion system-wide: collapse transition/animation
+   timing to near-instant, and force any Reveal (components/marketing/reveal.tsx)
+   scroll-reveal wrapper to its fully-visible state from first paint. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal-init {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

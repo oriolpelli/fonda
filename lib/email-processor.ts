@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { EmailStatus } from "@/types";
 
@@ -185,12 +186,13 @@ async function generateDraft(
     hotelName: string;
     gmName: string | null;
     tone: string | null;
+    profileSummary: string | null;
     language: string;
     emailText: string;
     context: EnrichContext;
   }
 ): Promise<string> {
-  const { hotelName, gmName, tone, language, emailText, context } = args;
+  const { hotelName, gmName, tone, profileSummary, language, emailText, context } = args;
 
   const contextBlock =
     context.reservation || context.guest
@@ -203,11 +205,14 @@ async function generateDraft(
     `You are drafting an email reply on behalf of ${hotelName}.`,
     `Sign off as ${gmName ?? "the front desk team"}.`,
     `Tone: ${tone ?? "warm, professional, and concise."}`,
+    profileSummary,
     `Reply in ${language} — the same language as the guest's email.`,
     contextBlock,
     "Address the guest by name if it is known. Be helpful and accurate; never invent prices, policies, or availability you were not given — instead say you will confirm.",
     "Output ONLY the reply email body. No subject line, no preamble like 'Here is the draft', no commentary, no placeholders other than the sign-off name.",
-  ].join("\n");
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   const response = await client.messages.create({
     model: EMAIL_DRAFT_MODEL,
@@ -249,7 +254,7 @@ export async function processEmail(
     admin.from("hotels").select("name").eq("id", hotelId).single(),
     admin
       .from("hotel_settings")
-      .select("gm_name, tone_guidelines")
+      .select(`gm_name, tone_guidelines, ${HOTEL_PROFILE_COLUMNS}`)
       .eq("hotel_id", hotelId)
       .maybeSingle(),
   ]);
@@ -275,6 +280,7 @@ export async function processEmail(
       hotelName: hotel?.name ?? "the hotel",
       gmName: settings?.gm_name ?? null,
       tone: settings?.tone_guidelines ?? null,
+      profileSummary: buildHotelProfileSummary(settings),
       language,
       emailText,
       context,
