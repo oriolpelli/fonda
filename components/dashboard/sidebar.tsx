@@ -50,10 +50,11 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
   return (
     <Link
       href={item.href}
+      aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm font-medium transition-colors",
+        "flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
         active
-          ? "bg-[var(--fonda-accent-light)] text-[var(--fonda-accent)]"
+          ? "bg-[var(--fonda-accent-light)] text-[var(--fonda-accent)] font-semibold shadow-[inset_2px_0_0_0_var(--fonda-accent)]"
           : "text-[var(--fonda-text-2)] hover:bg-[var(--fonda-surface)] hover:text-foreground"
       )}
     >

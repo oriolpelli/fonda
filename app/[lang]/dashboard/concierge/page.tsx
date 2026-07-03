@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { EmptyState } from "@/components/dashboard/empty-state";
 
 export async function generateMetadata({
   params,
@@ -28,9 +29,7 @@ export default async function ConciergePage({
           {dict.concierge.title}
         </h1>
       </div>
-      <div className="rounded-lg border border-border bg-muted px-4 py-10 text-center text-sm text-muted-foreground">
-        {dict.concierge.emptyState}
-      </div>
+      <EmptyState icon="concierge" message={dict.concierge.emptyState} />
     </div>
   );
 }

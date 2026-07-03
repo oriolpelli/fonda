@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { EmptyState } from "@/components/dashboard/empty-state";
 
 export async function generateMetadata({
   params,
@@ -28,9 +29,7 @@ export default async function AnalyticsPage({
           {dict.analytics.title}
         </h1>
       </div>
-      <div className="rounded-lg border border-border bg-muted px-4 py-10 text-center text-sm text-muted-foreground">
-        {dict.analytics.emptyState}
-      </div>
+      <EmptyState icon="analytics" message={dict.analytics.emptyState} />
     </div>
   );
 }

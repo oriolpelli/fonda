@@ -9,6 +9,7 @@ import {
   ignoreEmail,
   sendReply,
 } from "@/app/[lang]/dashboard/communications/actions";
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import { intlLocale } from "@/lib/i18n/config";
@@ -156,11 +157,9 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
 
       <div className="grid gap-4 md:grid-cols-[320px_1fr]">
         {/* Left: list */}
-        <div className="flex max-h-[70vh] flex-col divide-y divide-border overflow-y-auto rounded-lg border border-border">
+        <div className="flex max-h-[70vh] flex-col divide-y divide-border overflow-y-auto rounded-[16px] border border-border">
           {emails.length === 0 ? (
-            <p className="p-6 text-center text-sm text-muted-foreground">
-              {dict.emails.noEmails}
-            </p>
+            <EmptyState icon="emails" message={dict.emails.noEmails} size="compact" />
           ) : (
             emails.map((email) => {
               const isSelected = email.id === selectedId;
@@ -210,7 +209,7 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
         </div>
 
         {/* Right: detail */}
-        <div className="rounded-lg border border-border p-5">
+        <div className="rounded-[16px] border border-border p-5">
           {selected ? (
             <div className="flex flex-col gap-4">
               <div>

@@ -9,6 +9,7 @@ import {
   sendChaser,
   skipChaser,
 } from "@/app/[lang]/dashboard/checkins/actions";
+import { EmptyState } from "@/components/dashboard/empty-state";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -165,9 +166,7 @@ export function CheckinChasers({ chasers }: { chasers: ChaserCard[] }) {
       ) : null}
 
       {chasers.length === 0 ? (
-        <div className="rounded-lg border border-border bg-muted px-4 py-10 text-center text-sm text-muted-foreground">
-          {dict.checkin.noChasers}
-        </div>
+        <EmptyState icon="checkins" message={dict.checkin.noChasers} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {chasers.map((chaser) => (

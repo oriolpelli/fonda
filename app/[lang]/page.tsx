@@ -51,7 +51,7 @@ export default async function Home({
       <header className="sticky top-0 z-50 border-b border-border bg-[var(--fonda-bg)]/82 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-6 md:px-8">
           <Wordmark href={localizedHref(locale, "/")} />
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-3 sm:gap-6">
             <Link
               href="#features"
               className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground sm:inline"
@@ -60,11 +60,11 @@ export default async function Home({
             </Link>
             <Link
               href={localizedHref(locale, "/login")}
-              className="text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground"
+              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground sm:inline"
             >
               {dict.nav.signIn}
             </Link>
-            <LanguageSwitcher />
+            <LanguageSwitcher className="hidden min-[360px]:inline-flex" />
             <Button asChild variant="ink" size="sm">
               <Link href={localizedHref(locale, "/signup")}>
                 {dict.nav.getEarlyAccess}

@@ -117,7 +117,7 @@ export default async function DashboardPage({
       </div>
 
       {/* Briefing summary */}
-      <div className="rounded-[16px] border border-border bg-card p-6">
+      <div className="rounded-[16px] border border-border bg-card p-6 transition-shadow duration-200 hover:shadow-[0_12px_40px_rgba(10,10,10,0.06)]">
         <div className="flex items-start justify-between gap-4">
           <Eyebrow>{dict.home.todaysBriefing}</Eyebrow>
           <Button asChild size="sm">
@@ -132,7 +132,7 @@ export default async function DashboardPage({
       </div>
 
       {/* Occupancy calendar */}
-      <div className="rounded-[16px] border border-border p-6">
+      <div className="rounded-[16px] border border-border bg-card p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <Eyebrow>{dict.home.occupancyOutlook}</Eyebrow>
           {lowDays > 0 ? (
