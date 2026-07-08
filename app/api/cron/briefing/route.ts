@@ -11,36 +11,9 @@ export const dynamic = "force-dynamic";
 // May generate briefings (each a Claude call) for many hotels in one tick.
 export const maxDuration = 300;
 
-const CRON_INTERVAL_MS = 15 * 60 * 1000;
-
 // ---------------------------------------------------------------------------
 // Timezone helpers
 // ---------------------------------------------------------------------------
-
-function tzOffsetMs(tz: string, date: Date): number {
-  const dtf = new Intl.DateTimeFormat("en-US", {
-    timeZone: tz,
-    hour12: false,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-  const p = Object.fromEntries(
-    dtf.formatToParts(date).map((x) => [x.type, x.value])
-  );
-  const asUtc = Date.UTC(
-    Number(p.year),
-    Number(p.month) - 1,
-    Number(p.day),
-    Number(p.hour),
-    Number(p.minute),
-    Number(p.second)
-  );
-  return asUtc - date.getTime();
-}
 
 function localDate(tz: string, instant: Date): string {
   return new Intl.DateTimeFormat("en-CA", {
@@ -51,13 +24,15 @@ function localDate(tz: string, instant: Date): string {
   }).format(instant);
 }
 
-/** UTC instant of `timeStr` (HH:MM[:SS]) on local `dateStr` in `tz`. */
-function zonedTimeUtc(tz: string, dateStr: string, timeStr: string): Date {
-  const [h = "0", m = "0"] = timeStr.split(":");
-  const naive = new Date(
-    `${dateStr}T${h.padStart(2, "0")}:${m.padStart(2, "0")}:00Z`
-  );
-  return new Date(naive.getTime() - tzOffsetMs(tz, naive));
+/** The current local hour (0-23) for a hotel's timezone. */
+function localHour(tz: string, instant: Date): number {
+  const hourStr = new Intl.DateTimeFormat("en-US", {
+    timeZone: tz,
+    hour: "2-digit",
+    hour12: false,
+  }).format(instant);
+  // "24" shows up for midnight in some environments — normalize to 0.
+  return Number.parseInt(hourStr, 10) % 24;
 }
 
 function formatLongDate(tz: string, instant: Date): string {
@@ -160,8 +135,16 @@ function safeEqual(a: string, b: string): boolean {
 
 interface BriefingOutcome {
   hotelId: string;
-  status: "emailed" | "generated" | "error";
+  status: "emailed" | "generated" | "skipped" | "error";
   error?: string;
+}
+
+/** `hotel_settings.brief_recipients` is jsonb — narrow it defensively. */
+function asRecipients(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (v): v is string => typeof v === "string" && v.trim().length > 0
+  );
 }
 
 export async function GET() {
@@ -171,11 +154,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Align to the 15-minute window so a configured time lands in exactly one tick.
-  const windowStart = new Date(
-    Math.floor(Date.now() / CRON_INTERVAL_MS) * CRON_INTERVAL_MS
-  );
-  const windowEnd = new Date(windowStart.getTime() + CRON_INTERVAL_MS);
+  const now = new Date();
 
   const admin = createAdminClient();
   const { data: hotels, error } = await admin
@@ -188,9 +167,9 @@ export async function GET() {
 
   const { data: settingsRows } = await admin
     .from("hotel_settings")
-    .select("hotel_id, briefing_time");
-  const briefingTimeByHotel = new Map(
-    (settingsRows ?? []).map((s) => [s.hotel_id, s.briefing_time])
+    .select("hotel_id, brief_send_hour, brief_recipients");
+  const settingsByHotel = new Map(
+    (settingsRows ?? []).map((s) => [s.hotel_id, s])
   );
 
   const outcomes: BriefingOutcome[] = [];
@@ -198,24 +177,52 @@ export async function GET() {
 
   for (const hotel of hotels ?? []) {
     const tz = hotel.timezone || "UTC";
-    const briefingTime = briefingTimeByHotel.get(hotel.id) ?? "07:00:00";
-    const fireAt = zonedTimeUtc(tz, localDate(tz, windowStart), briefingTime);
+    const settings = settingsByHotel.get(hotel.id);
+    const sendHour = settings?.brief_send_hour ?? 7;
 
-    // Only fire when the hotel's local briefing time falls in this window.
-    if (fireAt < windowStart || fireAt >= windowEnd) continue;
+    // Only fire for hotels whose local hour matches their configured send
+    // hour. The cron runs every 15 minutes, so this window is up to an hour
+    // wide — the idempotency check below is what prevents duplicate sends.
+    if (localHour(tz, now) !== sendHour) continue;
     considered++;
 
     try {
-      const content = await generateBriefing(hotel.id);
-      const dateLabel = formatLongDate(tz, windowStart);
+      const today = localDate(tz, now);
 
-      const { data: members } = await admin
-        .from("users")
-        .select("email")
-        .eq("hotel_id", hotel.id);
-      const recipients = [
-        ...new Set((members ?? []).map((m) => m.email).filter(Boolean)),
-      ];
+      // Idempotency: if this hotel already has a delivered brief for today,
+      // a later tick within the same local hour must not send again.
+      const { data: lastDelivered } = await admin
+        .from("briefings")
+        .select("generated_at")
+        .eq("hotel_id", hotel.id)
+        .not("delivered_at", "is", null)
+        .order("generated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (
+        lastDelivered &&
+        localDate(tz, new Date(lastDelivered.generated_at)) === today
+      ) {
+        outcomes.push({ hotelId: hotel.id, status: "skipped" });
+        continue;
+      }
+
+      const content = await generateBriefing(hotel.id);
+      const dateLabel = formatLongDate(tz, now);
+
+      const configuredRecipients = asRecipients(settings?.brief_recipients);
+      let recipients = configuredRecipients;
+      if (recipients.length === 0) {
+        // No recipients configured yet: fall back to every hotel user so
+        // existing setups don't silently stop receiving mail.
+        const { data: members } = await admin
+          .from("users")
+          .select("email")
+          .eq("hotel_id", hotel.id);
+        recipients = [
+          ...new Set((members ?? []).map((m) => m.email).filter(Boolean)),
+        ];
+      }
 
       let emailed = false;
       if (process.env.RESEND_API_KEY && recipients.length > 0) {
@@ -253,7 +260,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    window: { start: windowStart.toISOString(), end: windowEnd.toISOString() },
+    checkedAt: now.toISOString(),
     considered,
     outcomes,
   });

@@ -7,11 +7,11 @@ import {
   ApaleoConnectionCard,
   apaleoStatusMessage,
 } from "@/components/dashboard/apaleo-connection-card";
-import { BriefingSettingsForm } from "@/components/dashboard/briefing-settings-form";
 import {
   GmailConnectionCard,
   gmailStatusMessage,
 } from "@/components/dashboard/gmail-connection-card";
+import { GmNameForm } from "@/components/dashboard/gm-name-form";
 import { HotelDetailsForm } from "@/components/dashboard/hotel-details-form";
 import { HotelProfileForm } from "@/components/dashboard/hotel-profile-form";
 import { MewsConnectionForm } from "@/components/dashboard/mews-connection-form";
@@ -52,7 +52,7 @@ export default async function SettingsPage({
   const { data: settings } = await supabase
     .from("hotel_settings")
     .select(
-      "gm_name, briefing_time, briefing_language, star_rating, property_type, check_in_time, check_out_time, policies, positioning_vibe, target_guest, local_recommendations, preferred_greeting, signoff_name, languages_spoken, tripadvisor_url, review_highlights, review_summary, parking_transport, wifi_info, breakfast_info, room_types"
+      "gm_name, star_rating, property_type, check_in_time, check_out_time, policies, positioning_vibe, target_guest, local_recommendations, preferred_greeting, signoff_name, languages_spoken, tripadvisor_url, review_highlights, review_summary, parking_transport, wifi_info, breakfast_info, room_types"
     )
     .maybeSingle();
 
@@ -151,11 +151,7 @@ export default async function SettingsPage({
 
       <GmailConnectionCard email={hotel?.gmail_email ?? null} />
 
-      <BriefingSettingsForm
-        gmName={settings?.gm_name ?? ""}
-        briefingTime={(settings?.briefing_time ?? "07:00:00").slice(0, 5)}
-        briefingLanguage={settings?.briefing_language ?? "en"}
-      />
+      <GmNameForm gmName={settings?.gm_name ?? ""} />
 
       <HotelProfileForm
         starRating={settings?.star_rating ?? null}

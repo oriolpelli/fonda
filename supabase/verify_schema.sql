@@ -43,11 +43,12 @@ expected_columns(tbl, col) as (
     ('checkin_chasers', 'reservation_id'), ('checkin_chasers', 'guest_email'),
     ('checkin_chasers', 'draft_content'), ('checkin_chasers', 'status'),
     ('checkin_chasers', 'sent_at'), ('checkin_chasers', 'created_at'),
-    -- hotel_settings (0001)
+    -- hotel_settings (0001, 0012)
     ('hotel_settings', 'id'), ('hotel_settings', 'hotel_id'),
     ('hotel_settings', 'briefing_time'), ('hotel_settings', 'briefing_language'),
     ('hotel_settings', 'gm_name'), ('hotel_settings', 'arrival_instructions'),
     ('hotel_settings', 'tone_guidelines'),
+    ('hotel_settings', 'brief_recipients'), ('hotel_settings', 'brief_send_hour'),
     -- reservations (0003)
     ('reservations', 'id'), ('reservations', 'hotel_id'), ('reservations', 'mews_id'),
     ('reservations', 'service_id'), ('reservations', 'group_id'),

@@ -433,6 +433,27 @@ create policy "chat_logs: read own hotel"
 
 
 -- ############################################################################
+-- 0012 — brief delivery (recipients + send hour)
+-- ############################################################################
+
+alter table public.hotel_settings
+  add column brief_recipients  jsonb    not null default '[]'::jsonb,
+  add column brief_send_hour   smallint not null default 7;
+
+alter table public.hotel_settings
+  add constraint hotel_settings_brief_send_hour_check
+  check (brief_send_hour between 0 and 23);
+
+comment on column public.hotel_settings.brief_recipients is
+  'Up to 3 email addresses the morning brief is sent to, independent of user '
+  'accounts. Empty array = fall back to emailing every hotel user (legacy '
+  'behavior) so existing setups do not silently stop receiving mail.';
+comment on column public.hotel_settings.brief_send_hour is
+  'Hour (0-23) in the hotel''s local timezone (hotels.timezone) at which the '
+  'brief cron should generate and send today''s briefing.';
+
+
+-- ############################################################################
 -- reload PostgREST schema cache so RPCs resolve immediately
 -- ############################################################################
 

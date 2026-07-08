@@ -62,31 +62,17 @@ export async function updateHotelDetails(
   return { ok: true };
 }
 
-export type BriefingSettingsState =
-  | { ok: true }
-  | { error: string }
-  | undefined;
+export type GmNameState = { ok: true } | { error: string } | undefined;
 
-const BRIEFING_LANGUAGES = ["en", "es", "ca"] as const;
-
-export async function updateBriefingSettings(
-  _prevState: BriefingSettingsState,
+// Brief recipients / send hour / language moved to the Morning Brief page's
+// own Settings panel (app/[lang]/dashboard/brief/actions.ts) — see Task B1.
+// This action now only handles the GM name, used to sign briefings and email
+// drafts (lib/briefing.ts, lib/email-processor.ts).
+export async function updateGmName(
+  _prevState: GmNameState,
   formData: FormData
-): Promise<BriefingSettingsState> {
+): Promise<GmNameState> {
   const gmName = String(formData.get("gmName") ?? "").trim();
-  const briefingTime = String(formData.get("briefingTime") ?? "").trim();
-  const briefingLanguage = String(formData.get("briefingLanguage") ?? "").trim();
-
-  if (!/^\d{2}:\d{2}$/.test(briefingTime)) {
-    return { error: "Enter a valid briefing time." };
-  }
-  if (
-    !BRIEFING_LANGUAGES.includes(
-      briefingLanguage as (typeof BRIEFING_LANGUAGES)[number]
-    )
-  ) {
-    return { error: "Choose a briefing language." };
-  }
 
   let hotelId: string;
   try {
@@ -100,11 +86,7 @@ export async function updateBriefingSettings(
   const supabase = await createClient();
   const { error } = await supabase
     .from("hotel_settings")
-    .update({
-      gm_name: gmName || null,
-      briefing_time: briefingTime,
-      briefing_language: briefingLanguage,
-    })
+    .update({ gm_name: gmName || null })
     .eq("hotel_id", hotelId);
   if (error) {
     return { error: `Couldn't save settings: ${error.message}` };

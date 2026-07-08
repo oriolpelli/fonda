@@ -455,6 +455,8 @@ export type Database = {
           wifi_info: string | null;
           breakfast_info: string | null;
           room_types: Json;
+          brief_recipients: Json;
+          brief_send_hour: number;
         };
         Insert: {
           id?: string;
@@ -482,6 +484,8 @@ export type Database = {
           wifi_info?: string | null;
           breakfast_info?: string | null;
           room_types?: Json;
+          brief_recipients?: Json;
+          brief_send_hour?: number;
         };
         Update: {
           id?: string;
@@ -509,6 +513,8 @@ export type Database = {
           wifi_info?: string | null;
           breakfast_info?: string | null;
           room_types?: Json;
+          brief_recipients?: Json;
+          brief_send_hour?: number;
         };
         Relationships: [
           {

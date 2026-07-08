@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { BriefingArticle } from "@/components/dashboard/briefing-article";
 import { BriefingGenerating } from "@/components/dashboard/briefing-generating";
 import { BriefingRefreshButton } from "@/components/dashboard/briefing-refresh-button";
+import { BriefDeliverySettingsForm } from "@/components/dashboard/brief-delivery-settings-form";
 import { Button } from "@/components/ui/button";
 import type { BriefingContent } from "@/lib/briefing";
 import { intlLocale } from "@/lib/i18n/config";
@@ -38,29 +40,13 @@ function formatLongDate(intl: string, tz: string, d: Date): string {
   }).format(d);
 }
 
-/** Renders briefing prose: blank-line-separated paragraphs. */
-function Prose({ text }: { text: string }) {
-  const paragraphs = text.split(/\n{2,}/).filter((p) => p.trim());
-  return (
-    <div className="flex flex-col gap-4">
-      {paragraphs.map((p, i) => (
-        <p key={i} className="text-lg leading-relaxed text-foreground/90">
-          {p.trim()}
-        </p>
-      ))}
-    </div>
-  );
-}
-
-function Section({ title, text }: { title: string; text: string }) {
-  return (
-    <section className="border-t border-border pt-6">
-      <h2 className="mb-3 font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-        {title}
-      </h2>
-      <Prose text={text} />
-    </section>
-  );
+function formatShortDate(intl: string, tz: string, d: Date): string {
+  return new Intl.DateTimeFormat(intl, {
+    timeZone: tz,
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  }).format(d);
 }
 
 export default async function BriefingPage({
@@ -79,6 +65,11 @@ export default async function BriefingPage({
   const tz = hotel?.timezone || "UTC";
   const now = new Date();
 
+  const { data: settings } = await supabase
+    .from("hotel_settings")
+    .select("brief_recipients, brief_send_hour, briefing_language")
+    .maybeSingle();
+
   const { data: latest } = await supabase
     .from("briefings")
     .select("content_json, generated_at")
@@ -92,6 +83,15 @@ export default async function BriefingPage({
   const briefing = hasTodayBriefing
     ? (latest!.content_json as unknown as BriefingContent)
     : null;
+
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const { data: history } = await supabase
+    .from("briefings")
+    .select("id, generated_at")
+    .not("content_json->>summary", "is", null)
+    .gte("generated_at", thirtyDaysAgo.toISOString())
+    .order("generated_at", { ascending: false })
+    .limit(30);
 
   const quickActions = [
     { label: dict.briefing.reviewEmails, href: "/dashboard/communications" },
@@ -115,12 +115,7 @@ export default async function BriefingPage({
 
       {briefing ? (
         <>
-          <article className="flex flex-col gap-8">
-            <Prose text={briefing.summary} />
-            <Section title={dict.briefing.arrivals} text={briefing.arrivals} />
-            <Section title={dict.briefing.overnightEmail} text={briefing.emails} />
-            <Section title={dict.briefing.rateAlert} text={briefing.rate_alert} />
-          </article>
+          <BriefingArticle content={briefing} dict={dict} />
 
           <div className="flex flex-wrap gap-3 border-t border-border pt-6">
             {quickActions.map((action) => (
@@ -135,6 +130,36 @@ export default async function BriefingPage({
       ) : (
         <BriefingGenerating />
       )}
+
+      <BriefDeliverySettingsForm
+        recipients={(settings?.brief_recipients as string[] | null) ?? []}
+        sendHour={settings?.brief_send_hour ?? 7}
+        language={settings?.briefing_language ?? "en"}
+        timezone={tz}
+      />
+
+      {history && history.length > 0 ? (
+        <section className="flex flex-col gap-3 border-t border-border pt-6">
+          <h2 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+            {dict.briefing.historyTitle}
+          </h2>
+          <ul className="flex flex-col divide-y divide-border">
+            {history.map((row) => (
+              <li key={row.id} className="flex items-center justify-between py-2.5">
+                <span className="text-sm text-foreground/80">
+                  {formatShortDate(intlLocale[locale], tz, new Date(row.generated_at))}
+                </span>
+                <Link
+                  href={localizedHref(locale, `/dashboard/brief/history/${row.id}`)}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  {dict.briefing.openBrief}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 }
