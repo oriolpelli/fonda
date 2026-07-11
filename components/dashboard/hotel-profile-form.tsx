@@ -8,6 +8,7 @@ import {
   type HotelProfileState,
 } from "@/app/[lang]/dashboard/settings/actions";
 import { RoomTypesEditor } from "@/components/dashboard/room-types-editor";
+import { UpsellsEditor } from "@/components/dashboard/upsells-editor";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { RoomType } from "@/types";
+import type { RoomType, Upsell } from "@/types";
 import { cn } from "@/lib/utils";
 
 const selectClassName = cn(
@@ -46,6 +47,7 @@ interface HotelProfileFormProps {
   wifiInfo: string;
   breakfastInfo: string;
   roomTypes: RoomType[];
+  upsells: Upsell[];
 }
 
 function SubmitButton() {
@@ -74,6 +76,7 @@ export function HotelProfileForm({
   wifiInfo,
   breakfastInfo,
   roomTypes,
+  upsells,
 }: HotelProfileFormProps) {
   const { dict } = useDictionary();
   const [state, formAction] = useActionState<HotelProfileState, FormData>(
@@ -250,6 +253,12 @@ export function HotelProfileForm({
             <Label>{dict.settings.roomTypesTitle}</Label>
             <p className="text-sm text-muted-foreground">{dict.settings.roomTypesDesc}</p>
             <RoomTypesEditor initialRoomTypes={roomTypes} />
+          </div>
+
+          <div className="flex flex-col gap-2 border-t border-border pt-4">
+            <Label>{dict.settings.upsellsTitle}</Label>
+            <p className="text-sm text-muted-foreground">{dict.settings.upsellsDesc}</p>
+            <UpsellsEditor initialUpsells={upsells} />
           </div>
 
           {state && "error" in state ? (

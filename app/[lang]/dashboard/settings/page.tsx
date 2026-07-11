@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { t } from "@/lib/i18n/format";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
-import type { RoomType } from "@/types";
+import type { RoomType, Upsell } from "@/types";
 
 export async function generateMetadata({
   params,
@@ -52,7 +52,7 @@ export default async function SettingsPage({
   const { data: settings } = await supabase
     .from("hotel_settings")
     .select(
-      "gm_name, star_rating, property_type, check_in_time, check_out_time, policies, positioning_vibe, target_guest, local_recommendations, preferred_greeting, signoff_name, languages_spoken, tripadvisor_url, review_highlights, review_summary, parking_transport, wifi_info, breakfast_info, room_types"
+      "gm_name, star_rating, property_type, check_in_time, check_out_time, policies, positioning_vibe, target_guest, local_recommendations, preferred_greeting, signoff_name, languages_spoken, tripadvisor_url, review_highlights, review_summary, parking_transport, wifi_info, breakfast_info, room_types, upsells"
     )
     .maybeSingle();
 
@@ -169,6 +169,7 @@ export default async function SettingsPage({
         wifiInfo={settings?.wifi_info ?? ""}
         breakfastInfo={settings?.breakfast_info ?? ""}
         roomTypes={(settings?.room_types as RoomType[] | null) ?? []}
+        upsells={(settings?.upsells as Upsell[] | null) ?? []}
       />
 
       <TripAdvisorForm

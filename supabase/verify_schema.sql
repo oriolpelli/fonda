@@ -49,6 +49,7 @@ expected_columns(tbl, col) as (
     ('hotel_settings', 'gm_name'), ('hotel_settings', 'arrival_instructions'),
     ('hotel_settings', 'tone_guidelines'),
     ('hotel_settings', 'brief_recipients'), ('hotel_settings', 'brief_send_hour'),
+    ('hotel_settings', 'upsells'),
     -- reservations (0003)
     ('reservations', 'id'), ('reservations', 'hotel_id'), ('reservations', 'mews_id'),
     ('reservations', 'service_id'), ('reservations', 'group_id'),

@@ -1,12 +1,12 @@
 import "server-only";
 
-import type { RoomType } from "@/types";
+import type { RoomType, Upsell } from "@/types";
 
 /** Columns callers should append to their existing `hotel_settings` select(). */
 export const HOTEL_PROFILE_COLUMNS =
   "star_rating, property_type, positioning_vibe, target_guest, " +
   "preferred_greeting, signoff_name, languages_spoken, " +
-  "local_recommendations, review_summary, room_types";
+  "local_recommendations, review_summary, room_types, upsells";
 
 export interface HotelProfileRow {
   star_rating: number | null;
@@ -19,10 +19,12 @@ export interface HotelProfileRow {
   local_recommendations: string | null;
   review_summary: string | null;
   room_types: unknown;
+  upsells: unknown;
 }
 
 const MAX_FIELD_CHARS = 320;
 const MAX_ROOM_TYPE_ROWS = 10;
+const MAX_UPSELL_ROWS = 12;
 
 function truncate(s: string, max = MAX_FIELD_CHARS): string {
   const trimmed = s.trim();
@@ -37,6 +39,21 @@ function parseRoomTypes(raw: unknown): RoomType[] {
         !!r && typeof r === "object" && typeof (r as RoomType).name === "string"
     )
     .slice(0, MAX_ROOM_TYPE_ROWS);
+}
+
+/** Only active upsells with a label are worth injecting. */
+function parseActiveUpsells(raw: unknown): Upsell[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(
+      (u): u is Upsell =>
+        !!u &&
+        typeof u === "object" &&
+        typeof (u as Upsell).label === "string" &&
+        (u as Upsell).label.trim().length > 0 &&
+        (u as Upsell).active !== false
+    )
+    .slice(0, MAX_UPSELL_ROWS);
 }
 
 /**
@@ -81,6 +98,21 @@ export function buildHotelProfileSummary(
   if (roomTypes.length > 0) {
     const list = roomTypes.map((rt) => `${rt.name} x${rt.count}`).join(", ");
     lines.push(`Room types: ${list}.`);
+  }
+
+  const upsells = parseActiveUpsells(row.upsells);
+  if (upsells.length > 0) {
+    const list = upsells
+      .map((u) => {
+        const price = u.price.trim();
+        const base = price ? `${u.label.trim()} (${price})` : u.label.trim();
+        const note = u.notes?.trim();
+        return note ? `${base} — ${truncate(note, 80)}` : base;
+      })
+      .join("; ");
+    lines.push(
+      `Paid extras available (quote these prices when a guest asks): ${list}.`
+    );
   }
 
   if (row.local_recommendations)

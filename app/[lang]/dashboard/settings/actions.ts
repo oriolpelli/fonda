@@ -10,7 +10,7 @@ import {
 } from "@/lib/mews";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import type { RoomType } from "@/types";
+import type { RoomType, Upsell } from "@/types";
 import type { Json } from "@/types/database";
 
 export type ConnectState =
@@ -124,6 +124,44 @@ function parseRoomTypes(raw: string): RoomType[] {
     .slice(0, 30);
 }
 
+const UPSELL_KEYS: Upsell["key"][] = [
+  "late_checkout",
+  "breakfast",
+  "transfer",
+  "parking",
+  "custom",
+];
+
+function parseUpsells(raw: string): Upsell[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(parsed)) return [];
+  return parsed
+    .filter(
+      (u): u is Upsell =>
+        !!u &&
+        typeof u === "object" &&
+        typeof (u as Upsell).label === "string" &&
+        typeof (u as Upsell).price === "string"
+    )
+    .map((u) => ({
+      key: UPSELL_KEYS.includes(u.key) ? u.key : "custom",
+      label: u.label.trim(),
+      price: u.price.trim(),
+      notes:
+        typeof u.notes === "string" && u.notes.trim().length > 0
+          ? u.notes.trim()
+          : undefined,
+      active: u.active !== false,
+    }))
+    .filter((u) => u.label.length > 0)
+    .slice(0, 20);
+}
+
 export async function updateHotelProfile(
   _prevState: HotelProfileState,
   formData: FormData
@@ -150,6 +188,7 @@ export async function updateHotelProfile(
   }
 
   const roomTypes = parseRoomTypes(String(formData.get("roomTypes") ?? "[]"));
+  const upsells = parseUpsells(String(formData.get("upsells") ?? "[]"));
 
   let hotelId: string;
   try {
@@ -177,6 +216,7 @@ export async function updateHotelProfile(
       wifi_info: text("wifiInfo"),
       breakfast_info: text("breakfastInfo"),
       room_types: roomTypes as unknown as Json,
+      upsells: upsells as unknown as Json,
     })
     .eq("hotel_id", hotelId);
   if (error) {

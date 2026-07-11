@@ -58,3 +58,21 @@ export interface RoomType {
   count: number;
   category: string;
 }
+
+/** Preset keys for `hotel_settings.upsells`; `custom` is the free-text row. */
+export type UpsellKey =
+  | "late_checkout"
+  | "breakfast"
+  | "transfer"
+  | "parking"
+  | "custom";
+
+/** One row of `hotel_settings.upsells` (jsonb array). Price is a free string
+ *  ("€25", "25 €/night") so hotels aren't forced into a single currency/format. */
+export interface Upsell {
+  key: UpsellKey;
+  label: string;
+  price: string;
+  notes?: string;
+  active: boolean;
+}

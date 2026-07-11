@@ -454,6 +454,20 @@ comment on column public.hotel_settings.brief_send_hour is
 
 
 -- ############################################################################
+-- 0013 — hotel upsells / ancillary extras
+-- ############################################################################
+
+alter table public.hotel_settings
+  add column upsells jsonb not null default '[]'::jsonb;
+
+comment on column public.hotel_settings.upsells is
+  'Array of { key, label, price, notes?, active } ancillary extras (late '
+  'checkout, breakfast, transfer, parking, custom), entered manually in '
+  'Settings. Consumed by buildHotelProfileSummary so drafts/chat can quote '
+  'prices; proactive upselling (Aug-1) will build on this.';
+
+
+-- ############################################################################
 -- reload PostgREST schema cache so RPCs resolve immediately
 -- ############################################################################
 
