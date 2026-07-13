@@ -3,14 +3,10 @@ import { CheckCircle2, Circle } from "lucide-react";
 
 import { disconnectMews } from "@/app/[lang]/dashboard/settings/actions";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
-import {
-  ApaleoConnectionCard,
-  apaleoStatusMessage,
-} from "@/components/dashboard/apaleo-connection-card";
-import {
-  GmailConnectionCard,
-  gmailStatusMessage,
-} from "@/components/dashboard/gmail-connection-card";
+import { ApaleoConnectionCard } from "@/components/dashboard/apaleo-connection-card";
+import { apaleoStatusMessage } from "@/lib/apaleo-status";
+import { GmailConnectionCard } from "@/components/dashboard/gmail-connection-card";
+import { gmailStatusMessage } from "@/lib/gmail-status";
 import { GmNameForm } from "@/components/dashboard/gm-name-form";
 import { HotelDetailsForm } from "@/components/dashboard/hotel-details-form";
 import { HotelProfileForm } from "@/components/dashboard/hotel-profile-form";
