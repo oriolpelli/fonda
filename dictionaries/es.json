@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Fondas — Operaciones hoteleras, en piloto automático",
-    "description": "Fondas ofrece a los directores de hoteles independientes un resumen matutino con IA, un asistente de correo con IA, seguimiento de horas de llegada y consultas sobre el hotel en lenguaje natural."
+    "description": "Fondas se ocupa de la gestión de recepción de hoteles independientes: correos de huéspedes con la respuesta ya redactada, un resumen matinal antes de que abra la recepción, seguimiento de horas de llegada y respuestas sobre tu hotel en lenguaje natural."
   },
   "common": {
     "signOut": "Cerrar sesión",
@@ -20,28 +20,38 @@
     "getEarlyAccess": "Solicitar acceso anticipado"
   },
   "hero": {
-    "badge": "IA para hoteles boutique · Beta privada",
-    "headlineLine1": "Tu hotel,",
-    "headlineLine2": "funcionando solo.",
-    "subhead": "Una capa de operaciones con IA que se encarga del trabajo diario —resúmenes matutinos, correos de OTAs, seguimiento de check-ins y datos del hotel en vivo— en 90 segundos.",
+    "badge": "Para directores de hotel independientes · Beta privada",
+    "headlineLine1": "El correo, contestado.",
+    "headlineLine2": "La mañana, resuelta.",
+    "subhead": "Fondas se ocupa de la gestión diaria de recepción: cada correo de huésped llega con la respuesta redactada con la voz de tu hotel, el resumen matinal está listo antes del primer café y las horas de llegada se reclaman solas. Con el PMS que ya usas.",
     "ctaPrimary": "Solicitar acceso anticipado",
     "ctaSecondary": "Cómo funciona →"
+  },
+  "emailPreview": {
+    "windowTitle": "Fondas · Bandeja de entrada",
+    "receivedLabel": "Correo de huésped · anoche 23:12",
+    "fromName": "Laura Bianchi · laura.b@…",
+    "subject": "Llegada tarde el viernes y parking",
+    "message": "¡Hola! Nuestro vuelo aterriza el viernes a las 21:40, ¿es posible hacer el check-in tan tarde? ¿Y hay parking cerca del hotel? Gracias, Laura",
+    "contextLine": "Reserva localizada · vie 26 – dom 28 · Doble Superior",
+    "draftLabel": "Respuesta redactada — revisa y envía",
+    "draftBody": "Buenas noches, Laura: ningún problema con las 21:40, la recepción está atendida hasta medianoche y tendremos sus llaves preparadas. Para el coche, trabajamos con el parking de la calle del Pi, a dos minutos (24 € la noche). ¿Le reservo una plaza para el viernes?"
   },
   "trust": {
     "worksWith": "Compatible con"
   },
   "featuresSection": {
     "eyebrow": "Qué hace Fondas",
-    "headline": "Cinco funciones. Una mañana tranquila."
+    "headline": "Cuatro tareas. Una mañana tranquila."
   },
   "features": {
     "briefing": {
-      "name": "Resumen matutino con IA",
+      "name": "Resumen matinal",
       "description": "Un resumen diario de llegadas, salidas, VIPs y todo lo que requiere tu atención, listo antes de tu primer café."
     },
     "email-assistant": {
-      "name": "Asistente de correo con IA",
-      "description": "Redacta y clasifica los correos de huéspedes con la voz de tu hotel, para que la recepción pase menos tiempo en la bandeja de entrada."
+      "name": "Asistente de correo",
+      "description": "Cada correo de huésped llega con una respuesta redactada con la voz de tu hotel: revisas, ajustas y envías."
     },
     "checkin-chasing": {
       "name": "Seguimiento de horas de llegada",
@@ -53,7 +63,7 @@
     }
   },
   "briefingPreview": {
-    "windowTitle": "Fondas · Resumen matutino",
+    "windowTitle": "Fondas · Resumen matinal",
     "dateLine": "Martes, 24 de junio · 6:32",
     "greeting": "Buenos días. Así está tu hotel hoy.",
     "row1strong": "12 llegadas hoy.",
@@ -64,16 +74,37 @@
     "row3rest": " Quizá convenga revisar las tarifas del fin de semana."
   },
   "stats": {
-    "headline": "Mañanas tranquilas, horas medibles.",
-    "lead": "Fondas se amortiza en tiempo recuperado — esto es lo que recuperan los hoteles independientes cuando el trabajo diario se hace solo.",
-    "adminTop": "Gestión diaria, resuelta",
-    "adminLabel": "ahorradas por director, cada día",
-    "catchupTop": "La puesta al día matutina",
-    "catchupLabel": "el resumen sustituye una hora",
-    "setupTop": "Configúralo una vez",
-    "setupLabel": "y queda totalmente automatizado",
-    "onboardingTop": "Coste de implantación",
-    "onboardingLabel": "tu equipo empieza el mismo día"
+    "headline": "Tus primeros 90 minutos, de vuelta.",
+    "lead": "Fondas te devuelve las dos partes más pesadas del día: el correo de huéspedes y la puesta al día de la mañana. Los borradores y el resumen se generan con IA que ya conoce tu hotel; enviar, siempre lo decides tú.",
+    "inboxTop": "El correo de huéspedes, con borrador listo",
+    "inboxValue": "90s",
+    "inboxLabel": "para revisar una respuesta y enviarla",
+    "briefTop": "El resumen matinal llega",
+    "briefValue": "6:30",
+    "briefLabel": "antes de que abra la recepción",
+    "priceTop": "Un precio único",
+    "priceValue": "199 €",
+    "priceLabel": "por hotel al mes, todo incluido",
+    "setupTop": "Se configura una vez",
+    "setupValue": "1×",
+    "setupLabel": "conecta tu PMS y el correo, y listo"
+  },
+  "bundle": {
+    "eyebrow": "Una sola capa",
+    "headline": "Una sola capa, no seis suscripciones.",
+    "lead": "Las tareas que se comen el día de un director, resueltas en un solo sitio — porque Fondas conoce tu hotel una vez y lo aprovecha en todo.",
+    "guestRepliesTitle": "Respuestas a huéspedes",
+    "guestRepliesDesc": "Cada correo contestado con la voz de tu hotel.",
+    "morningBriefTitle": "Resumen matinal",
+    "morningBriefDesc": "Lo que importa hoy, antes de entrar por la puerta.",
+    "etaChasingTitle": "Horas de llegada",
+    "etaChasingDesc": "Confirmadas sin tener que preguntar dos veces.",
+    "askAnythingTitle": "Pregunta lo que quieras",
+    "askAnythingDesc": "Ocupación, llegadas, cómo pinta la noche — en lenguaje natural.",
+    "preArrivalTitle": "Mensajes previos a la llegada",
+    "preArrivalDesc": "Huéspedes que llegan informados, sin sorpresas.",
+    "dailySignalTitle": "Señal diaria",
+    "dailySignalDesc": "Un aviso discreto cuando una fecha necesita atención."
   },
   "cta": {
     "eyebrow": "Únete a la beta",

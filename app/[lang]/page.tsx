@@ -4,6 +4,7 @@ import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { Wordmark } from "@/components/brand/wordmark";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { BriefingPreviewWindow } from "@/components/marketing/briefing-preview-window";
+import { EmailDraftPreviewWindow } from "@/components/marketing/email-draft-preview-window";
 import { Reveal } from "@/components/marketing/reveal";
 import { Button } from "@/components/ui/button";
 import { FEATURES } from "@/lib/features";
@@ -31,11 +32,22 @@ export default async function Home({
   const { locale, dict } = await loadDictionary((await params).lang);
 
   // Sana-style ROI stats: a context line on top, a big accent number, a label.
+  // Reframed around the inbox + the morning (ROADMAP v2 §0.2) — no invented precision.
   const STATS = [
-    { top: dict.stats.adminTop, value: "4–6h", label: dict.stats.adminLabel },
-    { top: dict.stats.catchupTop, value: "90s", label: dict.stats.catchupLabel },
-    { top: dict.stats.setupTop, value: "1×", label: dict.stats.setupLabel },
-    { top: dict.stats.onboardingTop, value: "€0", label: dict.stats.onboardingLabel },
+    { top: dict.stats.inboxTop, value: dict.stats.inboxValue, label: dict.stats.inboxLabel },
+    { top: dict.stats.briefTop, value: dict.stats.briefValue, label: dict.stats.briefLabel },
+    { top: dict.stats.priceTop, value: dict.stats.priceValue, label: dict.stats.priceLabel },
+    { top: dict.stats.setupTop, value: dict.stats.setupValue, label: dict.stats.setupLabel },
+  ];
+
+  // The jobs Fondas bundles — the "one layer, not six subscriptions" story.
+  const BUNDLE_JOBS = [
+    { title: dict.bundle.guestRepliesTitle, desc: dict.bundle.guestRepliesDesc },
+    { title: dict.bundle.morningBriefTitle, desc: dict.bundle.morningBriefDesc },
+    { title: dict.bundle.etaChasingTitle, desc: dict.bundle.etaChasingDesc },
+    { title: dict.bundle.askAnythingTitle, desc: dict.bundle.askAnythingDesc },
+    { title: dict.bundle.preArrivalTitle, desc: dict.bundle.preArrivalDesc },
+    { title: dict.bundle.dailySignalTitle, desc: dict.bundle.dailySignalDesc },
   ];
 
   // Morning-briefing preview rows (no emoji — a small accent square marks each).
@@ -108,12 +120,19 @@ export default async function Home({
             index={1}
             className="mx-auto mt-16 max-w-[960px] sm:mt-20 lg:mt-24"
           >
-            <BriefingPreviewWindow
+            {/* The first product visual is the inbox: a guest email with its
+                draft ready (MARKET_STRATEGY §2.1). The briefing preview
+                follows in the features section below. */}
+            <EmailDraftPreviewWindow
               size="lg"
-              windowTitle={dict.briefingPreview.windowTitle}
-              dateLine={dict.briefingPreview.dateLine}
-              greeting={dict.briefingPreview.greeting}
-              rows={BRIEFING}
+              windowTitle={dict.emailPreview.windowTitle}
+              receivedLabel={dict.emailPreview.receivedLabel}
+              fromName={dict.emailPreview.fromName}
+              subject={dict.emailPreview.subject}
+              message={dict.emailPreview.message}
+              contextLine={dict.emailPreview.contextLine}
+              draftLabel={dict.emailPreview.draftLabel}
+              draftBody={dict.emailPreview.draftBody}
             />
           </Reveal>
         </section>
@@ -213,6 +232,41 @@ export default async function Home({
                       {stat.label}
                     </p>
                   </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Bundle — one layer, not six subscriptions (ROADMAP v2 §0.2) */}
+        <section className="border-t border-border px-6 py-24 md:px-8">
+          <div className="mx-auto max-w-[1120px]">
+            <Reveal>
+              <Eyebrow>{dict.bundle.eyebrow}</Eyebrow>
+              <h2 className="mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
+                {dict.bundle.headline}
+              </h2>
+              <p className="mt-5 max-w-[52ch] text-[17px] leading-[1.6] text-muted-foreground">
+                {dict.bundle.lead}
+              </p>
+            </Reveal>
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {BUNDLE_JOBS.map((job, i) => (
+                <Reveal
+                  key={job.title}
+                  index={i}
+                  className="rounded-[16px] border border-border bg-card p-6"
+                >
+                  <span
+                    className="block size-[7px] rounded-[2px] bg-[var(--fonda-accent)]"
+                    aria-hidden
+                  />
+                  <h3 className="mt-4 text-[16px] font-semibold tracking-[-0.01em] text-foreground">
+                    {job.title}
+                  </h3>
+                  <p className="mt-1.5 text-sm leading-[1.55] text-muted-foreground">
+                    {job.desc}
+                  </p>
                 </Reveal>
               ))}
             </div>

@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Fondas — Hotel operations, on autopilot",
-    "description": "Fondas gives independent hotel GMs a morning AI briefing, an AI email assistant, check-in time chasing, and natural-language hotel queries."
+    "description": "Fondas runs the front-office admin for independent hotels: guest email drafted for your review, a morning brief before the desk opens, check-in time chasing, and plain-language answers about your hotel."
   },
   "common": {
     "signOut": "Sign out",
@@ -20,28 +20,38 @@
     "getEarlyAccess": "Get early access"
   },
   "hero": {
-    "badge": "AI for boutique hotels · Private beta",
-    "headlineLine1": "Your hotel,",
-    "headlineLine2": "running itself.",
-    "subhead": "An AI operations layer that handles the daily grind — morning briefings, OTA emails, check-in chasing, and live hotel data — in 90 seconds.",
+    "badge": "For independent hotel GMs · Private beta",
+    "headlineLine1": "Your inbox, answered.",
+    "headlineLine2": "Your morning, ready.",
+    "subhead": "Fondas runs your hotel's front-office admin — guest emails arrive with replies drafted in your voice, the morning brief lands before the first coffee, and arrival times chase themselves. Whichever PMS you use.",
     "ctaPrimary": "Get early access",
     "ctaSecondary": "See how it works →"
+  },
+  "emailPreview": {
+    "windowTitle": "Fondas · Inbox",
+    "receivedLabel": "Guest email · last night 23:12",
+    "fromName": "Laura Bianchi · laura.b@…",
+    "subject": "Late arrival on Friday + parking",
+    "message": "Hello! Our flight lands at 21:40 on Friday — is check-in still possible that late? And is there parking near the hotel? Thanks, Laura",
+    "contextLine": "Reservation matched · Fri 26 – Sun 28 · Superior Double",
+    "draftLabel": "Reply drafted — review & send",
+    "draftBody": "Good evening Laura — 21:40 is no problem at all: reception is staffed until midnight and your keys will be ready. For the car, we work with the garage on Carrer del Pi, two minutes away (€24 per night). Shall I reserve a space for Friday?"
   },
   "trust": {
     "worksWith": "Works with"
   },
   "featuresSection": {
     "eyebrow": "What Fondas does",
-    "headline": "Five features. One calm morning."
+    "headline": "Four jobs. One calm morning."
   },
   "features": {
     "briefing": {
-      "name": "Morning AI briefing",
+      "name": "Morning brief",
       "description": "A daily summary of arrivals, departures, VIPs, and anything that needs your attention — ready before your first coffee."
     },
     "email-assistant": {
-      "name": "AI email assistant",
-      "description": "Draft and triage guest emails in your hotel's voice, so the front desk spends less time in the inbox."
+      "name": "Email assistant",
+      "description": "Every guest email arrives with a reply drafted in your hotel's voice — you review, adjust, and send."
     },
     "checkin-chasing": {
       "name": "Check-in time chasing",
@@ -64,16 +74,37 @@
     "row3rest": " Consider checking weekend pricing."
   },
   "stats": {
-    "headline": "Quiet mornings, measurable hours.",
-    "lead": "Fondas pays for itself in reclaimed time — here's what independent hotels get back once the daily busywork runs itself.",
-    "adminTop": "Daily admin, handled",
-    "adminLabel": "saved per GM, every day",
-    "catchupTop": "The morning catch-up",
-    "catchupLabel": "briefing replaces an hour",
-    "setupTop": "Set it up once",
-    "setupLabel": "then fully automated",
-    "onboardingTop": "Onboarding cost",
-    "onboardingLabel": "your team starts the same day"
+    "headline": "Your first 90 minutes, back.",
+    "lead": "Fondas gives you back the two heaviest parts of the day — guest email and the morning catch-up. Drafts and briefs are generated with AI that already knows your hotel; sending is always your call.",
+    "inboxTop": "Guest email, drafted overnight",
+    "inboxValue": "90s",
+    "inboxLabel": "to review a reply and send it",
+    "briefTop": "The morning brief arrives",
+    "briefValue": "6:30",
+    "briefLabel": "before the front desk opens",
+    "priceTop": "One flat price",
+    "priceValue": "€199",
+    "priceLabel": "per property, per month — everything included",
+    "setupTop": "Set up once",
+    "setupValue": "1×",
+    "setupLabel": "connect your PMS and inbox — done"
+  },
+  "bundle": {
+    "eyebrow": "One layer",
+    "headline": "One layer, not six subscriptions.",
+    "lead": "The jobs that eat a GM's day, handled in one place — because Fondas learns your hotel once and puts it to work everywhere.",
+    "guestRepliesTitle": "Guest replies",
+    "guestRepliesDesc": "Every email answered in your hotel's voice.",
+    "morningBriefTitle": "Morning brief",
+    "morningBriefDesc": "What matters today, before you walk in.",
+    "etaChasingTitle": "ETA chasing",
+    "etaChasingDesc": "Arrival times confirmed without asking twice.",
+    "askAnythingTitle": "Ask anything",
+    "askAnythingDesc": "Occupancy, arrivals, tonight's picture — in plain language.",
+    "preArrivalTitle": "Pre-arrival messages",
+    "preArrivalDesc": "Guests arrive informed, not surprised.",
+    "dailySignalTitle": "Daily signal",
+    "dailySignalDesc": "A quiet flag when a date needs attention."
   },
   "cta": {
     "eyebrow": "Join the beta",

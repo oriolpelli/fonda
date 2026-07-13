@@ -1,20 +1,20 @@
 import type { Feature } from "@/types";
 
-/** The four core Fondas product surfaces. */
+/** The four core Fondas product surfaces — inbox first (MARKET_STRATEGY §2.1). */
 export const FEATURES: Feature[] = [
   {
+    key: "email-assistant",
+    name: "Email assistant",
+    description:
+      "Every guest email arrives with a reply drafted in your hotel's voice — you review, adjust, and send.",
+    href: "/dashboard/communications",
+  },
+  {
     key: "briefing",
-    name: "Morning AI briefing",
+    name: "Morning brief",
     description:
       "A daily summary of arrivals, departures, VIPs, and anything that needs your attention — ready before your first coffee.",
     href: "/dashboard/brief",
-  },
-  {
-    key: "email-assistant",
-    name: "AI email assistant",
-    description:
-      "Draft and triage guest emails in your hotel's voice, so the front desk spends less time in the inbox.",
-    href: "/dashboard/communications",
   },
   {
     key: "checkin-chasing",

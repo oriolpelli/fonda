@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Fondas — Operacions hoteleres, en pilot automàtic",
-    "description": "Fondas ofereix als directors d'hotels independents un resum matinal amb IA, un assistent de correu amb IA, seguiment d'hores d'arribada i consultes sobre l'hotel en llenguatge natural."
+    "description": "Fondas s'ocupa de la gestió de recepció dels hotels independents: correus d'hostes amb la resposta ja redactada, un resum matinal abans que obri la recepció, seguiment d'hores d'arribada i respostes sobre el teu hotel en llenguatge natural."
   },
   "common": {
     "signOut": "Tancar la sessió",
@@ -20,28 +20,38 @@
     "getEarlyAccess": "Demana accés anticipat"
   },
   "hero": {
-    "badge": "IA per a hotels boutique · Beta privada",
-    "headlineLine1": "El teu hotel,",
-    "headlineLine2": "funcionant sol.",
-    "subhead": "Una capa d'operacions amb IA que s'encarrega de la feina diària —resums matinals, correus d'OTA, seguiment de check-ins i dades de l'hotel en directe— en 90 segons.",
+    "badge": "Per a directors d'hotel independents · Beta privada",
+    "headlineLine1": "El correu, contestat.",
+    "headlineLine2": "El matí, resolt.",
+    "subhead": "Fondas s'ocupa de la gestió diària de recepció: cada correu d'hoste arriba amb la resposta redactada amb la veu del teu hotel, el resum matinal és a punt abans del primer cafè i les hores d'arribada es reclamen soles. Amb el PMS que ja fas servir.",
     "ctaPrimary": "Demana accés anticipat",
     "ctaSecondary": "Com funciona →"
+  },
+  "emailPreview": {
+    "windowTitle": "Fondas · Safata d'entrada",
+    "receivedLabel": "Correu d'hoste · ahir a la nit 23:12",
+    "fromName": "Laura Bianchi · laura.b@…",
+    "subject": "Arribada tard divendres i pàrquing",
+    "message": "Hola! El nostre vol aterra divendres a les 21:40, és possible fer el check-in tan tard? I hi ha pàrquing a prop de l'hotel? Gràcies, Laura",
+    "contextLine": "Reserva localitzada · dv. 26 – dg. 28 · Doble Superior",
+    "draftLabel": "Resposta redactada — revisa i envia",
+    "draftBody": "Bona nit, Laura: cap problema amb les 21:40, la recepció està atesa fins a mitjanit i tindrem les seves claus preparades. Per al cotxe, treballem amb el pàrquing del carrer del Pi, a dos minuts (24 € la nit). Li reservo una plaça per divendres?"
   },
   "trust": {
     "worksWith": "Compatible amb"
   },
   "featuresSection": {
     "eyebrow": "Què fa Fondas",
-    "headline": "Cinc funcions. Un matí tranquil."
+    "headline": "Quatre feines. Un matí tranquil."
   },
   "features": {
     "briefing": {
-      "name": "Resum matinal amb IA",
+      "name": "Resum matinal",
       "description": "Un resum diari d'arribades, sortides, VIPs i tot allò que necessita la teva atenció, a punt abans del primer cafè."
     },
     "email-assistant": {
-      "name": "Assistent de correu amb IA",
-      "description": "Redacta i classifica els correus dels hostes amb la veu del teu hotel, perquè la recepció passi menys temps a la safata d'entrada."
+      "name": "Assistent de correu",
+      "description": "Cada correu d'hoste arriba amb una resposta redactada amb la veu del teu hotel: revises, ajustes i envies."
     },
     "checkin-chasing": {
       "name": "Seguiment d'hores d'arribada",
@@ -64,16 +74,37 @@
     "row3rest": " Potser convé revisar les tarifes del cap de setmana."
   },
   "stats": {
-    "headline": "Matins tranquils, hores mesurables.",
-    "lead": "Fondas s'amortitza en temps recuperat — això és el que recuperen els hotels independents quan la feina diària es fa sola.",
-    "adminTop": "Gestió diària, resolta",
-    "adminLabel": "estalviades per director, cada dia",
-    "catchupTop": "La posada al dia matinal",
-    "catchupLabel": "el resum substitueix una hora",
-    "setupTop": "Configura-ho un cop",
-    "setupLabel": "i queda totalment automatitzat",
-    "onboardingTop": "Cost d'implantació",
-    "onboardingLabel": "el teu equip comença el mateix dia"
+    "headline": "Els teus primers 90 minuts, de tornada.",
+    "lead": "Fondas et torna les dues parts més feixugues del dia: el correu d'hostes i la posada al dia del matí. Els esborranys i el resum es generen amb IA que ja coneix el teu hotel; enviar, sempre ho decideixes tu.",
+    "inboxTop": "El correu d'hostes, amb esborrany a punt",
+    "inboxValue": "90s",
+    "inboxLabel": "per revisar una resposta i enviar-la",
+    "briefTop": "El resum matinal arriba",
+    "briefValue": "6:30",
+    "briefLabel": "abans que obri la recepció",
+    "priceTop": "Un preu únic",
+    "priceValue": "199 €",
+    "priceLabel": "per hotel al mes, tot inclòs",
+    "setupTop": "Es configura un cop",
+    "setupValue": "1×",
+    "setupLabel": "connecta el teu PMS i el correu, i a punt"
+  },
+  "bundle": {
+    "eyebrow": "Una sola capa",
+    "headline": "Una sola capa, no sis subscripcions.",
+    "lead": "Les feines que es mengen el dia d'un director, resoltes en un sol lloc — perquè Fondas coneix el teu hotel un cop i ho aprofita a tot arreu.",
+    "guestRepliesTitle": "Respostes als hostes",
+    "guestRepliesDesc": "Cada correu contestat amb la veu del teu hotel.",
+    "morningBriefTitle": "Resum matinal",
+    "morningBriefDesc": "El que importa avui, abans d'entrar per la porta.",
+    "etaChasingTitle": "Hores d'arribada",
+    "etaChasingDesc": "Confirmades sense haver de preguntar dos cops.",
+    "askAnythingTitle": "Pregunta el que vulguis",
+    "askAnythingDesc": "Ocupació, arribades, com es presenta la nit — en llenguatge natural.",
+    "preArrivalTitle": "Missatges abans de l'arribada",
+    "preArrivalDesc": "Hostes que arriben informats, sense sorpreses.",
+    "dailySignalTitle": "Senyal diari",
+    "dailySignalDesc": "Un avís discret quan una data necessita atenció."
   },
   "cta": {
     "eyebrow": "Uneix-te a la beta",
