@@ -115,7 +115,15 @@
   "footer": {
     "rights": "© {year} Fondas. Operaciones hoteleras, en piloto automático.",
     "privacy": "Privacidad",
-    "terms": "Términos"
+    "terms": "Términos",
+    "sampleBrief": "Ver un resumen de ejemplo"
+  },
+  "sampleBrief": {
+    "title": "Resumen matinal",
+    "hotelLine": "Hotel Miravent · Barcelona · 42 habitaciones",
+    "disclaimer": "Un hotel ficticio: todos los nombres y cifras de esta página son inventados.",
+    "overnightTitle": "Qué ha hecho Fondas esta noche",
+    "ctaHeadline": "¿Lo quieres para tu hotel mañana por la mañana?"
   },
   "auth": {
     "loginTitle": "Bienvenido de nuevo",

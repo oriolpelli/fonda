@@ -150,3 +150,39 @@
     transform: none !important;
   }
 }
+
+/* Sample-brief print layout (app/[lang]/sample-brief): browser "Save as PDF"
+   yields one clean A4 page — chrome is hidden via Tailwind print:hidden; here
+   we set the page box and compact the editorial type so it fits one sheet. */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 16mm;
+  }
+
+  .sample-brief-article h1 {
+    font-size: 22px;
+  }
+
+  .sample-brief-article p {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+  }
+
+  .sample-brief-article h2 {
+    font-size: 10px !important;
+    margin-bottom: 6px;
+  }
+
+  .sample-brief-article section {
+    padding-top: 12px;
+  }
+
+  .sample-brief-article article {
+    gap: 16px;
+  }
+
+  .sample-brief-article article > div {
+    gap: 10px;
+  }
+}

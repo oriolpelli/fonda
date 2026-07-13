@@ -115,7 +115,15 @@
   "footer": {
     "rights": "© {year} Fondas. Hotel operations, on autopilot.",
     "privacy": "Privacy",
-    "terms": "Terms"
+    "terms": "Terms",
+    "sampleBrief": "See a sample brief"
+  },
+  "sampleBrief": {
+    "title": "Morning brief",
+    "hotelLine": "Hotel Miravent · Barcelona · 42 rooms",
+    "disclaimer": "A fictional hotel — every name and number on this page is invented.",
+    "overnightTitle": "What Fondas did overnight",
+    "ctaHeadline": "Want this for your hotel tomorrow morning?"
   },
   "auth": {
     "loginTitle": "Welcome back",

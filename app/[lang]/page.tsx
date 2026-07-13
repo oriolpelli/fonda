@@ -302,6 +302,12 @@ export default async function Home({
           <span>{t(dict.footer.rights, { year: new Date().getFullYear() })}</span>
           <nav className="flex gap-4">
             <Link
+              href={localizedHref(locale, "/sample-brief")}
+              className="transition-colors duration-[180ms] hover:text-foreground"
+            >
+              {dict.footer.sampleBrief}
+            </Link>
+            <Link
               href={localizedHref(locale, "/privacy")}
               className="transition-colors duration-[180ms] hover:text-foreground"
             >
