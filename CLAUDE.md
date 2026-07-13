@@ -1,8 +1,12 @@
 @AGENTS.md
 
-# Fonda — Hotel AI SaaS
+# Fondas — Hotel AI SaaS
 
-Fonda is a SaaS product for hotels. See @README.md for the full overview.
+Fondas is a SaaS product for hotels. See @README.md for the full overview.
+The product name is **Fondas** everywhere customer-facing (wordmark, emails,
+legal pages). The design system is separately named **Signal** — "Fonda" in
+design-token comments and `FONDA_DESIGN_IDENTITY.md` refers to that system, not
+the product, and should be left as-is.
 
 Situational docs live in the repo root — read them when a task calls for them, not by default:
 RUNBOOK.md (ops/runbook), LAUNCH_PLAN.md, PILOT_OUTREACH.md, STAGE0.md, and the

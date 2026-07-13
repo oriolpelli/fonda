@@ -1,6 +1,11 @@
-# Fonda
+# Fondas
 
 Hotel operations SaaS for independent hotel GMs (20–200 rooms).
+
+> **Naming:** the product is **Fondas** (as shown in the wordmark, emails, and
+> legal pages). The visual design system is called **Signal** (see
+> `FONDA_DESIGN_IDENTITY.md`); "Fonda" in design-token comments refers to that
+> system, not the product.
 
 Core surfaces:
 
