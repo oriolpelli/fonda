@@ -25,6 +25,9 @@ const MEWS_BASE_URL = `${(
 ).replace(/\/+$/, "")}/api/connector/v1/`;
 const MEWS_CLIENT = "Fonda_v1";
 const PAGE_SIZE = 1000; // MEWS max Count per page
+// MEWS rejects customers/getAll outright if CustomerIds carries more than
+// 1000 entries, so request guest profiles in batches of this size.
+const MAX_CUSTOMER_IDS = 1000;
 const MAX_PAGES = 1000; // safety cap against pathological cursor loops
 // MEWS caps the reservations/getAll interval at ~100 hours. Slice wider ranges
 // into chunks safely under that and merge the results.
@@ -489,14 +492,19 @@ export function createMewsClient(
 
     async getCustomers(customerIds) {
       if (customerIds.length === 0) return [];
-      const pages = await getAllPages<CustomersResponse>(
-        "customers/getAll",
-        { CustomerIds: customerIds },
-        credentials,
-        "Customers",
-        cfg
-      );
-      return pages.flatMap((p) => p.Customers ?? []);
+
+      const customers: MewsCustomer[] = [];
+      for (let i = 0; i < customerIds.length; i += MAX_CUSTOMER_IDS) {
+        const pages = await getAllPages<CustomersResponse>(
+          "customers/getAll",
+          { CustomerIds: customerIds.slice(i, i + MAX_CUSTOMER_IDS) },
+          credentials,
+          "Customers",
+          cfg
+        );
+        customers.push(...pages.flatMap((p) => p.Customers ?? []));
+      }
+      return customers;
     },
 
     async getRates(options = {}) {
