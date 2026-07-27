@@ -62,11 +62,24 @@ export type MewsReservationState =
 /** How the [StartUtc, EndUtc] window is applied to reservations. */
 export type MewsReservationTimeFilter =
   | "Colliding"
-  | "Overlapping"
   | "Created"
   | "Updated"
   | "Start"
   | "End";
+
+/**
+ * reservations/getAll/2023-06-06 takes one named interval per filter mode
+ * instead of the legacy StartUtc/EndUtc + TimeFilter pair. Unknown request
+ * properties are silently ignored by MEWS (returning *unfiltered* results), so
+ * these names are verified against the API rather than assumed.
+ */
+const RESERVATION_INTERVAL_PARAM: Record<MewsReservationTimeFilter, string> = {
+  Colliding: "CollidingUtc",
+  Created: "CreatedUtc",
+  Updated: "UpdatedUtc",
+  Start: "ScheduledStartUtc",
+  End: "ScheduledEndUtc",
+};
 
 /** Partial — a guest stay/reservation. */
 export interface MewsReservation {
@@ -83,7 +96,9 @@ export interface MewsReservation {
   CancelledUtc?: string | null;
   RequestedCategoryId?: string | null;
   AssignedSpaceId?: string | null;
+  /** The guest (or company/agency — see AccountType) this reservation belongs to. */
   AccountId?: string | null;
+  AccountType?: "Customer" | "Company" | "TravelAgency";
   RateId?: string | null;
   AdultCount?: number;
   ChildCount?: number;
@@ -447,16 +462,19 @@ export function createMewsClient(
 
       // Dedupe by Id — a reservation spanning a chunk boundary collides with
       // both adjacent windows under the "Colliding" filter.
+      const intervalParam =
+        RESERVATION_INTERVAL_PARAM[options.timeFilter ?? "Colliding"];
+
       const byId = new Map<string, MewsReservation>();
       for (const chunk of chunks) {
         const pages = await getAllPages<ReservationsResponse>(
-          "reservations/getAll",
+          "reservations/getAll/2023-06-06",
           {
-            StartUtc: chunk.start.toISOString(),
-            EndUtc: chunk.end.toISOString(),
-            TimeFilter: options.timeFilter ?? "Colliding",
-            ...(options.states ? { ReservationStates: options.states } : {}),
-            Extent: { Reservations: true },
+            [intervalParam]: {
+              StartUtc: chunk.start.toISOString(),
+              EndUtc: chunk.end.toISOString(),
+            },
+            ...(options.states ? { States: options.states } : {}),
           },
           credentials,
           "Reservations",

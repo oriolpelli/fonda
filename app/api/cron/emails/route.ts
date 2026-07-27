@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 
+import * as Sentry from "@sentry/nextjs";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -46,6 +47,12 @@ export async function GET() {
     .select("id")
     .not("gmail_email", "is", null);
   if (error) {
+    Sentry.captureException(new Error(error.message), {
+      tags: { stage: "emails" },
+    });
+    await admin
+      .from("cron_logs")
+      .insert({ job: "emails", status: "error", message: error.message });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -55,8 +62,18 @@ export async function GET() {
       const ingested = await ingestRecentEmails(hotel.id, POLL_WINDOW_DAYS);
       const processed = await processNewEmails(hotel.id);
       outcomes.push({ hotelId: hotel.id, ingested, processed });
+      await admin
+        .from("cron_logs")
+        .insert({ job: "emails", hotel_id: hotel.id, status: "success" });
     } catch (err) {
-      outcomes.push({ hotelId: hotel.id, error: (err as Error).message });
+      const message = (err as Error).message;
+      Sentry.captureException(err, {
+        tags: { hotelId: hotel.id, stage: "emails" },
+      });
+      await admin
+        .from("cron_logs")
+        .insert({ job: "emails", hotel_id: hotel.id, status: "error", message });
+      outcomes.push({ hotelId: hotel.id, error: message });
     }
   }
 

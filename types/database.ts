@@ -396,6 +396,41 @@ export type Database = {
           },
         ];
       };
+      cron_logs: {
+        Row: {
+          id: string;
+          job: string;
+          hotel_id: string | null;
+          status: string;
+          message: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          job: string;
+          hotel_id?: string | null;
+          status: string;
+          message?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          job?: string;
+          hotel_id?: string | null;
+          status?: string;
+          message?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "cron_logs_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       chat_logs: {
         Row: {
           id: string;

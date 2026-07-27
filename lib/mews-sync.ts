@@ -1,5 +1,7 @@
 import "server-only";
 
+import * as Sentry from "@sentry/nextjs";
+
 import type {
   MewsCustomer,
   MewsReservation,
@@ -33,6 +35,15 @@ function chunk<T>(items: T[], size: number): T[][] {
   return out;
 }
 
+/**
+ * The guest profile this reservation belongs to. AccountId also carries
+ * company and travel-agency ids, which have no matching customers/getAll row.
+ */
+function guestId(r: MewsReservation): string | null {
+  if (r.AccountType && r.AccountType !== "Customer") return null;
+  return r.AccountId ?? null;
+}
+
 function reservationRow(
   hotelId: string,
   r: MewsReservation,
@@ -45,7 +56,7 @@ function reservationRow(
     group_id: r.GroupId ?? null,
     number: r.Number ?? null,
     state: r.State ?? null,
-    customer_mews_id: r.AccountId ?? null,
+    customer_mews_id: guestId(r),
     requested_category_id: r.RequestedCategoryId ?? null,
     assigned_space_id: r.AssignedSpaceId ?? null,
     rate_id: r.RateId ?? null,
@@ -151,7 +162,7 @@ export async function syncReservations(
 
   // Pull the guest profiles referenced by these reservations.
   const customerIds = reservations
-    .map((r) => r.AccountId)
+    .map(guestId)
     .filter((id): id is string => Boolean(id));
 
   let customers = 0;
@@ -200,6 +211,9 @@ export async function syncHotel(
 
     return result;
   } catch (err) {
+    Sentry.captureException(err, {
+      tags: { hotelId, stage: "sync" },
+    });
     await admin.from("sync_logs").insert({
       hotel_id: hotelId,
       status: "error",
@@ -234,7 +248,11 @@ export async function syncAllConnectedHotels(
     .eq("pms_connected", true);
 
   if (error) {
-    throw new Error(`Failed to list connected hotels: ${error.message}`);
+    const listError = new Error(
+      `Failed to list connected hotels: ${error.message}`
+    );
+    Sentry.captureException(listError, { tags: { stage: "sync" } });
+    throw listError;
   }
 
   const outcomes: HotelSyncOutcome[] = [];

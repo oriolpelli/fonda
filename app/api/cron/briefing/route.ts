@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 
+import * as Sentry from "@sentry/nextjs";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
@@ -162,6 +163,12 @@ export async function GET() {
     .select("id, name, timezone")
     .eq("pms_connected", true);
   if (error) {
+    Sentry.captureException(new Error(error.message), {
+      tags: { stage: "briefing" },
+    });
+    await admin
+      .from("cron_logs")
+      .insert({ job: "briefing", status: "error", message: error.message });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -176,17 +183,21 @@ export async function GET() {
   let considered = 0;
 
   for (const hotel of hotels ?? []) {
-    const tz = hotel.timezone || "UTC";
-    const settings = settingsByHotel.get(hotel.id);
-    const sendHour = settings?.brief_send_hour ?? 7;
-
-    // Only fire for hotels whose local hour matches their configured send
-    // hour. The cron runs every 15 minutes, so this window is up to an hour
-    // wide — the idempotency check below is what prevents duplicate sends.
-    if (localHour(tz, now) !== sendHour) continue;
-    considered++;
-
+    // Everything per-hotel lives inside this try — including the timezone
+    // gate below. Intl.DateTimeFormat throws on an invalid hotels.timezone,
+    // and outside the try that one bad row would abort the tick for every
+    // remaining hotel.
     try {
+      const tz = hotel.timezone || "UTC";
+      const settings = settingsByHotel.get(hotel.id);
+      const sendHour = settings?.brief_send_hour ?? 7;
+
+      // Only fire for hotels whose local hour matches their configured send
+      // hour. The cron runs every 15 minutes, so this window is up to an hour
+      // wide — the idempotency check below is what prevents duplicate sends.
+      if (localHour(tz, now) !== sendHour) continue;
+      considered++;
+
       const today = localDate(tz, now);
 
       // Idempotency: if this hotel already has a delivered brief for today,
@@ -204,6 +215,9 @@ export async function GET() {
         localDate(tz, new Date(lastDelivered.generated_at)) === today
       ) {
         outcomes.push({ hotelId: hotel.id, status: "skipped" });
+        await admin
+          .from("cron_logs")
+          .insert({ job: "briefing", hotel_id: hotel.id, status: "success" });
         continue;
       }
 
@@ -249,12 +263,21 @@ export async function GET() {
         hotelId: hotel.id,
         status: emailed ? "emailed" : "generated",
       });
+      await admin
+        .from("cron_logs")
+        .insert({ job: "briefing", hotel_id: hotel.id, status: "success" });
     } catch (err) {
       const message = (err as Error).message;
+      Sentry.captureException(err, {
+        tags: { hotelId: hotel.id, stage: "briefing" },
+      });
       // Log the failed attempt to the briefings table (roadmap requirement).
       await admin
         .from("briefings")
         .insert({ hotel_id: hotel.id, content_json: { error: message } });
+      await admin
+        .from("cron_logs")
+        .insert({ job: "briefing", hotel_id: hotel.id, status: "error", message });
       outcomes.push({ hotelId: hotel.id, status: "error", error: message });
     }
   }
