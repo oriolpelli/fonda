@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -9,12 +9,25 @@ import {
   ignoreEmail,
   sendReply,
 } from "@/app/[lang]/dashboard/communications/actions";
-import { EmptyState } from "@/components/dashboard/empty-state";
+import { EmptyState, type EmptyStateIcon } from "@/components/dashboard/empty-state";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
+import {
+  byDate,
+  byUrgency,
+  WAITING_HOURS,
+  type Urgency,
+} from "@/lib/email-urgency";
 import { intlLocale } from "@/lib/i18n/config";
 import { plural, t } from "@/lib/i18n/format";
 import { cn } from "@/lib/utils";
+
+/**
+ * The guest inbox: review → edit → send, with a rule-based urgency note per
+ * message and a sort toggle. Kept parameterized (empty state, icon, initial
+ * sort) so the parked Concierge route can reuse it if in-house messaging comes
+ * back as its own surface.
+ */
 
 export interface InboxEmail {
   id: string;
@@ -26,6 +39,30 @@ export interface InboxEmail {
   status: string;
   created_at: string;
   sent_at: string | null;
+  guest_name: string | null;
+  booking_ref: string | null;
+  arrival: string | null;
+  departure: string | null;
+  urgency: Urgency;
+}
+
+export const SORT_MODES = ["date", "urgency"] as const;
+export type SortMode = (typeof SORT_MODES)[number];
+
+/** Remembered across visits so the toggle doesn't reset every morning. */
+export const SORT_COOKIE = "fondas_inbox_sort";
+
+export function isSortMode(value: string | undefined): value is SortMode {
+  return value === "date" || value === "urgency";
+}
+
+/**
+ * Persists the choice for a year, so tomorrow's inbox opens the way you left
+ * it. A cookie rather than localStorage so the page can read it while
+ * rendering on the server and the list never flips after paint.
+ */
+function rememberSort(mode: SortMode): void {
+  document.cookie = `${SORT_COOKIE}=${mode}; path=/; max-age=31536000; samesite=lax`;
 }
 
 // Quiet, neutral badges (one signal only). Negative categories that need
@@ -45,9 +82,30 @@ function badgeClass(classification: string | null): string {
   return BADGE_CLASS[classification] ?? NEUTRAL;
 }
 
-export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
+// Urgency notes stay quiet by default. A complaint is the one red note; an
+// arrival happening today is the one navy note — the design identity allows the
+// signal colour only for something genuinely live.
+const NOTE_CLASS: Record<string, string> = {
+  complaint: "text-destructive",
+  arrives_today: "text-[var(--fonda-accent)]",
+  arrives_soon: "text-[var(--fonda-text-3)]",
+  waiting: "text-[var(--fonda-text-3)]",
+};
+
+export function EmailInbox({
+  emails,
+  emptyMessage,
+  emptyIcon,
+  initialSort = "date",
+}: {
+  emails: InboxEmail[];
+  emptyMessage: string;
+  emptyIcon: EmptyStateIcon;
+  initialSort?: SortMode;
+}) {
   const router = useRouter();
   const { dict, locale } = useDictionary();
+  const [sort, setSort] = useState<SortMode>(initialSort);
   const [selectedId, setSelectedId] = useState<string | null>(
     emails[0]?.id ?? null
   );
@@ -55,14 +113,47 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
   const [pending, startTransition] = useTransition();
   const draftRef = useRef<HTMLTextAreaElement>(null);
 
+  // Sorting is client-side so the toggle is instant; the server always sends
+  // the same rows with their urgency already computed.
+  const sorted = useMemo(
+    () => emails.slice().sort(sort === "urgency" ? byUrgency : byDate),
+    [emails, sort]
+  );
+
+  function chooseSort(mode: SortMode) {
+    setSort(mode);
+    rememberSort(mode);
+  }
+
   const badges = dict.emails.badges as Record<string, string>;
   function badgeLabel(classification: string | null): string {
     if (!classification) return dict.emails.badges.processing;
     return badges[classification] ?? classification;
   }
 
-  function senderName(email: string | null): string {
-    return email || dict.emails.unknownSender;
+  /** The short plain-language note shown at the right of a row. */
+  function urgencyNote(urgency: Urgency): string | null {
+    if (!urgency.hasNote) return null;
+    const notes = dict.emails.urgency;
+    switch (urgency.kind) {
+      case "complaint":
+        return notes.complaint;
+      case "arrives_today":
+        return notes.arrivesToday;
+      case "arrives_soon":
+        return urgency.daysUntilArrival === 1
+          ? notes.arrivesTomorrow
+          : t(notes.arrivesInDays, { count: urgency.daysUntilArrival ?? 0 });
+      case "waiting":
+        return t(notes.waiting, { hours: WAITING_HOURS });
+      default:
+        return null;
+    }
+  }
+
+  /** The guest's name when the booking matched, else their address. */
+  function senderName(email: InboxEmail): string {
+    return email.guest_name || email.from_email || dict.emails.unknownSender;
   }
 
   function shortTime(iso: string): string {
@@ -76,9 +167,34 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
     }).format(d);
   }
 
-  const selected = emails.find((e) => e.id === selectedId) ?? null;
-  const complaints = emails.filter((e) => e.status === "needs_attention");
-  const standardCount = emails.filter(
+  /** A YYYY-MM-DD hotel-local date, rendered in the reader's locale. */
+  function shortDate(date: string): string {
+    return new Intl.DateTimeFormat(intlLocale[locale], {
+      day: "numeric",
+      month: "short",
+    }).format(new Date(`${date}T12:00:00Z`));
+  }
+
+  /** "12 Aug → 15 Aug · Booking 4471" — null when nothing matched. */
+  function bookingContext(email: InboxEmail): string | null {
+    const parts: string[] = [];
+    if (email.arrival && email.departure) {
+      parts.push(
+        t(dict.emails.stayDates, {
+          arrival: shortDate(email.arrival),
+          departure: shortDate(email.departure),
+        })
+      );
+    }
+    if (email.booking_ref) {
+      parts.push(t(dict.emails.bookingRef, { ref: email.booking_ref }));
+    }
+    return parts.length > 0 ? parts.join(" · ") : null;
+  }
+
+  const selected = sorted.find((e) => e.id === selectedId) ?? null;
+  const complaints = sorted.filter((e) => e.urgency.kind === "complaint");
+  const standardCount = sorted.filter(
     (e) =>
       e.status === "pending" &&
       e.draft_reply &&
@@ -123,6 +239,14 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
     });
   }
 
+  const selectedContext = selected ? bookingContext(selected) : null;
+
+  // Nothing to triage: the whole surface is the empty state, rather than an
+  // empty list sitting next to an empty reading pane.
+  if (emails.length === 0) {
+    return <EmptyState icon={emptyIcon} message={emptyMessage} />;
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {complaints.length > 0 ? (
@@ -135,18 +259,47 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
         </div>
       ) : null}
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">
-          {plural(emails.length, dict.emails.countOne, dict.emails.countOther)}
+          {plural(sorted.length, dict.emails.countOne, dict.emails.countOther)}
         </p>
-        <Button
-          onClick={handleBulk}
-          disabled={pending || standardCount === 0}
-          variant="outline"
-          size="sm"
-        >
-          {t(dict.emails.approveAllStandard, { count: standardCount })}
-        </Button>
+
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Sort toggle — soft-cornered segmented control, ink for active. */}
+          <div
+            role="group"
+            aria-label={dict.emails.sortLabel}
+            className="inline-flex rounded-[10px] border border-[var(--fonda-border-2)] p-0.5"
+          >
+            {SORT_MODES.map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => chooseSort(mode)}
+                aria-pressed={sort === mode}
+                className={cn(
+                  "rounded-[8px] px-3 py-1.5 text-[13px] font-medium transition-colors",
+                  sort === mode
+                    ? "bg-[var(--fonda-ink)] text-[var(--fonda-text-inv)]"
+                    : "text-[var(--fonda-text-2)] hover:text-foreground"
+                )}
+              >
+                {mode === "date"
+                  ? dict.emails.sortByDate
+                  : dict.emails.sortByUrgency}
+              </button>
+            ))}
+          </div>
+
+          <Button
+            onClick={handleBulk}
+            disabled={pending || standardCount === 0}
+            variant="outline"
+            size="sm"
+          >
+            {t(dict.emails.approveAllStandard, { count: standardCount })}
+          </Button>
+        </div>
       </div>
 
       {actionError ? (
@@ -158,35 +311,34 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
       <div className="grid gap-4 md:grid-cols-[320px_1fr]">
         {/* Left: list */}
         <div className="flex max-h-[70vh] flex-col divide-y divide-border overflow-y-auto rounded-[16px] border border-border">
-          {emails.length === 0 ? (
-            <EmptyState icon="emails" message={dict.emails.noEmails} size="compact" />
-          ) : (
-            emails.map((email) => {
-              const isSelected = email.id === selectedId;
-              return (
-                <button
-                  key={email.id}
-                  onClick={() => setSelectedId(email.id)}
-                  className={cn(
-                    "flex flex-col gap-1 px-4 py-3 text-left transition-colors hover:bg-muted",
-                    isSelected && "bg-accent"
-                  )}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="truncate text-sm font-medium">
-                      {senderName(email.from_email)}
-                    </span>
-                    <span className="shrink-0 text-xs text-muted-foreground">
-                      {shortTime(email.created_at)}
-                    </span>
-                  </div>
-                  <span className="truncate text-sm text-muted-foreground">
-                    {email.subject || dict.emails.noSubject}
+          {sorted.map((email) => {
+            const isSelected = email.id === selectedId;
+            const note = urgencyNote(email.urgency);
+            return (
+              <button
+                key={email.id}
+                onClick={() => setSelectedId(email.id)}
+                className={cn(
+                  "flex flex-col gap-1 px-4 py-3 text-left transition-colors hover:bg-muted",
+                  isSelected && "bg-accent"
+                )}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="truncate text-sm font-medium">
+                    {senderName(email)}
                   </span>
-                  <div className="flex items-center gap-2">
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    {shortTime(email.created_at)}
+                  </span>
+                </div>
+                <span className="truncate text-sm text-muted-foreground">
+                  {email.subject || dict.emails.noSubject}
+                </span>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-2">
                     <span
                       className={cn(
-                        "rounded-full px-2 py-0.5 text-xs font-medium",
+                        "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
                         badgeClass(email.classification)
                       )}
                     >
@@ -202,10 +354,21 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
                       </span>
                     ) : null}
                   </div>
-                </button>
-              );
-            })
-          )}
+                  {note ? (
+                    <span
+                      className={cn(
+                        "shrink-0 font-mono text-[11px] font-medium",
+                        NOTE_CLASS[email.urgency.kind] ??
+                          "text-[var(--fonda-text-3)]"
+                      )}
+                    >
+                      {note}
+                    </span>
+                  ) : null}
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         {/* Right: detail */}
@@ -218,11 +381,23 @@ export function EmailInbox({ emails }: { emails: InboxEmail[] }) {
                 </h2>
                 <p className="text-sm text-muted-foreground">
                   {t(dict.emails.from, {
-                    sender: senderName(selected.from_email),
+                    sender: senderName(selected),
                     time: shortTime(selected.created_at),
                   })}
                 </p>
               </div>
+
+              {/* Guest + booking context inline. */}
+              {selectedContext ? (
+                <div className="flex flex-col gap-1 rounded-[10px] bg-[var(--fonda-surface)] px-3 py-2">
+                  <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+                    {dict.emails.bookingContext}
+                  </span>
+                  <span className="text-sm text-[var(--fonda-text-2)]">
+                    {selectedContext}
+                  </span>
+                </div>
+              ) : null}
 
               <div className="max-h-48 overflow-y-auto whitespace-pre-line rounded-md bg-muted p-3 text-sm">
                 {selected.body || dict.emails.emptyMessage}

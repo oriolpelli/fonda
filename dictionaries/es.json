@@ -166,12 +166,19 @@
     "concierge": "Conserjería",
     "communications": "Comunicaciones",
     "analytics": "Analítica",
-    "chat": "Chat"
+    "chat": "Chat",
+    "waitingOne": "{count} mensaje pendiente",
+    "waitingOther": "{count} mensajes pendientes"
   },
   "concierge": {
     "eyebrow": "Huéspedes alojados",
     "title": "Conserjería",
-    "emptyState": "Las solicitudes de conserjería aparecerán aquí cuando esta página esté lista."
+    "comingSoon": "Aquí llegarán los mensajes de huéspedes alojados, incluido WhatsApp. Por ahora, todos los correos de huéspedes están en Comunicaciones, donde se destacan los que llegan pronto."
+  },
+  "communications": {
+    "eyebrow": "Mensajes de huéspedes",
+    "title": "Comunicaciones",
+    "emptyState": "No hay mensajes de huéspedes ahora mismo."
   },
   "analytics": {
     "eyebrow": "Rendimiento",
@@ -273,6 +280,19 @@
       "arrival_info": "Info de llegada",
       "general_inquiry": "General",
       "irrelevant": "Irrelevante"
+    },
+    "bookingContext": "Reserva",
+    "stayDates": "{arrival} → {departure}",
+    "bookingRef": "Reserva {ref}",
+    "sortLabel": "Ordenar",
+    "sortByDate": "Por fecha",
+    "sortByUrgency": "Por urgencia",
+    "urgency": {
+      "complaint": "Queja",
+      "arrivesToday": "Llega hoy",
+      "arrivesTomorrow": "Llega mañana",
+      "arrivesInDays": "Llega en {count} días",
+      "waiting": "Esperando +{hours} h"
     }
   },
   "checkin": {

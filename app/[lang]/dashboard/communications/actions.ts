@@ -8,6 +8,15 @@ import { createClient } from "@/lib/supabase/server";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
+/** Triage actions for the guest inbox at /dashboard/communications. */
+
+function revalidateInbox(): void {
+  // Route (not URL) paths — the locale is a dynamic `[lang]` segment.
+  revalidatePath("/[lang]/dashboard/communications", "page");
+  // The sidebar badge is rendered by the dashboard layout, above the page.
+  revalidatePath("/[lang]/dashboard", "layout");
+}
+
 async function requireHotelId(): Promise<string> {
   const supabase = await createClient();
   const {
@@ -93,7 +102,7 @@ export async function sendReply(
     return { error: (err as Error).message };
   }
 
-  revalidatePath("/dashboard/communications");
+  revalidateInbox();
   return {};
 }
 
@@ -108,7 +117,7 @@ async function setStatus(
     .update({ status })
     .eq("id", emailId)
     .eq("hotel_id", hotelId);
-  revalidatePath("/dashboard/communications");
+  revalidateInbox();
 }
 
 export async function flagEmail(emailId: string): Promise<void> {
@@ -119,7 +128,14 @@ export async function ignoreEmail(emailId: string): Promise<void> {
   await setStatus(emailId, "ignored");
 }
 
-/** Sends every pending arrival_info / general_inquiry draft in one go. */
+/**
+ * Sends every pending arrival_info / general_inquiry draft in one go.
+ *
+ * The narrow filter is the safety rail: bulk approval only ever touches the two
+ * routine categories, and only where a draft already exists. Complaints,
+ * cancellations, modifications and special requests are never sent this way —
+ * those always get read by a human first.
+ */
 export async function approveAllStandard(): Promise<{
   sent: number;
   error?: string;
@@ -148,6 +164,6 @@ export async function approveAllStandard(): Promise<{
     }
   }
 
-  revalidatePath("/dashboard/communications");
+  revalidateInbox();
   return { sent };
 }

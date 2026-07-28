@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "reliability-check": "tsx --conditions=react-server scripts/reliability-check.ts"
+    "reliability-check": "tsx --conditions=react-server scripts/reliability-check.ts",
+    "seed-test-guests": "tsx scripts/seed-test-guests.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.2",

@@ -166,12 +166,19 @@
     "concierge": "Concierge",
     "communications": "Communications",
     "analytics": "Analytics",
-    "chat": "Chat"
+    "chat": "Chat",
+    "waitingOne": "{count} message waiting",
+    "waitingOther": "{count} messages waiting"
   },
   "concierge": {
     "eyebrow": "In-house guests",
     "title": "Concierge",
-    "emptyState": "Concierge requests will appear here once this page is built out."
+    "comingSoon": "In-house guest messaging is coming here — including WhatsApp. For now, every guest email lives in Communications, where arriving guests are flagged for you."
+  },
+  "communications": {
+    "eyebrow": "Guest messages",
+    "title": "Communications",
+    "emptyState": "No guest messages right now."
   },
   "analytics": {
     "eyebrow": "Performance",
@@ -273,6 +280,19 @@
       "arrival_info": "Arrival info",
       "general_inquiry": "General",
       "irrelevant": "Irrelevant"
+    },
+    "bookingContext": "Booking",
+    "stayDates": "{arrival} → {departure}",
+    "bookingRef": "Booking {ref}",
+    "sortLabel": "Sort",
+    "sortByDate": "By date",
+    "sortByUrgency": "By urgency",
+    "urgency": {
+      "complaint": "Complaint",
+      "arrivesToday": "Arrives today",
+      "arrivesTomorrow": "Arrives tomorrow",
+      "arrivesInDays": "Arrives in {count} days",
+      "waiting": "Waiting {hours}h+"
     }
   },
   "checkin": {

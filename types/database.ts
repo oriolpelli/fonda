@@ -147,6 +147,8 @@ export type Database = {
           status: Database["public"]["Enums"]["email_status"];
           created_at: string;
           sent_at: string | null;
+          reservation_mews_id: string | null;
+          customer_mews_id: string | null;
         };
         Insert: {
           id?: string;
@@ -160,6 +162,8 @@ export type Database = {
           status?: Database["public"]["Enums"]["email_status"];
           created_at?: string;
           sent_at?: string | null;
+          reservation_mews_id?: string | null;
+          customer_mews_id?: string | null;
         };
         Update: {
           id?: string;
@@ -173,6 +177,8 @@ export type Database = {
           status?: Database["public"]["Enums"]["email_status"];
           created_at?: string;
           sent_at?: string | null;
+          reservation_mews_id?: string | null;
+          customer_mews_id?: string | null;
         };
         Relationships: [
           {

@@ -77,11 +77,18 @@ create table public.emails (
   status         public.email_status not null default 'pending',
   created_at     timestamptz not null default now(),
   sent_at        timestamptz,
+  -- The reservation/guest this email matched at classification time (MEWS ids,
+  -- not FKs — the PMS is the source of truth). Stay phase (in-house vs
+  -- pre-arrival) is derived from these at query time and never stored, because
+  -- a stored phase rots as soon as the guest checks out. See lib/stay-phase.ts.
+  reservation_mews_id text,
+  customer_mews_id    text,
   -- A provider message maps to at most one row per hotel (idempotent ingest).
   unique (hotel_id, external_id)
 );
 
 create index emails_hotel_status_idx on public.emails (hotel_id, status);
+create index emails_hotel_reservation_idx on public.emails (hotel_id, reservation_mews_id);
 
 -- Check-in chasers: outbound nudges asking guests for their arrival time.
 create table public.checkin_chasers (

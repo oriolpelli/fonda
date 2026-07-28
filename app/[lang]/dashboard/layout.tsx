@@ -6,6 +6,8 @@ import { AskYourHotel } from "@/components/dashboard/ask-your-hotel";
 import { deriveConnectionState } from "@/components/dashboard/connection-status";
 import { Sidebar, type NavItem } from "@/components/dashboard/sidebar";
 import { localizedHref } from "@/lib/i18n/navigation";
+import { plural } from "@/lib/i18n/format";
+import { loadInboxBadge } from "@/lib/inbox";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardLayout({
@@ -50,6 +52,10 @@ export default async function DashboardLayout({
   );
   const isOwner = profile.role === "owner";
 
+  // Unhandled message count for the inbox badge. Fails soft to zero, so a bad
+  // inbox query can never blank the whole dashboard.
+  const inboxBadge = await loadInboxBadge();
+
   const navItems: NavItem[] = [
     {
       key: "dashboard",
@@ -67,14 +73,20 @@ export default async function DashboardLayout({
       href: localizedHref(locale, "/dashboard/checkins"),
     },
     {
-      key: "concierge",
-      label: dict.sidebar.concierge,
-      href: localizedHref(locale, "/dashboard/concierge"),
-    },
-    {
+      // Concierge is parked (see its page) — the route still resolves, but it
+      // stays out of the sidebar until in-house messaging is real.
       key: "communications",
       label: dict.sidebar.communications,
       href: localizedHref(locale, "/dashboard/communications"),
+      badge: {
+        count: inboxBadge.count,
+        alert: inboxBadge.alert,
+        srLabel: plural(
+          inboxBadge.count,
+          dict.sidebar.waitingOne,
+          dict.sidebar.waitingOther
+        ),
+      },
     },
     {
       key: "analytics",

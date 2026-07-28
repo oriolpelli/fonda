@@ -166,12 +166,19 @@
     "concierge": "Consergeria",
     "communications": "Comunicacions",
     "analytics": "Analítica",
-    "chat": "Chat"
+    "chat": "Chat",
+    "waitingOne": "{count} missatge pendent",
+    "waitingOther": "{count} missatges pendents"
   },
   "concierge": {
     "eyebrow": "Hostes allotjats",
     "title": "Consergeria",
-    "emptyState": "Les sol·licituds de consergeria apareixeran aquí quan aquesta pàgina estigui a punt."
+    "comingSoon": "Aquí arribaran els missatges d'hostes allotjats, inclòs WhatsApp. De moment, tots els correus d'hostes són a Comunicacions, on es destaquen els que arriben aviat."
+  },
+  "communications": {
+    "eyebrow": "Missatges d'hostes",
+    "title": "Comunicacions",
+    "emptyState": "No hi ha missatges d'hostes ara mateix."
   },
   "analytics": {
     "eyebrow": "Rendiment",
@@ -273,6 +280,19 @@
       "arrival_info": "Info d'arribada",
       "general_inquiry": "General",
       "irrelevant": "Irrellevant"
+    },
+    "bookingContext": "Reserva",
+    "stayDates": "{arrival} → {departure}",
+    "bookingRef": "Reserva {ref}",
+    "sortLabel": "Ordenar",
+    "sortByDate": "Per data",
+    "sortByUrgency": "Per urgència",
+    "urgency": {
+      "complaint": "Queixa",
+      "arrivesToday": "Arriba avui",
+      "arrivesTomorrow": "Arriba demà",
+      "arrivesInDays": "Arriba d'aquí a {count} dies",
+      "waiting": "Esperant +{hours} h"
     }
   },
   "checkin": {

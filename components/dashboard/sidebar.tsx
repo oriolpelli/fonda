@@ -24,10 +24,24 @@ import { Wordmark } from "@/components/brand/wordmark";
 import { stripLocale } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/utils";
 
+/**
+ * A count of messages still waiting on a human for one nav item. Quiet gray by
+ * default; `alert` promotes it to the navy signal, reserved for a complaint
+ * sitting unanswered — the design identity allows 2–3 signal uses per screen,
+ * so this must stay rare.
+ */
+export interface NavBadge {
+  count: number;
+  alert: boolean;
+  /** Screen-reader wording, localized by the caller. */
+  srLabel: string;
+}
+
 export interface NavItem {
   key: string;
   label: string;
   href: string;
+  badge?: NavBadge;
 }
 
 // Icons live here in the Client Component and are looked up by key. They must
@@ -60,6 +74,19 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
     >
       <Icon className="size-[18px]" strokeWidth={1.5} />
       {item.label}
+      {item.badge && item.badge.count > 0 ? (
+        <span
+          aria-label={item.badge.srLabel}
+          className={cn(
+            "ml-auto rounded-full px-2 py-0.5 font-mono text-[11px] font-medium tabular-nums",
+            item.badge.alert
+              ? "bg-[var(--fonda-accent-light)] text-[var(--fonda-accent)]"
+              : "bg-[var(--fonda-inset)] text-[var(--fonda-text-3)]"
+          )}
+        >
+          {item.badge.count}
+        </span>
+      ) : null}
     </Link>
   );
 }
