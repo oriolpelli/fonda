@@ -12,13 +12,9 @@ import {
 import { EmptyState, type EmptyStateIcon } from "@/components/dashboard/empty-state";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
-import {
-  byDate,
-  byUrgency,
-  WAITING_HOURS,
-  type Urgency,
-} from "@/lib/email-urgency";
+import { byDate, byUrgency, type Urgency } from "@/lib/email-urgency";
 import { SORT_COOKIE, SORT_MODES, type SortMode } from "@/lib/inbox-sort";
+import { urgencyNoteFor } from "@/lib/urgency-note";
 import { intlLocale } from "@/lib/i18n/config";
 import { plural, t } from "@/lib/i18n/format";
 import { cn } from "@/lib/utils";
@@ -91,17 +87,20 @@ export function EmailInbox({
   emptyMessage,
   emptyIcon,
   initialSort = "date",
+  initialSelectedId,
 }: {
   emails: InboxEmail[];
   emptyMessage: string;
   emptyIcon: EmptyStateIcon;
   initialSort?: SortMode;
+  /** Opens a specific message on first paint (the dashboard links here). */
+  initialSelectedId?: string;
 }) {
   const router = useRouter();
   const { dict, locale } = useDictionary();
   const [sort, setSort] = useState<SortMode>(initialSort);
   const [selectedId, setSelectedId] = useState<string | null>(
-    emails[0]?.id ?? null
+    initialSelectedId ?? emails[0]?.id ?? null
   );
   const [actionError, setActionError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -125,24 +124,14 @@ export function EmailInbox({
     return badges[classification] ?? classification;
   }
 
-  /** The short plain-language note shown at the right of a row. */
+  /**
+   * The short plain-language note shown at the right of a row. The rule itself
+   * lives in lib/urgency-note.ts so the dashboard's "needs a reply" card — a
+   * server component — words these identically.
+   */
   function urgencyNote(urgency: Urgency): string | null {
-    if (!urgency.hasNote) return null;
-    const notes = dict.emails.urgency;
-    switch (urgency.kind) {
-      case "complaint":
-        return notes.complaint;
-      case "arrives_today":
-        return notes.arrivesToday;
-      case "arrives_soon":
-        return urgency.daysUntilArrival === 1
-          ? notes.arrivesTomorrow
-          : t(notes.arrivesInDays, { count: urgency.daysUntilArrival ?? 0 });
-      case "waiting":
-        return t(notes.waiting, { hours: WAITING_HOURS });
-      default:
-        return null;
-    }
+    const note = urgencyNoteFor(urgency);
+    return note ? t(dict.emails.urgency[note.key], note.vars) : null;
   }
 
   /** The guest's name when the booking matched, else their address. */

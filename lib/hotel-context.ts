@@ -1,6 +1,16 @@
 import "server-only";
 
+import {
+  addDays,
+  occupancyOutlook as buildOccupancyOutlook,
+  occupancyPct,
+  occupiedOn,
+  type StayDates,
+} from "@/lib/occupancy";
+import { readNotes, readVip } from "@/lib/pms-fields";
+import { localDate, localDateOf } from "@/lib/stay-phase";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { fetchAllPages, fetchInChunks } from "@/lib/supabase/paged";
 import type { Json } from "@/types/database";
 
 /**
@@ -45,7 +55,11 @@ export interface HotelContext {
     currentRates: Record<string, never>; // rate plans aren't cached yet
     occupancyAlerts: { date: string; occupancyRate: number }[];
   };
-  /** Full per-day occupancy across the 14-day horizon (for the dashboard calendar). */
+  /**
+   * Full per-day occupancy across the 14-day horizon. The dashboard computes
+   * its own (lib/dashboard-snapshot.ts, RLS-scoped); this copy is what the chat
+   * and the brief see, so "how full are we a week on Tuesday?" is answerable.
+   */
   occupancyOutlook: { date: string; occupancyRate: number }[];
 }
 
@@ -59,6 +73,25 @@ interface WeekReservation {
   guest: string;
   checkIn: string;
   checkOut: string;
+}
+
+interface ReservationRow {
+  mews_id: string;
+  state: string | null;
+  start_utc: string | null;
+  end_utc: string | null;
+  customer_mews_id: string | null;
+  adult_count: number | null;
+  child_count: number | null;
+  arrival_time: string | null;
+  raw: Json;
+}
+
+interface CustomerRow {
+  mews_id: string;
+  first_name: string | null;
+  last_name: string | null;
+  raw: Json;
 }
 
 // --- timezone helpers -------------------------------------------------------
@@ -89,24 +122,9 @@ function tzOffsetMs(tz: string, date: Date): number {
   );
 }
 
-function localDate(tz: string, instant: Date): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: tz,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(instant);
-}
-
 function zonedMidnightUtc(tz: string, dateStr: string): Date {
   const naive = new Date(`${dateStr}T00:00:00Z`);
   return new Date(naive.getTime() - tzOffsetMs(tz, naive));
-}
-
-function addDays(dateStr: string, days: number): string {
-  const d = new Date(`${dateStr}T00:00:00Z`);
-  d.setUTCDate(d.getUTCDate() + days);
-  return d.toISOString().slice(0, 10);
 }
 
 // --- guest data helpers -----------------------------------------------------
@@ -116,31 +134,6 @@ function pseudoName(first?: string | null, last?: string | null): string {
   const initial = (last ?? "").trim() ? `${last!.trim()[0].toUpperCase()}.` : "";
   return [f, initial].filter(Boolean).join(" ") || "Guest";
 }
-
-function asObject(raw: Json): Record<string, unknown> | null {
-  return raw && typeof raw === "object" && !Array.isArray(raw)
-    ? (raw as Record<string, unknown>)
-    : null;
-}
-
-function readNotes(raw: Json): string | null {
-  const r = asObject(raw);
-  const note = r?.Notes ?? r?.notes;
-  return typeof note === "string" && note.trim() ? note.trim() : null;
-}
-
-function readVip(raw: Json): boolean {
-  const r = asObject(raw);
-  if (!r) return false;
-  if (typeof r.IsVip === "boolean") return r.IsVip;
-  const c = r.Classifications;
-  return (
-    Array.isArray(c) &&
-    c.some((x) => typeof x === "string" && x.toLowerCase().includes("vip"))
-  );
-}
-
-const pct = (n: number) => Math.round(n * 100);
 
 // --- builder ----------------------------------------------------------------
 
@@ -160,21 +153,31 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
   const todayEnd = zonedMidnightUtc(tz, addDays(today, 1));
   const horizonEnd = zonedMidnightUtc(tz, addDays(today, OCCUPANCY_ALERT_HORIZON));
 
-  // Reservations overlapping [today, +14d], active only.
-  const { data: reservationsRaw } = await admin
-    .from("reservations")
-    .select(
-      "mews_id, state, start_utc, end_utc, customer_mews_id, adult_count, child_count, arrival_time, raw"
-    )
-    .eq("hotel_id", hotelId)
-    .lt("start_utc", horizonEnd.toISOString())
-    .gt("end_utc", todayStart.toISOString());
+  // Reservations overlapping [today, +14d], active only. Paged: a busy hotel
+  // exceeds PostgREST's silent 1,000-row cap, which would understate occupancy
+  // in the brief without any error to notice.
+  const reservationsRaw = await fetchAllPages<ReservationRow>((from, to) =>
+    admin
+      .from("reservations")
+      .select(
+        "mews_id, state, start_utc, end_utc, customer_mews_id, adult_count, child_count, arrival_time, raw"
+      )
+      .eq("hotel_id", hotelId)
+      .lt("start_utc", horizonEnd.toISOString())
+      .gt("end_utc", todayStart.toISOString())
+      // Unique within one hotel, so paging can't skip or repeat a row.
+      .order("mews_id", { ascending: true })
+      .range(from, to)
+      .overrideTypes<ReservationRow[]>()
+  );
 
-  const reservations = (reservationsRaw ?? []).filter(
+  const reservations = reservationsRaw.filter(
     (r) => r.state !== "Canceled" && r.start_utc && r.end_utc
   );
 
-  // Guest profiles for these reservations.
+  // Guest profiles for these reservations, in chunks — the id list is as long
+  // as the reservation list and would otherwise blow past the row cap and the
+  // maximum URL length.
   const guestIds = [
     ...new Set(reservations.map((r) => r.customer_mews_id).filter(Boolean)),
   ] as string[];
@@ -182,14 +185,15 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
     string,
     { first_name: string | null; last_name: string | null; raw: Json }
   >();
-  if (guestIds.length > 0) {
-    const { data: customers } = await admin
+  const customers = await fetchInChunks<CustomerRow>(guestIds, (chunk) =>
+    admin
       .from("customers")
       .select("mews_id, first_name, last_name, raw")
       .eq("hotel_id", hotelId)
-      .in("mews_id", guestIds);
-    for (const c of customers ?? []) guestById.set(c.mews_id, c);
-  }
+      .in("mews_id", chunk)
+      .overrideTypes<CustomerRow[]>()
+  );
+  for (const c of customers) guestById.set(c.mews_id, c);
 
   const nameOf = (customerMewsId: string | null) => {
     const c = customerMewsId ? guestById.get(customerMewsId) : undefined;
@@ -226,24 +230,27 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
     .slice(0, CAP_LIST)
     .map((r) => ({ guest: nameOf(r.customer_mews_id) }));
 
-  // Occupancy per day across the alert horizon.
+  // Occupancy per day across the alert horizon. The rooms-sold-per-night rule
+  // lives in lib/occupancy.ts so the dashboard and this brief can never
+  // disagree about how full the hotel is.
+  const stays: StayDates[] = reservations.map((r) => ({
+    arrival: localDateOf(tz, r.start_utc),
+    departure: localDateOf(tz, r.end_utc),
+  }));
+
   const occupancyByDay: Record<string, number> = {};
   const occupancyAlerts: { date: string; occupancyRate: number }[] = [];
-  const occupancyOutlook: { date: string; occupancyRate: number }[] = [];
-  for (let i = 0; i < OCCUPANCY_ALERT_HORIZON; i++) {
-    const dayStr = addDays(today, i);
-    const dayStart = zonedMidnightUtc(tz, dayStr).toISOString();
-    const dayEnd = zonedMidnightUtc(tz, addDays(dayStr, 1)).toISOString();
-    const occupied = reservations.filter(
-      (r) => r.start_utc! < dayEnd && r.end_utc! > dayStart
-    ).length;
-    const rate = rooms > 0 ? occupied / rooms : 0;
-    occupancyOutlook.push({ date: dayStr, occupancyRate: pct(rate) });
-    if (i < WEEK_HORIZON) occupancyByDay[dayStr] = pct(rate);
-    if (rate < LOW_OCCUPANCY) {
-      occupancyAlerts.push({ date: dayStr, occupancyRate: pct(rate) });
-    }
-  }
+  const occupancyOutlook = buildOccupancyOutlook(
+    stays,
+    rooms,
+    today,
+    OCCUPANCY_ALERT_HORIZON
+  ).map((d) => ({ date: d.date, occupancyRate: d.occupancyPct }));
+
+  occupancyOutlook.forEach((day, i) => {
+    if (i < WEEK_HORIZON) occupancyByDay[day.date] = day.occupancyRate;
+    if (day.occupancyRate < LOW_OCCUPANCY * 100) occupancyAlerts.push(day);
+  });
 
   // This week.
   const weekEnd = zonedMidnightUtc(tz, addDays(today, WEEK_HORIZON)).toISOString();
@@ -287,11 +294,7 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
     }
   }
 
-  const todayOccupied = reservations.filter(
-    (r) =>
-      r.start_utc! < todayEnd.toISOString() &&
-      r.end_utc! > todayStart.toISOString()
-  ).length;
+  const todayOccupied = occupiedOn(stays, today);
 
   return {
     hotel: { name: hotel?.name ?? "the hotel", timezone: tz, rooms, date: today },
@@ -299,7 +302,7 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
       arrivals,
       departures,
       inHouse,
-      occupancyRate: rooms > 0 ? pct(todayOccupied / rooms) : 0,
+      occupancyRate: occupancyPct(todayOccupied, rooms),
     },
     thisWeek: { reservations: weekReservations, occupancyByDay },
     guests: { vipArrivals, specialRequests, missingArrivalTimes },

@@ -27,15 +27,30 @@ export async function generateMetadata({
 
 export default async function CommunicationsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ lang: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { dict } = await loadDictionary((await params).lang);
-  const [inbox, cookieStore] = await Promise.all([loadInbox(), cookies()]);
+  const [inbox, cookieStore, query] = await Promise.all([
+    loadInbox(),
+    cookies(),
+    searchParams,
+  ]);
 
   // Read the remembered sort server-side so the list doesn't flip after paint.
   const saved = cookieStore.get(SORT_COOKIE)?.value;
   const initialSort = isSortMode(saved) ? saved : "date";
+
+  // `?email=<id>` opens a specific message — the dashboard's "needs a reply"
+  // card and to-do items link straight to the one they name. Ignored unless it
+  // matches a message this hotel can actually see, so the parameter can't be
+  // used to probe for ids belonging to another hotel.
+  const requested = typeof query.email === "string" ? query.email : undefined;
+  const initialSelectedId = inbox.emails.some((e) => e.id === requested)
+    ? requested
+    : undefined;
 
   return (
     <div className="flex flex-col gap-6">
@@ -59,6 +74,7 @@ export default async function CommunicationsPage({
         emptyMessage={dict.communications.emptyState}
         emptyIcon="emails"
         initialSort={initialSort}
+        initialSelectedId={initialSelectedId}
       />
     </div>
   );

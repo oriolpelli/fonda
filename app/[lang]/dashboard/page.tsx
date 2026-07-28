@@ -1,42 +1,35 @@
 import Link from "next/link";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { NeedsReplyCard } from "@/components/dashboard/needs-reply-card";
+import { OccupancyStrip } from "@/components/dashboard/occupancy-strip";
+import { StatRow, type Stat } from "@/components/dashboard/stat-row";
+import { TodoList } from "@/components/dashboard/todo-list";
 import { Button } from "@/components/ui/button";
-import type { BriefingContent } from "@/lib/briefing";
-import { buildHotelContext } from "@/lib/hotel-context";
+import { loadDashboardSnapshot } from "@/lib/dashboard-snapshot";
+import { byUrgency } from "@/lib/email-urgency";
 import { intlLocale } from "@/lib/i18n/config";
-import { plural, t } from "@/lib/i18n/format";
+import { t } from "@/lib/i18n/format";
 import { localizedHref } from "@/lib/i18n/navigation";
+import { loadInbox } from "@/lib/inbox";
 import { createClient } from "@/lib/supabase/server";
-import { cn } from "@/lib/utils";
+import { buildTodoList, LOW_OCCUPANCY_PCT } from "@/lib/todo-rules";
 
-function localDate(tz: string, d: Date): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: tz,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(d);
-}
+/**
+ * The Dashboard — the ten-second "how is the hotel right now, and what do I do
+ * first?" snapshot (FONDA_REDESIGN_SPEC §3.1).
+ *
+ * Four numbers, the fortnight ahead, the messages waiting on a reply, and a
+ * ranked to-do list. Everything is derived at read time from synced PMS data
+ * and the guest inbox — there is no dashboard state to go stale, and no AI call
+ * on this page: the to-do ranking is rules only (lib/todo-rules.ts), so a GM
+ * can predict what appears here and why.
+ *
+ * Rates are absent on purpose. See components/dashboard/occupancy-strip.tsx.
+ */
 
-function Stat({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div className="rounded-[16px] border border-border bg-card p-6">
-      <div className="text-4xl font-semibold leading-none tracking-[-0.04em] text-foreground">
-        {value}
-      </div>
-      <div className="mt-2 text-sm text-muted-foreground">{label}</div>
-    </div>
-  );
-}
-
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-      {children}
-    </span>
-  );
-}
+/** How many messages the "needs a reply" card shows before deferring to the inbox. */
+const NEEDS_REPLY_LIMIT = 3;
 
 export default async function DashboardPage({
   params,
@@ -44,160 +37,137 @@ export default async function DashboardPage({
   params: Promise<{ lang: string }>;
 }) {
   const { locale, dict } = await loadDictionary((await params).lang);
-  const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: profile } = await supabase
-    .from("users")
-    .select("hotel_id")
-    .eq("id", user!.id)
-    .single();
-  const hotelId = profile!.hotel_id;
-
-  const [{ data: settings }, context, { data: latest }] = await Promise.all([
-    supabase
-      .from("hotel_settings")
-      .select("gm_name")
-      .eq("hotel_id", hotelId)
-      .maybeSingle(),
-    buildHotelContext(hotelId),
-    supabase
-      .from("briefings")
-      .select("content_json, generated_at")
-      .not("content_json->>summary", "is", null)
-      .order("generated_at", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
+  const [snapshot, inbox, gmName] = await Promise.all([
+    loadDashboardSnapshot(),
+    loadInbox(),
+    loadGmName(),
   ]);
 
-  const tz = context.hotel.timezone;
-  const now = new Date();
-  const greeting = settings?.gm_name?.trim() || context.hotel.name;
+  const greeting = gmName || snapshot.hotelName;
+  const todayLabel = new Intl.DateTimeFormat(intlLocale[locale], {
+    timeZone: snapshot.timezone,
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(new Date());
 
-  const hasTodayBriefing =
-    latest && localDate(tz, new Date(latest.generated_at)) === localDate(tz, now);
-  const briefing = hasTodayBriefing
-    ? (latest!.content_json as unknown as BriefingContent)
-    : null;
-
-  const stats = [
-    { label: dict.home.arrivalsToday, value: context.today.arrivals.length },
-    { label: dict.home.departuresToday, value: context.today.departures.length },
-    { label: dict.home.inHouseTonight, value: context.today.inHouse.length },
-    { label: dict.home.occupancyTonight, value: `${context.today.occupancyRate}%` },
-    { label: dict.home.draftsReady, value: context.emails.pendingCount },
-    { label: dict.home.needAttention, value: context.emails.urgentCount },
-  ];
-
-  const lowDays = context.rates.occupancyAlerts.length;
-
-  return (
-    <div className="flex flex-col gap-8">
+  const header = (
+    <div className="flex flex-wrap items-start justify-between gap-4">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
           {t(dict.home.goodMorning, { name: greeting })}
         </h1>
-        <p className="text-muted-foreground">
-          {new Intl.DateTimeFormat(intlLocale[locale], {
-            timeZone: tz,
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-          }).format(now)}
-        </p>
+        <p className="text-muted-foreground">{todayLabel}</p>
       </div>
+      <Button asChild variant="outline" size="sm">
+        <Link href={localizedHref(locale, "/dashboard/brief")}>
+          {dict.home.readBrief}
+        </Link>
+      </Button>
+    </div>
+  );
 
-      {/* Key stats */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        {stats.map((s) => (
-          <Stat key={s.label} label={s.label} value={s.value} />
-        ))}
-      </div>
-
-      {/* Briefing summary */}
-      <div className="rounded-[16px] border border-border bg-card p-6 transition-shadow duration-200 hover:shadow-[0_12px_40px_rgba(10,10,10,0.06)]">
-        <div className="flex items-start justify-between gap-4">
-          <Eyebrow>{dict.home.todaysBriefing}</Eyebrow>
-          <Button asChild size="sm">
-            <Link href={localizedHref(locale, "/dashboard/brief")}>
-              {briefing ? dict.home.readFullBriefing : dict.home.openBriefing}
+  // Nothing connected: there is no "today" to show yet, so say so plainly and
+  // point at the one action that fixes it, rather than rendering four zeroes.
+  if (!snapshot.connected) {
+    return (
+      <div className="flex flex-col gap-8">
+        {header}
+        <section className="rounded-[16px] border border-border bg-muted px-8 py-14 text-center">
+          <h2 className="text-xl font-semibold tracking-[-0.02em] text-foreground">
+            {dict.home.presyncTitle}
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+            {dict.home.presyncBody}
+          </p>
+          <Button asChild className="mt-6">
+            <Link href={localizedHref(locale, "/dashboard/settings")}>
+              {dict.home.presyncCta}
             </Link>
           </Button>
-        </div>
-        <p className="mt-3 text-lg leading-relaxed text-foreground/90">
-          {briefing ? briefing.summary.split(/\n{2,}/)[0] : dict.home.noBriefing}
-        </p>
+        </section>
+      </div>
+    );
+  }
+
+  const stats: Stat[] = [
+    {
+      key: "occupancy",
+      label: dict.home.occupancyToday,
+      value: `${snapshot.occupancyPct}%`,
+    },
+    {
+      key: "free",
+      label: dict.home.freeRooms,
+      value: String(snapshot.freeRooms),
+    },
+    {
+      key: "checkins",
+      label: dict.home.checkinsToday,
+      value: String(snapshot.checkinsToday),
+    },
+    {
+      key: "checkouts",
+      label: dict.home.checkoutsToday,
+      value: String(snapshot.checkoutsToday),
+    },
+  ];
+
+  // Unanswered mail, most urgent first — the same ranking the inbox uses under
+  // "by urgency". Not re-derived here (B7.1 owns it).
+  const unanswered = inbox.emails
+    .filter((email) => email.urgency.kind !== "handled")
+    .sort(byUrgency);
+
+  const todos = buildTodoList({
+    emails: unanswered,
+    vipArrivalsWithoutNote: snapshot.vipArrivalsWithoutNote,
+    unconfirmedEtasTomorrow: snapshot.unconfirmedEtasTomorrow,
+    outlook: snapshot.outlook,
+    rooms: snapshot.rooms,
+    hasSyncedData: snapshot.hasSyncedData,
+  });
+
+  return (
+    <div className="flex flex-col gap-8">
+      {header}
+
+      <div className="flex flex-col gap-3">
+        <StatRow stats={stats} />
+        {!snapshot.hasSyncedData ? (
+          <p className="text-xs text-[var(--fonda-text-3)]">
+            {dict.home.firstSyncNote}
+          </p>
+        ) : null}
       </div>
 
-      {/* Occupancy calendar */}
-      <div className="rounded-[16px] border border-border bg-card p-6">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <Eyebrow>{dict.home.occupancyOutlook}</Eyebrow>
-          {lowDays > 0 ? (
-            <span className="text-xs text-amber-700">
-              {plural(lowDays, dict.home.daysBelowOne, dict.home.daysBelowOther)}
-            </span>
-          ) : null}
-        </div>
-        <div className="grid grid-cols-7 gap-2">
-          {context.occupancyOutlook.map((d) => {
-            const date = new Date(`${d.date}T00:00:00Z`);
-            const weekday = new Intl.DateTimeFormat(intlLocale[locale], {
-              timeZone: "UTC",
-              weekday: "short",
-            }).format(date);
-            const dom = new Intl.DateTimeFormat(intlLocale[locale], {
-              timeZone: "UTC",
-              day: "numeric",
-            }).format(date);
-            const low = d.occupancyRate < 60;
-            return (
-              <div
-                key={d.date}
-                className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card p-2 text-center"
-              >
-                <span className="font-mono text-[10px] uppercase tracking-wide text-[var(--fonda-text-3)]">
-                  {weekday}
-                </span>
-                <span className="text-sm font-medium text-foreground">{dom}</span>
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--fonda-inset)]">
-                  <div
-                    className="h-full rounded-full bg-[var(--fonda-accent)]"
-                    style={{ width: `${d.occupancyRate}%` }}
-                  />
-                </div>
-                <span
-                  className={cn(
-                    "text-[11px]",
-                    low ? "text-amber-700" : "text-muted-foreground"
-                  )}
-                >
-                  {d.occupancyRate}%
-                </span>
-              </div>
-            );
-          })}
-        </div>
-        <p className="mt-4 text-xs text-[var(--fonda-text-3)]">
-          {dict.home.occupancyNote}
-        </p>
-      </div>
+      <OccupancyStrip
+        dict={dict}
+        locale={locale}
+        outlook={snapshot.outlook}
+        today={snapshot.today}
+        softBelowPct={LOW_OCCUPANCY_PCT}
+      />
 
-      {/* Quick actions */}
-      <div className="flex flex-wrap gap-3">
-        <Button asChild variant="outline">
-          <Link href={localizedHref(locale, "/dashboard/communications")}>
-            {dict.home.reviewEmails}
-          </Link>
-        </Button>
-        <Button asChild variant="outline">
-          <Link href={localizedHref(locale, "/dashboard/checkins")}>
-            {dict.home.checkinChasing}
-          </Link>
-        </Button>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <NeedsReplyCard
+          dict={dict}
+          locale={locale}
+          emails={unanswered.slice(0, NEEDS_REPLY_LIMIT)}
+        />
+        <TodoList dict={dict} locale={locale} items={todos} />
       </div>
     </div>
   );
+}
+
+/** The GM's name for the greeting. Falls back to the hotel name. */
+async function loadGmName(): Promise<string | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("hotel_settings")
+    .select("gm_name")
+    .maybeSingle();
+  return data?.gm_name?.trim() || null;
 }
