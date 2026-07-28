@@ -465,6 +465,8 @@ Decided and dated, not forgotten:
 | Rate data (Phase H), chat page (Phase I) | No history to show yet; the chat widget already works |
 | Pre-arrival upsell drafts | The highest-value August feature — uses the fields B6 already built |
 | Google app verification | Blocked on having a company; test users cover pilots |
+| WhatsApp / in-house guest messaging | Where in-house guests actually talk to the hotel — they rarely email (this drove the B7.1 single-inbox decision). Bigger build: WhatsApp Business API + Meta approval. The `/dashboard/concierge` route is parked as a "coming soon" stub for it. |
+| Sentry read token (`SENTRY_AUTH_TOKEN`) | Alerting already works — errors are captured and you're notified. A read-scoped token would additionally let Claude Code query issues directly instead of reproducing failures locally (as it had to for the 28 Jul page crash). |
 
 ---
 
