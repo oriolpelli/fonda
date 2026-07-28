@@ -18,6 +18,7 @@ import {
   WAITING_HOURS,
   type Urgency,
 } from "@/lib/email-urgency";
+import { SORT_COOKIE, SORT_MODES, type SortMode } from "@/lib/inbox-sort";
 import { intlLocale } from "@/lib/i18n/config";
 import { plural, t } from "@/lib/i18n/format";
 import { cn } from "@/lib/utils";
@@ -46,20 +47,13 @@ export interface InboxEmail {
   urgency: Urgency;
 }
 
-export const SORT_MODES = ["date", "urgency"] as const;
-export type SortMode = (typeof SORT_MODES)[number];
-
-/** Remembered across visits so the toggle doesn't reset every morning. */
-export const SORT_COOKIE = "fondas_inbox_sort";
-
-export function isSortMode(value: string | undefined): value is SortMode {
-  return value === "date" || value === "urgency";
-}
-
 /**
  * Persists the choice for a year, so tomorrow's inbox opens the way you left
  * it. A cookie rather than localStorage so the page can read it while
  * rendering on the server and the list never flips after paint.
+ *
+ * The sort contract itself lives in `@/lib/inbox-sort` — a `"use client"`
+ * module must not be the source of values the server reads.
  */
 function rememberSort(mode: SortMode): void {
   document.cookie = `${SORT_COOKIE}=${mode}; path=/; max-age=31536000; samesite=lax`;

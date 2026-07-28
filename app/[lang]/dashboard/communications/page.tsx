@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
-import {
-  EmailInbox,
-  isSortMode,
-  SORT_COOKIE,
-} from "@/components/dashboard/email-inbox";
+import { EmailInbox } from "@/components/dashboard/email-inbox";
 import { InboxStats } from "@/components/dashboard/inbox-stats";
 import { loadInbox } from "@/lib/inbox";
+// Server-readable sort contract — deliberately NOT imported from the client
+// inbox module, whose exports become throwing client references here.
+import { isSortMode, SORT_COOKIE } from "@/lib/inbox-sort";
 
 /**
  * Communications — the single guest-email inbox. Every guest message lands
