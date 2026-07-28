@@ -55,7 +55,7 @@ These weren't in any existing document and two of them matter a lot:
 
 | Problem | What it means | Severity |
 |---|---|---|
-| **No mailbox is connected** | The email assistant — your most differentiated feature — **has never actually run in production.** The job that processes emails reports "0 hotels" because no Gmail account is linked | 🔴 High |
+| **No mailbox is connected** | The email assistant — your most differentiated feature — **has never actually run in production.** The job that processes emails reports "0 hotels" because no Gmail account is linked | ✅ Fixed 28 Jul — Gmail connected; the real cause was a classifier bug (an unsupported `effort` parameter sent to the Haiku model), now fixed. Failed emails now log to Sentry instead of the cron reporting false success |
 | **Sync found 1,307 bookings but 0 guests** | Guest names may be missing from briefs and drafts, which would make a demo look generic | ✅ Fixed 27 Jul — now 5,275 guests with names |
 | **Email sender is still the test address** | `RESEND_FROM` points at Resend's sandbox, which only delivers to your own address. No brief has ever been sent from your real domain | ✅ Fixed 27 Jul — now `Fondas <briefings@send.fondas.app>` |
 | **No error alerting** | Sentry isn't switched on. If a job fails at 3am, nothing tells you — you'd find out from the hotel | ✅ Fixed 27 Jul — Sentry live, verified with real events |
@@ -71,7 +71,7 @@ Six boxes. Tick them only after using the product yourself.
 
 - [ ] **The four main pages are real, not placeholders** — dashboard, concierge, communications, brief
 - [ ] **It ran unattended for 4+ consecutive mornings** and you have a log to prove it
-- [ ] **The email assistant has processed a real email end-to-end in production** — a guest email arrived, got classified, and a draft was waiting
+- [x] **The email assistant has processed a real email end-to-end in production** — a guest email arrived, got classified, and a draft was waiting ✅ 28 Jul
 - [ ] **A brief in Spanish arrived from your real domain** in an inbox that isn't yours, and wasn't in spam
 - [x] **If something breaks, you find out** — Sentry alerting on, database backups on ✅ 27 Jul
 - [ ] **You can run the full demo on a laptop and a phone** without hitting an empty page
@@ -104,10 +104,10 @@ Nothing else counts until the sender address is real, so this is first.
 
 ### Tuesday 28 July — connect a mailbox, split the inbox
 
-- [ ] **Morning ritual** (§5) — takes 60 seconds. Log day 1.
-- [ ] **Connect a real Gmail mailbox** to your test hotel via Settings → Integrations in the app. Use a spare Gmail, not your personal one. *This is the most important thing you do all week — it's the first time the email assistant will have ever run for real.*
-- [ ] **Build block: B7** — split the inbox. Prompt in §6.2.
-- [ ] **Test it like a guest would:** from another email account, send three emails to that mailbox — one pretending to be a guest currently staying, one from someone arriving next month, one complaint. Wait for the job to run (up to 5 minutes), then check they landed on the right pages.
+- [x] **Morning ritual** (§5) — takes 60 seconds. Log day 1.
+- [x] **Connect a real Gmail mailbox** to your test hotel via Settings → Integrations in the app. Use a spare Gmail, not your personal one. *Done 28 Jul — `testfondas@gmail.com` connected; first real run of the email assistant.*
+- [x] **Build block: B7 → shipped as B7.1.** *Product decision (from hospitality experience): in-house guests rarely email — they call or use WhatsApp — so the two-page in-house/pre-arrival split wasn't worth it. Collapsed to one guest inbox with a per-email urgency note and a by-date / by-urgency sort toggle. Along the way fixed the email classifier (it had never worked in production — an unsupported `effort` parameter) and an RSC client/server boundary crash that broke the page for signed-in users.*
+- [x] **Test it like a guest would:** three emails sent from addresses matching seeded guests — all classified, matched to bookings, correct urgency notes, complaint floats to top under "by urgency." Verified on production.
 
 ---
 
@@ -158,7 +158,7 @@ Replaces the old `STAGE0.md` and `F1_FOUNDER_CHECKLIST.md`.
 | 11 | Anthropic spend cap | ✅ 27 Jul |
 | 12 | Encryption key in password manager | ✅ 27 Jul (rotated to a known value) |
 | 13 | Database updates confirmed applied | ✅ 27 Jul (0012, 0013, 0014) |
-| 14 | Gmail mailbox connected | ⬜ Tue |
+| 14 | Gmail mailbox connected | ✅ 28 Jul — `testfondas@gmail.com` |
 | 15 | Apaleo connection | ⬜ Deferred to August — MEWS is enough for first pilots |
 | 16 | Company legal details on the site | ⬜ **Blocked — no company yet.** See `GO_TO_MARKET.md` §8 |
 | 17 | Google app verification | ⬜ **Blocked on #16.** Not needed for pilots |
@@ -284,6 +284,8 @@ Run npm run lint.
 
 **What this gives you:** two separate inboxes — guests staying right now (Concierge) and guests arriving later or general enquiries (Communications). It's the feature that makes Fondas look like it understands hotel operations rather than being a generic email tool. Right now the Concierge page is a blank placeholder.
 
+> **✅ Shipped 28 Jul as B7.1 — with a change of direction.** In practice in-house guests rarely email (they call or WhatsApp), so the two-page split described below wasn't worth building. What shipped instead: a **single guest inbox** with a per-email urgency note (complaint · arrives today · arrives soon · waiting 24h+) and a **by-date / by-urgency sort toggle**. The Concierge route is parked as a quiet "coming soon" stub for future in-house / WhatsApp messaging. Two bugs were fixed in passing — the email classifier (which had never worked in production) and an RSC client/server boundary crash. The original B7 prompt below is kept for the record.
+
 ```
 Task B7 — implement Phase E of FONDA_REDESIGN_SPEC.md (§2 boundary rule, §3.4, §3.5):
 split the existing inbox into Concierge (in-house) and Communications (pre-arrival and
@@ -316,6 +318,8 @@ it, not extending it. i18n en/es/ca. Run npm run lint.
 ### 6.3 · B8 — The dashboard (Wed, ~2.5h)
 
 **What this gives you:** the page a GM lands on. Today's occupancy, arrivals, departures, free rooms — plus a ranked to-do list that tells them what actually needs attention. The current page is an older design that predates the redesign.
+
+> **Note (28 Jul, after B7.1):** there's no separate Concierge inbox anymore. The "concierge summary" card in the spec below becomes a **"needs a reply" card** — the top few unanswered guest emails ranked by the B7.1 urgency rules (complaints first, then arriving today, then longest-waiting), linking into Communications. Adjust that step of the B8 prompt when you run it.
 
 One deliberate decision: the ADR/rate row will show "rates coming soon" rather than a number. Showing invented rate data to a GM is the fastest way to lose credibility — they'll spot it instantly.
 
