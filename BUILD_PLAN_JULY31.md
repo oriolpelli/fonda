@@ -56,10 +56,10 @@ These weren't in any existing document and two of them matter a lot:
 | Problem | What it means | Severity |
 |---|---|---|
 | **No mailbox is connected** | The email assistant — your most differentiated feature — **has never actually run in production.** The job that processes emails reports "0 hotels" because no Gmail account is linked | 🔴 High |
-| **Sync found 1,307 bookings but 0 guests** | Guest names may be missing from briefs and drafts, which would make a demo look generic | 🟠 Medium |
-| **Email sender is still the test address** | `RESEND_FROM` points at Resend's sandbox, which only delivers to your own address. No brief has ever been sent from your real domain | 🔴 High — fix Monday |
-| **No error alerting** | Sentry isn't switched on. If a job fails at 3am, nothing tells you — you'd find out from the hotel | 🔴 High — fix Monday |
-| **Supabase on the free plan** | No database backups at all | 🔴 High — fix Monday |
+| **Sync found 1,307 bookings but 0 guests** | Guest names may be missing from briefs and drafts, which would make a demo look generic | ✅ Fixed 27 Jul — now 5,275 guests with names |
+| **Email sender is still the test address** | `RESEND_FROM` points at Resend's sandbox, which only delivers to your own address. No brief has ever been sent from your real domain | ✅ Fixed 27 Jul — now `Fondas <briefings@send.fondas.app>` |
+| **No error alerting** | Sentry isn't switched on. If a job fails at 3am, nothing tells you — you'd find out from the hotel | ✅ Fixed 27 Jul — Sentry live, verified with real events |
+| **Supabase on the free plan** | No database backups at all | ✅ Fixed 27 Jul — Pro plan, daily backups on |
 | **Apaleo not connected** | Only MEWS works today. Don't promise Apaleo to anyone | 🟠 Note it |
 | **One database serves both test and live** | Your live site runs on what the old docs call the "dev" database. Fine for now — just never run delete/reset commands against it | 🟡 Be careful |
 
@@ -73,7 +73,7 @@ Six boxes. Tick them only after using the product yourself.
 - [ ] **It ran unattended for 4+ consecutive mornings** and you have a log to prove it
 - [ ] **The email assistant has processed a real email end-to-end in production** — a guest email arrived, got classified, and a draft was waiting
 - [ ] **A brief in Spanish arrived from your real domain** in an inbox that isn't yours, and wasn't in spam
-- [ ] **If something breaks, you find out** — Sentry alerting on, database backups on
+- [x] **If something breaks, you find out** — Sentry alerting on, database backups on ✅ 27 Jul
 - [ ] **You can run the full demo on a laptop and a phone** without hitting an empty page
 
 **Deliberately not this week:** billing, user permissions, analytics page, rate data, automated tests, Apaleo. See §9.
@@ -88,15 +88,15 @@ Nothing else counts until the sender address is real, so this is first.
 
 **Founder block — dashboard clicks, ~50 minutes:**
 
-- [ ] **Fix the email sender.** Change `RESEND_FROM` to `Fondas <briefings@send.fondas.app>` in two places: the `.env.local` file (§11.3) and Vercel (§11.4). Note it's `send.fondas.app`, not `fondas.app` — that's the subdomain you verified.
-- [ ] **Upgrade Supabase to Pro** ($25/mo) → then Settings → Database → confirm daily backups are ON. *Why: right now a mistake or corruption would be unrecoverable. Hotel booking data is not something to hold without backups.*
-- [ ] **Set up Sentry.** Create a project (choose Next.js), copy the DSN it gives you into `SENTRY_DSN` and `NEXT_PUBLIC_SENTRY_DSN` in both `.env.local` and Vercel. *Why: this is your smoke alarm. Without it, failures are silent.*
-- [ ] **Set a monthly spend cap** at console.anthropic.com → Settings → Limits. *Why: a bug in a loop could otherwise run up a large bill overnight.*
-- [ ] **Save `MEWS_TOKEN_ENCRYPTION_KEY` to your password manager.** *Why: if this is ever lost, every hotel's PMS and Gmail connection breaks permanently and each one has to reconnect by hand.*
-- [ ] **Redeploy** (§11.5) so all of the above actually takes effect.
-- [ ] **Confirm the database changes are applied** (§11.6) — two updates were applied by hand and should be verified rather than assumed.
+- [x] **Fix the email sender.** Set `RESEND_FROM` to `Fondas <briefings@fondas.app>` in both the `.env.local` file (§11.3) and Vercel (§11.4). *Corrected 28 Jul: the verified Resend domain is the root `fondas.app`, not the `send.fondas.app` subdomain — sending from `@send.fondas.app` was rejected as unverified, so the first real brief failed. It now sends from `@fondas.app`; a dedicated `send.` sending subdomain is an optional August improvement.*
+- [x] **Upgrade Supabase to Pro** ($25/mo) → then Settings → Database → confirm daily backups are ON. *Why: right now a mistake or corruption would be unrecoverable. Hotel booking data is not something to hold without backups.*
+- [x] **Set up Sentry.** Create a project (choose Next.js), copy the DSN it gives you into `SENTRY_DSN` and `NEXT_PUBLIC_SENTRY_DSN` in both `.env.local` and Vercel. *Why: this is your smoke alarm. Without it, failures are silent.*
+- [x] **Set a monthly spend cap** at console.anthropic.com → Settings → Limits. *Why: a bug in a loop could otherwise run up a large bill overnight.*
+- [x] **Save `MEWS_TOKEN_ENCRYPTION_KEY` to your password manager.** *Done 27 Jul — the stored copy didn't match production, so the key was rotated to a fresh known value (set in Vercel + `.env.local` + password manager) and the test hotel's MEWS connection re-entered. Why it mattered: if this is ever lost, every hotel's PMS and Gmail connection breaks permanently and each one has to reconnect by hand.*
+- [x] **Redeploy** (§11.5) so all of the above actually takes effect.
+- [x] **Confirm the database changes are applied** (§11.6) — two updates were applied by hand and should be verified rather than assumed.
 
-**Build block — B5, the reliability harness.** Prompt in §6.1.
+**Build block — B5, the reliability harness.** Prompt in §6.1. ✅ **Done 27 Jul** — harness shipped and already earned its keep: it surfaced two real bugs, both fixed — the 0-guests field bug (now 5,275 guests with names) and a MEWS >1,000-guest batching failure. Migration `APPLY_0014` (job-error log) applied; committed as `d2689cb`.
 
 **End of day, you should be able to say:** "I ran one command, it said PASS, and a Spanish brief from my own domain landed in a Gmail account."
 
@@ -152,12 +152,12 @@ Replaces the old `STAGE0.md` and `F1_FOUNDER_CHECKLIST.md`.
 | 5 | Login redirect addresses registered | ✅ 26 Jul |
 | 6 | All settings copied into Vercel | ✅ 26 Jul |
 | 7 | Vercel Pro; all 4 automated jobs responding | ✅ 26 Jul |
-| 8 | Email sender switched to real domain | ⬜ Mon |
-| 9 | Supabase Pro + backups on | ⬜ Mon |
-| 10 | Sentry alerting live | ⬜ Mon |
-| 11 | Anthropic spend cap | ⬜ Mon |
-| 12 | Encryption key in password manager | ⬜ Mon |
-| 13 | Database updates confirmed applied | ⬜ Mon |
+| 8 | Email sender switched to real domain | ✅ 28 Jul — `@fondas.app` (fixed subdomain mix-up) |
+| 9 | Supabase Pro + backups on | ✅ 27 Jul |
+| 10 | Sentry alerting live | ✅ 27 Jul |
+| 11 | Anthropic spend cap | ✅ 27 Jul |
+| 12 | Encryption key in password manager | ✅ 27 Jul (rotated to a known value) |
+| 13 | Database updates confirmed applied | ✅ 27 Jul (0012, 0013, 0014) |
 | 14 | Gmail mailbox connected | ⬜ Tue |
 | 15 | Apaleo connection | ⬜ Deferred to August — MEWS is enough for first pilots |
 | 16 | Company legal details on the site | ⬜ **Blocked — no company yet.** See `GO_TO_MARKET.md` §8 |
