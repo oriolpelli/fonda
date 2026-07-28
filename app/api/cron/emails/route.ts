@@ -25,6 +25,7 @@ interface EmailPollOutcome {
   hotelId: string;
   ingested?: number;
   processed?: number;
+  failed?: number;
   error?: string;
 }
 
@@ -60,11 +61,27 @@ export async function GET() {
   for (const hotel of hotels ?? []) {
     try {
       const ingested = await ingestRecentEmails(hotel.id, POLL_WINDOW_DAYS);
-      const processed = await processNewEmails(hotel.id);
-      outcomes.push({ hotelId: hotel.id, ingested, processed });
-      await admin
-        .from("cron_logs")
-        .insert({ job: "emails", hotel_id: hotel.id, status: "success" });
+      const { processed, failed, lastError } = await processNewEmails(hotel.id);
+      outcomes.push({ hotelId: hotel.id, ingested, processed, failed });
+
+      // Emails that failed to classify are a real failure, even though ingest
+      // worked — log them as such so the morning check and Sentry both see it.
+      if (failed > 0) {
+        const message = `${failed} of ${processed + failed} emails failed to process: ${lastError}`;
+        Sentry.captureException(new Error(message), {
+          tags: { hotelId: hotel.id, stage: "emails" },
+        });
+        await admin.from("cron_logs").insert({
+          job: "emails",
+          hotel_id: hotel.id,
+          status: "error",
+          message,
+        });
+      } else {
+        await admin
+          .from("cron_logs")
+          .insert({ job: "emails", hotel_id: hotel.id, status: "success" });
+      }
     } catch (err) {
       const message = (err as Error).message;
       Sentry.captureException(err, {

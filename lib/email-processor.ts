@@ -15,10 +15,13 @@ import type { EmailStatus } from "@/types";
  *
  * Model split (cost/quality): classification is a cheap, structured task, so it
  * runs on Haiku; drafting is guest-facing, so it runs on Sonnet — a strong
- * balance of quality and cost. Dial either up (e.g. claude-opus-4-8) or down as
- * needed. Sonnet/Haiku accept `temperature` again, so you can add
- * `temperature: 0.3` to the draft call to restore the intended warmth (test
- * first — it may interact with `output_config.effort`).
+ * balance of quality and cost. Dial either up (e.g. claude-opus-5) as needed.
+ *
+ * IMPORTANT — `output_config.effort` is NOT supported on Haiku 4.5 and returns
+ * a 400 ("This model does not support the effort parameter"). It IS supported
+ * on Sonnet 4.6 (low/medium/high/max). Structured output (`format`) works on
+ * both. Sending `effort` to Haiku is what silently broke every classification
+ * until 28 Jul — if you change either model, re-check which knobs it accepts.
  */
 const EMAIL_CLASSIFY_MODEL = "claude-haiku-4-5-20251001";
 const EMAIL_DRAFT_MODEL = "claude-sonnet-4-6";
@@ -97,8 +100,8 @@ async function classify(
   const response = await client.messages.create({
     model: EMAIL_CLASSIFY_MODEL,
     max_tokens: 1024,
+    // No `effort` here: Haiku 4.5 rejects it. Structured output is supported.
     output_config: {
-      effort: "low",
       format: { type: "json_schema", schema: CLASSIFY_SCHEMA },
     },
     system:
@@ -161,6 +164,23 @@ async function enrich(
       .limit(1)
       .maybeSingle();
     if (guest) {
+      const reservations = admin
+        .from("reservations")
+        .select("*")
+        .eq("hotel_id", hotelId)
+        .eq("customer_mews_id", guest.mews_id);
+
+      // A guest can hold several bookings. Prefer the stay they're on right
+      // now — otherwise a future booking would win and their in-stay request
+      // would be filed under pre-arrival (FONDA_REDESIGN_SPEC.md §2).
+      const now = new Date().toISOString();
+      const { data: current } = await reservations
+        .lte("start_utc", now)
+        .gte("end_utc", now)
+        .limit(1)
+        .maybeSingle();
+      if (current) return { reservation: current, guest };
+
       const { data: reservation } = await admin
         .from("reservations")
         .select("*")
@@ -288,9 +308,25 @@ export async function processEmail(
     status = "pending";
   }
 
+  // Persist *which* reservation/guest matched, not what phase of their stay
+  // they're in. The phase is derived on every read (lib/inbox.ts) so it can't
+  // go stale as the guest checks out — see FONDA_REDESIGN_SPEC.md §2.
+  const reservationMewsId =
+    (context.reservation?.mews_id as string | undefined) ?? null;
+  const customerMewsId =
+    (context.reservation?.customer_mews_id as string | undefined) ??
+    (context.guest?.mews_id as string | undefined) ??
+    null;
+
   const { error: updateError } = await admin
     .from("emails")
-    .update({ classification, draft_reply: draft, status })
+    .update({
+      classification,
+      draft_reply: draft,
+      status,
+      reservation_mews_id: reservationMewsId,
+      customer_mews_id: customerMewsId,
+    })
     .eq("id", emailId);
   if (updateError) {
     throw new Error(`Failed to save processed email: ${updateError.message}`);
@@ -299,15 +335,26 @@ export async function processEmail(
   return { classification, status, drafted: !NO_DRAFT.has(classification) };
 }
 
+export interface ProcessBatchResult {
+  processed: number;
+  /** Emails left unclassified because processing threw. */
+  failed: number;
+  /** Message from the last failure, for the caller to log. */
+  lastError: string | null;
+}
+
 /**
  * Processes every not-yet-classified email for a hotel (e.g. freshly ingested
  * from Gmail). Isolates failures so one bad email doesn't stop the batch.
- * Returns the number processed.
+ *
+ * Failures are *counted and reported*, not swallowed. Silently continuing is
+ * what let a 400 from the classifier look like a healthy cron for two days:
+ * every email failed, the job logged "success", and nothing surfaced it.
  */
 export async function processNewEmails(
   hotelId: string,
   limit = 50
-): Promise<number> {
+): Promise<ProcessBatchResult> {
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("emails")
@@ -320,13 +367,18 @@ export async function processNewEmails(
   }
 
   let processed = 0;
+  let failed = 0;
+  let lastError: string | null = null;
   for (const { id } of data ?? []) {
     try {
       await processEmail(id, hotelId);
       processed++;
-    } catch {
-      // Leave the email unclassified; it'll be retried next run.
+    } catch (err) {
+      // Leave the email unclassified; it'll be retried next run — but record
+      // why, so a systemic failure can't masquerade as a quiet inbox.
+      failed++;
+      lastError = (err as Error).message;
     }
   }
-  return processed;
+  return { processed, failed, lastError };
 }
