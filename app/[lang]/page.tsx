@@ -10,6 +10,7 @@ import { EmailDraftPreviewWindow } from "@/components/marketing/email-draft-prev
 import { HeroParallax } from "@/components/marketing/hero-parallax";
 import { JsonLd } from "@/components/marketing/json-ld";
 import { MobileNav } from "@/components/marketing/mobile-nav";
+import { NewsletterForm } from "@/components/marketing/newsletter-form";
 import { Reveal } from "@/components/marketing/reveal";
 import {
   Vignette,
@@ -126,46 +127,11 @@ export default async function Home({
     [dict.briefingPreview.row3strong, dict.briefingPreview.row3rest],
   ];
 
-  // Social proof — PLACEHOLDER CONTENT, all of it. No hotel below is a real
-  // customer and no quote or metric came from one. The "Placeholder" chip and
-  // the dashed logo outlines are load-bearing: they keep the section from
-  // reading as a real endorsement while it waits for design-partner quotes.
-  // Swap the copy in dictionaries/*.json (socialProof.*) and drop the chip
-  // once the real names, quotes and numbers are signed off.
-  const PLACEHOLDER_LOGOS = [
-    dict.socialProof.logo1,
-    dict.socialProof.logo2,
-    dict.socialProof.logo3,
-    dict.socialProof.logo4,
-    dict.socialProof.logo5,
-  ];
-
-  const PLACEHOLDER_TESTIMONIALS = [
-    {
-      quote: dict.socialProof.quote1,
-      metric: dict.socialProof.metric1,
-      metricLabel: dict.socialProof.metricLabel1,
-      name: dict.socialProof.name1,
-      role: dict.socialProof.role1,
-      property: dict.socialProof.property1,
-    },
-    {
-      quote: dict.socialProof.quote2,
-      metric: dict.socialProof.metric2,
-      metricLabel: dict.socialProof.metricLabel2,
-      name: dict.socialProof.name2,
-      role: dict.socialProof.role2,
-      property: dict.socialProof.property2,
-    },
-    {
-      quote: dict.socialProof.quote3,
-      metric: dict.socialProof.metric3,
-      metricLabel: dict.socialProof.metricLabel3,
-      name: dict.socialProof.name3,
-      role: dict.socialProof.role3,
-      property: dict.socialProof.property3,
-    },
-  ];
+  // NOTE: there is deliberately no social-proof section here. It existed as
+  // placeholder logos, quotes, names and metrics — none of it real — and was
+  // removed rather than shipped, because a fabricated metric is the fastest
+  // way to lose a GM's trust. Reinstate it only from quotes a named hotel has
+  // agreed in writing to have published, with metrics that hotel can back.
 
   // Footer navigation. `href: null` marks a PLACEHOLDER destination: it renders
   // as href="#" with a ° marker and the footnote in the bottom bar. Only the
@@ -278,11 +244,11 @@ export default async function Home({
   // Structured data. Everything below is asserted to search engines as fact,
   // so it is built only from copy we stand behind.
   //
-  // ⚠️ Deliberately NO Review / AggregateRating markup. The testimonials in the
-  // social-proof section are placeholders (see PLACEHOLDER_TESTIMONIALS), and
-  // emitting invented ratings as structured data is both a Google spam-policy
-  // violation and a lie told at machine scale. Add review markup only once the
-  // quotes are real and attributable.
+  // ⚠️ Deliberately NO Review / AggregateRating markup. There are no customer
+  // reviews on this site yet — the placeholder ones were removed rather than
+  // shipped — and emitting invented ratings as structured data is both a Google
+  // spam-policy violation and a lie told at machine scale. Add review markup
+  // only once the quotes are real and attributable.
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -442,84 +408,29 @@ export default async function Home({
           </HeroParallax>
         </section>
 
-        {/* Trust bar */}
+        {/* Trust bar. The only claim about traction on the page, and it is
+            deliberately unnumbered — we are pre-pilot, so it says we are
+            onboarding our first hotels and stops there. Do not put a count
+            here until it is one a hotel could verify. */}
         <section className="border-y border-border px-6 py-5">
-          <Reveal className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-center gap-2.5">
-            <span className="mr-1 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
-              {dict.trust.worksWith}
-            </span>
-            {INTEGRATIONS.map((name) => (
-              <span
-                key={name}
-                className="rounded-full border border-border px-3.5 py-1 text-[13px] font-medium text-muted-foreground"
-              >
-                {name}
+          <Reveal className="mx-auto flex max-w-[1120px] flex-col items-center gap-2.5">
+            <div className="flex flex-wrap items-center justify-center gap-2.5">
+              <span className="mr-1 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
+                {dict.trust.worksWith}
               </span>
-            ))}
-          </Reveal>
-        </section>
-
-        {/* Social proof — PLACEHOLDER CONTENT (see PLACEHOLDER_TESTIMONIALS). */}
-        <section className="border-b border-border px-6 py-24 md:px-8">
-          <div className="mx-auto max-w-[1120px]">
-            {/* (a) Hotel logos */}
-            <Reveal className="text-center">
-              <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-                <span className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-                  {dict.socialProof.logosLabel}
-                </span>
-                <span className="rounded-full border border-[var(--fonda-border-2)] px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
-                  {dict.socialProof.placeholderTag}
-                </span>
-              </div>
-              <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
-                {PLACEHOLDER_LOGOS.map((name) => (
-                  <span
-                    key={name}
-                    className="rounded-[10px] border border-dashed border-[var(--fonda-border-2)] bg-[var(--fonda-surface)] px-5 py-2.5 font-mono text-[13px] uppercase tracking-[0.08em] text-[var(--fonda-text-3)]"
-                  >
-                    {name}
-                  </span>
-                ))}
-              </div>
-              <p className="mt-6 text-[15px] text-muted-foreground">
-                {dict.socialProof.onboardingNote}
-              </p>
-            </Reveal>
-
-            {/* (b) Testimonials — the metric is each card's one navy accent. */}
-            <div className="mt-16 grid gap-4 md:grid-cols-3">
-              {PLACEHOLDER_TESTIMONIALS.map((item, i) => (
-                <Reveal
-                  key={item.metric}
-                  index={i}
-                  className="flex flex-col rounded-[16px] border border-border bg-card p-7"
+              {INTEGRATIONS.map((name) => (
+                <span
+                  key={name}
+                  className="rounded-full border border-border px-3.5 py-1 text-[13px] font-medium text-muted-foreground"
                 >
-                  <p className="text-[17px] leading-[1.5] tracking-[-0.01em] text-foreground">
-                    “{item.quote}”
-                  </p>
-                  <div className="mt-auto">
-                    <div className="mt-7 flex items-baseline gap-2">
-                      <span className="text-[30px] font-semibold leading-none tracking-[-0.025em] text-[var(--fonda-accent)]">
-                        {item.metric}
-                      </span>
-                      <span className="text-[13px] text-muted-foreground">
-                        {item.metricLabel}
-                      </span>
-                    </div>
-                    <div className="mt-6 border-t border-border pt-4">
-                      <p className="text-[14px] font-medium text-foreground">
-                        {item.name}
-                      </p>
-                      <p className="mt-1 text-[13px] leading-[1.5] text-muted-foreground">
-                        {item.role} · {item.property}
-                      </p>
-                    </div>
-                  </div>
-                </Reveal>
+                  {name}
+                </span>
               ))}
             </div>
-          </div>
+            <p className="text-[13px] text-muted-foreground">
+              {dict.trust.onboardingNote}
+            </p>
+          </Reveal>
         </section>
 
         {/* How it works — three numbered steps (Mobbin: Clay) */}
@@ -950,33 +861,9 @@ export default async function Home({
               </p>
             </div>
 
-            {/* Newsletter — PLACEHOLDER, deliberately inert. There is no
-                <form>, no action, no handler and no list behind it: the button
-                is type="button" so nothing can submit, by design. Before this
-                ships it needs a server action, double opt-in, and a privacy
-                line — an email address here is personal data. */}
-            <div className="w-full lg:max-w-[440px] lg:justify-self-end">
-              <h2 className="text-[20px] font-semibold tracking-[-0.01em] text-foreground">
-                {dict.footer.newsletterTitle}
-              </h2>
-              <p className="mt-2 max-w-[44ch] text-[15px] leading-[1.6] text-muted-foreground">
-                {dict.footer.newsletterHint}
-              </p>
-              <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
-                <input
-                  type="email"
-                  aria-label={dict.footer.newsletterTitle}
-                  placeholder={dict.footer.newsletterPlaceholder}
-                  className="h-11 w-full rounded-[10px] border border-[var(--fonda-border-2)] bg-[var(--fonda-bg)] px-3.5 text-[15px] text-foreground transition-colors duration-[180ms] placeholder:text-[var(--fonda-text-3)] focus:border-[var(--fonda-accent)] focus:outline-none focus:ring-[3px] focus:ring-[var(--fonda-accent-light)]"
-                />
-                <Button type="button" variant="ink" className="h-11 shrink-0">
-                  {dict.footer.newsletterButton}
-                </Button>
-              </div>
-              <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
-                {dict.footer.newsletterNote}
-              </p>
-            </div>
+            {/* Newsletter — real: server action, double opt-in, privacy line
+                at the point of collection. See app/[lang]/newsletter/. */}
+            <NewsletterForm />
           </div>
 
           {/* Link columns */}

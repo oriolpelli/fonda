@@ -55,7 +55,14 @@ const SECTIONS: Section[] = [
       "Hotel/PMS data (as processor): reservation records, arrival/departure and occupancy data, and guest profile fields retrieved from the hotel's property management system (MEWS or Apaleo) via official read APIs.",
       "Mailbox data (as processor): when a hotel connects Gmail, the content and metadata of guest emails needed to classify messages and draft replies.",
       "Connection credentials: OAuth tokens and API keys for connected PMS and mailbox accounts, encrypted at rest.",
+      "Newsletter data: if you sign up for our product notes, the email address you enter, the language you signed up in, and the date you confirmed.",
       "Technical data: log, device, and error-diagnostic data used to keep the service secure and reliable.",
+    ],
+  },
+  {
+    heading: "Newsletter and marketing email",
+    paragraphs: [
+      "If you enter your address in the newsletter form on our website, we send you a single email asking you to confirm. We add you to the list only if you confirm — until then your address is stored as unconfirmed and receives nothing further. If you never confirm, we do not email you again. The legal basis is your consent, which you can withdraw at any time using the unsubscribe link in any newsletter or by contacting us. We do not sell or share the list, and we do not use it for anything other than these product notes.",
     ],
   },
   {
