@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Fondas — Hotel operations, on autopilot",
-    "description": "Fondas runs the front-office admin for independent hotels: guest email drafted for your review, a morning brief before the desk opens, check-in time chasing, and plain-language answers about your hotel."
+    "description": "Fondas is the AI front office for hotels: guest email drafted for your review, a morning brief before the desk opens, check-in times chased automatically, and plain-language answers about your hotel — on top of the PMS you already run."
   },
   "common": {
     "signOut": "Sign out",
@@ -12,18 +12,24 @@
     "pleaseWait": "Please wait…",
     "loading": "Loading…",
     "disconnect": "Disconnect",
-    "serverUnreachable": "Couldn't reach the server."
+    "serverUnreachable": "Couldn't reach the server.",
+    "skipToContent": "Skip to content"
   },
   "nav": {
     "features": "Features",
     "signIn": "Sign in",
-    "getEarlyAccess": "Get early access"
+    "getEarlyAccess": "Get early access",
+    "getEarlyAccessShort": "Get access",
+    "howItWorks": "How it works",
+    "faq": "FAQ",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "hero": {
-    "badge": "For independent hotel GMs · Private beta",
-    "headlineLine1": "Your inbox, answered.",
-    "headlineLine2": "Your morning, ready.",
-    "subhead": "Fondas runs your hotel's front-office admin — guest emails arrive with replies drafted in your voice, the morning brief lands before the first coffee, and arrival times chase themselves. Whichever PMS you use.",
+    "badge": "AI software for hotels · Private beta",
+    "headlineLine1": "The admin runs itself.",
+    "headlineLine2": "You run the hotel.",
+    "subhead": "The AI front office for hotels — it drafts your guest email, chases arrivals, and briefs you each morning, on top of the PMS you already run.",
     "ctaPrimary": "Get early access",
     "ctaSecondary": "See how it works →"
   },
@@ -39,6 +45,34 @@
   },
   "trust": {
     "worksWith": "Works with"
+  },
+  "socialProof": {
+    "logosLabel": "Trusted by independents like…",
+    "placeholderTag": "Placeholder",
+    "onboardingNote": "The first 20 hotels are onboarding now.",
+    "logo1": "Logo 01",
+    "logo2": "Logo 02",
+    "logo3": "Logo 03",
+    "logo4": "Logo 04",
+    "logo5": "Logo 05",
+    "quote1": "Placeholder quote — one line on how the morning brief changed the start of the day.",
+    "metric1": "6 h",
+    "metricLabel1": "saved each week",
+    "name1": "Name to confirm",
+    "role1": "General manager",
+    "property1": "Placeholder property · 48 rooms",
+    "quote2": "Placeholder quote — one line on guest email being answered before the desk opens.",
+    "metric2": "92%",
+    "metricLabel2": "of email drafted",
+    "name2": "Name to confirm",
+    "role2": "Front-office manager",
+    "property2": "Placeholder property · 26 rooms",
+    "quote3": "Placeholder quote — one line on arrival times landing without anyone chasing them.",
+    "metric3": "3 min",
+    "metricLabel3": "average review time",
+    "name3": "Name to confirm",
+    "role3": "Owner",
+    "property3": "Placeholder property · 74 rooms"
   },
   "featuresSection": {
     "eyebrow": "What Fondas does",
@@ -83,7 +117,7 @@
     "briefValue": "6:30",
     "briefLabel": "before the front desk opens",
     "priceTop": "One flat price",
-    "priceValue": "€199",
+    "priceValue": "€{price}",
     "priceLabel": "per property, per month — everything included",
     "setupTop": "Set up once",
     "setupValue": "1×",
@@ -106,6 +140,23 @@
     "dailySignalTitle": "Daily signal",
     "dailySignalDesc": "A quiet flag when a date needs attention."
   },
+  "comparison": {
+    "eyebrow": "The difference",
+    "headline": "The same morning, two ways.",
+    "lead": "Same hotel, same PMS, same inbox. The difference is how much of it you still do by hand.",
+    "manualTitle": "The manual front desk",
+    "fondasTitle": "With Fondas",
+    "manual1": "Spreadsheets and inbox rules",
+    "manual2": "Replies written at midnight",
+    "manual3": "Arrival times chased by hand",
+    "manual4": "Missed arrivals",
+    "manual5": "No morning picture",
+    "fondas1": "Ask-anything answers from live data",
+    "fondas2": "Every reply drafted for your review",
+    "fondas3": "Arrival times chased automatically",
+    "fondas4": "Late arrivals surface in the brief, not at the door",
+    "fondas5": "One morning brief before the desk opens"
+  },
   "cta": {
     "eyebrow": "Join the beta",
     "headline": "Ready to get your mornings back?",
@@ -116,7 +167,28 @@
     "rights": "© {year} Fondas. Hotel operations, on autopilot.",
     "privacy": "Privacy",
     "terms": "Terms",
-    "sampleBrief": "See a sample brief"
+    "sampleBrief": "See a sample brief",
+    "valueProp": "The AI front office for independent hotels.",
+    "productTitle": "Product",
+    "companyTitle": "Company",
+    "resourcesTitle": "Resources",
+    "legalTitle": "Legal",
+    "pricing": "Pricing",
+    "integrations": "Integrations",
+    "about": "About",
+    "careers": "Careers",
+    "contact": "Contact",
+    "press": "Press",
+    "helpCentre": "Help centre",
+    "changelog": "Changelog",
+    "cookies": "Cookies",
+    "security": "Security",
+    "newsletterTitle": "Product notes, once a month.",
+    "newsletterHint": "What shipped, what's next, and what we're learning from the first 20 hotels.",
+    "newsletterPlaceholder": "you@yourhotel.com",
+    "newsletterButton": "Subscribe",
+    "newsletterNote": "Placeholder — this form isn't connected yet.",
+    "placeholderNote": "° Placeholder link — not live yet."
   },
   "sampleBrief": {
     "title": "Morning brief",
@@ -150,7 +222,20 @@
     "timezone": "Timezone",
     "pms": "Property management system",
     "settingUp": "Setting up…",
-    "createHotel": "Create hotel"
+    "createHotel": "Create hotel",
+    "stepLabel": "Step {current} of {total}",
+    "step1Title": "Your property",
+    "step1Desc": "The basics, so Fondas can tailor your briefs.",
+    "step2Title": "Connect your systems",
+    "step2Desc": "Choose your PMS and timezone — you'll link the accounts next.",
+    "step3Title": "You're all set",
+    "step3Desc": "Here's what Fondas starts doing the moment setup finishes.",
+    "back": "Back",
+    "continue": "Continue",
+    "ready1": "Draft replies to overnight guest email",
+    "ready2": "Chase missing arrival times automatically",
+    "ready3": "Deliver your morning brief before the desk opens",
+    "ready4": "Answer questions about your hotel on demand"
   },
   "dashboardNav": {
     "briefing": "Briefing",
@@ -502,5 +587,62 @@
     "dashboardTitle": "We couldn't load this page",
     "dashboardBody": "Something went wrong fetching your hotel data — this can happen if the PMS or email connection is temporarily unavailable.",
     "retry": "Try again"
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "headline": "Live in an afternoon. Working by morning.",
+    "lead": "No migration and no new system to learn. Connect what you already use, and Fondas gets to work overnight.",
+    "step1Title": "Connect",
+    "step1Desc": "Link your PMS and hotel inbox. A few minutes, once — Fondas reads your reservations and learns your hotel.",
+    "step2Title": "Fondas drafts & chases",
+    "step2Desc": "Overnight, guest emails get replies drafted in your voice and missing arrival times chase themselves.",
+    "step3Title": "You approve",
+    "step3Desc": "The morning brief lands before the desk opens. Skim it, send the drafts you like, get on with your day."
+  },
+  "showcase": {
+    "eyebrow": "The morning brief",
+    "headline": "The whole hotel, on one screen.",
+    "lead": "Arrivals, overnight email, tonight's occupancy and the one thing that needs a decision — summarized in plain language before your first coffee."
+  },
+  "emailShowcase": {
+    "eyebrow": "The inbox",
+    "headline": "Guest email, drafted before you wake up.",
+    "lead": "Every message arrives classified and answered in your hotel's voice, matched to the reservation. You review, adjust, and send — nothing goes out without you."
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "headline": "Questions, answered.",
+    "setupGroup": "Setup",
+    "securityGroup": "Security & data",
+    "billingGroup": "Billing",
+    "q1": "Which systems do you support?",
+    "a1": "MEWS and Apaleo today, plus Gmail for the inbox — each connected in a few minutes. More integrations are on the way; tell us what you run.",
+    "q2": "Do I have to switch systems?",
+    "a2": "No. Fondas sits on top of the tools you already use. Nothing to migrate and nothing for your team to relearn.",
+    "q3": "How long does setup take?",
+    "a3": "About an afternoon. Connect your PMS and inbox, and your first brief can arrive the very next morning.",
+    "q4": "Does Fondas ever email guests without me?",
+    "a4": "Never automatically. Every reply is drafted for your review — sending is always your decision.",
+    "q5": "Where does our guest data live?",
+    "a5": "Each hotel's data is isolated and protected by row-level security, so one property can never see another's. PMS and inbox tokens are stored encrypted, and we request only the access we need.",
+    "q6": "Is guest data used to train AI models?",
+    "a6": "No. Your guests' information is used only to run your hotel's briefs, drafts and answers — never to train shared models.",
+    "q7": "What does Fondas cost?",
+    "a7": "One flat price per property, per month — everything included, with no per-seat fees. Get in touch and we'll get you set up."
+  },
+  "pricing": {
+    "eyebrow": "Pricing",
+    "headline": "One flat price per property.",
+    "price": "€{price}",
+    "priceUnit": "per property, per month — everything included",
+    "lead": "No per-seat fees, no per-email metering, no surprise tiers. Everything Fondas does is included, at one price per property.",
+    "note": "Free for the first 20 hotels during the private beta.",
+    "button": "Talk to us"
+  },
+  "authAside": {
+    "headline": "Hotel operations, on autopilot.",
+    "line1": "Guest email, drafted overnight.",
+    "line2": "Arrival times, chased automatically.",
+    "line3": "A morning brief before the desk opens."
   }
 }

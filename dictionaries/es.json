@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Fondas — Operaciones hoteleras, en piloto automático",
-    "description": "Fondas se ocupa de la gestión de recepción de hoteles independientes: correos de huéspedes con la respuesta ya redactada, un resumen matinal antes de que abra la recepción, seguimiento de horas de llegada y respuestas sobre tu hotel en lenguaje natural."
+    "description": "Fondas es la recepción con IA para hoteles: correos de huéspedes con la respuesta ya redactada para que la revises, un resumen matinal antes de que abra la recepción, horas de llegada reclamadas automáticamente y respuestas sobre tu hotel en lenguaje natural, sobre el PMS que ya usas."
   },
   "common": {
     "signOut": "Cerrar sesión",
@@ -12,18 +12,24 @@
     "pleaseWait": "Espera un momento…",
     "loading": "Cargando…",
     "disconnect": "Desconectar",
-    "serverUnreachable": "No se pudo conectar con el servidor."
+    "serverUnreachable": "No se pudo conectar con el servidor.",
+    "skipToContent": "Saltar al contenido"
   },
   "nav": {
     "features": "Funciones",
     "signIn": "Iniciar sesión",
-    "getEarlyAccess": "Solicitar acceso anticipado"
+    "getEarlyAccess": "Solicitar acceso anticipado",
+    "getEarlyAccessShort": "Acceso",
+    "howItWorks": "Cómo funciona",
+    "faq": "Preguntas",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
   },
   "hero": {
-    "badge": "Para directores de hotel independientes · Beta privada",
-    "headlineLine1": "El correo, contestado.",
-    "headlineLine2": "La mañana, resuelta.",
-    "subhead": "Fondas se ocupa de la gestión diaria de recepción: cada correo de huésped llega con la respuesta redactada con la voz de tu hotel, el resumen matinal está listo antes del primer café y las horas de llegada se reclaman solas. Con el PMS que ya usas.",
+    "badge": "Software con IA para hoteles · Beta privada",
+    "headlineLine1": "La gestión se hace sola.",
+    "headlineLine2": "Tú llevas el hotel.",
+    "subhead": "La recepción con IA para hoteles: redacta el correo de tus huéspedes, reclama las llegadas y te prepara un resumen cada mañana, sobre el PMS que ya usas.",
     "ctaPrimary": "Solicitar acceso anticipado",
     "ctaSecondary": "Cómo funciona →"
   },
@@ -39,6 +45,34 @@
   },
   "trust": {
     "worksWith": "Compatible con"
+  },
+  "socialProof": {
+    "logosLabel": "La confianza de independientes como…",
+    "placeholderTag": "Provisional",
+    "onboardingNote": "Los primeros 20 hoteles ya se están incorporando.",
+    "logo1": "Logo 01",
+    "logo2": "Logo 02",
+    "logo3": "Logo 03",
+    "logo4": "Logo 04",
+    "logo5": "Logo 05",
+    "quote1": "Cita provisional — una línea sobre cómo el resumen matinal cambió el inicio del día.",
+    "metric1": "6 h",
+    "metricLabel1": "ahorradas cada semana",
+    "name1": "Nombre por confirmar",
+    "role1": "Dirección del hotel",
+    "property1": "Alojamiento provisional · 48 habitaciones",
+    "quote2": "Cita provisional — una línea sobre el correo de huéspedes contestado antes de abrir recepción.",
+    "metric2": "92%",
+    "metricLabel2": "del correo redactado",
+    "name2": "Nombre por confirmar",
+    "role2": "Jefatura de recepción",
+    "property2": "Alojamiento provisional · 26 habitaciones",
+    "quote3": "Cita provisional — una línea sobre las horas de llegada que llegan solas, sin reclamarlas.",
+    "metric3": "3 min",
+    "metricLabel3": "de revisión de media",
+    "name3": "Nombre por confirmar",
+    "role3": "Propiedad",
+    "property3": "Alojamiento provisional · 74 habitaciones"
   },
   "featuresSection": {
     "eyebrow": "Qué hace Fondas",
@@ -83,7 +117,7 @@
     "briefValue": "6:30",
     "briefLabel": "antes de que abra la recepción",
     "priceTop": "Un precio único",
-    "priceValue": "199 €",
+    "priceValue": "{price} €",
     "priceLabel": "por hotel al mes, todo incluido",
     "setupTop": "Se configura una vez",
     "setupValue": "1×",
@@ -106,6 +140,23 @@
     "dailySignalTitle": "Señal diaria",
     "dailySignalDesc": "Un aviso discreto cuando una fecha necesita atención."
   },
+  "comparison": {
+    "eyebrow": "La diferencia",
+    "headline": "La misma mañana, de dos maneras.",
+    "lead": "El mismo hotel, el mismo PMS, el mismo correo. La diferencia es cuánto sigues haciendo a mano.",
+    "manualTitle": "La recepción manual",
+    "fondasTitle": "Con Fondas",
+    "manual1": "Hojas de cálculo y reglas en el correo",
+    "manual2": "Respuestas escritas a medianoche",
+    "manual3": "Horas de llegada reclamadas a mano",
+    "manual4": "Llegadas que se escapan",
+    "manual5": "Sin una foto de la mañana",
+    "fondas1": "Respuestas sobre datos en vivo, sin más que preguntar",
+    "fondas2": "Cada respuesta redactada para que la revises",
+    "fondas3": "Horas de llegada reclamadas automáticamente",
+    "fondas4": "Las llegadas tarde aparecen en el resumen, no en la puerta",
+    "fondas5": "Un resumen matinal antes de que abra la recepción"
+  },
   "cta": {
     "eyebrow": "Únete a la beta",
     "headline": "¿Listo para recuperar tus mañanas?",
@@ -116,7 +167,28 @@
     "rights": "© {year} Fondas. Operaciones hoteleras, en piloto automático.",
     "privacy": "Privacidad",
     "terms": "Términos",
-    "sampleBrief": "Ver un resumen de ejemplo"
+    "sampleBrief": "Ver un resumen de ejemplo",
+    "valueProp": "La recepción con IA para hoteles independientes.",
+    "productTitle": "Producto",
+    "companyTitle": "Empresa",
+    "resourcesTitle": "Recursos",
+    "legalTitle": "Legal",
+    "pricing": "Precios",
+    "integrations": "Integraciones",
+    "about": "Quiénes somos",
+    "careers": "Empleo",
+    "contact": "Contacto",
+    "press": "Prensa",
+    "helpCentre": "Centro de ayuda",
+    "changelog": "Novedades",
+    "cookies": "Cookies",
+    "security": "Seguridad",
+    "newsletterTitle": "Notas de producto, una vez al mes.",
+    "newsletterHint": "Qué hemos lanzado, qué viene y qué aprendemos de los primeros 20 hoteles.",
+    "newsletterPlaceholder": "tu@tuhotel.com",
+    "newsletterButton": "Suscribirme",
+    "newsletterNote": "Provisional — este formulario aún no está conectado.",
+    "placeholderNote": "° Enlace provisional — todavía no está activo."
   },
   "sampleBrief": {
     "title": "Resumen matinal",
@@ -150,7 +222,20 @@
     "timezone": "Zona horaria",
     "pms": "Sistema de gestión hotelera (PMS)",
     "settingUp": "Configurando…",
-    "createHotel": "Crear hotel"
+    "createHotel": "Crear hotel",
+    "stepLabel": "Paso {current} de {total}",
+    "step1Title": "Tu alojamiento",
+    "step1Desc": "Lo básico, para que Fondas adapte tus resúmenes.",
+    "step2Title": "Conecta tus sistemas",
+    "step2Desc": "Elige tu PMS y tu zona horaria — vincularás las cuentas a continuación.",
+    "step3Title": "Todo listo",
+    "step3Desc": "Esto es lo que Fondas empieza a hacer en cuanto termines la configuración.",
+    "back": "Atrás",
+    "continue": "Continuar",
+    "ready1": "Redactar respuestas al correo de huéspedes de la noche",
+    "ready2": "Pedir automáticamente las horas de llegada que faltan",
+    "ready3": "Entregar tu resumen matinal antes de abrir recepción",
+    "ready4": "Responder preguntas sobre tu hotel al instante"
   },
   "dashboardNav": {
     "briefing": "Resumen",
@@ -502,5 +587,62 @@
     "dashboardTitle": "No pudimos cargar esta página",
     "dashboardBody": "Hubo un problema al obtener los datos de tu hotel — puede ocurrir si la conexión con el PMS o el correo no está disponible temporalmente.",
     "retry": "Reintentar"
+  },
+  "howItWorks": {
+    "eyebrow": "Cómo funciona",
+    "headline": "En marcha en una tarde. Funcionando por la mañana.",
+    "lead": "Sin migraciones ni un sistema nuevo que aprender. Conecta lo que ya usas y Fondas se pone a trabajar durante la noche.",
+    "step1Title": "Conecta",
+    "step1Desc": "Vincula tu PMS y el buzón del hotel. Unos minutos, una sola vez — Fondas lee tus reservas y aprende cómo es tu hotel.",
+    "step2Title": "Fondas redacta y reclama",
+    "step2Desc": "Durante la noche, los correos de huéspedes llegan con respuestas redactadas con tu voz y las horas de llegada que faltan se reclaman solas.",
+    "step3Title": "Tú apruebas",
+    "step3Desc": "El resumen matinal llega antes de abrir recepción. Échale un vistazo, envía los borradores que te gusten y sigue con tu día."
+  },
+  "showcase": {
+    "eyebrow": "El resumen matinal",
+    "headline": "Todo el hotel, en una sola pantalla.",
+    "lead": "Llegadas, correo de la noche, la ocupación de esta noche y lo único que necesita una decisión — resumido en lenguaje claro antes de tu primer café."
+  },
+  "emailShowcase": {
+    "eyebrow": "La bandeja",
+    "headline": "El correo de huéspedes, redactado antes de despertarte.",
+    "lead": "Cada mensaje llega clasificado y respondido con la voz de tu hotel, vinculado a la reserva. Tú revisas, ajustas y envías — nada sale sin ti."
+  },
+  "faq": {
+    "eyebrow": "Preguntas",
+    "headline": "Preguntas, resueltas.",
+    "setupGroup": "Configuración",
+    "securityGroup": "Seguridad y datos",
+    "billingGroup": "Facturación",
+    "q1": "¿Qué sistemas admitís?",
+    "a1": "MEWS y Apaleo hoy, además de Gmail para el buzón — cada uno se conecta en unos minutos. Vienen más integraciones; dinos qué usas.",
+    "q2": "¿Tengo que cambiar de sistema?",
+    "a2": "No. Fondas se apoya sobre las herramientas que ya usas. Nada que migrar y nada que tu equipo deba reaprender.",
+    "q3": "¿Cuánto tarda la configuración?",
+    "a3": "Una tarde, más o menos. Conecta tu PMS y tu buzón, y tu primer resumen puede llegar a la mañana siguiente.",
+    "q4": "¿Fondas escribe a los huéspedes sin mí?",
+    "a4": "Nunca de forma automática. Cada respuesta se redacta para que la revises — enviarla es siempre tu decisión.",
+    "q5": "¿Dónde se guardan los datos de nuestros huéspedes?",
+    "a5": "Los datos de cada hotel están aislados y protegidos con seguridad a nivel de fila, de modo que un alojamiento nunca puede ver los de otro. Los tokens del PMS y del buzón se guardan cifrados y solo pedimos el acceso necesario.",
+    "q6": "¿Se usan los datos de los huéspedes para entrenar modelos de IA?",
+    "a6": "No. La información de tus huéspedes se usa solo para generar los resúmenes, borradores y respuestas de tu hotel — nunca para entrenar modelos compartidos.",
+    "q7": "¿Cuánto cuesta Fondas?",
+    "a7": "Un precio único por alojamiento y mes — todo incluido, sin tarifas por usuario. Escríbenos y te ayudamos a empezar."
+  },
+  "pricing": {
+    "eyebrow": "Precio",
+    "headline": "Un precio único por alojamiento.",
+    "price": "{price} €",
+    "priceUnit": "por alojamiento y mes — todo incluido",
+    "lead": "Sin tarifas por usuario, sin cobro por correo, sin niveles sorpresa. Todo lo que hace Fondas va incluido, a un único precio por alojamiento.",
+    "note": "Gratis para los primeros 20 hoteles durante la beta privada.",
+    "button": "Habla con nosotros"
+  },
+  "authAside": {
+    "headline": "Operativa del hotel, en piloto automático.",
+    "line1": "Correo de huéspedes, redactado durante la noche.",
+    "line2": "Horas de llegada, reclamadas automáticamente.",
+    "line3": "Un resumen matinal antes de abrir recepción."
   }
 }

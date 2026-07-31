@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Fondas — Operacions hoteleres, en pilot automàtic",
-    "description": "Fondas s'ocupa de la gestió de recepció dels hotels independents: correus d'hostes amb la resposta ja redactada, un resum matinal abans que obri la recepció, seguiment d'hores d'arribada i respostes sobre el teu hotel en llenguatge natural."
+    "description": "Fondas és la recepció amb IA per a hotels: correus d'hostes amb la resposta ja redactada perquè la revisis, un resum matinal abans que obri la recepció, hores d'arribada reclamades automàticament i respostes sobre el teu hotel en llenguatge natural, sobre el PMS que ja fas servir."
   },
   "common": {
     "signOut": "Tancar la sessió",
@@ -12,18 +12,24 @@
     "pleaseWait": "Espera un moment…",
     "loading": "S'està carregant…",
     "disconnect": "Desconnectar",
-    "serverUnreachable": "No s'ha pogut connectar amb el servidor."
+    "serverUnreachable": "No s'ha pogut connectar amb el servidor.",
+    "skipToContent": "Salta al contingut"
   },
   "nav": {
     "features": "Funcions",
     "signIn": "Inicia la sessió",
-    "getEarlyAccess": "Demana accés anticipat"
+    "getEarlyAccess": "Demana accés anticipat",
+    "getEarlyAccessShort": "Accés",
+    "howItWorks": "Com funciona",
+    "faq": "Preguntes",
+    "openMenu": "Obre el menú",
+    "closeMenu": "Tanca el menú"
   },
   "hero": {
-    "badge": "Per a directors d'hotel independents · Beta privada",
-    "headlineLine1": "El correu, contestat.",
-    "headlineLine2": "El matí, resolt.",
-    "subhead": "Fondas s'ocupa de la gestió diària de recepció: cada correu d'hoste arriba amb la resposta redactada amb la veu del teu hotel, el resum matinal és a punt abans del primer cafè i les hores d'arribada es reclamen soles. Amb el PMS que ja fas servir.",
+    "badge": "Programari amb IA per a hotels · Beta privada",
+    "headlineLine1": "La gestió es fa sola.",
+    "headlineLine2": "Tu portes l'hotel.",
+    "subhead": "La recepció amb IA per a hotels: redacta el correu dels teus hostes, reclama les arribades i et prepara un resum cada matí, sobre el PMS que ja fas servir.",
     "ctaPrimary": "Demana accés anticipat",
     "ctaSecondary": "Com funciona →"
   },
@@ -39,6 +45,34 @@
   },
   "trust": {
     "worksWith": "Compatible amb"
+  },
+  "socialProof": {
+    "logosLabel": "La confiança d'independents com…",
+    "placeholderTag": "Provisional",
+    "onboardingNote": "Els primers 20 hotels ja s'estan incorporant.",
+    "logo1": "Logo 01",
+    "logo2": "Logo 02",
+    "logo3": "Logo 03",
+    "logo4": "Logo 04",
+    "logo5": "Logo 05",
+    "quote1": "Cita provisional — una línia sobre com el resum matinal va canviar l'inici del dia.",
+    "metric1": "6 h",
+    "metricLabel1": "estalviades cada setmana",
+    "name1": "Nom per confirmar",
+    "role1": "Direcció de l'hotel",
+    "property1": "Allotjament provisional · 48 habitacions",
+    "quote2": "Cita provisional — una línia sobre el correu d'hostes contestat abans d'obrir recepció.",
+    "metric2": "92%",
+    "metricLabel2": "del correu redactat",
+    "name2": "Nom per confirmar",
+    "role2": "Direcció de recepció",
+    "property2": "Allotjament provisional · 26 habitacions",
+    "quote3": "Cita provisional — una línia sobre les hores d'arribada que arriben soles, sense reclamar-les.",
+    "metric3": "3 min",
+    "metricLabel3": "de revisió de mitjana",
+    "name3": "Nom per confirmar",
+    "role3": "Propietat",
+    "property3": "Allotjament provisional · 74 habitacions"
   },
   "featuresSection": {
     "eyebrow": "Què fa Fondas",
@@ -83,7 +117,7 @@
     "briefValue": "6:30",
     "briefLabel": "abans que obri la recepció",
     "priceTop": "Un preu únic",
-    "priceValue": "199 €",
+    "priceValue": "{price} €",
     "priceLabel": "per hotel al mes, tot inclòs",
     "setupTop": "Es configura un cop",
     "setupValue": "1×",
@@ -106,6 +140,23 @@
     "dailySignalTitle": "Senyal diari",
     "dailySignalDesc": "Un avís discret quan una data necessita atenció."
   },
+  "comparison": {
+    "eyebrow": "La diferència",
+    "headline": "El mateix matí, de dues maneres.",
+    "lead": "El mateix hotel, el mateix PMS, el mateix correu. La diferència és quant continues fent a mà.",
+    "manualTitle": "La recepció manual",
+    "fondasTitle": "Amb Fondas",
+    "manual1": "Fulls de càlcul i regles al correu",
+    "manual2": "Respostes escrites a mitjanit",
+    "manual3": "Hores d'arribada reclamades a mà",
+    "manual4": "Arribades que s'escapen",
+    "manual5": "Sense una foto del matí",
+    "fondas1": "Respostes sobre dades en viu, només preguntant",
+    "fondas2": "Cada resposta redactada perquè la revisis",
+    "fondas3": "Hores d'arribada reclamades automàticament",
+    "fondas4": "Les arribades tard apareixen al resum, no a la porta",
+    "fondas5": "Un resum matinal abans que obri la recepció"
+  },
   "cta": {
     "eyebrow": "Uneix-te a la beta",
     "headline": "A punt per recuperar els teus matins?",
@@ -116,7 +167,28 @@
     "rights": "© {year} Fondas. Operacions hoteleres, en pilot automàtic.",
     "privacy": "Privadesa",
     "terms": "Termes",
-    "sampleBrief": "Veure un resum d'exemple"
+    "sampleBrief": "Veure un resum d'exemple",
+    "valueProp": "La recepció amb IA per a hotels independents.",
+    "productTitle": "Producte",
+    "companyTitle": "Empresa",
+    "resourcesTitle": "Recursos",
+    "legalTitle": "Legal",
+    "pricing": "Preus",
+    "integrations": "Integracions",
+    "about": "Qui som",
+    "careers": "Feina",
+    "contact": "Contacte",
+    "press": "Premsa",
+    "helpCentre": "Centre d'ajuda",
+    "changelog": "Novetats",
+    "cookies": "Galetes",
+    "security": "Seguretat",
+    "newsletterTitle": "Notes de producte, un cop al mes.",
+    "newsletterHint": "Què hem llançat, què ve i què aprenem dels primers 20 hotels.",
+    "newsletterPlaceholder": "tu@elteuhotel.com",
+    "newsletterButton": "Subscriu-me",
+    "newsletterNote": "Provisional — aquest formulari encara no està connectat.",
+    "placeholderNote": "° Enllaç provisional — encara no és actiu."
   },
   "sampleBrief": {
     "title": "Resum matinal",
@@ -150,7 +222,20 @@
     "timezone": "Zona horària",
     "pms": "Sistema de gestió hotelera (PMS)",
     "settingUp": "Configurant…",
-    "createHotel": "Crea l'hotel"
+    "createHotel": "Crea l'hotel",
+    "stepLabel": "Pas {current} de {total}",
+    "step1Title": "El teu allotjament",
+    "step1Desc": "El bàsic, perquè Fondas adapti els teus resums.",
+    "step2Title": "Connecta els teus sistemes",
+    "step2Desc": "Tria el teu PMS i la zona horària — després vincularàs els comptes.",
+    "step3Title": "Tot a punt",
+    "step3Desc": "Això és el que Fondas comença a fer tan bon punt acabis la configuració.",
+    "back": "Enrere",
+    "continue": "Continua",
+    "ready1": "Redactar respostes al correu d'hostes de la nit",
+    "ready2": "Reclamar automàticament les hores d'arribada que falten",
+    "ready3": "Lliurar el teu resum matinal abans d'obrir recepció",
+    "ready4": "Respondre preguntes sobre el teu hotel a l'instant"
   },
   "dashboardNav": {
     "briefing": "Resum",
@@ -502,5 +587,62 @@
     "dashboardTitle": "No hem pogut carregar aquesta pàgina",
     "dashboardBody": "Hi ha hagut un problema en obtenir les dades del teu hotel — pot passar si la connexió amb el PMS o el correu no està disponible temporalment.",
     "retry": "Torna-ho a provar"
+  },
+  "howItWorks": {
+    "eyebrow": "Com funciona",
+    "headline": "En marxa en una tarda. Funcionant al matí.",
+    "lead": "Sense migracions ni cap sistema nou per aprendre. Connecta el que ja fas servir i Fondas es posa a treballar durant la nit.",
+    "step1Title": "Connecta",
+    "step1Desc": "Vincula el teu PMS i la bústia de l'hotel. Uns minuts, un sol cop — Fondas llegeix les teves reserves i aprèn com és el teu hotel.",
+    "step2Title": "Fondas redacta i reclama",
+    "step2Desc": "Durant la nit, els correus d'hostes arriben amb respostes redactades amb la teva veu i les hores d'arribada que falten es reclamen soles.",
+    "step3Title": "Tu ho aproves",
+    "step3Desc": "El resum matinal arriba abans d'obrir recepció. Fes-hi un cop d'ull, envia els esborranys que t'agradin i continua amb el teu dia."
+  },
+  "showcase": {
+    "eyebrow": "El resum matinal",
+    "headline": "Tot l'hotel, en una sola pantalla.",
+    "lead": "Arribades, correu de la nit, l'ocupació d'aquesta nit i l'única cosa que necessita una decisió — resumit en llenguatge clar abans del teu primer cafè."
+  },
+  "emailShowcase": {
+    "eyebrow": "La safata",
+    "headline": "El correu d'hostes, redactat abans de despertar-te.",
+    "lead": "Cada missatge arriba classificat i respost amb la veu del teu hotel, vinculat a la reserva. Tu revises, ajustes i envies — res no surt sense tu."
+  },
+  "faq": {
+    "eyebrow": "Preguntes",
+    "headline": "Preguntes, resoltes.",
+    "setupGroup": "Configuració",
+    "securityGroup": "Seguretat i dades",
+    "billingGroup": "Facturació",
+    "q1": "Quins sistemes admeteu?",
+    "a1": "MEWS i Apaleo avui, a més de Gmail per a la bústia — cadascun es connecta en uns minuts. Vénen més integracions; digues-nos què fas servir.",
+    "q2": "He de canviar de sistema?",
+    "a2": "No. Fondas es recolza sobre les eines que ja fas servir. Res a migrar i res que el teu equip hagi de reaprendre.",
+    "q3": "Quant triga la configuració?",
+    "a3": "Una tarda, més o menys. Connecta el teu PMS i la teva bústia, i el teu primer resum pot arribar l'endemà al matí.",
+    "q4": "Fondas escriu als hostes sense mi?",
+    "a4": "Mai de manera automàtica. Cada resposta es redacta perquè la revisis — enviar-la és sempre la teva decisió.",
+    "q5": "On es guarden les dades dels nostres hostes?",
+    "a5": "Les dades de cada hotel estan aïllades i protegides amb seguretat a nivell de fila, de manera que un allotjament mai pot veure les d'un altre. Els tokens del PMS i de la bústia es guarden xifrats i només demanem l'accés necessari.",
+    "q6": "Es fan servir les dades dels hostes per entrenar models d'IA?",
+    "a6": "No. La informació dels teus hostes es fa servir només per generar els resums, esborranys i respostes del teu hotel — mai per entrenar models compartits.",
+    "q7": "Quant costa Fondas?",
+    "a7": "Un preu únic per allotjament i mes — tot inclòs, sense tarifes per usuari. Escriu-nos i t'ajudem a començar."
+  },
+  "pricing": {
+    "eyebrow": "Preu",
+    "headline": "Un preu únic per allotjament.",
+    "price": "{price} €",
+    "priceUnit": "per allotjament i mes — tot inclòs",
+    "lead": "Sense tarifes per usuari, sense cobrament per correu, sense nivells sorpresa. Tot el que fa Fondas va inclòs, a un únic preu per allotjament.",
+    "note": "Gratis per als primers 20 hotels durant la beta privada.",
+    "button": "Parla amb nosaltres"
+  },
+  "authAside": {
+    "headline": "Operativa de l'hotel, en pilot automàtic.",
+    "line1": "Correu d'hostes, redactat durant la nit.",
+    "line2": "Hores d'arribada, reclamades automàticament.",
+    "line3": "Un resum matinal abans d'obrir recepció."
   }
 }
