@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { absoluteUrl, languageAlternates } from "@/lib/seo";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { SAMPLE_BRIEF } from "@/app/[lang]/sample-brief/content";
 import { Wordmark } from "@/components/brand/wordmark";
@@ -14,10 +15,14 @@ export async function generateMetadata({
 }: {
   params: Promise<{ lang: string }>;
 }) {
-  const { dict } = await loadDictionary((await params).lang);
+  const { locale, dict } = await loadDictionary((await params).lang);
   return {
     title: `${dict.sampleBrief.title} — Fondas`,
     description: dict.sampleBrief.disclaimer,
+    alternates: {
+      canonical: absoluteUrl(locale, "/sample-brief"),
+      languages: languageAlternates("/sample-brief"),
+    },
   };
 }
 

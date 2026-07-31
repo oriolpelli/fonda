@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { absoluteUrl, languageAlternates } from "@/lib/seo";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { COMPANY, LEGAL_LAST_UPDATED } from "@/app/[lang]/(legal)/company";
 
@@ -8,8 +9,14 @@ export async function generateMetadata({
 }: {
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
-  const { dict } = await loadDictionary((await params).lang);
-  return { title: dict.legal.termsTitle };
+  const { locale, dict } = await loadDictionary((await params).lang);
+  return {
+    title: dict.legal.termsTitle,
+    alternates: {
+      canonical: absoluteUrl(locale, "/terms"),
+      languages: languageAlternates("/terms"),
+    },
+  };
 }
 
 // English body kept in plain JS (see Privacy page for rationale).
