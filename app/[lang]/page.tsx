@@ -1,14 +1,30 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
-import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { COMPANY } from "@/app/[lang]/(legal)/company";
+import { getDictionary, loadDictionary } from "@/app/[lang]/dictionaries";
 import { Wordmark } from "@/components/brand/wordmark";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { BriefingPreviewWindow } from "@/components/marketing/briefing-preview-window";
 import { EmailDraftPreviewWindow } from "@/components/marketing/email-draft-preview-window";
+import { HeroParallax } from "@/components/marketing/hero-parallax";
+import { JsonLd } from "@/components/marketing/json-ld";
+import { MobileNav } from "@/components/marketing/mobile-nav";
 import { Reveal } from "@/components/marketing/reveal";
+import {
+  Vignette,
+  type VignetteName,
+} from "@/components/marketing/vignettes";
 import { Button } from "@/components/ui/button";
 import { FEATURES } from "@/lib/features";
+import { isLocale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
+import {
+  absoluteUrl,
+  languageAlternates,
+  openGraphFor,
+  SITE_URL,
+} from "@/lib/seo";
 import { t } from "@/lib/i18n/format";
 
 // Only list integrations that are actually built. Add Outlook / Booking.com /
@@ -24,6 +40,47 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
+// A small navy square — the Signal system's marker in place of bullets/emoji.
+function SquareMarker() {
+  return (
+    <span
+      className="block size-[7px] rounded-[2px] bg-[var(--fonda-accent)]"
+      aria-hidden
+    />
+  );
+}
+
+// Which spot-vignette fronts each feature tile. The art is decorative — the
+// tile's heading carries the meaning (components/marketing/vignettes.tsx).
+const FEATURE_VIGNETTES: Record<string, VignetteName> = {
+  "email-assistant": "lantern",
+  briefing: "coffee",
+  "checkin-chasing": "key",
+  "hotel-chat": "arch",
+};
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const dict = await getDictionary(lang);
+  return {
+    alternates: {
+      canonical: absoluteUrl(lang, "/"),
+      languages: languageAlternates("/"),
+    },
+    // Must be the FULL openGraph object, not just `url` — see openGraphFor().
+    openGraph: openGraphFor(lang, {
+      title: dict.meta.title,
+      description: dict.meta.description,
+      path: "/",
+    }),
+  };
+}
+
 export default async function Home({
   params,
 }: {
@@ -32,12 +89,24 @@ export default async function Home({
   const { locale, dict } = await loadDictionary((await params).lang);
 
   // Sana-style ROI stats: a context line on top, a big accent number, a label.
-  // Reframed around the inbox + the morning (ROADMAP v2 §0.2) — no invented precision.
   const STATS = [
     { top: dict.stats.inboxTop, value: dict.stats.inboxValue, label: dict.stats.inboxLabel },
     { top: dict.stats.briefTop, value: dict.stats.briefValue, label: dict.stats.briefLabel },
-    { top: dict.stats.priceTop, value: dict.stats.priceValue, label: dict.stats.priceLabel },
+    {
+      top: dict.stats.priceTop,
+      // Figure comes from COMPANY.priceMonthly; the locale template places the
+      // currency symbol. Same source as the pricing band below.
+      value: t(dict.stats.priceValue, { price: COMPANY.priceMonthly }),
+      label: dict.stats.priceLabel,
+    },
     { top: dict.stats.setupTop, value: dict.stats.setupValue, label: dict.stats.setupLabel },
+  ];
+
+  // "How it works" — three numbered steps, mono numerals (Mobbin: Clay pattern).
+  const STEPS = [
+    { num: "01", title: dict.howItWorks.step1Title, desc: dict.howItWorks.step1Desc },
+    { num: "02", title: dict.howItWorks.step2Title, desc: dict.howItWorks.step2Desc },
+    { num: "03", title: dict.howItWorks.step3Title, desc: dict.howItWorks.step3Desc },
   ];
 
   // The jobs Fondas bundles — the "one layer, not six subscriptions" story.
@@ -57,84 +126,320 @@ export default async function Home({
     [dict.briefingPreview.row3strong, dict.briefingPreview.row3rest],
   ];
 
+  // Social proof — PLACEHOLDER CONTENT, all of it. No hotel below is a real
+  // customer and no quote or metric came from one. The "Placeholder" chip and
+  // the dashed logo outlines are load-bearing: they keep the section from
+  // reading as a real endorsement while it waits for design-partner quotes.
+  // Swap the copy in dictionaries/*.json (socialProof.*) and drop the chip
+  // once the real names, quotes and numbers are signed off.
+  const PLACEHOLDER_LOGOS = [
+    dict.socialProof.logo1,
+    dict.socialProof.logo2,
+    dict.socialProof.logo3,
+    dict.socialProof.logo4,
+    dict.socialProof.logo5,
+  ];
+
+  const PLACEHOLDER_TESTIMONIALS = [
+    {
+      quote: dict.socialProof.quote1,
+      metric: dict.socialProof.metric1,
+      metricLabel: dict.socialProof.metricLabel1,
+      name: dict.socialProof.name1,
+      role: dict.socialProof.role1,
+      property: dict.socialProof.property1,
+    },
+    {
+      quote: dict.socialProof.quote2,
+      metric: dict.socialProof.metric2,
+      metricLabel: dict.socialProof.metricLabel2,
+      name: dict.socialProof.name2,
+      role: dict.socialProof.role2,
+      property: dict.socialProof.property2,
+    },
+    {
+      quote: dict.socialProof.quote3,
+      metric: dict.socialProof.metric3,
+      metricLabel: dict.socialProof.metricLabel3,
+      name: dict.socialProof.name3,
+      role: dict.socialProof.role3,
+      property: dict.socialProof.property3,
+    },
+  ];
+
+  // Footer navigation. `href: null` marks a PLACEHOLDER destination: it renders
+  // as href="#" with a ° marker and the footnote in the bottom bar. Only the
+  // on-page anchors and /sample-brief, /privacy, /terms exist today — give a
+  // link a real href here the moment its page ships.
+  const FOOTER_COLUMNS: {
+    title: string;
+    links: { label: string; href: string | null }[];
+  }[] = [
+    {
+      title: dict.footer.productTitle,
+      links: [
+        { label: dict.nav.features, href: "#features" },
+        { label: dict.nav.howItWorks, href: "#how" },
+        { label: dict.footer.pricing, href: "#pricing" },
+        { label: dict.footer.integrations, href: null },
+      ],
+    },
+    {
+      title: dict.footer.companyTitle,
+      links: [
+        { label: dict.footer.about, href: null },
+        { label: dict.footer.careers, href: null },
+        { label: dict.footer.contact, href: null },
+        { label: dict.footer.press, href: null },
+      ],
+    },
+    {
+      title: dict.footer.resourcesTitle,
+      links: [
+        {
+          label: dict.footer.sampleBrief,
+          href: localizedHref(locale, "/sample-brief"),
+        },
+        { label: dict.nav.faq, href: "#faq" },
+        { label: dict.footer.helpCentre, href: null },
+        { label: dict.footer.changelog, href: null },
+      ],
+    },
+    {
+      title: dict.footer.legalTitle,
+      links: [
+        { label: dict.footer.privacy, href: localizedHref(locale, "/privacy") },
+        { label: dict.footer.terms, href: localizedHref(locale, "/terms") },
+        { label: dict.footer.cookies, href: null },
+        { label: dict.footer.security, href: null },
+      ],
+    },
+  ];
+
+  // Comparison — the same five jobs, by hand and with Fondas. Row i of each
+  // column is the counterpart of row i, but they're rendered as two
+  // independent lists rather than a shared table grid: es/ca run longer than
+  // en, and a shared grid would leave the hairlines misaligned wherever one
+  // side wraps to a second line.
+  const COMPARISON = [
+    {
+      title: dict.comparison.manualTitle,
+      isFondas: false,
+      rows: [
+        dict.comparison.manual1,
+        dict.comparison.manual2,
+        dict.comparison.manual3,
+        dict.comparison.manual4,
+        dict.comparison.manual5,
+      ],
+    },
+    {
+      title: dict.comparison.fondasTitle,
+      isFondas: true,
+      rows: [
+        dict.comparison.fondas1,
+        dict.comparison.fondas2,
+        dict.comparison.fondas3,
+        dict.comparison.fondas4,
+        dict.comparison.fondas5,
+      ],
+    },
+  ];
+
+  // FAQ grouped by theme (Mobbin: MasterClass/HubSpot). Security & data is its
+  // own group — the guest-PII objection a hotel buyer will always raise.
+  const FAQ_GROUPS = [
+    {
+      label: dict.faq.setupGroup,
+      items: [
+        [dict.faq.q1, dict.faq.a1],
+        [dict.faq.q2, dict.faq.a2],
+        [dict.faq.q3, dict.faq.a3],
+      ] as [string, string][],
+    },
+    {
+      label: dict.faq.securityGroup,
+      items: [
+        [dict.faq.q4, dict.faq.a4],
+        [dict.faq.q5, dict.faq.a5],
+      ] as [string, string][],
+    },
+    {
+      label: dict.faq.billingGroup,
+      items: [[dict.faq.q6, dict.faq.a6], [dict.faq.q7, dict.faq.a7]] as [
+        string,
+        string,
+      ][],
+    },
+  ];
+
+  let faqIndex = 0;
+
+  // Structured data. Everything below is asserted to search engines as fact,
+  // so it is built only from copy we stand behind.
+  //
+  // ⚠️ Deliberately NO Review / AggregateRating markup. The testimonials in the
+  // social-proof section are placeholders (see PLACEHOLDER_TESTIMONIALS), and
+  // emitting invented ratings as structured data is both a Google spam-policy
+  // violation and a lie told at machine scale. Add review markup only once the
+  // quotes are real and attributable.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: COMPANY.brand,
+        url: SITE_URL,
+        email: COMPANY.contactEmail,
+        description: dict.meta.description,
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": `${SITE_URL}/#software`,
+        name: COMPANY.brand,
+        url: absoluteUrl(locale, "/"),
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web",
+        inLanguage: locale,
+        description: dict.meta.description,
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        offers: {
+          "@type": "Offer",
+          price: COMPANY.priceMonthly,
+          priceCurrency: "EUR",
+          description: dict.pricing.priceUnit,
+          url: absoluteUrl(locale, "/#pricing"),
+        },
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${absoluteUrl(locale, "/")}#faq`,
+        inLanguage: locale,
+        mainEntity: FAQ_GROUPS.flatMap((group) =>
+          group.items.map(([question, answer]) => ({
+            "@type": "Question",
+            name: question,
+            acceptedAnswer: { "@type": "Answer", text: answer },
+          }))
+        ),
+      },
+    ],
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
+      <JsonLd data={jsonLd} />
+
       {/* Nav */}
       <header className="sticky top-0 z-50 border-b border-border bg-[var(--fonda-bg)]/82 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-6 md:px-8">
           <Wordmark href={localizedHref(locale, "/")} />
           <nav className="flex items-center gap-3 sm:gap-6">
             <Link
+              href="#how"
+              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground md:inline"
+            >
+              {dict.nav.howItWorks}
+            </Link>
+            <Link
               href="#features"
-              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground sm:inline"
+              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground md:inline"
             >
               {dict.nav.features}
             </Link>
             <Link
+              href="#faq"
+              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground md:inline"
+            >
+              {dict.nav.faq}
+            </Link>
+            <Link
               href={localizedHref(locale, "/login")}
-              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground sm:inline"
+              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground md:inline"
             >
               {dict.nav.signIn}
             </Link>
-            <LanguageSwitcher className="hidden min-[360px]:inline-flex" />
+            <LanguageSwitcher className="hidden md:inline-flex" />
+            {/* Visible at every breakpoint. Below sm the bar is wordmark +
+                CTA + hamburger in ~312px, which the full label overflows in
+                es (and leaves ~6px in ca), so the short label runs there. */}
             <Button asChild variant="ink" size="sm">
               <Link href={localizedHref(locale, "/signup")}>
-                {dict.nav.getEarlyAccess}
+                <span className="sm:hidden">
+                  {dict.nav.getEarlyAccessShort}
+                </span>
+                <span className="hidden sm:inline">
+                  {dict.nav.getEarlyAccess}
+                </span>
               </Link>
             </Button>
+
+            {/* Below md the links above have nowhere to go — they live here. */}
+            <MobileNav
+              links={[
+                { href: "#how", label: dict.nav.howItWorks },
+                { href: "#features", label: dict.nav.features },
+                { href: "#faq", label: dict.nav.faq },
+                {
+                  href: localizedHref(locale, "/login"),
+                  label: dict.nav.signIn,
+                },
+              ]}
+              ctaHref={localizedHref(locale, "/signup")}
+              ctaLabel={dict.nav.getEarlyAccess}
+              openLabel={dict.nav.openMenu}
+              closeLabel={dict.nav.closeMenu}
+            />
           </nav>
         </div>
       </header>
 
       <main className="flex-1">
-        {/* Hero */}
-        <section className="relative overflow-hidden px-6 py-20 md:px-8 md:py-40">
-          <Reveal className="mx-auto max-w-3xl text-center">
-            <Eyebrow>
-              <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden>
-                <circle cx="3" cy="3" r="3" fill="var(--fonda-accent)" />
-              </svg>
-              {dict.hero.badge}
-            </Eyebrow>
-            <h1 className="mt-6 text-[clamp(3.25rem,7vw,5.75rem)] font-semibold leading-none tracking-[-0.035em] text-foreground">
-              {dict.hero.headlineLine1}
-              <br />
-              {dict.hero.headlineLine2}
-            </h1>
-            <p className="mx-auto mt-7 max-w-xl text-[20px] leading-[1.6] text-muted-foreground">
-              {dict.hero.subhead}
-            </p>
-            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button asChild variant="ink" size="lg">
-                <Link href={localizedHref(locale, "/signup")}>
-                  {dict.hero.ctaPrimary}
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="#features">{dict.hero.ctaSecondary}</Link>
-              </Button>
-            </div>
-          </Reveal>
+        {/* Hero — La Casa sits behind the type and drifts on scroll.
+            HeroParallax is the only client component here; the copy below is
+            still server-rendered and passed in as children. All motion is
+            gated on prefers-reduced-motion inside it. */}
+        <section className="relative">
+          <HeroParallax>
+            <Reveal className="mx-auto max-w-[1120px] text-center">
+              <Eyebrow>
+                <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden>
+                  <circle cx="3" cy="3" r="3" fill="var(--fonda-accent)" />
+                </svg>
+                {dict.hero.badge}
+              </Eyebrow>
+              {/* Two-tone: the turn from problem to promise happens on the
+                  line break, so line 2 carries the accent.
 
-          <Reveal
-            index={1}
-            className="mx-auto mt-16 max-w-[960px] sm:mt-20 lg:mt-24"
-          >
-            {/* The first product visual is the inbox: a guest email with its
-                draft ready (MARKET_STRATEGY §2.1). The briefing preview
-                follows in the features section below. */}
-            <EmailDraftPreviewWindow
-              size="lg"
-              windowTitle={dict.emailPreview.windowTitle}
-              receivedLabel={dict.emailPreview.receivedLabel}
-              fromName={dict.emailPreview.fromName}
-              subject={dict.emailPreview.subject}
-              message={dict.emailPreview.message}
-              contextLine={dict.emailPreview.contextLine}
-              draftLabel={dict.emailPreview.draftLabel}
-              draftBody={dict.emailPreview.draftBody}
-            />
-          </Reveal>
+                  Each line is its own block so it can be held on one line from
+                  md up — the break is the headline's rhythm (§3), and a line
+                  that wraps of its own accord destroys it. Below md the lines
+                  wrap normally and step down in size, so nothing overflows on
+                  a phone. Sizes are the prototype's. */}
+              <h1 className="mt-6 text-[clamp(2.2rem,8vw,3rem)] font-semibold leading-[1.02] tracking-[-0.035em] md:text-[clamp(2.4rem,6vw,5rem)]">
+                <span className="block text-foreground md:whitespace-nowrap">
+                  {dict.hero.headlineLine1}
+                </span>
+                <span className="block text-[var(--fonda-accent)] md:whitespace-nowrap">
+                  {dict.hero.headlineLine2}
+                </span>
+              </h1>
+              <p className="mx-auto mt-7 max-w-xl text-[20px] leading-[1.6] text-muted-foreground">
+                {dict.hero.subhead}
+              </p>
+              <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Button asChild variant="ink" size="lg">
+                  <Link href={localizedHref(locale, "/signup")}>
+                    {dict.hero.ctaPrimary}
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <Link href="#how">{dict.hero.ctaSecondary}</Link>
+                </Button>
+              </div>
+            </Reveal>
+          </HeroParallax>
         </section>
 
         {/* Trust bar */}
@@ -154,21 +459,118 @@ export default async function Home({
           </Reveal>
         </section>
 
-        {/* Features */}
+        {/* Social proof — PLACEHOLDER CONTENT (see PLACEHOLDER_TESTIMONIALS). */}
+        <section className="border-b border-border px-6 py-24 md:px-8">
+          <div className="mx-auto max-w-[1120px]">
+            {/* (a) Hotel logos */}
+            <Reveal className="text-center">
+              <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+                <span className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+                  {dict.socialProof.logosLabel}
+                </span>
+                <span className="rounded-full border border-[var(--fonda-border-2)] px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
+                  {dict.socialProof.placeholderTag}
+                </span>
+              </div>
+              <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+                {PLACEHOLDER_LOGOS.map((name) => (
+                  <span
+                    key={name}
+                    className="rounded-[10px] border border-dashed border-[var(--fonda-border-2)] bg-[var(--fonda-surface)] px-5 py-2.5 font-mono text-[13px] uppercase tracking-[0.08em] text-[var(--fonda-text-3)]"
+                  >
+                    {name}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-6 text-[15px] text-muted-foreground">
+                {dict.socialProof.onboardingNote}
+              </p>
+            </Reveal>
+
+            {/* (b) Testimonials — the metric is each card's one navy accent. */}
+            <div className="mt-16 grid gap-4 md:grid-cols-3">
+              {PLACEHOLDER_TESTIMONIALS.map((item, i) => (
+                <Reveal
+                  key={item.metric}
+                  index={i}
+                  className="flex flex-col rounded-[16px] border border-border bg-card p-7"
+                >
+                  <p className="text-[17px] leading-[1.5] tracking-[-0.01em] text-foreground">
+                    “{item.quote}”
+                  </p>
+                  <div className="mt-auto">
+                    <div className="mt-7 flex items-baseline gap-2">
+                      <span className="text-[30px] font-semibold leading-none tracking-[-0.025em] text-[var(--fonda-accent)]">
+                        {item.metric}
+                      </span>
+                      <span className="text-[13px] text-muted-foreground">
+                        {item.metricLabel}
+                      </span>
+                    </div>
+                    <div className="mt-6 border-t border-border pt-4">
+                      <p className="text-[14px] font-medium text-foreground">
+                        {item.name}
+                      </p>
+                      <p className="mt-1 text-[13px] leading-[1.5] text-muted-foreground">
+                        {item.role} · {item.property}
+                      </p>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* How it works — three numbered steps (Mobbin: Clay) */}
         <section
-          id="features"
+          id="how"
           className="mx-auto max-w-[1120px] scroll-mt-20 px-6 py-24 md:px-8"
         >
           <Reveal>
-            <Eyebrow>{dict.featuresSection.eyebrow}</Eyebrow>
+            <Eyebrow>{dict.howItWorks.eyebrow}</Eyebrow>
             <h2 className="mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
-              {dict.featuresSection.headline}
+              {dict.howItWorks.headline}
             </h2>
+            <p className="mt-5 max-w-[52ch] text-[17px] leading-[1.6] text-muted-foreground">
+              {dict.howItWorks.lead}
+            </p>
           </Reveal>
+          <div className="mt-12 grid gap-4 md:grid-cols-3">
+            {STEPS.map((step, i) => (
+              <Reveal
+                key={step.num}
+                index={i}
+                className="flex flex-col rounded-[16px] border border-border bg-card p-7"
+              >
+                <span className="font-mono text-[13px] font-medium tracking-[0.1em] text-[var(--fonda-accent)]">
+                  {step.num}
+                </span>
+                <h3 className="mt-8 text-[19px] font-semibold tracking-[-0.015em] text-foreground">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-[15px] leading-[1.6] text-muted-foreground">
+                  {step.desc}
+                </p>
+              </Reveal>
+            ))}
+          </div>
+        </section>
 
-          <div className="mt-14 grid gap-10 lg:grid-cols-[5fr_7fr] lg:items-start">
-            {/* Feature list */}
-            <div className="flex flex-col gap-2">
+        {/* Features — 2×2 surface bento of the four core products */}
+        <section
+          id="features"
+          className="border-t border-border px-6 py-24 md:px-8"
+        >
+          <div className="mx-auto max-w-[1120px] scroll-mt-20">
+            <Reveal>
+              <Eyebrow>{dict.featuresSection.eyebrow}</Eyebrow>
+              <h2 className="mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
+                {dict.featuresSection.headline}
+              </h2>
+            </Reveal>
+
+            <div className="mt-12 grid gap-4 sm:grid-cols-2">
               {FEATURES.map((feature, i) => {
                 const copy =
                   dict.features[feature.key as keyof typeof dict.features];
@@ -176,22 +578,76 @@ export default async function Home({
                   <Reveal
                     key={feature.key}
                     index={i}
-                    className="rounded-[14px] border border-transparent px-5 py-4 transition-colors duration-[180ms] ease-out hover:border-border hover:bg-card"
+                    className="flex flex-col rounded-[16px] border border-border bg-card p-6"
                   >
-                    <h3 className="text-[17px] font-semibold tracking-[-0.01em] text-foreground">
-                      {copy.name}
-                    </h3>
-                    <p className="mt-1.5 text-sm leading-[1.55] text-muted-foreground">
-                      {copy.description}
-                    </p>
+                    <Vignette
+                      name={FEATURE_VIGNETTES[feature.key] ?? "olive"}
+                      size={88}
+                    />
+                    <div className="mt-5 flex items-start gap-3">
+                      <span className="mt-[7px]">
+                        <SquareMarker />
+                      </span>
+                      <div>
+                        <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-foreground">
+                          {copy.name}
+                        </h3>
+                        <p className="mt-1.5 text-[15px] leading-[1.55] text-muted-foreground">
+                          {copy.description}
+                        </p>
+                      </div>
+                    </div>
                   </Reveal>
                 );
               })}
             </div>
+          </div>
+        </section>
 
-            {/* Briefing preview (app window) */}
+        {/* Email showcase — the inbox, Fondas' sharpest wedge (MARKET_STRATEGY
+            §2.1). Same band shape as the morning-brief showcase below it. */}
+        <section className="border-t border-border px-6 py-24 md:px-8">
+          <div className="mx-auto grid max-w-[1120px] gap-12 lg:grid-cols-[5fr_7fr] lg:items-center">
             <Reveal>
+              <Eyebrow>{dict.emailShowcase.eyebrow}</Eyebrow>
+              <h2 className="mt-4 text-[clamp(1.875rem,3.6vw,2.875rem)] font-semibold leading-[1.05] tracking-[-0.028em] text-foreground">
+                {dict.emailShowcase.headline}
+              </h2>
+              <p className="mt-5 max-w-[46ch] text-[17px] leading-[1.6] text-muted-foreground">
+                {dict.emailShowcase.lead}
+              </p>
+            </Reveal>
+            <Reveal index={1}>
+              <EmailDraftPreviewWindow
+                size="lg"
+                windowTitle={dict.emailPreview.windowTitle}
+                receivedLabel={dict.emailPreview.receivedLabel}
+                fromName={dict.emailPreview.fromName}
+                subject={dict.emailPreview.subject}
+                message={dict.emailPreview.message}
+                contextLine={dict.emailPreview.contextLine}
+                draftLabel={dict.emailPreview.draftLabel}
+                draftBody={dict.emailPreview.draftBody}
+              />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Product showcase — the morning brief, full width (Mobbin: Retool/ClickUp) */}
+        <section className="border-t border-border px-6 py-24 md:px-8">
+          <div className="mx-auto grid max-w-[1120px] gap-12 lg:grid-cols-[5fr_7fr] lg:items-center">
+            <Reveal>
+              <Eyebrow>{dict.showcase.eyebrow}</Eyebrow>
+              <h2 className="mt-4 text-[clamp(1.875rem,3.6vw,2.875rem)] font-semibold leading-[1.05] tracking-[-0.028em] text-foreground">
+                {dict.showcase.headline}
+              </h2>
+              <p className="mt-5 max-w-[46ch] text-[17px] leading-[1.6] text-muted-foreground">
+                {dict.showcase.lead}
+              </p>
+            </Reveal>
+            <Reveal index={1}>
               <BriefingPreviewWindow
+                size="lg"
                 windowTitle={dict.briefingPreview.windowTitle}
                 dateLine={dict.briefingPreview.dateLine}
                 greeting={dict.briefingPreview.greeting}
@@ -199,10 +655,12 @@ export default async function Home({
               />
             </Reveal>
           </div>
+        </section>
 
-          {/* ROI stats — Sana style */}
-          <div className="mt-16">
-            <Reveal className="grid gap-8 border-t border-[var(--fonda-border-2)] pb-10 pt-12 md:grid-cols-2 md:items-end">
+        {/* ROI stats — Sana style */}
+        <section className="border-t border-border px-6 py-24 md:px-8">
+          <div className="mx-auto max-w-[1120px]">
+            <Reveal className="grid gap-8 pb-10 md:grid-cols-2 md:items-end">
               <h2 className="max-w-[13ch] text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-[1.05] tracking-[-0.028em] text-foreground">
                 {dict.stats.headline}
               </h2>
@@ -257,10 +715,7 @@ export default async function Home({
                   index={i}
                   className="rounded-[16px] border border-border bg-card p-6"
                 >
-                  <span
-                    className="block size-[7px] rounded-[2px] bg-[var(--fonda-accent)]"
-                    aria-hidden
-                  />
+                  <SquareMarker />
                   <h3 className="mt-4 text-[16px] font-semibold tracking-[-0.01em] text-foreground">
                     {job.title}
                   </h3>
@@ -271,6 +726,187 @@ export default async function Home({
               ))}
             </div>
           </div>
+        </section>
+
+        {/* Comparison — the same morning, by hand vs with Fondas (Sana model).
+            Navy appears only as the check on the Fondas column; the manual
+            column uses a muted dash and secondary text, so the emphasis costs
+            no second accent. */}
+        <section className="border-t border-border px-6 py-24 md:px-8">
+          <div className="mx-auto max-w-[1120px]">
+            <Reveal>
+              <Eyebrow>{dict.comparison.eyebrow}</Eyebrow>
+              <h2 className="mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
+                {dict.comparison.headline}
+              </h2>
+              <p className="mt-5 max-w-[52ch] text-[17px] leading-[1.6] text-muted-foreground">
+                {dict.comparison.lead}
+              </p>
+            </Reveal>
+
+            <div className="mt-12 grid gap-4 md:grid-cols-2">
+              {COMPARISON.map((column, i) => (
+                <Reveal
+                  key={column.title}
+                  index={i}
+                  className={`rounded-[16px] border border-border p-7 ${
+                    column.isFondas ? "bg-card" : "bg-[var(--fonda-surface)]"
+                  }`}
+                >
+                  <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-foreground">
+                    {column.title}
+                  </h3>
+                  <ul className="mt-5">
+                    {column.rows.map((row) => (
+                      <li
+                        key={row}
+                        className="flex items-start gap-3 border-t border-border py-3.5"
+                      >
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          aria-hidden="true"
+                          className="mt-[4px] shrink-0"
+                        >
+                          {column.isFondas ? (
+                            <path
+                              d="M3 8.4 L6.3 11.7 L13 5"
+                              stroke="var(--fonda-accent)"
+                              strokeWidth="1.7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          ) : (
+                            <path
+                              d="M4 8 h8"
+                              stroke="var(--fonda-text-3)"
+                              strokeWidth="1.7"
+                              strokeLinecap="round"
+                            />
+                          )}
+                        </svg>
+                        <span
+                          className={`text-[15px] leading-[1.5] ${
+                            column.isFondas
+                              ? "text-foreground"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {row}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ — grouped accordion (Mobbin: HubSpot/MasterClass) */}
+        <section
+          id="faq"
+          className="border-t border-border px-6 py-24 md:px-8"
+        >
+          <div className="mx-auto grid max-w-[1120px] scroll-mt-20 gap-12 lg:grid-cols-[5fr_7fr] lg:items-start">
+            <Reveal>
+              <Eyebrow>{dict.faq.eyebrow}</Eyebrow>
+              <h2 className="mt-4 text-[clamp(1.875rem,3.6vw,2.875rem)] font-semibold leading-[1.05] tracking-[-0.028em] text-foreground">
+                {dict.faq.headline}
+              </h2>
+            </Reveal>
+
+            <div className="flex flex-col gap-10">
+              {FAQ_GROUPS.map((group) => (
+                <Reveal key={group.label}>
+                  <p className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+                    {group.label}
+                  </p>
+                  <div className="mt-3 border-t border-border">
+                    {group.items.map(([q, a]) => {
+                      const open = faqIndex === 0;
+                      faqIndex += 1;
+                      return (
+                        <details
+                          key={q}
+                          open={open}
+                          className="group border-b border-border"
+                        >
+                          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[17px] font-medium tracking-[-0.01em] text-foreground [&::-webkit-details-marker]:hidden">
+                            {q}
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              aria-hidden
+                              className="shrink-0 text-[var(--fonda-accent)] transition-transform duration-200 group-open:rotate-45"
+                            >
+                              <path
+                                d="M8 3v10M3 8h10"
+                                stroke="currentColor"
+                                strokeWidth="1.6"
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                          </summary>
+                          <p className="max-w-[62ch] pb-5 text-[15px] leading-[1.65] text-muted-foreground">
+                            {a}
+                          </p>
+                        </details>
+                      );
+                    })}
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing — the flat per-property price, stated. The figure is navy
+            to match the same number in the ROI stat row above; keep the two in
+            sync with COMPANY.price and Stripe. The button is a real contact
+            (mailto), not /signup — this band sells the price, it isn't the
+            sign-up path. */}
+        <section
+          id="pricing"
+          className="scroll-mt-20 border-t border-border px-6 py-24 md:px-8"
+        >
+          <Reveal className="mx-auto max-w-[1120px]">
+            <div className="rounded-[28px] border border-border bg-[var(--fonda-surface)] px-6 py-16 text-center md:px-16">
+              <Eyebrow>{dict.pricing.eyebrow}</Eyebrow>
+              <h2 className="mx-auto mt-5 max-w-[16ch] text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.03em] text-foreground">
+                {dict.pricing.headline}
+              </h2>
+              <p className="mt-7 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1">
+                <span className="text-[clamp(2.5rem,5vw,3.5rem)] font-semibold leading-none tracking-[-0.04em] text-[var(--fonda-accent)]">
+                  {t(dict.pricing.price, { price: COMPANY.priceMonthly })}
+                </span>
+                <span className="text-[16px] leading-[1.5] text-muted-foreground">
+                  {dict.pricing.priceUnit}
+                </span>
+              </p>
+              <p className="mx-auto mt-6 max-w-[54ch] text-[17px] leading-[1.6] text-muted-foreground">
+                {dict.pricing.lead}
+              </p>
+              <div className="mt-9 flex justify-center">
+                <Button asChild variant="ink" size="lg">
+                  <a href={`mailto:${COMPANY.contactEmail}`}>
+                    {dict.pricing.button}
+                  </a>
+                </Button>
+              </div>
+              {/* Show the address: a mailto that opens a mail client unannounced
+                  is a small hostile surprise. */}
+              <p className="mt-4 text-[14px] text-muted-foreground">
+                {COMPANY.contactEmail}
+              </p>
+              <p className="mt-6 font-mono text-[12px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
+                {dict.pricing.note}
+              </p>
+            </div>
+          </Reveal>
         </section>
 
         {/* CTA */}
@@ -296,30 +932,103 @@ export default async function Home({
         </section>
       </main>
 
-      {/* Footer */}
+      {/* Footer — flat and light per Signal: white ground, hairline rules
+          between bands, no dark mega-footer and no second accent. */}
       <footer className="border-t border-border">
-        <div className="mx-auto flex w-full max-w-[1120px] flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm text-muted-foreground md:px-8">
-          <span>{t(dict.footer.rights, { year: new Date().getFullYear() })}</span>
-          <nav className="flex gap-4">
-            <Link
-              href={localizedHref(locale, "/sample-brief")}
-              className="transition-colors duration-[180ms] hover:text-foreground"
-            >
-              {dict.footer.sampleBrief}
-            </Link>
-            <Link
-              href={localizedHref(locale, "/privacy")}
-              className="transition-colors duration-[180ms] hover:text-foreground"
-            >
-              {dict.footer.privacy}
-            </Link>
-            <Link
-              href={localizedHref(locale, "/terms")}
-              className="transition-colors duration-[180ms] hover:text-foreground"
-            >
-              {dict.footer.terms}
-            </Link>
-          </nav>
+        <div className="mx-auto w-full max-w-[1120px] px-6 md:px-8">
+          {/* Brand + newsletter */}
+          <div className="grid gap-12 py-16 lg:grid-cols-[5fr_7fr] lg:gap-16">
+            <div>
+              {/* A quiet sign-off in the hero's hand — decorative, one per page. */}
+              <Vignette name="olive" size={84} />
+              <Wordmark
+                href={localizedHref(locale, "/")}
+                className="mt-3 block text-[clamp(2.75rem,7vw,4.5rem)] leading-none tracking-[-0.04em]"
+              />
+              <p className="mt-5 max-w-[34ch] text-[16px] leading-[1.6] text-muted-foreground">
+                {dict.footer.valueProp}
+              </p>
+            </div>
+
+            {/* Newsletter — PLACEHOLDER, deliberately inert. There is no
+                <form>, no action, no handler and no list behind it: the button
+                is type="button" so nothing can submit, by design. Before this
+                ships it needs a server action, double opt-in, and a privacy
+                line — an email address here is personal data. */}
+            <div className="w-full lg:max-w-[440px] lg:justify-self-end">
+              <h2 className="text-[20px] font-semibold tracking-[-0.01em] text-foreground">
+                {dict.footer.newsletterTitle}
+              </h2>
+              <p className="mt-2 max-w-[44ch] text-[15px] leading-[1.6] text-muted-foreground">
+                {dict.footer.newsletterHint}
+              </p>
+              <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
+                <input
+                  type="email"
+                  aria-label={dict.footer.newsletterTitle}
+                  placeholder={dict.footer.newsletterPlaceholder}
+                  className="h-11 w-full rounded-[10px] border border-[var(--fonda-border-2)] bg-[var(--fonda-bg)] px-3.5 text-[15px] text-foreground transition-colors duration-[180ms] placeholder:text-[var(--fonda-text-3)] focus:border-[var(--fonda-accent)] focus:outline-none focus:ring-[3px] focus:ring-[var(--fonda-accent-light)]"
+                />
+                <Button type="button" variant="ink" className="h-11 shrink-0">
+                  {dict.footer.newsletterButton}
+                </Button>
+              </div>
+              <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
+                {dict.footer.newsletterNote}
+              </p>
+            </div>
+          </div>
+
+          {/* Link columns */}
+          <div className="grid gap-10 border-t border-border py-14 sm:grid-cols-2 lg:grid-cols-4">
+            {FOOTER_COLUMNS.map((column) => (
+              <div key={column.title}>
+                <h3 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+                  {column.title}
+                </h3>
+                <ul className="mt-5 flex flex-col gap-3">
+                  {column.links.map((link) => (
+                    <li key={link.label}>
+                      {link.href ? (
+                        <Link
+                          href={link.href}
+                          className="text-[15px] text-muted-foreground transition-colors duration-[180ms] hover:text-foreground"
+                        >
+                          {link.label}
+                        </Link>
+                      ) : (
+                        <a
+                          href="#"
+                          className="text-[15px] text-[var(--fonda-text-3)] transition-colors duration-[180ms] hover:text-foreground"
+                        >
+                          {link.label}
+                          <span
+                            aria-hidden="true"
+                            className="ml-0.5 align-super text-[10px]"
+                          >
+                            °
+                          </span>
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom bar */}
+          <div className="flex flex-col gap-4 border-t border-border py-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-1">
+              <span className="text-sm text-muted-foreground">
+                {t(dict.footer.rights, { year: new Date().getFullYear() })}
+              </span>
+              <span className="text-[13px] text-[var(--fonda-text-3)]">
+                {dict.footer.placeholderNote}
+              </span>
+            </div>
+            <LanguageSwitcher />
+          </div>
         </div>
       </footer>
     </div>

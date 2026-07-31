@@ -25,7 +25,20 @@ export const COMPANY = {
   domain: "fondas.app",
   governingLawCountry: "Spain",
   courtsCity: "[Barcelona]",
-  /** Headline subscription price (keep in sync with the pricing page / Stripe). */
+  /**
+   * The bare monthly figure — the single source for every price the marketing
+   * site *renders*. The currency symbol is placed per-locale by the dictionary
+   * templates (`stats.priceValue`, `pricing.price` interpolate `{price}`),
+   * because en writes "€199" and es/ca write "199 €".
+   *
+   * Two copies of this number are still synced by hand and will not follow a
+   * change here:
+   *   1. `price` below — legal prose, rendered on the legal pages.
+   *   2. The Stripe price object — the amount customers are actually charged.
+   * Change all three together, and check the legal pages after.
+   */
+  priceMonthly: "199",
+  /** Headline subscription price (keep in sync with `priceMonthly` / Stripe). */
   price: "€199 per month per hotel property",
 } as const;
 
