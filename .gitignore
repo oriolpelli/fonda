@@ -46,3 +46,6 @@ next-env.d.ts
 
 # Word temp/lock files
 ~$*
+
+# Design working screenshots (regenerable, not referenced)
+design/_*
