@@ -81,7 +81,9 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
             "ml-auto rounded-full px-2 py-0.5 font-mono text-[11px] font-medium tabular-nums",
             item.badge.alert
               ? "bg-[var(--fonda-accent-light)] text-[var(--fonda-accent)]"
-              : "bg-[var(--fonda-inset)] text-[var(--fonda-text-3)]"
+              // text-2, not text-3: an 11px count on --fonda-inset is real
+              // text, and text-3 is only 4.31:1 there — under AA's 4.5:1.
+              : "bg-[var(--fonda-inset)] text-[var(--fonda-text-2)]"
           )}
         >
           {item.badge.count}

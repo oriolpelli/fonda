@@ -19,6 +19,8 @@
 
 The product voice is unchanged. The *visual* language is now confident, neutral, and grotesque — inspired by Sana: bold large-scale type, generous space, one signal color.
 
+> **v2.1 amendment (illustration).** The line below and §6 originally read "no illustration." As of v2.1 we deliberately reintroduce **one warm illustrated layer** — a single watercolor hero scene plus a small spot-vignette set — over the otherwise-flat Signal system. See §6 for the rules. Warmth comes from the art; calm comes from the type. This is an intentional, owner-approved exception, not a loosening of the system.
+
 **Scope:** this system governs the **entire app** — marketing site, dashboard, auth, onboarding — and is the **standard for all future pages and features**. New UI must use these tokens, this type, and these components; do not introduce a serif, a second accent, pill buttons, or hand-drawn illustration.
 
 ---
@@ -49,7 +51,7 @@ Defined as CSS custom properties in `:root` (see `globals.css`). Never hard-code
 --fonda-border-2:     #DCDBD6   Stronger border (inputs, buttons)
 --fonda-text:         #0A0A0A   Primary text (near-black)
 --fonda-text-2:       #5B5B58   Secondary text / descriptions
---fonda-text-3:       #9C9C97   Muted / eyebrows / placeholders
+--fonda-text-3:       #6F6F6A   Muted / eyebrows / placeholders (v2.1: darkened from #9C9C97 for WCAG AA — 5.05:1 on white; the old value failed AA at every size)
 --fonda-text-inv:     #FFFFFF   Text on ink / accent
 --fonda-accent:       #1B3BB3   Cool navy SIGNAL — primary action only
 --fonda-accent-hover: #152E8C
@@ -174,7 +176,7 @@ Sticky, 64px, `backdrop-filter: blur(14px)` over an 82%-opaque page background, 
 
 ## 6. Iconography & imagery
 
-- **No hand-drawn illustrations.** The coffee-cup / hotel-key SVGs from v1 are retired.
+- **Illustration — one warm layer (v2.1).** v2 retired v1's pencil/watercolor; **v2.1 reintroduces illustration in a single, deliberate way**: one hand-painted watercolor scene ("La Casa" — cream façade, terracotta roof, arcaded loggia, a pool between two palms) in the hero, plus a small matched set of spot-vignettes (key, coffee, olive branch, lantern, sun-lounger, sailboat) for feature rows, the footer and empty states. Everything else stays flat and neutral. **Rules:** at most **one illustration per screen**; the hero art is **≤40% of the hero's height**; it **never sits behind type** (it sits beside or below the words); palette is drawn from the artwork; the type still does the work. This is a cohesive new illustrated layer — the v1 coffee-cup / hotel-key SVGs remain retired and are *not* what's coming back.
 - Icons: a single line set at ~1.5px stroke (Lucide is a good match) — used small and sparingly. No emoji in product chrome.
 - Markers: a small navy square (`6–8px`, radius 2px) in place of bullets/emoji in lists.
 - Product imagery: real screenshots in rounded containers (16–20px radius, 1px border). Use a striped placeholder with a Geist Mono caption (`dashboard.webp · product shot`) until real assets exist.
@@ -189,6 +191,49 @@ Minimal and purposeful.
 - Entrance: fade + 12–16px rise via IntersectionObserver.
 - **No** parallax, spinning, autoplay, or scroll-triggered color shifts.
 
+### v2.2 — hero parallax (a deliberate, single exception)
+
+The "no parallax" rule above and the La Casa placement rule "never behind the
+type" both stand **everywhere except the marketing hero**, where one scroll-linked
+parallax is now allowed. This is an exception, not a new pattern: do not
+reach for it a second time on the same page or on any other surface.
+
+The exception is scoped to exactly this:
+
+- **One instance only** — the single La Casa hero illustration, as the
+  background layer of the hero. Nowhere else, ever.
+- **Subtle** — background drifts at `0.275 × scrollY`, foreground copy at
+  `-0.075 × scrollY`. Nothing rotates, scales, or changes colour on scroll.
+- **The type never fades.** Headline lift + fade stays off; the copy shifts a
+  few pixels and holds full opacity throughout.
+- **Centred, and larger than §6 allows.** The art is vertically centred in the
+  hero (lifted ~5% so it shares the copy's optical centre) at
+  `clamp(340px, 52vw, 640px)` wide — roughly half the hero's height, not the
+  ≤40% §6 sets for art that sits *beside or below* the words. Once the
+  headline runs *through* the painting, that ceiling no longer applies; the
+  scrim is what protects the type. This size and placement are part of the
+  exception, not a licence to grow the art elsewhere.
+- **Legibility is engineered, not hoped for.** A white scrim sits between the
+  art and the copy so the headline never competes with the painting. It holds
+  meaningful coverage down to ~76% — past the CTA row — and releases below, so
+  the art's detailed lower edge stays unwashed. **Re-check the scrim whenever
+  the art is resized or moved**; the type band and the gradient stops must
+  stay aligned.
+- **Reduced motion is a hard gate**, not a softening. Under
+  `prefers-reduced-motion: reduce` the hero renders as a plain static
+  composition: no listeners bound, no transforms written, text at full
+  opacity. The server-rendered markup *is* the static version, so this is also
+  what everyone sees before hydration.
+
+Implementation: `components/marketing/hero-parallax.tsx`, ported from
+`design/hero-parallax-prototype.html`. The factors above are the prototype's
+`data-parallax` values folded with its default depth of 1.25.
+
+> **Also amended by v2.2:** §3 says the hero headline has "no colour change".
+> The hero now sets line 2 in `--fonda-accent` (two-tone). That is intentional
+> and counts against the screen's 2–3 accent budget — the hero spends two (the
+> eyebrow dot and the headline line), so add no further accent there.
+
 ---
 
 ## 8. Quick reference
@@ -196,7 +241,7 @@ Minimal and purposeful.
 ```
 FONT:      Geist (all) · Geist Mono (eyebrows/labels)
 BG:        #FFFFFF page · #F6F6F4 panels · #0A0A0A ink sections
-TEXT:      #0A0A0A primary · #5B5B58 secondary · #9C9C97 muted
+TEXT:      #0A0A0A primary · #5B5B58 secondary · #6F6F6A muted (AA — was #9C9C97)
 ACCENT:    #1B3BB3 navy signal (max 2–3 per screen) · hover #152E8C
 BORDERS:   #E8E7E3 hairline · #DCDBD6 inputs/buttons
 RADIUS:    10px buttons · 16px cards · 28px CTA band · 100px badges only
