@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fonda — Positioning & Go-to-Market</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF;--surface:#F6F6F4;--border:#E8E7E3;--border2:#DCDBD6;
+    --text:#0A0A0A;--text2:#5B5B58;--text3:#9C9C97;
+    --accent:#1B3BB3;--accent-light:#ECEFFC;--ink:#0A0A0A;
+    --sans:"Geist",system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--maxw:1080px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+  .mono{font-family:var(--mono)}
+  a{color:var(--accent);text-decoration:none}
+  .eyebrow{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}
+  .eyebrow.sig{color:var(--accent)}
+  p{margin:0 0 16px}
+
+  header.hero{padding:80px 0 46px;border-bottom:1px solid var(--border)}
+  header.hero h1{font-weight:600;letter-spacing:-.035em;line-height:1.0;font-size:clamp(38px,6vw,74px);margin:16px 0 0}
+  header.hero p.lead{font-size:19px;color:var(--text2);max-width:680px;margin:22px 0 0}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+  .toc a{font-family:var(--mono);font-size:12px;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:6px 13px}
+  .toc a:hover{color:var(--accent);border-color:var(--accent)}
+
+  section.block{padding:56px 0;border-bottom:1px solid var(--border)}
+  .n{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.1em}
+  h2.sec{font-weight:600;letter-spacing:-.025em;font-size:clamp(26px,3.6vw,44px);margin:10px 0 0}
+  h3.sub{font-weight:600;letter-spacing:-.015em;font-size:21px;margin:34px 0 10px}
+  .lead2{font-size:18px;color:var(--text2);max-width:70ch;margin-top:14px}
+  em{color:var(--text);font-style:italic}
+  strong{font-weight:600}
+
+  .pull{border-left:2px solid var(--accent);padding:6px 0 6px 22px;margin:26px 0;font-size:20px;line-height:1.45;letter-spacing:-.01em;color:var(--text)}
+  .box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 28px;margin:24px 0}
+  .box.accent{background:var(--accent-light);border-color:transparent}
+  .box .eyebrow{margin-bottom:10px}
+  .box.accent .eyebrow{color:var(--accent)}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+  @media(max-width:800px){.cards{grid-template-columns:1fr}}
+  .card{border:1px solid var(--border);border-radius:16px;padding:22px 24px}
+  .card .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+  .card h4{font-size:18px;font-weight:600;letter-spacing:-.01em;margin:8px 0 6px}
+  .card p{margin:0;color:var(--text2);font-size:15px}
+
+  table.t{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px}
+  table.t th,table.t td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  table.t th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);font-weight:500}
+  table.t td b{font-weight:600}
+  .tag{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:100px;white-space:nowrap}
+  .tag.rec{background:var(--accent-light);color:var(--accent)}
+  .tag.alt{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
+
+  ul.l{margin:14px 0;padding:0;list-style:none}
+  ul.l li{position:relative;padding-left:20px;margin-bottom:10px;color:var(--text2)}
+  ul.l li::before{content:"";position:absolute;left:0;top:10px;width:7px;height:7px;border-radius:2px;background:var(--accent)}
+  ul.l li b{color:var(--text);font-weight:600}
+  .hl{font-size:clamp(22px,2.6vw,30px);font-weight:600;letter-spacing:-.02em;line-height:1.15;color:var(--text);margin:4px 0}
+  .subline{color:var(--text2);font-size:16px;margin-top:8px}
+  footer{padding:40px 0 72px;color:var(--text3);font-size:13px}
+  .rec-band{background:var(--ink);color:#fff;border-radius:24px;padding:44px 40px;margin:52px auto 0;max-width:var(--maxw)}
+  .rec-band h2{font-weight:600;letter-spacing:-.02em;font-size:clamp(24px,3vw,34px);margin:0 0 14px}
+  .rec-band p{color:#C9C9C6;max-width:72ch}
+  .rec-band b{color:#fff}
+  .rec-band .hl{color:#fff}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow sig">Positioning & go-to-market · strategy report</div>
+    <h1>Fonda is not<br>an inbox tool.</h1>
+    <p class="lead">"Your inbox, answered. Your morning, ready." captures one surface of a product that does far more. This report re-derives what Fonda actually is, builds a messaging system around the real thing, and lays out the go-to-market that follows from it.</p>
+    <div class="toc">
+      <a href="#what">1 · What it really is</a>
+      <a href="#category">2 · Category</a>
+      <a href="#positioning">3 · Positioning</a>
+      <a href="#messaging">4 · Messaging</a>
+      <a href="#headlines">5 · Headlines</a>
+      <a href="#brand">6 · Brand & name</a>
+      <a href="#gtm">7 · Go-to-market</a>
+      <a href="#competition">8 · Competition</a>
+      <a href="#recommendation">9 · Recommendation</a>
+    </div>
+  </div>
+</header>
+
+<!-- 1 -->
+<section class="block" id="what">
+  <div class="wrap">
+    <span class="n">01</span>
+    <h2 class="sec">What Fonda actually is</h2>
+    <p class="lead2">Read back from the product itself — the four surfaces, the PMS and inbox integrations, and the hotel-profile brain — a much bigger thing than "email" comes into focus.</p>
+
+    <p>Today the site leads with the inbox. But the codebase describes an <strong>AI operations layer</strong> that does four jobs at once and, crucially, <strong>learns the specific hotel</strong> before doing any of them:</p>
+
+    <div class="cards">
+      <div class="card"><div class="k">Surface 1</div><h4>Guest email, drafted</h4><p>Every incoming message is classified and answered in the hotel's own voice, ready for the GM to review and send.</p></div>
+      <div class="card"><div class="k">Surface 2</div><h4>The morning brief</h4><p>Arrivals, departures, overnight email, occupancy and the one thing needing a decision — before the desk opens.</p></div>
+      <div class="card"><div class="k">Surface 3</div><h4>Check-in chasing</h4><p>Missing arrival times are chased automatically so housekeeping and the desk can plan the day.</p></div>
+      <div class="card"><div class="k">Surface 4</div><h4>Ask your hotel</h4><p>Plain-language answers over live data — occupancy, revenue, who's arriving late — no report-building.</p></div>
+    </div>
+
+    <p>Underneath all four sits the part that makes it defensible: a <strong>hotel brain</strong>. Fonda ingests the PMS (MEWS / Apaleo) for reservations and occupancy, connects the inbox (Gmail), and stores a rich profile — policies, tone, room types, upsells, local recommendations, reviews. It <em>learns the hotel once and puts it to work everywhere</em>. And it keeps the GM in control: drafts are for review; nothing is sent autonomously.</p>
+
+    <div class="pull">So the real product is: <strong>an AI front-office that runs an independent hotel's repetitive admin — communications, arrivals, the daily brief, and instant answers — on top of the systems the hotel already uses, always under the GM's approval.</strong></div>
+
+    <p>"Inbox, answered" is the <em>wedge</em> — the sharpest, most demoable pain. It is not the product. Anchoring the whole brand to it caps how big Fonda is allowed to look, and invites the wrong competitor comparison (a generic email assistant) instead of the right one (a teammate that runs your front office).</p>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="block" id="category">
+  <div class="wrap">
+    <span class="n">02</span>
+    <h2 class="sec">What category is this?</h2>
+    <p class="lead2">Category choice decides the comparison set, the price ceiling, and the buyer's mental model. Four viable framings, with the trade-off of each.</p>
+
+    <table class="t">
+      <thead><tr><th>Framing</th><th>Reads as</th><th>Upside</th><th>Risk</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><b>AI operations layer for independent hotels</b></td><td>Platform / infrastructure</td><td>Big, honest, room to grow into all four surfaces + more</td><td>A touch abstract for a busy GM</td><td><span class="tag rec">Descriptor</span></td></tr>
+        <tr><td><b>The AI front office / front-office manager</b></td><td>A role you'd otherwise hire</td><td>Concrete, evocative, anchors price to a salary</td><td>Must clarify it's not guest-facing autonomy</td><td><span class="tag rec">Hero</span></td></tr>
+        <tr><td><b>AI copilot for hotel GMs</b></td><td>Assistant / sidekick</td><td>Familiar, safe, "you stay in control"</td><td>"Copilot" is now generic across software</td><td><span class="tag alt">Alt</span></td></tr>
+        <tr><td><b>The AI teammate for independent hotels</b></td><td>An extra pair of hands</td><td>Warm, human, fits a small team</td><td>Soft on what it actually does</td><td><span class="tag alt">Alt</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="box accent">
+      <div class="eyebrow">Recommended category</div>
+      <p style="margin:0"><strong>Lead with the role, back it with the layer.</strong> Position Fonda as <strong>"the AI front office for independent hotels"</strong> (concrete, salary-anchored, evocative) and use <strong>"AI operations layer"</strong> as the explanatory descriptor in meta, nav and investor materials. The role sells; the layer explains.</p>
+    </div>
+
+    <p>One category boundary matters more than any other: <strong>Fonda is not a PMS.</strong> Mews and Apaleo are the system of record. Fonda is the intelligent layer that sits <em>on top</em> of them. This is a feature, not a limitation — it's why setup is same-day, why there's nothing to migrate, and why the PMS marketplaces are a distribution channel rather than a competitor. Every message should reinforce "works with your PMS," never "replace your PMS."</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="block" id="positioning">
+  <div class="wrap">
+    <span class="n">03</span>
+    <h2 class="sec">Positioning statement</h2>
+    <p class="lead2">The internal north star every headline, email and deck should ladder up to.</p>
+
+    <div class="box">
+      <div class="eyebrow">Positioning</div>
+      <p style="margin:0;font-size:18px;line-height:1.6">For the <strong>GM of an independent hotel</strong> who is buried in front-office admin and can't justify another hire, <strong>Fonda</strong> is the <strong>AI front office</strong> that drafts every guest reply, chases arrival times, and delivers a plan each morning — learning your specific hotel and working on top of the PMS you already run. Unlike hiring more desk staff or bolting on a generic AI, Fonda <strong>knows your hotel</strong> and keeps <strong>every action under your approval</strong>.</p>
+    </div>
+
+    <h3 class="sub">The one-sentence version</h3>
+    <p class="hl">Fonda runs your hotel's front office — so you can run your hotel.</p>
+
+    <h3 class="sub">The three things it must always say</h3>
+    <ul class="l">
+      <li><b>Scope:</b> it's the whole front-office admin (comms + arrivals + brief + answers), not just email.</li>
+      <li><b>Specificity:</b> it learns <em>your</em> hotel — tone, policies, rooms, PMS data — so it's not generic AI.</li>
+      <li><b>Control:</b> drafts for your review; it never acts behind your back. This defuses the #1 hotelier fear.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="block" id="messaging">
+  <div class="wrap">
+    <span class="n">04</span>
+    <h2 class="sec">Messaging architecture</h2>
+    <p class="lead2">The four surfaces, re-expressed as outcomes — plus the proof and objection-handling the page needs.</p>
+
+    <h3 class="sub">Value pillars (say these, in this order)</h3>
+    <div class="cards">
+      <div class="card"><div class="k">Pillar 1 · Communications</div><h4>Every guest email, answered in your voice</h4><p>The inbox stops being a night-time chore. Replies arrive drafted; you review and send.</p></div>
+      <div class="card"><div class="k">Pillar 2 · Situational awareness</div><h4>A plan before the desk opens</h4><p>The morning brief tells you what today needs — arrivals, VIPs, the one decision — in plain language.</p></div>
+      <div class="card"><div class="k">Pillar 3 · Operations</div><h4>Arrivals that confirm themselves</h4><p>Check-in times chase themselves so housekeeping and the front desk aren't guessing.</p></div>
+      <div class="card"><div class="k">Pillar 4 · Instant answers</div><h4>Ask your hotel anything</h4><p>Occupancy, revenue, who's late — answered from live data, no report to build.</p></div>
+    </div>
+    <p>And the connective tissue beneath all four: <strong>"It learns your hotel — tone, policies, rooms, PMS data — so it sounds like you and knows your numbers."</strong> That line is the moat; feature it, don't bury it.</p>
+
+    <h3 class="sub">Proof points to earn the claim</h3>
+    <ul class="l">
+      <li><b>Control:</b> "Nothing is ever sent without you." Repeat it — it's the objection-killer.</li>
+      <li><b>Speed:</b> "Connect your PMS and inbox in an afternoon. Your first brief arrives tomorrow."</li>
+      <li><b>Fit:</b> "Works with MEWS, Apaleo and Gmail" (name them — instant credibility with the ICP).</li>
+      <li><b>Security:</b> "Your data is isolated per hotel and encrypted." Hoteliers will ask; answer first.</li>
+      <li><b>Economics:</b> "One flat price per property — less than a day of front-desk cover a week."</li>
+    </ul>
+
+    <h3 class="sub">Objections &rarr; the line that answers them</h3>
+    <table class="t">
+      <thead><tr><th>The GM thinks…</th><th>Say</th></tr></thead>
+      <tbody>
+        <tr><td>"Will AI email my guests without me?"</td><td><b>Never automatically — every reply is a draft for your review.</b></td></tr>
+        <tr><td>"Do I have to switch my PMS?"</td><td><b>No. Fonda works on top of MEWS and Apaleo. Nothing to migrate.</b></td></tr>
+        <tr><td>"Is this just another tool to manage?"</td><td><b>It replaces a stack — inbox rules, spreadsheets, a chaser, a BI query — with one layer.</b></td></tr>
+        <tr><td>"We're too small / independent for this."</td><td><b>It's built for 20–200 rooms and one busy GM — not chains.</b></td></tr>
+        <tr><td>"Is our guest data safe?"</td><td><b>Isolated per hotel, encrypted, minimum access — never used to train shared models.</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="block" id="headlines">
+  <div class="wrap">
+    <span class="n">05</span>
+    <h2 class="sec">Headline candidates</h2>
+    <p class="lead2">Grouped by strategy. Each is a real two-line-ready hero line. Recommended pick marked.</p>
+
+    <table class="t">
+      <thead><tr><th>Headline</th><th>Strategy</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="hl" style="font-size:20px">The admin runs itself.<br>You run the hotel.</td><td>Outcome / relief — biggest scope, keeps the human hero</td><td><span class="tag rec">Recommended</span></td></tr>
+        <tr><td class="hl" style="font-size:20px">Run your front office<br>on autopilot.</td><td>Role + outcome — concrete, active, salary-anchored</td><td><span class="tag rec">Strong #2</span></td></tr>
+        <tr><td class="hl" style="font-size:20px">The AI front office for<br>independent hotels.</td><td>Category — clearest for cold traffic & SEO</td><td><span class="tag alt">Descriptor</span></td></tr>
+        <tr><td class="hl" style="font-size:20px">Less front-desk admin.<br>More hospitality.</td><td>Trade-off — the emotional core of the ICP</td><td><span class="tag alt">Alt</span></td></tr>
+        <tr><td class="hl" style="font-size:20px">You didn't open a hotel<br>to answer emails.</td><td>Provocation — high recall, use in ads/outbound</td><td><span class="tag alt">Campaign</span></td></tr>
+        <tr><td class="hl" style="font-size:20px">Give every guest a great reply,<br>and every morning a plan.</td><td>Concrete duo — names two surfaces at once</td><td><span class="tag alt">Alt</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="box accent">
+      <div class="eyebrow">Recommended lockup</div>
+      <p class="hl" style="margin:0 0 6px">The admin runs itself. You run the hotel.</p>
+      <p class="subline" style="margin:0"><strong>Subhead:</strong> Fonda is the AI front office for independent hotels — it drafts your guest email, chases arrival times, briefs you every morning, and answers anything about your property. It learns your hotel once and works on top of the PMS you already run.</p>
+      <p class="subline" style="margin:10px 0 0"><strong>Eyebrow:</strong> For independent hotel GMs · Private beta &nbsp;·&nbsp; <strong>Primary CTA:</strong> Get early access &nbsp;·&nbsp; <strong>Secondary:</strong> Book a demo</p>
+    </div>
+    <p>Why this pairing: the <em>headline</em> sells the emotional outcome (you get your hotel back) at full scope, and the <em>subhead</em> does the literal work of naming all four surfaces so no one leaves thinking "email tool." It also sets up the "learns your hotel / on top of your PMS" moat in one breath.</p>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="block" id="brand">
+  <div class="wrap">
+    <span class="n">06</span>
+    <h2 class="sec">Brand &amp; name leverage</h2>
+    <p class="lead2">The name is already doing strategic work — lean into it.</p>
+    <p>A <strong>fonda</strong> is a traditional Spanish/Catalan inn — a small, family-run place to eat and stay. That's a gift for this positioning: it signals <em>independent, warm, Mediterranean, human</em> — the exact opposite of enterprise hotel software. It quietly tells the buyer "this is built for a place like mine," and it pairs naturally with a garden/seaside hero (see the illustration proposals). Keep the wordmark restrained per Signal, but let the <em>story</em> of the name carry warmth the visual system deliberately withholds.</p>
+
+    <h3 class="sub">Tagline options (descriptor slot)</h3>
+    <ul class="l">
+      <li><b>Hotel operations, on autopilot.</b> — current; broad, accurate, keep as the utility descriptor.</li>
+      <li><b>The AI front office for independent hotels.</b> — best for clarity/SEO.</li>
+      <li><b>Run the front. Keep the soul.</b> — campaign line; captures the independent-hotel emotion.</li>
+      <li><b>Your hotel, handled.</b> — short, warm, works as a sign-off.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="block" id="gtm">
+  <div class="wrap">
+    <span class="n">07</span>
+    <h2 class="sec">Go-to-market</h2>
+
+    <h3 class="sub">Ideal customer profile</h3>
+    <p>Independent and boutique hotels, roughly <strong>20–200 rooms</strong>, run by an <strong>owner-operator or a stretched GM</strong> who wears every hat. They already run a <strong>modern cloud PMS (MEWS or Apaleo)</strong> — which both signals sophistication and gives Fonda its integration. Front desk is understaffed; OTA and guest email pile up overnight; the GM is doing admin instead of hospitality and can't justify a full-time night/admin hire. <strong>Europe-first</strong> is the natural beachhead — MEWS/Apaleo are EU-strong, the product speaks English, Spanish and Catalan, and the design partners are Mediterranean boutiques.</p>
+
+    <h3 class="sub">The wedge, then the land-and-expand</h3>
+    <p>Lead with the <strong>email assistant</strong>. It is the sharpest wedge: highest-frequency pain, instantly demoable on the hotel's own inbox ("connect it, see drafts tomorrow morning"), and visible ROI within a day. The <strong>morning brief</strong> is the retention hook — a daily habit that makes Fonda part of the routine. Then expand:</p>
+    <table class="t">
+      <thead><tr><th>Stage</th><th>Surface</th><th>Job it does for GTM</th></tr></thead>
+      <tbody>
+        <tr><td><b>Land</b></td><td>Email assistant</td><td>Wedge — fastest, most visible ROI; the demo that closes</td></tr>
+        <tr><td><b>Habit</b></td><td>Morning brief</td><td>Daily retention; the reason they open Fonda every day</td></tr>
+        <tr><td><b>Deepen</b></td><td>Check-in chasing</td><td>Operational trust; ties Fonda into the daily desk workflow</td></tr>
+        <tr><td><b>Power</b></td><td>Ask your hotel</td><td>Stickiness; replaces asking staff / building reports</td></tr>
+        <tr><td><b>Expand</b></td><td>Concierge / WhatsApp, pre-arrival</td><td>Into guest experience — larger surface, upsell path</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">Channels, in priority order</h3>
+    <ul class="l">
+      <li><b>PMS marketplaces (MEWS Marketplace, Apaleo Store).</b> Highest-intent distribution on earth for this ICP — hoteliers browse these for exactly this. Get listed; it doubles as credibility.</li>
+      <li><b>Hotel-tech directories & reviews (Hotel Tech Report and similar).</b> Where GMs shortlist. Seed with design-partner reviews.</li>
+      <li><b>Founder-led outbound.</b> Fonda can demo on a prospect's <em>public</em> inbox — a devastatingly concrete cold email. Personalize per property.</li>
+      <li><b>Independent / boutique hotelier communities & associations.</b> Regional hotelier groups (Spain/Catalonia first), boutique networks, WhatsApp/LinkedIn owner circles. This ICP is word-of-mouth-driven.</li>
+      <li><b>Localized content &amp; SEO (EN/ES/CA).</b> "Handling OTA email," "the GM's morning routine," "MEWS + AI." Pairs with fixing the site's thin IA (see audit #16). This is how Mews wins search — Fonda can win the long tail.</li>
+      <li><b>Referral.</b> Boutique owners talk to each other. A simple "refer a hotel" incentive compounds in a tight community.</li>
+    </ul>
+
+    <h3 class="sub">Pricing narrative</h3>
+    <p>Keep it <strong>flat, per-property</strong> — no per-seat, no per-email metering. It fits small teams, is predictable, and lets you anchor against labour: <em>"less than a day of front-desk cover per week."</em> The €199/property/month already in the product is a strong, simple anchor. Beta play: <strong>first 20 hotels free as design partners</strong>, then convert with a founding-member rate. One decision to make (flagged in the audit): show the price <em>or</em> go "talk to us" — don't do both. For a low-friction, self-serve-ish beta, <strong>showing the flat price reduces sales friction</strong> and suits the ICP's "just tell me what it costs" temperament.</p>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="block" id="competition">
+  <div class="wrap">
+    <span class="n">08</span>
+    <h2 class="sec">Competitive framing</h2>
+    <p class="lead2">Who the buyer will compare you to, and the one line that wins each comparison.</p>
+    <table class="t">
+      <thead><tr><th>Alternative</th><th>Their job</th><th>How Fonda wins the comparison</th></tr></thead>
+      <tbody>
+        <tr><td><b>PMS (Mews, Apaleo)</b></td><td>System of record — bookings, rates, payments</td><td>Don't compete — <b>integrate</b>. Fonda is the AI layer on top; the PMS is the plumbing. Their marketplace is your channel.</td></tr>
+        <tr><td><b>Generic AI inbox / email assistant</b></td><td>Draft any email</td><td>It doesn't know the hotel, the reservations, or the PMS. Fonda is <b>hotel-specific and PMS-connected</b> — right facts, right voice.</td></tr>
+        <tr><td><b>Hiring more front-desk / night staff</b></td><td>Human coverage</td><td>A <b>fraction of the cost</b>, 24/7, live the same day, and it never calls in sick. Frames the price against a salary.</td></tr>
+        <tr><td><b>The manual status quo</b></td><td>Spreadsheets, inbox rules, memory</td><td>The "old front desk": midnight replies, missed arrivals, no morning picture. This is the real competitor — sell the shift.</td></tr>
+        <tr><td><b>Enterprise hotel-AI / concierge suites</b></td><td>AI for chains &amp; large groups</td><td>Built for independents: <b>no IT project, no per-room enterprise pricing, same-day setup</b>.</td></tr>
+        <tr><td><b>Channel managers / OTA tools</b></td><td>Distribution &amp; rates</td><td>Different job entirely — Fonda runs <b>operations &amp; guest comms</b>, and complements them.</td></tr>
+      </tbody>
+    </table>
+    <div class="box">
+      <div class="eyebrow">The comparison that matters</div>
+      <p style="margin:0">Your primary competitor isn't a company — it's the <strong>manual status quo</strong> and the <strong>"just hire someone"</strong> instinct. The whole page should sell the <em>shift</em> from a front desk run on memory and midnight email to one run on autopilot. (This is also why the "status quo vs Fonda" comparison section — which you deferred — is worth revisiting.)</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9 -->
+<div class="rec-band" id="recommendation">
+  <h2>The recommendation, in one place</h2>
+  <p><b>Reposition from "inbox tool" to "AI front office."</b> Fonda runs an independent hotel's whole front-office admin — comms, arrivals, the morning brief, instant answers — on top of the PMS, always under the GM's approval.</p>
+  <p class="hl" style="margin:18px 0 4px">The admin runs itself. You run the hotel.</p>
+  <p style="margin:0 0 18px"><b>Subhead:</b> Fonda is the AI front office for independent hotels — it drafts your guest email, chases arrival times, briefs you every morning, and answers anything about your property. It learns your hotel once and works on top of the PMS you already run.</p>
+  <p><b>Then, in order:</b> (1) update the hero copy across en/es/ca to this lockup; (2) add real proof (design-partner quotes + hotel logos + "first 20 hotels"); (3) reconcile the pricing story to a single flat number; (4) revisit the "status quo vs Fonda" comparison; (5) build out site IA (Features, Customers, Resources) so the bigger positioning has room to breathe. Say the word and I'll write the new hero copy straight into <span class="mono">dictionaries/*.json</span> and wire the CTAs.</p>
+</div>
+
+<footer>
+  <div class="wrap">Fonda · positioning &amp; go-to-market · internal strategy. Derived from the product surfaces, integrations and ICP; benchmarked against Mews, OpenTable, TravelPerk and Linear-tier B2B via Mobbin.</div>
+</footer>
+</body>
+</html>

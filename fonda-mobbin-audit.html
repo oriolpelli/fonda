@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fonda — Mobbin Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF;--surface:#F6F6F4;--border:#E8E7E3;--border2:#DCDBD6;
+    --text:#0A0A0A;--text2:#5B5B58;--text3:#9C9C97;
+    --accent:#1B3BB3;--accent-light:#ECEFFC;--ink:#0A0A0A;
+    --good:#177245;--warn:#9A6A00;--bad:#B23B36;
+    --sans:"Geist",system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--maxw:1160px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+  .mono{font-family:var(--mono)}
+  a{color:var(--accent);text-decoration:none}
+  .eyebrow{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}
+  .eyebrow.sig{color:var(--accent)}
+
+  header.hero{padding:80px 0 44px;border-bottom:1px solid var(--border)}
+  header.hero h1{font-weight:600;letter-spacing:-.035em;line-height:1.0;font-size:clamp(38px,6vw,74px);margin:16px 0 0}
+  header.hero p.lead{font-size:19px;color:var(--text2);max-width:660px;margin:22px 0 0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .chip{font-family:var(--mono);font-size:12px;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:6px 13px}
+  .chip.accent{background:var(--accent-light);color:var(--accent);border-color:transparent}
+
+  section.block{padding:60px 0;border-bottom:1px solid var(--border)}
+  h2.sec{font-weight:600;letter-spacing:-.025em;font-size:clamp(24px,3.4vw,40px);margin:0}
+  .sub{font-size:17px;color:var(--text2);max-width:760px;margin:14px 0 0}
+
+  /* scorecard */
+  table.score{width:100%;border-collapse:collapse;margin-top:28px;font-size:14.5px}
+  table.score th,table.score td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--border)}
+  table.score th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);font-weight:500}
+  table.score td a{font-weight:500}
+  .grade{font-family:var(--mono);font-weight:500;font-size:12px;padding:3px 9px;border-radius:7px;white-space:nowrap}
+  .g-a{background:#E7F3EC;color:#177245}
+  .g-b{background:var(--accent-light);color:var(--accent)}
+  .g-c{background:#FBF1DC;color:#9A6A00}
+  .g-d{background:#FBE7E5;color:#B23B36}
+  .pri{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:100px;white-space:nowrap}
+  .p-now{background:#FBE7E5;color:#B23B36}
+  .p-soon{background:#FBF1DC;color:#9A6A00}
+  .p-later{background:var(--surface);color:var(--text3);border:1px solid var(--border)}
+
+  /* area cards */
+  .area{padding:34px 0;border-bottom:1px solid var(--border)}
+  .area:last-child{border-bottom:0}
+  .area .top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .area .num{font-family:var(--mono);font-size:13px;color:var(--accent)}
+  .area h3{font-size:22px;font-weight:600;letter-spacing:-.015em;margin:0}
+  .badges{display:flex;gap:8px;margin-left:auto}
+  .area .body{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:18px}
+  @media(max-width:840px){.area .body{grid-template-columns:1fr}}
+  .col h4{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin:0 0 10px;font-weight:500}
+  .col.fix h4{color:var(--accent)}
+  .col p{margin:0 0 8px;color:var(--text2);font-size:14.5px}
+  ul.l{list-style:none;margin:0;padding:0}
+  ul.l li{position:relative;padding-left:18px;margin-bottom:8px;color:var(--text2);font-size:14.5px}
+  ul.l li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:2px;background:var(--accent)}
+  ul.l.bad li::before{background:var(--bad)}
+  ul.l li b{color:var(--text);font-weight:600}
+  .bench{margin-top:16px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .bench img{display:block;width:100%;border-bottom:1px solid var(--border);background:var(--surface)}
+  .bench .cap{padding:9px 13px;font-size:12.5px;color:var(--text2);display:flex;justify-content:space-between;gap:10px}
+  .bench .cap b{color:var(--text);font-weight:600}
+  .bench .cap .lk{font-family:var(--mono);font-size:11px;color:var(--text3)}
+
+  .callout{background:var(--accent-light);border-radius:16px;padding:22px 26px;margin-top:30px}
+  .callout .eyebrow{color:var(--accent)}
+  .callout p{margin:10px 0 0;font-size:15.5px}
+  footer{padding:40px 0 72px;color:var(--text3);font-size:13px}
+  .srcgrid{columns:2;column-gap:36px;margin-top:20px}
+  @media(max-width:700px){.srcgrid{columns:1}}
+  .srcgrid a{display:block;padding:6px 0;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);break-inside:avoid}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow sig">Mobbin audit · full-site teardown</div>
+    <h1>Where Fonda<br>stands, and doesn't.</h1>
+    <p class="lead">An acting-Mobbin-auditor review of the whole Fonda site — marketing, auth and onboarding — graded against best-in-class references (Mews, Clay, Sana, Vercel, Linear-tier B2B, OpenTable). Every area: what it does now, the benchmark, what fails, and exactly what to change it to.</p>
+    <div class="meta">
+      <span class="chip accent">17 areas graded</span>
+      <span class="chip">Current build reviewed in code</span>
+      <span class="chip">Fixes are Signal-native</span>
+    </div>
+  </div>
+</header>
+
+<!-- SCORECARD -->
+<section class="block">
+  <div class="wrap">
+    <h2 class="sec">Scorecard</h2>
+    <p class="sub">Overall the site is a solid <b>B−</b>: the redesign put the structure in place, but three things hold it back from feeling like a category leader — <b>no social proof</b>, a <b>thin footer/site IA</b>, and a <b>hero that undersells the product</b> (covered in the separate positioning report). Sorted by priority.</p>
+    <table class="score">
+      <thead><tr><th>#</th><th>Area</th><th>Grade</th><th>Verdict in a line</th><th>Priority</th></tr></thead>
+      <tbody id="score-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- AREAS -->
+<section class="block">
+  <div class="wrap">
+    <h2 class="sec">Area by area</h2>
+    <div id="areas"></div>
+  </div>
+</section>
+
+<div class="callout wrap" style="display:block">
+  <div class="eyebrow">The three that matter most</div>
+  <p><b>1 · Add social proof.</b> Even pre-launch, "the first 20 hotels", 2–3 design-partner quotes with a property name, and a real hotel-logo row transform trust. Right now a buyer sees zero evidence anyone uses it. <b>2 · Build a real footer + site IA.</b> A one-page site with a 3-link footer reads as a side project next to Mews. <b>3 · Fix the hero headline & mobile menu.</b> See the positioning report for the headline; add a working mobile nav so the links aren't hidden on phones.</p>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="eyebrow">Benchmarks referenced</div>
+    <div class="srcgrid" id="src"></div>
+    <p style="margin-top:26px">Fonda · Mobbin audit · internal. Grades are a snapshot of the current build; re-run after the fixes land.</p>
+  </div>
+</footer>
+
+<script>
+const IMG = k => `https://mobbin.com/api/mcp/short/${k}`;
+const SEC = id => `https://mobbin.com/sites/sections/${id}`;
+
+const AREAS = [
+  {n:"01", area:"Navigation / header", grade:"B", pri:"soon",
+   verdict:"Clean and sticky, but the IA is thin and there's no mobile menu.",
+   current:"Sticky 64px bar, wordmark, three anchor links (How it works / Features / FAQ) + Sign in + language switcher + one ink CTA. Links are hidden below the sm/md breakpoints with no replacement.",
+   bench:["hUS6gaqG","9f27c0cd-d796-4577-a68e-c253c571ea9d","Mews","Header + slim announcement bar"],
+   gaps:["No <b>mobile menu</b> — on a phone the only control is the CTA; the nav links simply vanish.","IA is anchors-only; no room for <b>Pricing</b>, <b>Customers</b>, <b>Resources</b> as the site grows.","No secondary <b>'Book a demo'</b> in the bar — the benchmark always pairs demo + start."],
+   fix:["Add a real <b>mobile menu</b> (sheet/disclosure) holding the links + CTAs.","Introduce light IA: Product / How it works / Pricing / Resources, with a <b>Book a demo</b> ghost button beside the ink CTA.","Optional: a slim dismissible <b>announcement bar</b> (Mews-style) for 'Private beta — first 20 hotels free'."]},
+
+  {n:"02", area:"Hero", grade:"B", pri:"now",
+   verdict:"Structurally strong; the headline undersells and there's no in-hero proof.",
+   current:"Centered eyebrow, two-line Geist headline ('Your inbox, answered. Your morning, ready.'), a one-line subhead, ink primary + outline secondary, and a hand-built email-draft window as the product visual.",
+   bench:["hUS6gaqG","9f27c0cd-d796-4577-a68e-c253c571ea9d","Mews","'The operating system for modern hotels'"],
+   gaps:["Headline scopes the product to the <b>inbox</b> — it's much more (see positioning report).","No <b>trust cue in the hero</b> (logos / 'join N properties') — the benchmark always has one.","Secondary CTA points to <b>#how</b>, not a real <b>Book a demo</b>.","Product visual is a <b>hand-built sketch</b>, not a real screenshot."],
+   fix:["Adopt the recommended headline system from the positioning report (outcome, not inbox).","Add a quiet <b>pilot-hotel logo strip or 'first 20 hotels'</b> line directly under the CTAs.","Make the secondary CTA <b>Book a demo</b> (Cal.com / contact).","Swap the sketch for a <b>real Morning-Brief screenshot</b> in the rounded frame once assets exist."]},
+
+  {n:"03", area:"Social proof & trust", grade:"D", pri:"now",
+   verdict:"The biggest gap on the site — there is essentially none.",
+   current:"A single row of integration pills ('Works with MEWS · Apaleo · Gmail'). No testimonials, no customer logos, no metrics, no counts.",
+   bench:["QGtJ8IGb","0c701f65-ae73-4165-9dbf-610613a2d986","Hex","Logo + quote + metric per cell"],
+   gaps:["<b>Zero evidence</b> anyone uses the product — fatal for a hotel buyer's trust.","No named GMs, properties, or numbers; nothing to counter 'is this real?'.","The integrations bar is doing all the trust work alone."],
+   fix:["Add a <b>proof section</b>: 2–3 design-partner quotes with <b>name · role · property</b> and one metric each (Hex model), light/flat per Signal.","Add a <b>hotel-logo row</b> ('Trusted by independents like…') under the hero; even 4–6 real pilots.","Borrow Mews' <b>'Join N properties'</b> device — for beta, frame as 'The first 20 hotels are onboarding now.'","When you have data, add a <b>third-party badge</b> (Product Hunt / a hotel-tech directory)."]},
+
+  {n:"04", area:"How it works", grade:"A", pri:"later",
+   verdict:"On-benchmark — three mono-numeral steps, exactly the Clay pattern.",
+   current:"Eyebrow + headline + three flat cards, Geist-Mono numerals 01/02/03 (Connect → Fonda drafts & chases → You approve), navy on the numerals.",
+   bench:["ZmK6xpTq","28c16d19-1b1c-4c38-b06e-660c77901cbc","Clay","'How it works' numbered cards"],
+   gaps:["Steps are text-only; the best add a <b>small product peek</b> per step.","No single CTA under the heading (Clay attaches a 'Get started')."],
+   fix:["Add a tiny product crop or icon-motif to each step for rhythm.","Attach one <b>'See a sample brief →'</b> or 'Get started' CTA under the section head."]},
+
+  {n:"05", area:"Features (bento)", grade:"B", pri:"soon",
+   verdict:"Good 2×2 of the four surfaces; the visuals are sketches, not the product.",
+   current:"Four flat tiles (Email assistant / Morning brief / Check-in chasing / Hotel chat), each with a hand-built motif, a benefit title and a navy square marker.",
+   bench:["cRKWL7gh","73b24277-7af8-4268-ad64-e1f994fd24c1","incident.io","Benefit grid with real product crops"],
+   gaps:["Motifs are <b>abstract sketches</b> — the benchmark shows the real UI, which is far more convincing.","No affordance to go deeper (no per-feature link/page)."],
+   fix:["Replace each motif with a <b>real, cropped screenshot</b> of that surface in the rounded frame.","Make each tile link to a future <b>/features/{surface}</b> page for SEO + sales depth.","Keep the flat surface + hairline treatment — don't adopt gradient bento tiles."]},
+
+  {n:"06", area:"Product showcase", grade:"B", pri:"soon",
+   verdict:"Nice dedicated band; still a single hand-built window.",
+   current:"A 5fr/7fr band pairing a headline with the large Morning-Brief preview window.",
+   bench:["GRC08251","9ddbce1f-dfc3-4b3a-b004-69cfb51c4ae4","Retool","Screenshot + play button"],
+   gaps:["Hand-built window, not a real screenshot; no annotations or callouts.","No product <b>video/demo</b> entry point.","Only one surface is shown (the brief) — the inbox/chat aren't showcased at scale."],
+   fix:["Use a <b>real screenshot</b>, add 1–2 callouts pointing at the 'decision' line.","Add a <b>'Watch the 2-min brief'</b> play overlay.","Consider a small tabbed showcase (Brief / Inbox / Chat) or a light 2–3 tile bento of real crops."]},
+
+  {n:"07", area:"ROI stats", grade:"B", pri:"soon",
+   verdict:"Great Sana-style device, but the numbers are unattributed and the price stat conflicts.",
+   current:"Four stat cells (90s to review a reply · 6:30 brief · €199/property · 1× setup) with big navy numerals.",
+   bench:["t0wCk7Ci","1671eb10-0dbb-4838-b307-b61672387d4a","Vercel","Stat row + logos as proof"],
+   gaps:["Numbers read as <b>claims with no source</b> — the benchmark attributes them to customers.","The <b>€199</b> stat directly contradicts the 'talk to us, no public price' pricing band elsewhere.","'90s' / '1×' are a little abstract."],
+   fix:["Attribute at least one stat to a pilot ('— Hotel X, 42 rooms') or reframe as <b>targets</b>.","<b>Reconcile pricing:</b> either commit to showing €199 (and drop 'talk to us') or replace the €199 stat with a non-price outcome (e.g. 'hours saved / week').","Add a logo/proof row beneath, as Vercel does."]},
+
+  {n:"08", area:"'One layer' bundle", grade:"B", pri:"later",
+   verdict:"On-message, but overlaps the features bento and stays generic.",
+   current:"Six-card grid of jobs (guest replies, morning brief, ETA chasing, ask anything, pre-arrival, daily signal).",
+   bench:["oFe1wcKe","a37dec6a-3829-46e4-b3df-a5cb16185f55","PamPam","Breadth index / feature grid"],
+   gaps:["Reads as a <b>second features list</b> right after the bento — some redundancy.","Doesn't quantify the 'replaces' story that makes 'one layer' land."],
+   fix:["Reframe explicitly as <b>'replaces the stack'</b> — e.g. 'inbox rules + spreadsheets + a chaser tool + a BI query', with the tools it retires.","Or convert to a compact <b>capability index</b> (icon + label) so it clearly differs from the bento."]},
+
+  {n:"09", area:"FAQ", grade:"A", pri:"later",
+   verdict:"Solid grouped accordion; just add SEO markup.",
+   current:"Three groups (Setup / Security & data / Billing) as a native details/summary accordion; first item open; navy +/− indicator.",
+   bench:["zYv5TCTP","59b6bc2a-4b34-404a-8093-02a664857372","HubSpot","Grouped accordion"],
+   gaps:["No <b>FAQPage schema.org</b> markup — a free SEO win the benchmark uses.","'Talk to us' pricing answer restates the price ambiguity (see #07)."],
+   fix:["Emit <b>JSON-LD FAQPage</b> structured data for these Q&As.","Align the billing answer with whatever pricing decision you make in #07/#10."]},
+
+  {n:"10", area:"Pricing band", grade:"C", pri:"now",
+   verdict:"Beta-appropriate, but sets no expectation and conflicts with the stat row.",
+   current:"A surface band, 'One flat price per property', with a 'Talk to us about pricing' button routing to /signup, and a 'first 20 hotels free' note.",
+   bench:["t0wCk7Ci","1671eb10-0dbb-4838-b307-b61672387d4a","Vercel","Clear tiers + proof"],
+   gaps:["Button says 'Talk to us' but links to <b>/signup</b>, not a booking/contact — mismatched intent.","No <b>anchor number or range</b>; buyers filter hard on price and you give them nothing.","Contradicts the visible €199 stat in #07."],
+   fix:["Decide the pricing story once: <b>show the flat per-property price</b> (recommended for a low-friction beta) or commit to 'contact'.","Point the button at a <b>real booking (Cal.com)</b> or /contact, not /signup.","If staying 'talk to us', still give a band ('from €X/property, everything included')."]},
+
+  {n:"11", area:"Final CTA band", grade:"A", pri:"later",
+   verdict:"Clean ink band — on Signal, on benchmark.",
+   current:"Full-bleed ink band, white headline, single white CTA to /signup.",
+   bench:["nbvAh3Wu","6fc28a7a-fec9-4e60-8b9f-2b6268f23f85","Patreon","Minimal question-headline band"],
+   gaps:["Single CTA only; benchmark often pairs a secondary <b>'Book a demo'</b>.","Repeats /signup — fine, but no demo path for not-ready buyers."],
+   fix:["Add a secondary ghost <b>'Book a demo'</b> beside the primary.","Keep the 28px ink treatment — it's correct."]},
+
+  {n:"12", area:"Footer", grade:"D", pri:"now",
+   verdict:"Far below benchmark — a 3-link footer makes a serious product look small.",
+   current:"One row: copyright + Sample brief / Privacy / Terms.",
+   bench:["u1wg8wgC","43b8823a-7002-4bd5-a23d-88673d35492a","Maze","Multi-column footer + newsletter + social"],
+   gaps:["No <b>column IA</b> (Product / Company / Resources / Legal), no <b>newsletter</b>, no <b>social</b>, no region/language, no status/security links.","Nowhere to route SEO or nurture — the benchmark footer is a sitemap.","Undercuts all the credibility the rest of the page builds."],
+   fix:["Build a real footer: <b>Product · Company · Resources · Legal</b> columns, a <b>newsletter</b> capture, social icons, language, and a big wordmark (Maze/Kalstore style).","Add <b>Security</b>, <b>Status</b>, and (later) <b>Docs/Blog</b> links.","Keep it flat and hairline-ruled — Signal, not a dark mega-footer."]},
+
+  {n:"13", area:"Auth (login / signup)", grade:"A", pri:"later",
+   verdict:"Just upgraded to split-screen — on benchmark.",
+   current:"Two-column: form left on white, ink brand panel right with the value prop + wordmark; collapses to the form on mobile; language switcher retained.",
+   bench:["9swWz8qE","54bce0a9-613c-4770-85e0-92c09b001e90","Productboard","Split-screen auth"],
+   gaps:["No <b>email-provider shortcut</b> on the verify step (Productboard's 'Open Gmail').","Email/password only (by design) — no SSO to show, which is fine for now."],
+   fix:["On the post-signup 'check your email' state, add <b>'Open Gmail / Outlook'</b> buttons.","Ensure the ink panel's contrast + the mobile single-column state are QA'd."]},
+
+  {n:"14", area:"Onboarding", grade:"B", pri:"soon",
+   verdict:"Now progressive and ends on a summary — good; add a brand panel and a real activation CTA.",
+   current:"Three steps (property → systems → 'you're all set' checklist) with a progress bar, in a centered card on a muted ground.",
+   bench:["n0aEiDnP","ab8c0207-edba-4a58-9b2c-9a4888840228","Apollo","Progressive setup ending in 'ready'",],
+   gaps:["Centered card only — benchmark uses a <b>split-screen brand panel</b> for continuity with auth.","The final step lists what Fonda will do but doesn't <b>drive the next action</b> (connect PMS / inbox).","'Turn on surfaces' personalization step (Apollo/Clay) is absent."],
+   fix:["Wrap onboarding in the same <b>split-screen</b> as auth for a coherent arc.","End on a <b>'Connect your PMS & inbox'</b> CTA into the dashboard checklist, not just a passive list.","Optional: add a light <b>'what matters most to you'</b> step to personalize the first brief."]},
+
+  {n:"15", area:"Responsive / mobile", grade:"C", pri:"now",
+   verdict:"Desktop is polished; mobile loses the nav and needs a QA pass.",
+   current:"Nav links hidden under sm/md with no menu; sections stack; auth/onboarding panels hide on mobile.",
+   bench:["QULu3AH6","add3a1c6-49da-4972-944f-0cc62c2d57d7","TravelPerk","Mobile hamburger + demo"],
+   gaps:["<b>No mobile menu</b> (repeat of #01) — the top nav is unusable on phones.","Stat-row and bento need a mobile spacing/così QA.","Large clamp() headlines should be checked at 360px."],
+   fix:["Ship the mobile menu.","QA every section at 360 / 390 / 768 widths; verify tap targets ≥44px on the FAQ summaries and pills."]},
+
+  {n:"16", area:"SEO · metadata · site depth", grade:"C", pri:"soon",
+   verdict:"Basics present; missing OG image, structured data, and any content IA.",
+   current:"Localized <title>/description via metadata; favicon present; three locales; single marketing page + legal + sample brief.",
+   bench:["hUS6gaqG","9f27c0cd-d796-4577-a68e-c253c571ea9d","Mews","Deep IA: Platform/Solutions/Customers/Resources"],
+   gaps:["No <b>OpenGraph/Twitter image</b> — links unfurl bare.","No <b>FAQ/Product/Organization JSON-LD</b>.","No <b>sitemap.xml / robots</b> mentioned; no /features, /solutions, /customers, /blog for SEO surface.","hreflang for en/es/ca should be verified."],
+   fix:["Add an <b>OG image</b> (Signal-styled) + Twitter card.","Add <b>JSON-LD</b> (Organization, Product, FAQPage).","Generate <b>sitemap + robots</b>; verify hreflang alternates for the three locales.","Plan a small content IA (Features detail, Customers, a Blog/Resources) — matches how Mews wins search."]},
+
+  {n:"17", area:"Accessibility & motion", grade:"B", pri:"soon",
+   verdict:"Good foundations (reduced-motion, tokens); needs a contrast/focus pass.",
+   current:"Reveal entrance respects prefers-reduced-motion; decorative SVGs are aria-hidden; native details/summary is keyboard-accessible; single accent.",
+   bench:["","","WCAG AA","Contrast + visible focus"],
+   gaps:["Muted text <b>#9C9C97 on white</b> for eyebrows is <b>below AA</b> for small text — verify/upgrade.","Focus-visible styling on custom links/summary should be confirmed.","The ink CTA band's muted white text needs a contrast check."],
+   fix:["Bump eyebrow/muted text or size to clear <b>AA (4.5:1)</b>.","Ensure a visible focus ring on all links, the FAQ summaries, and the language switcher.","Add <b>skip-to-content</b> and confirm heading order (one h1, sequential h2s)."]},
+];
+
+// scorecard
+document.getElementById("score-body").innerHTML = AREAS.map(a=>{
+  const g = a.grade[0].toLowerCase();
+  const gc = g==="a"?"g-a":g==="b"?"g-b":g==="c"?"g-c":"g-d";
+  const pc = a.pri==="now"?"p-now":a.pri==="soon"?"p-soon":"p-later";
+  const pl = a.pri==="now"?"Now":a.pri==="soon"?"Soon":"Later";
+  return `<tr>
+    <td class="mono" style="color:var(--text3)">${a.n}</td>
+    <td><a href="#a${a.n}"><b style="color:var(--text)">${a.area}</b></a></td>
+    <td><span class="grade ${gc}">${a.grade}</span></td>
+    <td style="color:var(--text2)">${a.verdict}</td>
+    <td><span class="pri ${pc}">${pl}</span></td>
+  </tr>`;
+}).join("");
+
+// area cards
+document.getElementById("areas").innerHTML = AREAS.map(a=>{
+  const g = a.grade[0].toLowerCase();
+  const gc = g==="a"?"g-a":g==="b"?"g-b":g==="c"?"g-c":"g-d";
+  const pc = a.pri==="now"?"p-now":a.pri==="soon"?"p-soon":"p-later";
+  const pl = a.pri==="now"?"Fix now":a.pri==="soon"?"Soon":"Later";
+  const bench = (a.bench && a.bench[0]) ? `
+    <div class="bench">
+      <a href="${SEC(a.bench[1])}" target="_blank" rel="noopener"><img loading="lazy" src="${IMG(a.bench[0])}" alt="${a.bench[2]} benchmark"></a>
+      <div class="cap"><span><b>Benchmark · ${a.bench[2]}</b> — ${a.bench[3]}</span><a class="lk" href="${SEC(a.bench[1])}" target="_blank" rel="noopener">Mobbin ↗</a></div>
+    </div>` : "";
+  return `<div class="area" id="a${a.n}">
+    <div class="top">
+      <span class="num">${a.n}</span>
+      <h3>${a.area}</h3>
+      <span class="badges"><span class="grade ${gc}">${a.grade}</span><span class="pri ${pc}">${pl}</span></span>
+    </div>
+    <div class="body">
+      <div class="col">
+        <h4>Now</h4><p>${a.current}</p>
+        <h4 style="margin-top:16px">What fails</h4>
+        <ul class="l bad">${a.gaps.map(x=>`<li>${x}</li>`).join("")}</ul>
+        ${bench}
+      </div>
+      <div class="col fix">
+        <h4>Change it to</h4>
+        <ul class="l">${a.fix.map(x=>`<li>${x}</li>`).join("")}</ul>
+      </div>
+    </div>
+  </div>`;
+}).join("");
+
+// sources
+const seen=new Set(), src=[];
+AREAS.forEach(a=>{ if(a.bench&&a.bench[1]){const u=SEC(a.bench[1]); if(!seen.has(u)){seen.add(u);src.push([a.bench[2]+" — "+a.area,u]);}}});
+document.getElementById("src").innerHTML = src.map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${x[0]} ↗</a>`).join("");
+</script>
+</body>
+</html>

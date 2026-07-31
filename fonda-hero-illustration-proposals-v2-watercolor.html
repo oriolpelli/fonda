@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fonda — Watercolor Hero Proposals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF;--surface:#F6F6F4;--border:#E8E7E3;--border2:#DCDBD6;
+    --text:#0A0A0A;--text2:#5B5B58;--text3:#9C9C97;
+    --accent:#1B3BB3;--accent-light:#ECEFFC;--ink:#0A0A0A;--paper:#FCFAF5;
+    --sans:"Geist",system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--maxw:1120px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+  .mono{font-family:var(--mono)}
+  a{color:var(--accent);text-decoration:none}
+  .eyebrow{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}
+  .eyebrow.sig{color:var(--accent)}
+
+  header.hero{padding:80px 0 40px;border-bottom:1px solid var(--border)}
+  header.hero h1{font-weight:600;letter-spacing:-.035em;line-height:1.0;font-size:clamp(38px,6vw,72px);margin:16px 0 0}
+  header.hero p.lead{font-size:19px;color:var(--text2);max-width:660px;margin:22px 0 0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .chip{font-family:var(--mono);font-size:12px;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:6px 13px}
+  .chip.accent{background:var(--accent-light);color:var(--accent);border-color:transparent}
+
+  .note-band{background:var(--accent-light);border-radius:16px;padding:20px 26px;margin:34px auto 0;max-width:var(--maxw)}
+  .note-band .eyebrow{color:var(--accent)}
+  .note-band p{margin:10px 0 0;color:var(--text);font-size:15px}
+  .note-band.warm{background:#FBF3E6}
+  .note-band.warm .eyebrow{color:#9A6A2a}
+
+  section.concept{padding:60px 0;border-bottom:1px solid var(--border)}
+  .head{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+  .head .n{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.1em}
+  h2.title{font-weight:600;letter-spacing:-.025em;font-size:clamp(26px,3.4vw,40px);margin:8px 0 0}
+  .subt{font-size:17px;color:var(--text2);max-width:740px;margin:12px 0 0}
+
+  .mock{margin-top:26px;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 16px 46px -24px rgba(10,10,10,.22)}
+  .mock svg{display:block;width:100%;height:auto}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:24px}
+  @media(max-width:820px){.grid2{grid-template-columns:1fr}}
+  .panel{border:1px solid var(--border);border-radius:16px;padding:22px 24px}
+  .panel h3{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin:0 0 12px;font-weight:500}
+  .panel.brief{background:var(--surface)}
+  .panel.brief h3{color:var(--accent)}
+  .kv{display:flex;gap:10px;margin:0 0 10px;font-size:14.5px}
+  .kv b{min-width:92px;color:var(--text);font-weight:600}
+  .kv span{color:var(--text2)}
+  .swatches{display:flex;gap:7px;margin-top:4px;flex-wrap:wrap}
+  .sw{width:24px;height:24px;border-radius:6px;border:1px solid rgba(0,0,0,.08)}
+  .brief code{display:block;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:13px 15px;font-family:var(--mono);font-size:12.5px;line-height:1.55;color:var(--text2);white-space:pre-wrap}
+  footer{padding:40px 0 72px;color:var(--text3);font-size:13px}
+  .rec{background:var(--ink);color:#fff;border-radius:24px;padding:44px 40px;margin:54px auto 0;max-width:var(--maxw)}
+  .rec h2{font-weight:600;letter-spacing:-.02em;font-size:clamp(24px,3vw,34px);margin:0 0 14px}
+  .rec p{color:#C9C9C6;margin:0 0 12px;max-width:72ch}
+  .rec b{color:#fff}
+</style>
+</head>
+<body>
+
+<!-- shared watercolor filters/gradients -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="wc" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.013 0.017" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="wcHard" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.03" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="soft"><feGaussianBlur stdDev="2.6"/></filter>
+    <filter id="soft2"><feGaussianBlur stdDev="5"/></filter>
+    <filter id="paper" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" result="t"/>
+      <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0"/>
+    </filter>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E7EFF4"/><stop offset="0.7" stop-color="#F2ECDD"/><stop offset="1" stop-color="#F6EFE0"/>
+    </linearGradient>
+    <linearGradient id="skyBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#CBDCEA"/><stop offset="1" stop-color="#E9EEF0"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8FB0CE"/><stop offset="1" stop-color="#5E82AA"/>
+    </linearGradient>
+    <linearGradient id="seaDeep" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7C9DC4"/><stop offset="1" stop-color="#42618A"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow sig">Fonda · hero art direction · watercolor · 5 proposals</div>
+    <h1>Painted, warm,<br>unmistakably a hotel.</h1>
+    <p class="lead">Take two: five directions in the soft watercolor / gouache style of your references — Mediterranean façades, terracotta and cream, sage foliage, gold accents. Each is shown in context with a headline, a palette, and a ready-to-paint brief.</p>
+    <div class="meta">
+      <span class="chip accent">Watercolor / gouache</span>
+      <span class="chip">Warm Mediterranean</span>
+      <span class="chip">Hero + spot-vignette system</span>
+      <span class="chip">Commission/AI briefs included</span>
+    </div>
+  </div>
+</header>
+
+<div class="note-band warm">
+  <div class="eyebrow">On the medium — please read</div>
+  <p>These SVG studies are <b>colour &amp; composition roughs</b> — they approximate the wash-and-wobble look, but a browser can't paint like a brush. Their job is to lock <b>which scene, which palette, which crop</b>. The <b>final hero should be hand-painted by a watercolor illustrator</b> (or generated with an image model) at 2× hero width — I've written a <b>ready-to-use brief/prompt under every concept</b> so you can hand it straight to an illustrator or paste it into an image tool.</p>
+</div>
+
+<div class="note-band">
+  <div class="eyebrow">How this lives with Signal</div>
+  <p>Your Pillows reference is the model: <b>one painted hero + a set of small watercolor spot-vignettes</b>, all floating on a clean near-white ground, while the rest of the UI stays flat and neutral. The illustration becomes the brand's single <b>warm layer</b> over the cool Signal system — warmth from the art, calm from the type. That's a coherent evolution, not a fight.</p>
+</div>
+
+<!-- ============ CONCEPT 1 — VILLA & PINES ============ -->
+<section class="concept">
+  <div class="wrap">
+    <div class="head"><span class="n">01</span></div>
+    <h2 class="title">La Casa — the villa &amp; the pines</h2>
+    <p class="subt">Directly in the spirit of the Pillows crest: a symmetrical boutique villa framed by two soft parasol pines, clipped hedges, a lantern-lit door. The most "this is a real, beautiful hotel" of the five — instantly warm and premium.</p>
+
+    <div class="mock">
+      <svg viewBox="0 0 760 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Watercolor villa framed by two pines behind a headline">
+        <rect width="760" height="430" fill="#FCFAF5"/>
+        <!-- nav -->
+        <text x="40" y="42" font-family="Geist, sans-serif" font-size="15" font-weight="600" fill="#0A0A0A" letter-spacing="-0.5">FONDA</text>
+        <rect x="662" y="28" width="58" height="20" rx="6" fill="#0A0A0A"/><text x="691" y="42" font-family="Geist Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">START</text>
+        <!-- soft ground wash -->
+        <ellipse cx="410" cy="392" rx="300" ry="26" fill="#EAE3D2" filter="url(#soft2)"/>
+        <!-- pines -->
+        <g filter="url(#wc)">
+          <path d="M150 380 q6 -120 2 -210" stroke="#8a6f4e" stroke-width="5" fill="none"/>
+          <path d="M636 380 q-6 -120 -2 -210" stroke="#8a6f4e" stroke-width="5" fill="none"/>
+          <g fill="#7E9463" opacity="0.92">
+            <ellipse cx="150" cy="150" rx="66" ry="58"/><ellipse cx="112" cy="180" rx="40" ry="36"/><ellipse cx="188" cy="176" rx="42" ry="38"/>
+            <ellipse cx="636" cy="150" rx="66" ry="58"/><ellipse cx="600" cy="182" rx="40" ry="36"/><ellipse cx="676" cy="176" rx="42" ry="38"/>
+          </g>
+          <g fill="#5C7348" opacity="0.55">
+            <ellipse cx="132" cy="162" rx="26" ry="24"/><ellipse cx="172" cy="176" rx="22" ry="20"/>
+            <ellipse cx="620" cy="164" rx="26" ry="24"/><ellipse cx="656" cy="176" rx="22" ry="20"/>
+          </g>
+        </g>
+        <!-- building -->
+        <g filter="url(#wcHard)">
+          <rect x="288" y="196" width="230" height="184" fill="#F3EAD8"/>
+          <rect x="288" y="196" width="230" height="184" fill="#E4D2B4" opacity="0.35" transform="translate(6,0)"/>
+          <!-- roof -->
+          <path d="M282 196 l40 -44 h164 l40 44 z" fill="#8FA0B0"/>
+          <path d="M388 152 h44 l10 -20 h-64 z" fill="#8FA0B0"/>
+          <!-- windows -->
+          <g fill="#5C6E82">
+            <rect x="312" y="214" width="20" height="46" rx="9"/><rect x="348" y="214" width="20" height="46" rx="9"/>
+            <rect x="440" y="214" width="20" height="46" rx="9"/><rect x="476" y="214" width="20" height="46" rx="9"/>
+            <rect x="312" y="286" width="20" height="46" rx="9"/><rect x="348" y="286" width="20" height="46" rx="9"/>
+            <rect x="440" y="286" width="20" height="46" rx="9"/><rect x="476" y="286" width="20" height="46" rx="9"/>
+          </g>
+          <!-- door + balcony -->
+          <rect x="386" y="300" width="36" height="80" rx="16" fill="#6E5844"/>
+          <rect x="384" y="238" width="40" height="30" rx="6" fill="none" stroke="#B98A3E" stroke-width="2"/>
+          <!-- gold cornice + gold trim -->
+          <rect x="288" y="196" width="230" height="6" fill="#B98A3E" opacity="0.8"/>
+        </g>
+        <!-- hedges -->
+        <g fill="#6f8a5a" filter="url(#wc)">
+          <ellipse cx="312" cy="374" rx="26" ry="14"/><ellipse cx="360" cy="378" rx="22" ry="12"/>
+          <ellipse cx="452" cy="378" rx="22" ry="12"/><ellipse cx="496" cy="374" rx="26" ry="14"/>
+        </g>
+        <!-- headline -->
+        <text x="40" y="118" font-family="Geist, sans-serif" font-size="42" font-weight="600" fill="#0A0A0A" letter-spacing="-1.6">The admin runs itself.</text>
+        <text x="40" y="160" font-family="Geist, sans-serif" font-size="42" font-weight="600" fill="#1B3BB3" letter-spacing="-1.6">You run the hotel.</text>
+        <!-- paper grain -->
+        <rect width="760" height="430" filter="url(#paper)" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3>Direction</h3>
+        <div class="kv"><b>Mood</b><span>Premium, symmetrical, "grand little hotel." Closest to Pillows.</span></div>
+        <div class="kv"><b>Palette</b><span>Cream &amp; gold façade, slate roof, sage pines.</span></div>
+        <div class="swatches"><span class="sw" style="background:#FCFAF5"></span><span class="sw" style="background:#F3EAD8"></span><span class="sw" style="background:#B98A3E"></span><span class="sw" style="background:#8FA0B0"></span><span class="sw" style="background:#7E9463"></span><span class="sw" style="background:#1B3BB3"></span></div>
+        <div class="kv" style="margin-top:14px"><b>Placement</b><span>Villa centered/lower; headline top-left over open paper.</span></div>
+        <div class="kv"><b>Motion</b><span>Gentle fade-up on load; a faint sway on the pine canopies.</span></div>
+      </div>
+      <div class="panel brief">
+        <h3>Commission / generation brief</h3>
+        <code>Loose, elegant watercolor illustration of a symmetrical two-storey Mediterranean boutique hotel — cream & pale-gold stucco façade, tall arched windows with soft blue-grey shutters, a slate hipped roof, a small wrought-iron balcony and a lantern-lit central door. Framed by two tall parasol pines, clipped boxwood hedges at the base. Soft washes, visible brush texture, warm neutral palette (cream, ochre, sage green, slate blue), gentle gold accents. White paper background, lots of negative space at top for a headline. Airy, refined, hand-painted. No text.</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 2 — COASTAL VILLAGE (GOUACHE) ============ -->
+<section class="concept">
+  <div class="wrap">
+    <div class="head"><span class="n">02</span></div>
+    <h2 class="title">La Cala — the coastal village</h2>
+    <p class="subt">Your second reference exactly: a loose gouache hillside of terracotta-roofed villas above a blue bay, palms in the foreground. Painterly and expressive — more "art print" than diagram. The most emotional, vacation-feeling option.</p>
+
+    <div class="mock">
+      <svg viewBox="0 0 760 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gouache coastal village over a bay behind a headline">
+        <rect width="760" height="430" fill="#FCFAF5"/>
+        <rect x="60" y="70" width="640" height="300" rx="6" fill="url(#skyBlue)"/>
+        <text x="40" y="42" font-family="Geist, sans-serif" font-size="15" font-weight="600" fill="#0A0A0A" letter-spacing="-0.5">FONDA</text>
+        <rect x="662" y="28" width="58" height="20" rx="6" fill="#0A0A0A"/><text x="691" y="42" font-family="Geist Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">START</text>
+        <!-- headland -->
+        <path d="M470 220 q120 -70 230 -20 v170 h-230 z" fill="#6E8A5E" filter="url(#wc)" opacity="0.95"/>
+        <path d="M470 230 q120 -60 230 -18" fill="none" stroke="#5C7348" stroke-width="10" filter="url(#wc)" opacity="0.5"/>
+        <!-- bay -->
+        <path d="M60 250 q220 40 640 -6 v130 h-640 z" fill="url(#sea)" filter="url(#wcHard)"/>
+        <g stroke="#EAF1F6" stroke-width="3" opacity="0.5" filter="url(#wc)">
+          <path d="M120 300 q60 -8 120 0" fill="none"/><path d="M420 320 q60 -8 120 0" fill="none"/>
+        </g>
+        <!-- village dabs -->
+        <g filter="url(#wcHard)">
+          <g fill="#F3EAD8"><rect x="486" y="238" width="26" height="24"/><rect x="516" y="246" width="30" height="26"/><rect x="552" y="236" width="26" height="26"/><rect x="584" y="248" width="30" height="24"/><rect x="618" y="240" width="26" height="26"/></g>
+          <g fill="#C67E54"><path d="M484 238 l14 -12 l14 12 z"/><path d="M514 246 l16 -12 l16 12 z"/><path d="M550 236 l14 -12 l14 12 z"/><path d="M582 248 l16 -12 l16 12 z"/><path d="M616 240 l14 -12 l14 12 z"/></g>
+        </g>
+        <!-- foreground palms -->
+        <g filter="url(#wc)">
+          <path d="M150 380 q-4 -110 6 -170" stroke="#7a6a54" stroke-width="5" fill="none"/>
+          <path d="M300 384 q6 -120 -4 -186" stroke="#7a6a54" stroke-width="5" fill="none"/>
+          <g stroke="#5C7348" stroke-width="7" fill="none" stroke-linecap="round">
+            <path d="M156 210 q-40 -18 -66 -6 M156 210 q40 -20 66 -8 M156 214 q-24 -34 -18 -60 M156 214 q26 -30 22 -56 M156 216 q4 -40 2 -58"/>
+            <path d="M296 198 q-40 -18 -66 -6 M296 198 q40 -20 66 -8 M296 202 q-24 -34 -18 -60 M296 202 q26 -30 22 -56 M296 204 q4 -40 2 -58"/>
+          </g>
+        </g>
+        <!-- shoreline path -->
+        <path d="M60 262 q220 30 640 -8" fill="none" stroke="#E3D3B4" stroke-width="6" filter="url(#wc)" opacity="0.7"/>
+        <!-- headline -->
+        <text x="40" y="132" font-family="Geist, sans-serif" font-size="40" font-weight="600" fill="#0A0A0A" letter-spacing="-1.6">Less front-desk admin.</text>
+        <text x="40" y="172" font-family="Geist, sans-serif" font-size="40" font-weight="600" fill="#1B3BB3" letter-spacing="-1.6">More hospitality.</text>
+        <rect width="760" height="430" filter="url(#paper)" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3>Direction</h3>
+        <div class="kv"><b>Mood</b><span>Expressive, sun-soaked, an art-print feel. Most emotional.</span></div>
+        <div class="kv"><b>Palette</b><span>Sky blue, sea blues, terracotta roofs, palm greens.</span></div>
+        <div class="swatches"><span class="sw" style="background:#CBDCEA"></span><span class="sw" style="background:#5E82AA"></span><span class="sw" style="background:#C67E54"></span><span class="sw" style="background:#6E8A5E"></span><span class="sw" style="background:#F3EAD8"></span></div>
+        <div class="kv" style="margin-top:14px"><b>Placement</b><span>Full painterly scene; headline top-left in the sky.</span></div>
+        <div class="kv"><b>Motion</b><span>None, or a barely-there shimmer on the water. Let it be a painting.</span></div>
+      </div>
+      <div class="panel brief">
+        <h3>Commission / generation brief</h3>
+        <code>Loose impressionist gouache painting of a Mediterranean coastal village — white and cream villas with terracotta roofs clustered on a green headland above a calm blue bay, tall palm trees in the foreground, hazy hills beyond. Visible expressive brushstrokes, palette-knife texture, cobalt and cerulean blues, olive and sage greens, warm terracotta and ochre accents. Bright, sunlit, airy. Generous open sky at top for a headline. Fine-art travel-poster feel. No text.</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 3 — POOL COURTYARD ============ -->
+<section class="concept">
+  <div class="wrap">
+    <div class="head"><span class="n">03</span></div>
+    <h2 class="title">El Pati — the pool courtyard</h2>
+    <p class="subt">Your third reference: a cream arched villa with palms and a still blue pool — the guest's arrival view. Reads as leisure and welcome; pairs beautifully with an outcome headline about calm.</p>
+
+    <div class="mock">
+      <svg viewBox="0 0 760 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Watercolor villa and pool courtyard behind a headline">
+        <rect width="760" height="430" fill="#FCFAF5"/>
+        <text x="40" y="42" font-family="Geist, sans-serif" font-size="15" font-weight="600" fill="#0A0A0A" letter-spacing="-0.5">FONDA</text>
+        <rect x="662" y="28" width="58" height="20" rx="6" fill="#0A0A0A"/><text x="691" y="42" font-family="Geist Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">START</text>
+        <!-- villa -->
+        <g filter="url(#wcHard)">
+          <rect x="250" y="150" width="330" height="150" fill="#F3EAD8"/>
+          <rect x="540" y="120" width="90" height="180" fill="#EFE4CE"/>
+          <path d="M540 120 l45 -34 l45 34 z" fill="#B5714E"/>
+          <path d="M250 150 h330 l-14 -20 h-302 z" fill="#C67E54"/>
+          <!-- arches -->
+          <g fill="#6E7C8E">
+            <path d="M286 300 v-46 a16 16 0 0 1 32 0 v46 z"/><path d="M336 300 v-46 a16 16 0 0 1 32 0 v46 z"/>
+            <path d="M386 300 v-46 a16 16 0 0 1 32 0 v46 z"/><path d="M436 300 v-46 a16 16 0 0 1 32 0 v46 z"/>
+          </g>
+          <rect x="250" y="216" width="330" height="4" fill="#B98A3E" opacity="0.7"/>
+        </g>
+        <!-- palms -->
+        <g filter="url(#wc)">
+          <path d="M330 300 q-6 -120 4 -168" stroke="#7a6a54" stroke-width="6" fill="none"/>
+          <path d="M520 300 q8 -120 -4 -172" stroke="#7a6a54" stroke-width="6" fill="none"/>
+          <g stroke="#5C7348" stroke-width="8" fill="none" stroke-linecap="round">
+            <path d="M334 136 q-44 -18 -72 -4 M334 136 q44 -20 72 -6 M334 140 q-26 -36 -20 -64 M334 140 q28 -32 24 -60"/>
+            <path d="M516 132 q-44 -18 -72 -4 M516 132 q44 -20 72 -6 M516 136 q-26 -36 -20 -64 M516 136 q28 -32 24 -60"/>
+          </g>
+        </g>
+        <!-- pool -->
+        <path d="M250 320 h330 l-40 74 h-250 z" fill="url(#sea)" filter="url(#wcHard)" opacity="0.9"/>
+        <g stroke="#EAF1F6" stroke-width="3" opacity="0.55" filter="url(#wc)"><path d="M300 356 q60 -8 120 0" fill="none"/><path d="M330 376 q50 -6 100 0" fill="none"/></g>
+        <!-- terracotta deck pattern -->
+        <path d="M250 320 h330 l-40 74 h-250 z" fill="none" stroke="#E3C9Ae" stroke-width="1.4" opacity="0.5"/>
+        <!-- headline -->
+        <text x="40" y="120" font-family="Geist, sans-serif" font-size="42" font-weight="600" fill="#0A0A0A" letter-spacing="-1.6">The admin runs.</text>
+        <text x="40" y="162" font-family="Geist, sans-serif" font-size="42" font-weight="600" fill="#1B3BB3" letter-spacing="-1.6">You host.</text>
+        <rect width="760" height="430" filter="url(#paper)" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3>Direction</h3>
+        <div class="kv"><b>Mood</b><span>Leisure, welcome, boutique-resort. The arrival feeling.</span></div>
+        <div class="kv"><b>Palette</b><span>Cream arches, terracotta roof, pool blue, palm green.</span></div>
+        <div class="swatches"><span class="sw" style="background:#F3EAD8"></span><span class="sw" style="background:#B5714E"></span><span class="sw" style="background:#5E82AA"></span><span class="sw" style="background:#5C7348"></span><span class="sw" style="background:#B98A3E"></span></div>
+        <div class="kv" style="margin-top:14px"><b>Placement</b><span>Villa + pool centered/lower; headline top-left.</span></div>
+        <div class="kv"><b>Motion</b><span>Soft ripple on the pool; everything else still.</span></div>
+      </div>
+      <div class="panel brief">
+        <h3>Commission / generation brief</h3>
+        <code>Delicate watercolor illustration of a Spanish-Mediterranean villa courtyard — cream stucco building with rounded arches, a terracotta-tile roof and a small corner tower, wrought-iron lanterns, two tall palm trees, and a still turquoise-blue swimming pool with a patterned terracotta deck in the foreground. Soft transparent washes, delicate ink linework for the arches, warm and serene. White background, open space at top-left for a headline. Elegant, boutique, hand-painted. No text.</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 4 — GARDEN TERRACE ============ -->
+<section class="concept">
+  <div class="wrap">
+    <div class="head"><span class="n">04</span></div>
+    <h2 class="title">La Terrassa — the garden terrace</h2>
+    <p class="subt">The most intimate: a shaded terrace with climbing bougainvillea, a bistro table for two, potted olives and a glimpse of sea. It carries the guest-relationship story — the thing Fonda protects while it handles the admin.</p>
+
+    <div class="mock">
+      <svg viewBox="0 0 760 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Watercolor garden terrace behind a headline">
+        <rect width="760" height="430" fill="#FCFAF5"/>
+        <text x="40" y="42" font-family="Geist, sans-serif" font-size="15" font-weight="600" fill="#0A0A0A" letter-spacing="-0.5">FONDA</text>
+        <rect x="662" y="28" width="58" height="20" rx="6" fill="#0A0A0A"/><text x="691" y="42" font-family="Geist Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">START</text>
+        <!-- sea glimpse -->
+        <rect x="360" y="150" width="360" height="70" fill="url(#sea)" opacity="0.6" filter="url(#soft)"/>
+        <!-- pergola -->
+        <g stroke="#C9B79a" stroke-width="6" filter="url(#wc)" fill="none" stroke-linecap="round">
+          <path d="M300 120 h360"/><path d="M320 120 v210 M470 120 v210 M620 120 v210"/>
+        </g>
+        <!-- bougainvillea -->
+        <g filter="url(#wc)">
+          <g fill="#5C7348" opacity="0.9"><ellipse cx="360" cy="126" rx="60" ry="24"/><ellipse cx="560" cy="126" rx="70" ry="26"/></g>
+          <g fill="#C86A86" opacity="0.85"><circle cx="340" cy="130" r="7"/><circle cx="372" cy="122" r="7"/><circle cx="402" cy="132" r="7"/><circle cx="540" cy="126" r="7"/><circle cx="576" cy="120" r="7"/><circle cx="606" cy="132" r="7"/><circle cx="512" cy="134" r="6"/></g>
+        </g>
+        <!-- potted olives -->
+        <g filter="url(#wc)">
+          <path d="M312 330 l6 -30 h30 l6 30 z" fill="#B98A3E" opacity="0.5"/><ellipse cx="333" cy="286" rx="30" ry="26" fill="#7E9463"/>
+          <path d="M612 330 l6 -30 h30 l6 30 z" fill="#B98A3E" opacity="0.5"/><ellipse cx="633" cy="286" rx="30" ry="26" fill="#7E9463"/>
+        </g>
+        <!-- bistro table + chairs -->
+        <g stroke="#5A4d3c" stroke-width="3" fill="none" filter="url(#wcHard)" stroke-linecap="round">
+          <ellipse cx="470" cy="300" rx="46" ry="12" fill="#F3EAD8"/>
+          <line x1="470" y1="300" x2="470" y2="352"/><path d="M452 352 h36"/>
+          <path d="M404 352 v-28 q18 -6 30 0 v28 M410 340 h22"/>
+          <path d="M536 352 v-28 q-18 -6 -30 0 v28 M514 340 h22"/>
+          <circle cx="470" cy="292" r="6" fill="#C86A86" stroke="none"/>
+        </g>
+        <!-- ground -->
+        <path d="M40 352 h680" stroke="#E3D3B4" stroke-width="5" filter="url(#wc)" opacity="0.7"/>
+        <!-- headline -->
+        <text x="40" y="126" font-family="Geist, sans-serif" font-size="38" font-weight="600" fill="#0A0A0A" letter-spacing="-1.5">Keep the guest.</text>
+        <text x="40" y="166" font-family="Geist, sans-serif" font-size="38" font-weight="600" fill="#1B3BB3" letter-spacing="-1.5">Lose the admin.</text>
+        <rect width="760" height="430" filter="url(#paper)" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3>Direction</h3>
+        <div class="kv"><b>Mood</b><span>Intimate, warm, human. The guest-relationship story.</span></div>
+        <div class="kv"><b>Palette</b><span>Sage &amp; olive, warm wood, a bougainvillea pop, sea hint.</span></div>
+        <div class="swatches"><span class="sw" style="background:#7E9463"></span><span class="sw" style="background:#C9B79a"></span><span class="sw" style="background:#C86A86"></span><span class="sw" style="background:#5E82AA"></span><span class="sw" style="background:#F3EAD8"></span></div>
+        <div class="kv" style="margin-top:14px"><b>Placement</b><span>Terrace fills the frame; headline top-left in the shade.</span></div>
+        <div class="kv"><b>Motion</b><span>A faint drift on the bougainvillea; otherwise still.</span></div>
+      </div>
+      <div class="panel brief">
+        <h3>Commission / generation brief</h3>
+        <code>Warm watercolor illustration of an intimate Mediterranean hotel terrace — a wooden pergola draped with pink bougainvillea, a small round bistro table set for two, wrought-iron chairs, potted olive trees in terracotta pots, dappled light, and a glimpse of blue sea in the distance. Soft washes, loose confident linework, warm sunlit palette with sage green, terracotta and a pop of magenta bougainvillea. White background, open space top-left for a headline. Cosy, boutique, hand-painted. No text.</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 5 — HARBOR / CANAL ============ -->
+<section class="concept">
+  <div class="wrap">
+    <div class="head"><span class="n">05</span></div>
+    <h2 class="title">El Port — the harbor</h2>
+    <p class="subt">The Pillows canal scene, Mediterranean-ised: calm water, a couple of wooden boats, a little chapel and a bridge under soft overhanging trees. Serene, "arrival by water" — a lovely full-bleed footer or contact-page piece as well as a hero.</p>
+
+    <div class="mock">
+      <svg viewBox="0 0 760 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Watercolor harbor scene behind a headline">
+        <rect width="760" height="430" fill="#FCFAF5"/>
+        <text x="40" y="42" font-family="Geist, sans-serif" font-size="15" font-weight="600" fill="#0A0A0A" letter-spacing="-0.5">FONDA</text>
+        <rect x="662" y="28" width="58" height="20" rx="6" fill="#0A0A0A"/><text x="691" y="42" font-family="Geist Mono, monospace" font-size="9" fill="#fff" text-anchor="middle">START</text>
+        <!-- water -->
+        <path d="M40 300 q360 44 680 0 v130 h-680 z" fill="url(#sea)" opacity="0.55" filter="url(#wcHard)"/>
+        <g stroke="#EAF1F6" stroke-width="3" opacity="0.5" filter="url(#wc)"><path d="M120 350 q80 -8 160 0" fill="none"/><path d="M440 366 q80 -8 160 0" fill="none"/></g>
+        <!-- trees overhang -->
+        <g fill="#6E8A5E" filter="url(#wc)" opacity="0.92">
+          <ellipse cx="120" cy="196" rx="80" ry="52"/><ellipse cx="70" cy="230" rx="44" ry="36"/>
+          <ellipse cx="660" cy="180" rx="90" ry="56"/><ellipse cx="710" cy="220" rx="48" ry="40"/>
+        </g>
+        <g stroke="#7a6a54" stroke-width="5" filter="url(#wc)"><path d="M120 300 v-70" fill="none"/><path d="M660 300 v-84" fill="none"/></g>
+        <!-- chapel -->
+        <g filter="url(#wcHard)">
+          <rect x="300" y="236" width="70" height="60" fill="#F3EAD8"/><path d="M300 236 l35 -30 l35 30 z" fill="#B5714E"/>
+          <rect x="328" y="262" width="14" height="34" rx="6" fill="#6E7C8E"/>
+        </g>
+        <!-- bridge -->
+        <g stroke="#B79b78" stroke-width="6" fill="none" filter="url(#wc)"><path d="M386 286 q70 -26 150 0"/><path d="M400 288 v20 M460 276 v22 M520 288 v20"/></g>
+        <!-- boats -->
+        <g filter="url(#wcHard)">
+          <path d="M330 356 q46 24 92 0 q-46 -10 -92 0 z" fill="#EDE4D2" stroke="#7a6a54" stroke-width="2"/>
+          <rect x="356" y="342" width="40" height="12" rx="4" fill="#B5714E"/>
+          <path d="M470 372 q34 18 68 0 q-34 -8 -68 0 z" fill="#8FA0B0"/>
+          <path d="M226 340 q30 16 60 0 q-30 -7 -60 0 z" fill="#C67E54"/>
+        </g>
+        <!-- headline -->
+        <text x="40" y="120" font-family="Geist, sans-serif" font-size="40" font-weight="600" fill="#0A0A0A" letter-spacing="-1.6">Your front office,</text>
+        <text x="40" y="160" font-family="Geist, sans-serif" font-size="40" font-weight="600" fill="#1B3BB3" letter-spacing="-1.6">on calm water.</text>
+        <rect width="760" height="430" filter="url(#paper)" opacity="0.5"/>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3>Direction</h3>
+        <div class="kv"><b>Mood</b><span>Serene, unhurried, "arrival." Great for footer/contact too.</span></div>
+        <div class="kv"><b>Palette</b><span>Soft water blues, warm boats, sage canopies, cream chapel.</span></div>
+        <div class="swatches"><span class="sw" style="background:#8FB0CE"></span><span class="sw" style="background:#6E8A5E"></span><span class="sw" style="background:#C67E54"></span><span class="sw" style="background:#F3EAD8"></span><span class="sw" style="background:#B5714E"></span></div>
+        <div class="kv" style="margin-top:14px"><b>Placement</b><span>Wide scenic band; headline top-left over pale paper.</span></div>
+        <div class="kv"><b>Motion</b><span>Boats bob a pixel or two; water shimmer. Nothing loud.</span></div>
+      </div>
+      <div class="panel brief">
+        <h3>Commission / generation brief</h3>
+        <code>Tranquil watercolor illustration of a small Mediterranean harbor — calm water with two or three wooden boats, a little whitewashed chapel with a terracotta roof, a low stone bridge, framed by soft green trees overhanging from both sides. Muted blues and greens, warm terracotta and ochre accents, cream buildings. Loose, serene, plenty of soft water in the foreground and open sky at top for a headline. Storybook travel feel, hand-painted. No text.</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIGNETTE SYSTEM -->
+<section class="concept">
+  <div class="wrap">
+    <div class="head"><span class="n">+</span></div>
+    <h2 class="title">The spot-vignette set</h2>
+    <p class="subt">Like Pillows' cocktail / pavilion / cheese-board vignettes: a small family of watercolor "spots" to sprinkle across the site — one per feature tile, in the footer, on empty states. This is what turns a single hero into a <em>system</em>. Rough placements below; paint them as a matched set with the hero.</p>
+    <div class="mock" style="box-shadow:none">
+      <svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Row of small watercolor vignette icons">
+        <rect width="760" height="150" fill="#FCFAF5"/>
+        <!-- key -->
+        <g filter="url(#wc)" transform="translate(70,40)"><circle cx="16" cy="20" r="14" fill="none" stroke="#B98A3E" stroke-width="5"/><path d="M28 26 l34 30 M52 48 l10 -8 M44 40 l10 -8" stroke="#B98A3E" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+        <text x="86" y="128" font-family="Geist Mono, monospace" font-size="10" fill="#9C9C97" text-anchor="middle">key</text>
+        <!-- espresso -->
+        <g filter="url(#wcHard)" transform="translate(210,44)"><path d="M0 8 h44 v14 a22 18 0 0 1 -44 0 z" fill="#F3EAD8" stroke="#7a6a54" stroke-width="2"/><path d="M44 12 q16 2 12 16 q-4 10 -14 8" fill="none" stroke="#7a6a54" stroke-width="2"/><path d="M14 0 q-3 -8 4 -12 M26 0 q-3 -8 4 -12" stroke="#C9B79a" stroke-width="2" fill="none"/></g>
+        <text x="234" y="128" font-family="Geist Mono, monospace" font-size="10" fill="#9C9C97" text-anchor="middle">coffee</text>
+        <!-- olive branch -->
+        <g filter="url(#wc)" transform="translate(340,40)"><path d="M4 44 q26 -30 56 -40" stroke="#5C7348" stroke-width="3" fill="none"/><g fill="#7E9463"><ellipse cx="20" cy="30" rx="10" ry="5" transform="rotate(-30 20 30)"/><ellipse cx="36" cy="18" rx="10" ry="5" transform="rotate(-30 36 18)"/><ellipse cx="52" cy="8" rx="10" ry="5" transform="rotate(-30 52 8)"/></g><circle cx="28" cy="26" r="4" fill="#5C7348"/></g>
+        <text x="380" y="128" font-family="Geist Mono, monospace" font-size="10" fill="#9C9C97" text-anchor="middle">olive</text>
+        <!-- parasol + lounger -->
+        <g filter="url(#wcHard)" transform="translate(470,34)"><path d="M8 44 h44 l-6 -12 h-32 z" fill="#EDE4D2" stroke="#7a6a54" stroke-width="2"/><path d="M40 32 v-26" stroke="#7a6a54" stroke-width="3"/><path d="M14 6 q26 -18 52 0 z" fill="#C86A86"/></g>
+        <text x="516" y="128" font-family="Geist Mono, monospace" font-size="10" fill="#9C9C97" text-anchor="middle">lounger</text>
+        <!-- sailboat -->
+        <g filter="url(#wc)" transform="translate(610,36)"><path d="M6 48 q30 16 60 0 q-30 -8 -60 0 z" fill="#8FB0CE"/><path d="M36 40 v-40 l22 34 z" fill="#F3EAD8" stroke="#7a6a54" stroke-width="2"/></g>
+        <text x="646" y="128" font-family="Geist Mono, monospace" font-size="10" fill="#9C9C97" text-anchor="middle">sail</text>
+        <rect width="760" height="150" filter="url(#paper)" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="panel brief" style="margin-top:18px">
+      <h3>Commission / generation brief — vignette set</h3>
+      <code>A matching set of small, loose watercolor spot illustrations on white, painted in the same warm Mediterranean palette and brush style as the hero: a brass room key, an espresso cup, an olive branch, a sun-lounger with a striped parasol, a small sailboat, a potted lemon tree, a breakfast tray. Each isolated with lots of white space, consistent line weight and wash intensity, usable as ~80–120px icons across a website. Hand-painted, delicate, cohesive family. No text.</code>
+    </div>
+  </div>
+</section>
+
+<div class="rec">
+  <h2>My recommendation</h2>
+  <p>For the <b>hero</b>, lead with <b>01 La Casa</b> (the villa &amp; pines) — it's the closest to your Pillows reference, instantly says "beautiful independent hotel," and its symmetry leaves clean space for the headline. Keep <b>02 La Cala</b> as the expressive alternate if you want the page to feel more like an art print than a product site.</p>
+  <p>But the real win is treating it as a <b>system</b>, exactly like Pillows: <b>one hero painting + the spot-vignette set</b>, all on white, with the flat Signal UI underneath. Commission the hero and ~6 vignettes from one watercolor illustrator in a single brief so the family is consistent — I've written those briefs above, ready to send or paste into an image model.</p>
+  <p>Two honest caveats: these SVGs are <b>direction roughs</b>, not the final look — real brush art will be far richer. And full-colour painting is a <b>deliberate step away from Signal's "no illustration" rule</b>, so it's a brand decision worth making on purpose (I'd frame it internally as "Signal + a warm illustrated layer"). Tell me which scene and I'll place the final asset into the hero in <span class="mono">app/[lang]/page.tsx</span> with a reduced-motion-safe fade, and adapt the layout so the art and headline share the fold cleanly.</p>
+</div>
+
+<footer>
+  <div class="wrap">Fonda · hero art direction v2 · watercolor · internal. Studies approximate the medium; commission final art from the briefs. Garden/seaside per brief; no woods.</div>
+</footer>
+</body>
+</html>

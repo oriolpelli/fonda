@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fonda — Landing Page Design Research (Mobbin)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF; --surface:#F6F6F4; --inset:#EEEDE9;
+    --border:#E8E7E3; --border2:#DCDBD6;
+    --text:#0A0A0A; --text2:#5B5B58; --text3:#9C9C97; --inv:#FFFFFF;
+    --accent:#1B3BB3; --accent-hover:#152E8C; --accent-light:#ECEFFC;
+    --ink:#0A0A0A; --ink2:#1C1C1C;
+    --sans:"Geist",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);
+       font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+  .mono{font-family:var(--mono)}
+  .eyebrow{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.14em;
+           text-transform:uppercase;color:var(--text3)}
+  .eyebrow.sig{color:var(--accent)}
+
+  /* NAV */
+  header.nav{position:sticky;top:0;z-index:50;height:60px;display:flex;align-items:center;
+    backdrop-filter:blur(14px);background:rgba(255,255,255,.82);border-bottom:1px solid var(--border)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;width:100%}
+  .brand{font-weight:600;font-size:20px;letter-spacing:-.03em}
+  .brand .dot{color:var(--accent)}
+  .navlinks{display:flex;gap:22px;align-items:center;overflow:auto}
+  .navlinks a{font-size:13.5px;color:var(--text2);white-space:nowrap}
+  .navlinks a:hover{color:var(--text)}
+  @media(max-width:900px){.navlinks{display:none}}
+
+  /* HERO */
+  .hero{padding:88px 0 64px;border-bottom:1px solid var(--border)}
+  .hero h1{font-weight:600;letter-spacing:-.035em;line-height:1.0;margin:18px 0 0;
+    font-size:clamp(40px,6.4vw,80px)}
+  .hero .lead{font-size:19px;color:var(--text2);max-width:620px;margin:22px 0 0}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+  .chip{font-family:var(--mono);font-size:12px;color:var(--text2);background:var(--surface);
+    border:1px solid var(--border);border-radius:100px;padding:6px 13px}
+  .chip.accent{background:var(--accent-light);color:var(--accent);border-color:transparent}
+
+  /* SECTION SHELL */
+  section.block{padding:76px 0;border-bottom:1px solid var(--border)}
+  .head{display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
+  .head .n{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.1em}
+  h2.sec{font-weight:600;letter-spacing:-.025em;line-height:1.05;margin:10px 0 0;
+    font-size:clamp(28px,4vw,50px)}
+  .sub{font-size:18px;color:var(--text2);max-width:720px;margin:16px 0 0}
+
+  /* GALLERY */
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+  @media(max-width:860px){.gallery{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.gallery{grid-template-columns:1fr}}
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;
+    display:flex;flex-direction:column;transition:box-shadow .18s ease,border-color .18s ease}
+  .card:hover{box-shadow:0 12px 40px rgba(10,10,10,.07);border-color:var(--border2)}
+  .card .shot{display:block;width:100%;aspect-ratio:768/480;object-fit:cover;object-position:top center;
+    background:var(--surface);border-bottom:1px solid var(--border)}
+  .card .cap{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .card .app{font-weight:600;font-size:14px}
+  .card .desc{color:var(--text2);font-size:12.5px;margin-top:2px;line-height:1.45}
+  .card .lk{font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap}
+  .card:hover .lk{color:var(--accent)}
+  .capwrap{padding:13px 15px 16px}
+  .capwrap .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+  /* PATTERNS + FONDA */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:34px}
+  @media(max-width:800px){.grid2{grid-template-columns:1fr;gap:20px}}
+  .panel{border:1px solid var(--border);border-radius:16px;padding:24px 26px;background:var(--bg)}
+  .panel h3{font-size:13px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;
+    color:var(--text3);margin:0 0 14px;font-weight:500}
+  .panel.fonda{background:var(--surface)}
+  .panel.fonda h3{color:var(--accent)}
+  ul.pat{list-style:none;margin:0;padding:0}
+  ul.pat li{position:relative;padding:0 0 0 20px;margin:0 0 11px;color:var(--text2);font-size:15px}
+  ul.pat li:last-child{margin-bottom:0}
+  ul.pat li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:2px;
+    background:var(--accent)}
+  ul.pat li b{color:var(--text);font-weight:600}
+  .panel.fonda p{margin:0;color:var(--text2);font-size:15px}
+  .panel.fonda p b{color:var(--text)}
+
+  /* PRINCIPLES */
+  .princ{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);
+    border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:34px}
+  @media(max-width:800px){.princ{grid-template-columns:1fr}}
+  .princ .cell{background:var(--bg);padding:24px 26px}
+  .princ .cell .k{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.08em}
+  .princ .cell h4{margin:8px 0 6px;font-size:18px;font-weight:600;letter-spacing:-.01em}
+  .princ .cell p{margin:0;color:var(--text2);font-size:14.5px}
+
+  /* ACTION TABLE */
+  table.act{width:100%;border-collapse:collapse;margin-top:30px;font-size:15px}
+  table.act th,table.act td{text-align:left;padding:14px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+  table.act th{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--text3);font-weight:500}
+  table.act td b{font-weight:600}
+  .pri{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:100px;white-space:nowrap}
+  .pri.hi{background:var(--accent-light);color:var(--accent)}
+  .pri.md{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
+  .pri.lo{background:var(--surface);color:var(--text3);border:1px solid var(--border)}
+
+  /* INK CTA / FOOT */
+  .inkband{background:var(--ink);color:var(--inv);border-radius:28px;margin:60px auto;max-width:var(--maxw);
+    padding:56px 40px;text-align:center}
+  .inkband h2{font-weight:600;letter-spacing:-.025em;font-size:clamp(26px,3.4vw,40px);margin:0}
+  .inkband p{color:#B9B9B6;margin:14px auto 0;max-width:560px}
+  footer{padding:40px 0 70px;color:var(--text3);font-size:13px}
+  footer a{color:var(--text2);border-bottom:1px solid var(--border2)}
+  .note{background:var(--accent-light);border:1px solid transparent;border-radius:12px;padding:14px 18px;
+    color:var(--accent);font-size:13.5px;margin-top:26px;font-family:var(--mono)}
+  .srcgrid{columns:2;column-gap:40px;margin-top:24px}
+  @media(max-width:700px){.srcgrid{columns:1}}
+  .srcgrid a{display:block;padding:7px 0;font-size:13.5px;color:var(--text2);border-bottom:1px solid var(--border);
+    break-inside:avoid}
+  .srcgrid a:hover{color:var(--accent)}
+  .srcgrid a span{font-family:var(--mono);font-size:11px;color:var(--text3);float:right}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <div class="brand">Fonda<span class="dot">.</span></div>
+    <nav class="navlinks">
+      <a href="#intro">Overview</a>
+      <a href="#principles">Principles</a>
+      <a href="#hero">Hero</a>
+      <a href="#proof">Social proof</a>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#showcase">Showcase</a>
+      <a href="#compare">Comparison</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="#cta">CTA</a>
+      <a href="#onboarding">Onboarding</a>
+      <a href="#actions">Actions</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero" id="intro">
+  <div class="wrap">
+    <div class="eyebrow sig">Design research · curated via Mobbin</div>
+    <h1>How the best<br>SaaS sites are built.</h1>
+    <p class="lead">A section-by-section teardown of top B2B, AI and vertical-SaaS landing pages — the patterns that recur, the examples worth copying, and exactly how to apply each to Fonda within the <b>Signal</b> identity.</p>
+    <div class="meta">
+      <span class="chip accent">11 sections analysed</span>
+      <span class="chip">60+ reference screens</span>
+      <span class="chip">Clay · Sana · Vercel · Linear-tier B2B</span>
+      <span class="chip">Every card links to Mobbin</span>
+    </div>
+  </div>
+</div>
+
+<!-- PRINCIPLES -->
+<section class="block" id="principles">
+  <div class="wrap">
+    <div class="head"><span class="n">00</span></div>
+    <h2 class="sec">What the top pages share</h2>
+    <p class="sub">Before the section-by-section breakdown — seven cross-cutting moves that show up on almost every high-craft B2B page we looked at. These are the rules; the sections below are the application.</p>
+    <div class="princ" id="princ-grid"></div>
+  </div>
+</section>
+
+<!-- SECTIONS RENDER HERE -->
+<div id="sections"></div>
+
+<!-- ACTIONS -->
+<section class="block" id="actions">
+  <div class="wrap">
+    <div class="head"><span class="n">12</span></div>
+    <h2 class="sec">Prioritised for Fonda</h2>
+    <p class="sub">If you apply this in order, the top three move the needle most: a type-forward hero, the “status quo vs Fonda” frame, and a four-surface bento. Everything here stays inside the Signal tokens — one navy signal, flat cards, light only.</p>
+    <table class="act" id="act-table"></table>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="inkband" id="cta-band">
+  <h2>Ready to redesign the marketing site?</h2>
+  <p>The patterns are mapped and the recommendations are Signal-native. Point me at <span class="mono">app/page.tsx</span> and I can start turning these into components.</p>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="eyebrow">Sources — every reference, linked to Mobbin</div>
+    <div class="srcgrid" id="src-list"></div>
+    <div class="note">Thumbnails stream live from Mobbin. If any fail to load, click the card — the canonical Mobbin page always works. Research curated via the Mobbin MCP, July 2026.</div>
+    <p style="margin-top:30px">Fonda · Signal design system · Internal design research. Not affiliate with any brand shown — examples are cited for study only.</p>
+  </div>
+</footer>
+
+<script>
+/* ---------- cross-cutting principles ---------- */
+const PRINCIPLES = [
+  ["01","One job per section","Each band answers a single question and offers one primary action. No section tries to do two things at once."],
+  ["02","Type carries the hero","Big grotesque headline, one-line outcome subhead, two CTAs. Ornament is optional; the sentence is not. (Clay, Sana, Browserbase.)"],
+  ["03","Show the product early","A real UI screenshot appears above the fold or right after it — framed, rounded, high-res. (Cake, Retool, ClickUp.)"],
+  ["04","Proof, stacked and repeated","Logo bar under the hero; named testimonials with a metric deeper down. Credibility is re-earned every scroll. (Ditto, Hex, Notion.)"],
+  ["05","Sell the shift, not the feature","‘Old way vs new way’ framing reframes the category before listing capabilities. (Sana, Podia.)"],
+  ["06","Concrete numbers beat adjectives","‘98% faster’, ‘$1M saved’, ‘6 hrs/week’ — outcomes with digits, attributed to a customer. (Vercel, Hex.)"],
+  ["07","Quiet, consistent rhythm","Generous padding, hairline dividers, a single accent. Restraint reads as ‘precise software’. (Linear-tier B2B across the board.)"]
+];
+
+/* ---------- section data ---------- */
+const S = [
+  {
+    id:"hero", n:"01", title:"The hero",
+    sub:"The two-CTA, type-led hero is now the default for serious B2B. A weight-600 grotesque headline in two short lines, a one-line outcome subhead, a solid primary + a ghost/‘Book a demo’ secondary, and a trust cue (logos, a rating, or an inline quote) — often with a real product visual beside or below.",
+    ex:[
+      ["36sY5GdY","5f21cc1b-5ed6-4e15-a51f-49b629c41c7a","Clay","Two-line bold headline, primary + demo, trust line — the template."],
+      ["SPRZdHJ7","6ea856b9-e8c3-479a-9cd3-05ae89be8791","Browserbase","Near-monochrome, ‘Get started’ + ‘Get a demo’. Closest to Signal."],
+      ["Rs1p5dam","9306f2a2-2b65-4f2e-bfd5-5a52790f175f","Ditto","Type-forward with a single highlight box + logo strip beneath."],
+      ["ZBaDBuBP","5c8d3951-0864-4fdd-976c-090d9adc5fee","Cake Equity","Category eyebrow + product-screenshot cluster below the fold."],
+      ["UniHMpXw","b85a68a5-4c98-44a1-8da2-6293074ea801","Front","Centered ‘outcome at scale’ headline, two CTAs, soft ground."],
+      ["IgE8Mq59","1f8332e3-2de2-470e-a564-90f4c2f93e29","Clay (Enterprise)","Pill tabs above the headline + a customer quote inside the hero."]
+    ],
+    pat:[
+      "<b>Two-line headline</b>, weight 600, tight negative tracking — the line break is the rhythm (exactly Fonda’s Display XL spec).",
+      "<b>Outcome subhead</b> of ≤2 lines that names the result, not the feature list.",
+      "<b>Two CTAs</b>: solid primary + secondary ‘Book/Get a demo’. Near-universal.",
+      "<b>A trust cue in the hero</b>: logo strip, star rating + community count, or one inline quote.",
+      "<b>Optional category eyebrow</b> (‘— For scaleups’) and a real product visual to the side/below."
+    ],
+    fonda:"Keep it Signal-pure: a two-line Geist 600 headline (e.g. <b>“Your front desk, handled. AI that runs hotel ops.”</b>), one outcome subhead in text-2, an <b>ink</b> primary ‘Start free’ + secondary ‘Book a demo’. Put a real Morning-Brief screenshot in a 16–20px rounded container with a hairline border beside it, and a quiet logo strip of pilot properties underneath. No gradient, no illustration — Browserbase is your visual reference, not Clay’s claymation."
+  },
+  {
+    id:"proof", n:"02", title:"Social proof & trust",
+    sub:"Proof runs in two layers: a logo trust-bar high on the page (‘Trusted by…’), then a deeper testimonial block. The strongest pair every quote with a recognisable logo AND a hard metric — a named person, role and company do the credibility work.",
+    ex:[
+      ["QGtJ8IGb","0c701f65-ae73-4165-9dbf-610613a2d986","Hex","Logo + one-line quote + metric per cell. The model to copy."],
+      ["bpfyXule","07426824-d84a-45a5-a53a-efd241efa233","Notion","‘See what people say’ — a wall of real, attributed tweets."],
+      ["s91ayicT","3e4f3739-4c83-4e12-8db4-f0781f33480a","Clay","Masonry of quotes with face + role, ‘Wall of love’ CTA."],
+      ["qjuYZEes","15b459ef-ab1a-4648-8f36-940ab45d4731","Sprout Social","G2 star ratings + review cards — third-party validation."],
+      ["XTel0Fzz","41ca52ed-a417-4895-9b8d-8e3e84570dd6","Passionfroot","Portrait tiles + one hero quote in an accent card."],
+      ["PYqFVWvX","1a7f4a2b-faa2-4d80-8a59-6561565093bf","Notion","‘Trusted by leading brands’ logo bar — the high-up trust layer."]
+    ],
+    pat:[
+      "<b>Two layers</b>: logo bar near the top; attributed testimonials deeper down.",
+      "<b>Name + role + company + face/logo</b> on every quote — anonymous praise is discounted.",
+      "<b>A metric per quote</b> where possible (‘2× more efficient’, ‘$1M churn saved’).",
+      "<b>Third-party badges</b> (G2, Product Hunt, star ratings) add outside credibility.",
+      "<b>Recognisable logos</b> matter more than volume — five strong beats twenty weak."
+    ],
+    fonda:"For a boutique-hotel buyer, credibility = <b>named GMs + property names + one hard number</b> (‘cut check-in chasing 6 hrs/week’, ‘40-room independent’). Use the Hex layout — property/logo + one-line quote + a navy-accented metric — in a flat white grid with hairline borders. Add a quiet pilot-property logo row under the hero. Stay light: skip the dark tweet-wall aesthetic, it fights Signal."
+  },
+  {
+    id:"how", n:"03", title:"How it works",
+    sub:"Three to four numbered steps, each a large numeral + a short verb title + one sentence. The best treat the numeral as a design element (mono, oversized) and put a single CTA under the heading. Layouts range from an equal-card row to stacked cards with product peeks.",
+    ex:[
+      ["ZmK6xpTq","28c16d19-1b1c-4c38-b06e-660c77901cbc","Clay","[1]–[4] cards, mono numerals, one ‘Get started’ CTA. Signal-ready."],
+      ["fA6oioQ7","35657c50-f894-4f9e-9a02-7ec46c414587","FLORA","01 Ideate / 02 Iterate / 03 Scale with a product peek per card."],
+      ["mUDgJikg","7b55840d-17ad-4087-938e-b2dae6ad48a5","Kalstore","‘The whole process in 4 steps’ — big stacked numbered cards."],
+      ["Lqu80oIV","193363c3-3373-49a5-a1d0-00ff01f07b4d","ClassPass","Three numbered circles — the simplest, most legible variant."],
+      ["PnWGDkLG","68d54554-65f5-4fd2-a974-c30e7c9eaffc","Escape Cafe","01/02/03 column rule — minimal, type-only, no imagery."]
+    ],
+    pat:[
+      "<b>3–4 steps</b> — never more; five reads as a manual.",
+      "<b>Oversized numerals</b>, usually monospaced, treated as the visual anchor.",
+      "<b>Verb-led step titles</b> + a single explanatory sentence each.",
+      "<b>One CTA</b> attached to the section heading, not per step.",
+      "<b>Equal-card row</b> is the safest layout; add small product peeks for depth."
+    ],
+    fonda:"This is the most Signal-native pattern in the whole study. A <b>3-step row using Geist Mono numerals</b> (Fonda already specs mono for labels): <b>‘01 Connect your PMS & inbox → 02 Fonda drafts & chases → 03 You approve in the morning brief.’</b> Flat white cards, hairline borders, navy only on the numerals or the single CTA. Copy Clay’s structure almost verbatim."
+  },
+  {
+    id:"features", n:"04", title:"Features",
+    sub:"Two dominant shapes: a bento grid of unequal tiles each holding a mini-UI, or a clean icon+title+description grid (2×2 or 3-col). Deeper feature storytelling uses alternating image/text rows. Every feature leads with a benefit, not a noun.",
+    ex:[
+      ["cRKWL7gh","73b24277-7af8-4268-ad64-e1f994fd24c1","incident.io","6-cell benefit grid, each with a tiny product crop. Clean + light."],
+      ["vANs3Flf","578c6a44-919f-4628-8573-42ba22a389d7","Windsurf","Bento of unequal tiles with live UI inside each. High density."],
+      ["eitTshxN","ca187f4d-5cf3-415f-958f-aa8205c36f6d","V7","‘From input to insight’ — bento crops that show the actual app."],
+      ["bqbE30eg","a0b1fcee-ed8b-4709-a230-d750ca54c280","Jitter","2×2 icon + benefit-title + copy. The calm, restrained version."],
+      ["JpUM3kjB","54ba196c-c979-4564-a54a-c02a23e8e8f7","Square","Alternating image/text list — good for sequential capabilities."],
+      ["oFe1wcKe","a37dec6a-3829-46e4-b3df-a5cb16185f55","PamPam","A dense feature index — icon + label, for breadth at a glance."]
+    ],
+    pat:[
+      "<b>Bento</b> (unequal tiles w/ mini-UI) for ‘look how much it does’; <b>icon grid</b> for clarity.",
+      "<b>Benefit-led titles</b> — ‘Notify the right people’, not ‘Routing engine’.",
+      "<b>One supporting visual per feature</b>: a real product crop beats an abstract icon.",
+      "<b>Alternating rows</b> when features are sequential or need more explanation.",
+      "<b>Consistent tile grammar</b>: same title size, same crop treatment, same padding."
+    ],
+    fonda:"Fonda has exactly <b>four surfaces</b> (Morning briefing · Email assistant · Check-in chasing · Hotel chat) — a natural <b>2×2 bento</b>. Give each tile a real product crop in a rounded container, a Geist-600 benefit title, one line in text-2, and a small navy square marker per Signal’s bullet spec. Use flat <span class='mono'>#F6F6F4</span> surfaces with hairline borders — skip Windsurf’s gradient fills, which break the ‘no gradients’ rule."
+  },
+  {
+    id:"showcase", n:"05", title:"Product showcase",
+    sub:"A hero-scale screenshot that proves the product is real: framed in a device or floating cluster, sometimes a dark ‘control-room’ bento of dashboards to signal depth, often annotated or with a play button for a demo video.",
+    ex:[
+      ["GRC08251","9ddbce1f-dfc3-4b3a-b004-69cfb51c4ae4","Retool","Full-width app screenshot + play button over a product video."],
+      ["sGNyDcdO","15fc1339-01c6-4a0d-9836-137a17892202","ClickUp","‘App Screenshots’ in a laptop frame — high-res, aspirational."],
+      ["EP4FTTfy","46fa7378-898e-48df-9d50-99ae1373459e","Framer","Dark bento of live dashboards — depth without a wall of text."],
+      ["oMsMrkLe","ec0cf58f-84d6-4167-b5dc-c827f157dd32","Mixpanel","Two tilted screenshots with a benefit caption each."],
+      ["o67ZpYc1","32bc59c5-ed1f-45ab-9659-65b6286d4d62","Intercom","A single framed workspace screenshot, generously spaced."]
+    ],
+    pat:[
+      "<b>One large, real screenshot</b> early — framed, rounded, high resolution.",
+      "<b>Device or browser frame</b> adds realism; a floating cluster adds range.",
+      "<b>Annotations / callouts</b> point to the one thing you want noticed.",
+      "<b>Play button</b> overlay invites a 2–4 min product demo.",
+      "<b>Dark ‘control room’ bento</b> signals power — but commits you to dark mode."
+    ],
+    fonda:"Lead with <b>one real Morning-Brief screenshot</b> in a 16–20px rounded container with a 1px border (Signal’s imagery spec), on white. Optionally a 2–3 tile bento of brief / email / chat crops. <b>Skip the dark treatment</b> — Signal is light-only; differentiate on calm clarity, not Framer’s glow. A short ‘watch the brief’ video with a play overlay would fit the ‘precise software’ voice."
+  },
+  {
+    id:"compare", n:"06", title:"Comparison",
+    sub:"Two flavours. ‘Status quo vs us’ is a two-column narrative that reframes the category (best for category creators). ‘Us vs a named competitor’ is a check/cross grid with your column visually favoured. Rows are always capability statements phrased in your favour.",
+    ex:[
+      ["4Br0FyZO","d9686bf3-3e7f-456f-9cbe-b0d9d0efb73c","Sana","‘Status quo vs Sana Learn’ — the exact frame Fonda should use."],
+      ["ltB6hKxl","1ee802d0-5989-48ac-9d21-39203f243f58","Jasper","Jasper vs ChatGPT+, your column tinted green, theirs muted."],
+      ["dA2spMTU","22732bba-1e9b-4720-aba4-2919031c7b2e","Whereby","Whereby vs Twilio — a plain, credible two-product table."],
+      ["PYqFVWvX","1a7f4a2b-faa2-4d80-8a59-6561565093bf","Notion","Inline ‘Notion vs Monday’ check grid under a trust bar."],
+      ["YUF9TllT","bf2ca592-eb9f-48e2-a790-20c6985444a1","incident.io","Deep, honest feature-by-feature table vs PagerDuty."]
+    ],
+    pat:[
+      "<b>‘Status quo vs us’</b> reframes the category before comparing anyone.",
+      "<b>Your column is visually favoured</b> — tint, border, or a check-heavy column.",
+      "<b>Rows are capability claims</b> written to land in your favour.",
+      "<b>Check / cross iconography</b> for scannability; keep it honest to stay credible.",
+      "<b>‘See full comparison’</b> link for buyers who want the exhaustive table."
+    ],
+    fonda:"Use <b>Sana’s ‘Status quo vs Fonda’</b> model — cleaner for a category creator and already your stated north star. Left: <b>‘The manual front desk’</b> (spreadsheets, midnight replies, missed arrivals). Right: <b>‘With Fonda’</b> (auto-drafted email, auto-chased check-ins, one morning brief). Hairline rows, navy emphasis on the Fonda column only. Avoid naming a specific PMS competitor early — the status-quo frame is lower-risk and more on-brand."
+  },
+  {
+    id:"pricing", n:"07", title:"Pricing",
+    sub:"Three tiers is the default (occasionally four). The recommended plan is highlighted with a badge + accent border; pricing units are stated plainly with an annual toggle. Each tier is name + who-it’s-for + price + CTA + a ‘Everything in X, plus…’ checklist, capped by a Custom/Enterprise tier.",
+    ex:[
+      ["OHlG2LtU","7e0fc745-3555-4bdf-8792-6aa8b35522ca","Plain","3 tiers, middle highlighted, ‘Everything in Launch plus…’."],
+      ["t0wCk7Ci","1671eb10-0dbb-4838-b307-b61672387d4a","Vercel","Hobby/Pro/Enterprise + a proof stat-row and logos beneath."],
+      ["ZQyXVM8t","ce2647e2-7b63-4ef9-a35e-5d676312f03d","Zendesk","4 tiers with a clear ‘Most popular’ badge on one column."],
+      ["UzxTLZpY","7a46f685-fc21-4d53-9507-f303b888f976","Front","Per-seat pricing, ‘Most popular’ scale tier, compare-all link."],
+      ["ihDjku5m","54c59322-41f7-4850-8426-73d076f881ce","Equals","Colored tier headers + a long, honest feature checklist."]
+    ],
+    pat:[
+      "<b>3 tiers</b>, middle/most-popular one highlighted (badge + accent border).",
+      "<b>Plain unit pricing</b> + an annual toggle with ‘save X%’.",
+      "<b>Tier = name + one-line audience + price + CTA + checklist</b> (‘Everything in X, plus…’).",
+      "<b>Custom / Enterprise</b> tier with ‘Contact sales’.",
+      "<b>Proof under pricing</b> — a stat row or logos to justify the numbers."
+    ],
+    fonda:"Hotels think in rooms, so <b>price by property size</b>: e.g. Boutique (≤40 rms) · Independent (40–120) · Group (custom). Three flat white cards; highlight the middle with a <b>navy hairline border + ‘Most popular’ pill</b> (badges may use 100px pills per Signal), ink CTA, annual toggle. Put one outcome stat + pilot logos beneath. Exactly one navy accent on the page — the highlighted tier."
+  },
+  {
+    id:"faq", n:"08", title:"FAQ",
+    sub:"A single-column accordion with a generous hit area, the first item often open by default, grouped by theme once it gets long. It exists to kill objections right before the final CTA.",
+    ex:[
+      ["zYv5TCTP","59b6bc2a-4b34-404a-8093-02a664857372","HubSpot","Clean light accordion, first item expanded, roomy rows."],
+      ["3vPEmz2n","aa571d9d-6c29-4306-893d-9de9db6d36b3","MasterClass","Grouped into General / Pricing / Sessions once it grows."],
+      ["rRIZkdTK","67d59fad-c6e5-43b0-814b-469bcf735e79","Mixpanel","Rounded panel accordion — one dark, high-contrast variant."]
+    ],
+    pat:[
+      "<b>Single-column accordion</b>, large clickable rows.",
+      "<b>First item open</b> by default to model the interaction.",
+      "<b>Grouped by theme</b> when there are more than ~6 questions.",
+      "<b>Objection-led questions</b>, not marketing softballs.",
+      "<b>Placed right before the final CTA</b> to clear the last doubt."
+    ],
+    fonda:"Light single-column accordion: Geist questions, text-2 answers, hairline dividers, navy only on the open item’s +/− control. Group into <b>Setup · Security & data · Billing</b>. The Security group matters — hotel buyers will ask where guest PII lives; answer it directly (tie to your RLS + PII posture). It doubles as a trust signal."
+  },
+  {
+    id:"cta", n:"09", title:"Final CTA band",
+    sub:"A full-bleed band right before the footer: a short question-headline that restates the core promise and one primary button, sometimes a secondary ‘Contact sales’. Last chance to convert the scroller.",
+    ex:[
+      ["nbvAh3Wu","6fc28a7a-fec9-4e60-8b9f-2b6268f23f85","Patreon","‘Ready to build your membership business?’ — minimal, one CTA."],
+      ["CWKIvSki","d4302d2c-e0d9-4848-8b2b-87c7d1fe056f","OpenTable","Hospitality reference — ‘Let’s do this’, Explore + Contact sales."],
+      ["ri42jSIN","5a5e734d-0b06-4545-8131-5e421c4560be","The Leap","‘Dream big. Start small.’ — bold band, single strong action."]
+    ],
+    pat:[
+      "<b>Full-bleed band</b>, visually distinct from the sections above it.",
+      "<b>Short question headline</b> that restates the promise.",
+      "<b>One primary button</b> (+ optional ‘Contact sales’).",
+      "<b>Repeats the hero’s CTA</b> — consistency, not novelty.",
+      "<b>Sits immediately before the footer</b>, after objections are handled."
+    ],
+    fonda:"An <b>ink (#0A0A0A) full-bleed band</b> — Signal specifies ink for CTA bands and footers — with a white Geist headline like <b>‘Run your front desk on autopilot.’</b>, a primary button + secondary ‘Book a demo’, radius 28px per your CTA-band token. OpenTable is the on-category reference, but drop its gradient and keep Fonda’s flat ink."
+  },
+  {
+    id:"onboarding", n:"10", title:"Onboarding (product)",
+    sub:"Post-signup activation is remarkably consistent: progressive one-question-per-screen personalization, early workspace creation, a ‘why did you sign up’ multi-select to tailor the app, email verification with provider shortcuts, and a split-screen brand panel — ending on a ‘you’re ready’ checklist with quick-start tasks and templates.",
+    ex:[
+      ["p6CI2MPN","","Apollo","Welcome screen: name + company — provisioning the workspace first."],
+      ["n0aEiDnP","","Apollo","‘How do you want to start?’ multi-select to tailor the product."],
+      ["yzHFKBMe","","Apollo","‘You’re ready to go!’ — two clear next-actions, not a blank app."],
+      ["2FYQIGko","","Productboard","Split-screen ‘Create your workspace’ (name + URL) with brand panel."],
+      ["QIIzLorg","","Clay","‘Welcome to Clay’ — role, goal, and current-tools questions."],
+      ["r3C6bhc4","","Clay","Lands in a workspace pre-seeded with starter tables + tutorials."]
+    ],
+    flows:[
+      ["ab8c0207-edba-4a58-9b2c-9a4888840228","Apollo — Account setup (8 screens)"],
+      ["54bce0a9-613c-4770-85e0-92c09b001e90","Productboard — Onboarding (18 screens)"],
+      ["2400b4a4-33a7-4fed-b865-249983fda759","Clay — Onboarding (14 screens)"],
+      ["313ec1b8-3d78-43fb-86ba-b57a2d8ef672","Amie — Creating a workspace (13 screens)"],
+      ["4a12588a-cbb2-461e-966f-6a0ac1dfb88e","Air — Creating a workspace (12 screens)"]
+    ],
+    pat:[
+      "<b>Progressive, one-question-per-screen</b> personalization: use-case, role, company size, goals.",
+      "<b>Workspace created early</b> (name + URL) — a container to fill.",
+      "<b>‘Reason for signup’ multi-select</b> tailors the first-run experience.",
+      "<b>Email verification with ‘Open Gmail/Outlook’</b> shortcuts to reduce drop-off.",
+      "<b>Split-screen</b>: form left, calm brand panel right.",
+      "<b>Ends on a checklist</b> — quick-start tasks + templates, never a blank app."
+    ],
+    fonda:"Your provisioning is server-side (hotel + first user via service role, per the README), so shape onboarding as: <b>(1) create the property</b> (name, # rooms, PMS) → <b>(2) turn on surfaces</b> (multi-select: briefing / email / check-in / chat) → <b>(3) connect inbox & PMS</b> → <b>(4) land on a ‘Your first brief’ checklist</b>. Keep it ≤5 steps, split-screen with a muted Signal panel (a product still, not clouds/illustration), and a verify-email screen with provider shortcuts."
+  }
+];
+
+/* ---------- prioritised actions ---------- */
+const ACT = [
+  ["Hero","Two-line Geist headline + outcome subhead + ink primary / demo secondary + real brief screenshot + pilot logo strip.","hi"],
+  ["Comparison","Add a ‘Status quo vs Fonda’ table (Sana model) — reframes the category before listing features.","hi"],
+  ["Features","Rebuild as a 2×2 bento of the four surfaces, each with a real product crop and a navy square marker.","hi"],
+  ["Social proof","Named-GM + property + one metric grid, light, plus a logo row under the hero.","hi"],
+  ["How it works","3-step row with Geist-Mono numerals; copy Clay’s structure.","md"],
+  ["Pricing","Price by property size, 3 tiers, middle highlighted, annual toggle, proof beneath.","md"],
+  ["FAQ","Grouped accordion incl. a Security & data group answering the guest-PII objection.","md"],
+  ["Onboarding","≤5 progressive steps ending in a ‘Your first brief’ checklist; split-screen, Signal panel.","md"],
+  ["Product showcase","One large framed Morning-Brief screenshot on white; optional light bento. No dark mode.","md"],
+  ["Final CTA","Ink full-bleed band, 28px radius, white headline, repeat the hero CTA.","lo"]
+];
+
+/* ---------- render ---------- */
+const IMG = k => `https://mobbin.com/api/mcp/short/${k}`;
+const SEC = id => `https://mobbin.com/sites/sections/${id}`;
+const FLOW = id => `https://mobbin.com/flows/${id}`;
+
+document.getElementById("princ-grid").innerHTML = PRINCIPLES.map(p=>`
+  <div class="cell"><div class="k">${p[0]}</div><h4>${p[1]}</h4><p>${p[2]}</p></div>`).join("");
+
+function card(e, kind){
+  const href = kind==="flow" ? FLOW(e[1]) : (e[1]? SEC(e[1]) : "https://mobbin.com");
+  const linkbadge = e[1] ? (kind==="flow"?"flow ↗":"Mobbin ↗") : "Mobbin ↗";
+  return `<a class="card" href="${href}" target="_blank" rel="noopener">
+    <img class="shot" loading="lazy" src="${IMG(e[0])}" alt="${e[2]} — ${e[3]}">
+    <div class="capwrap">
+      <div class="top"><span class="app">${e[2]}</span><span class="lk">${linkbadge}</span></div>
+      <div class="desc">${e[3]}</div>
+    </div></a>`;
+}
+
+document.getElementById("sections").innerHTML = S.map(s=>`
+  <section class="block" id="${s.id}">
+    <div class="wrap">
+      <div class="head"><span class="n">${s.n}</span></div>
+      <h2 class="sec">${s.title}</h2>
+      <p class="sub">${s.sub}</p>
+      <div class="gallery">${s.ex.map(e=>card(e,"section")).join("")}</div>
+      ${s.flows?`<div class="note" style="background:var(--surface);color:var(--text2);border:1px solid var(--border)">
+        Full clickable flows on Mobbin: ${s.flows.map(f=>`<a href="${FLOW(f[0])}" target="_blank" rel="noopener" style="color:var(--accent)">${f[1]}</a>`).join(" &nbsp;·&nbsp; ")}</div>`:""}
+      <div class="grid2">
+        <div class="panel"><h3>Patterns that recur</h3><ul class="pat">${s.pat.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+        <div class="panel fonda"><h3>Apply to Fonda</h3><p>${s.fonda}</p></div>
+      </div>
+    </div>
+  </section>`).join("");
+
+document.getElementById("act-table").innerHTML =
+  `<thead><tr><th style="width:150px">Section</th><th>Recommendation</th><th style="width:110px">Priority</th></tr></thead>
+   <tbody>${ACT.map(a=>`<tr><td><b>${a[0]}</b></td><td>${a[1]}</td>
+     <td><span class="pri ${a[2]}">${a[2]==="hi"?"High":a[2]==="md"?"Medium":"Later"}</span></td></tr>`).join("")}</tbody>`;
+
+/* sources list (de-duped) */
+const src=[]; const seen=new Set();
+S.forEach(s=>{ s.ex.forEach(e=>{ const u=e[1]?SEC(e[1]):null; if(u&&!seen.has(u)){seen.add(u);src.push([e[2]+" · "+s.title,u]);} });
+  if(s.flows) s.flows.forEach(f=>{const u=FLOW(f[0]); if(!seen.has(u)){seen.add(u);src.push([f[1],u]);}}); });
+document.getElementById("src-list").innerHTML = src.map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">${x[0]}<span>↗</span></a>`).join("");
+</script>
+</body>
+</html>

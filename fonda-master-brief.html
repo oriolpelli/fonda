@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Fondas — Master Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#fff;--surface:#F6F6F4;--border:#E8E7E3;--text:#0A0A0A;--text2:#5B5B58;--text3:#9C9C97;--accent:#1B3BB3;--accent-light:#ECEFFC;--ink:#0A0A0A;--sans:"Geist",system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--maxw:1120px;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+  .mono{font-family:var(--mono)}
+  a{color:var(--accent);text-decoration:none}
+  .eyebrow{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3)}
+  .eyebrow.sig{color:var(--accent)}
+  header.top{padding:76px 0 40px;border-bottom:1px solid var(--border)}
+  header.top h1{font-weight:600;letter-spacing:-.035em;line-height:1.0;font-size:clamp(38px,6vw,72px);margin:16px 0 0}
+  header.top p.lead{font-size:19px;color:var(--text2);max-width:680px;margin:22px 0 0}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+  .toc a{font-family:var(--mono);font-size:12px;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:6px 13px}
+  section.block{padding:56px 0;border-bottom:1px solid var(--border)}
+  h2.sec{font-weight:600;letter-spacing:-.025em;font-size:clamp(26px,3.4vw,42px);margin:0}
+  .sub{font-size:17px;color:var(--text2);max-width:760px;margin:14px 0 0}
+  .illo{margin-top:8px}
+  table.t{width:100%;border-collapse:collapse;margin-top:24px;font-size:14.5px}
+  table.t th,table.t td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  table.t th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);font-weight:500}
+  .grade{font-family:var(--mono);font-size:12px;padding:3px 9px;border-radius:7px}
+  .g-a{background:#E7F3EC;color:#177245}.g-b{background:var(--accent-light);color:var(--accent)}.g-c{background:#FBF1DC;color:#9A6A00}.g-d{background:#FBE7E5;color:#B23B36}.g-n{background:var(--surface);color:var(--text3)}
+  .pri{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:100px}
+  .p-now{background:#FBE7E5;color:#B23B36}.p-soon{background:#FBF1DC;color:#9A6A00}.p-later{background:var(--surface);color:var(--text3);border:1px solid var(--border)}
+  .prompt{border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:18px}
+  .prompt .ptop{display:flex;align-items:baseline;gap:12px;padding:16px 20px;background:var(--surface);border-bottom:1px solid var(--border)}
+  .prompt .pn{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.08em}
+  .prompt h3{margin:0;font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .prompt pre{margin:0;padding:20px;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:var(--text);white-space:pre-wrap;background:var(--bg)}
+  .note{background:var(--accent-light);border-radius:14px;padding:16px 20px;margin-top:22px;color:var(--accent);font-size:14.5px}
+  .note.warm{background:#FBF3E6;color:#9A6A2a}
+  .files{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:760px){.files{grid-template-columns:1fr}}
+  .file{border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+  .file .fn{font-family:var(--mono);font-size:13px;color:var(--accent)}
+  .file p{margin:6px 0 0;font-size:14px;color:var(--text2)}
+  footer{padding:40px 0 72px;color:var(--text3);font-size:13px}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow sig">Fondas · master brief · everything in one place</div>
+  <h1>Ready for Claude&nbsp;Code.</h1>
+  <p class="lead">The final La Casa hero, the vignette set, the Mobbin audit and the new positioning — consolidated, with copy-paste prompts to apply it all. The matching feedable document is FONDA_CLAUDE_CODE_BRIEF.md.</p>
+  <div class="toc">
+    <a href="#hero">1 · Hero illustration</a>
+    <a href="#vig">2 · Vignettes</a>
+    <a href="#pos">3 · Positioning &amp; copy</a>
+    <a href="#audit">4 · Audit change-list</a>
+    <a href="#prompts">5 · Claude Code prompts</a>
+    <a href="#files">6 · Files</a>
+  </div>
+</div></header>
+
+<section class="block" id="hero"><div class="wrap">
+  <h2 class="sec">1 · The hero illustration — La Casa</h2>
+  <p class="sub">The finished watercolour you developed, shown in full below (three views: Scene A is the hero, B a second surface, C the source for vignettes). It's committed to the repo at design/la-casa-hero.html and Prompt 2 turns Scene A into a component.</p>
+  <div class="note warm">These are the real, finished SVG scenes — filters and all — rendered inline. Nothing here is a screenshot.</div>
+  <div class="illo">
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#EEEDE9; font-family:"Geist",system-ui,sans-serif; color:#0A0A0A; -webkit-font-smoothing:antialiased; }
+  a { color:#1B3BB3; text-decoration:none; }
+  a:hover { color:#152E8C; }
+</style>
+</helmet>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <filter id="wc" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.011 0.015" numOctaves="2" seed="11" result="n"></feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+    </filter>
+    <filter id="wcHard" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.022 0.03" numOctaves="2" seed="4" result="n"></feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+    </filter>
+    <filter id="wcInk" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035 0.05" numOctaves="1" seed="19" result="n"></feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+    </filter>
+    <filter id="bleed" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDev="6"></feGaussianBlur></filter>
+    <filter id="bleedS" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDev="2.4"></feGaussianBlur></filter>
+    <filter id="mottle" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="6" result="t"></feTurbulence>
+      <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.9 0 0 0 -0.15" result="a"></feColorMatrix>
+      <feComposite in="SourceGraphic" in2="a" operator="in"></feComposite>
+    </filter>
+    <filter id="mottle2" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="23" result="t"></feTurbulence>
+      <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.1 0 0 0 -0.28" result="a"></feColorMatrix>
+      <feComposite in="SourceGraphic" in2="a" operator="in"></feComposite>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="2" result="t"></feTurbulence>
+      <feColorMatrix in="t" type="matrix" values="0 0 0 0 0.34  0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0.075 0"></feColorMatrix>
+    </filter>
+
+    <pattern id="balusters" width="11" height="20" patternUnits="userSpaceOnUse">
+      <path d="M4.6 0 v20" stroke="#8DA3B6" stroke-width="3.2" stroke-linecap="round"></path>
+    </pattern>
+    <pattern id="deckTile" width="34" height="34" patternUnits="userSpaceOnUse" patternTransform="rotate(0)">
+      <path d="M17 2 L32 17 L17 32 L2 17 Z" fill="none" stroke="#D9AE92" stroke-width="1.3"></path>
+      <path d="M17 11 L23 17 L17 23 L11 17 Z" fill="#D9AE92" opacity="0.35"></path>
+    </pattern>
+    <linearGradient id="poolG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BCD5E4"></stop><stop offset="0.5" stop-color="#96BAD3"></stop><stop offset="1" stop-color="#7BA2C1"></stop>
+    </linearGradient>
+    <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#93B4CF"></stop><stop offset="1" stop-color="#5A82AA"></stop>
+    </linearGradient>
+    <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#DCE8F0"></stop><stop offset="1" stop-color="#F4EFE3"></stop>
+    </linearGradient>
+
+    <linearGradient id="fadeX" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"></stop><stop offset="0.1" stop-color="#fff" stop-opacity="0.85"></stop>
+      <stop offset="0.5" stop-color="#fff" stop-opacity="1"></stop><stop offset="0.9" stop-color="#fff" stop-opacity="0.9"></stop>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
+    </linearGradient>
+    <mask id="seaMask"><rect x="0" y="250" width="900" height="240" fill="url(#fadeX)" filter="url(#wc)"></rect></mask>
+    <mask id="skyMask"><rect x="0" y="20" width="900" height="250" fill="url(#fadeX)" filter="url(#wc)"></rect></mask>
+    <clipPath id="clipDeckA"><path d="M150 401 H770 L860 568 H58 Z"></path></clipPath>
+    <clipPath id="clipWallA"><path d="M150 216 h100 v185 h-100 z M250 179 h410 v222 h-410 z M660 146 h116 v255 h-116 z"></path></clipPath>
+
+    <g id="frondL">
+      <path d="M0 1 C 40 -26 88 -34 128 -20 C 126 -14 122 -11 116 -10 C 84 -6 44 4 4 7 Z" fill="#6E8A5C"></path>
+      <path d="M0 0 C 44 -19 90 -26 130 -23" stroke="#4C6842" stroke-width="1.4" fill="none" opacity="0.5"></path>
+      <g stroke="#4C6842" stroke-width="0.9" opacity="0.32" fill="none">
+        <path d="M26 -10 l7 -10"></path><path d="M48 -17 l6 -9"></path><path d="M70 -21 l5 -8"></path><path d="M94 -23 l4 -7"></path>
+        <path d="M24 0 l4 8"></path><path d="M48 -6 l4 8"></path><path d="M72 -12 l4 7"></path><path d="M96 -17 l3 7"></path>
+      </g>
+    </g>
+    <g id="frondD">
+      <path d="M0 1 C 40 -26 88 -34 128 -20 C 126 -14 122 -11 116 -10 C 84 -6 44 4 4 7 Z" fill="#5A7749"></path>
+      <path d="M0 0 C 44 -19 90 -26 130 -23" stroke="#425B39" stroke-width="1.4" fill="none" opacity="0.5"></path>
+      <g stroke="#425B39" stroke-width="0.9" opacity="0.3" fill="none">
+        <path d="M26 -10 l7 -10"></path><path d="M48 -17 l6 -9"></path><path d="M70 -21 l5 -8"></path><path d="M94 -23 l4 -7"></path>
+        <path d="M24 0 l4 8"></path><path d="M48 -6 l4 8"></path><path d="M72 -12 l4 7"></path><path d="M96 -17 l3 7"></path>
+      </g>
+    </g>
+
+    <g id="palm">
+      <path d="M0 0 C -3 -72 -9 -152 -16 -262" stroke="#A68C6A" stroke-width="8" fill="none" stroke-linecap="round"></path>
+      <path d="M2 -4 C -1 -74 -7 -152 -14 -258" stroke="#7D6744" stroke-width="2.6" fill="none" opacity="0.4"></path>
+      <g stroke="#7D6744" stroke-width="1.1" opacity="0.35" fill="none">
+        <path d="M-4 -32 h8"></path><path d="M-5 -64 h8"></path><path d="M-7 -96 h8"></path><path d="M-9 -128 h8"></path><path d="M-11 -160 h8"></path><path d="M-13 -192 h8"></path><path d="M-14 -224 h8"></path>
+      </g>
+      <g transform="translate(-16,-262)" filter="url(#wcHard)">
+        <use href="#frondD" transform="rotate(-166) scale(0.9)"></use>
+        <use href="#frondD" transform="rotate(-142) scale(0.8)"></use>
+        <use href="#frondD" transform="rotate(-118) scale(0.72)"></use>
+        <use href="#frondD" transform="rotate(178) scale(0.78) "></use>
+        <use href="#frondL" transform="rotate(-184) scale(0.98)"></use>
+        <use href="#frondL" transform="rotate(-156) scale(0.86)"></use>
+        <use href="#frondL" transform="rotate(-131) scale(0.78)"></use>
+        <use href="#frondL" transform="rotate(-106) scale(0.74)"></use>
+        <use href="#frondL" transform="rotate(-84) scale(0.8)"></use>
+        <use href="#frondL" transform="rotate(-62) scale(0.86)"></use>
+        <use href="#frondL" transform="rotate(-40) scale(0.92)"></use>
+        <use href="#frondL" transform="rotate(-18) scale(0.98)"></use>
+        <use href="#frondD" transform="rotate(4) scale(0.9)"></use>
+        <use href="#frondD" transform="rotate(26) scale(0.8)"></use>
+        <ellipse cx="0" cy="2" rx="9" ry="6.5" fill="#7A6448"></ellipse>
+      </g>
+    </g>
+
+    <g id="cypress">
+      <path d="M0 0 C -15 -42 -14 -104 0 -136 C 14 -104 15 -42 0 0 Z" fill="#5E7A52"></path>
+      <path d="M4 -6 C -6 -44 -5 -100 2 -128 C 12 -98 13 -44 4 -6 Z" fill="#48603F" opacity="0.5"></path>
+    </g>
+
+    <g id="olivepot">
+      <path d="M-15 0 l3 -26 h24 l3 26 z" fill="#D8A277"></path>
+      <path d="M-17 -26 h34 v-5 h-34 z" fill="#C48A5E"></path>
+      <ellipse cx="0" cy="-52" rx="26" ry="22" fill="#7E9463"></ellipse>
+      <ellipse cx="-9" cy="-46" rx="13" ry="11" fill="#5C7348" opacity="0.5"></ellipse>
+      <path d="M0 -30 v-18" stroke="#75603F" stroke-width="2.4" fill="none"></path>
+    </g>
+
+    <g id="lantern" stroke="#4A4034" stroke-width="1.6" fill="none" stroke-linecap="round">
+      <path d="M0 0 h9"></path>
+      <path d="M9 0 v6"></path>
+      <path d="M4 6 h10 l-1.6 15 h-6.8 z" fill="#EFDCB0"></path>
+      <path d="M6.4 21 h5.2"></path>
+    </g>
+
+    <!-- ============ THE VILLA (shared across all three views) ============ -->
+    <g id="villa">
+      <ellipse cx="460" cy="404" rx="330" ry="15" fill="#E2D7C2" filter="url(#bleed)" opacity="0.85"></ellipse>
+      <g filter="url(#bleed)" opacity="0.55">
+        <path d="M146 212 h108 v192 h-108 z" fill="#EFE2C8"></path>
+        <path d="M244 174 h422 v230 h-422 z" fill="#EFE2C8"></path>
+        <path d="M654 141 h128 v263 h-128 z" fill="#EDE0C4"></path>
+        <path d="M232 176 l32 -34 h378 l32 34 z" fill="#D08C66"></path>
+        <path d="M638 148 l78 -54 l80 54 z" fill="#D08C66"></path>
+      </g>
+      <g filter="url(#wcHard)">
+        <path d="M150 216 h100 v185 h-100 z" fill="#F7F0E1"></path>
+        <path d="M250 179 h410 v222 h-410 z" fill="#F8F1E4"></path>
+        <path d="M660 146 h116 v255 h-116 z" fill="#F5ECDA"></path>
+        <path d="M624 179 h36 v222 h-36 z" fill="#E2D0AF" opacity="0.5"></path>
+        <path d="M746 146 h30 v255 h-30 z" fill="#E2D0AF" opacity="0.45"></path>
+        <path d="M228 216 h22 v185 h-22 z" fill="#E2D0AF" opacity="0.3"></path>
+      </g>
+      <g clip-path="url(#clipWallA)">
+        <rect x="140" y="140" width="650" height="270" fill="#CBB593" filter="url(#mottle)" opacity="0.45"></rect>
+      </g>
+      <g fill="none" stroke="#4A4034" stroke-width="1.5" opacity="0.42" filter="url(#wcInk)">
+        <path d="M150 216 h100 M150 216 v185 M250 179 v-1 M250 179 h410 M660 146 h116 M660 146 v33 M776 146 v255 M150 401 h626"></path>
+      </g>
+
+      <!-- roofs -->
+      <g filter="url(#wcHard)">
+        <path d="M236 179 l30 -31 h374 l30 31 z" fill="#C6764E"></path>
+        <path d="M236 179 h468 v-7 h-468 z" fill="#A85C3C" opacity="0.45"></path>
+        <path d="M140 216 l26 -23 h68 l26 23 z" fill="#C6764E"></path>
+        <path d="M140 216 h120 v-6 h-120 z" fill="#A85C3C" opacity="0.4"></path>
+        <path d="M642 146 l74 -49 l76 49 z" fill="#C6764E"></path>
+        <path d="M716 97 l76 49 h-76 z" fill="#A85C3C" opacity="0.32"></path>
+      </g>
+      <g stroke="#A85C3C" stroke-width="1.3" opacity="0.45" fill="none" filter="url(#wcInk)">
+        <path d="M266 148 h374"></path>
+        <path d="M300 152 l-8 24 M360 152 l-6 24 M420 152 l-4 24 M480 152 l-2 24 M540 152 l1 24 M600 152 l4 24"></path>
+        <path d="M166 193 h68"></path>
+        <path d="M680 128 l-10 17 M716 108 l0 37 M752 128 l10 17"></path>
+      </g>
+
+      <!-- cornices -->
+      <g filter="url(#wcHard)">
+        <path d="M246 288 h418 v9 h-418 z" fill="#EFE4CE"></path>
+        <path d="M656 280 h124 v9 h-124 z" fill="#EFE4CE"></path>
+        <path d="M146 304 h108 v7 h-108 z" fill="#EFE4CE"></path>
+      </g>
+
+      <!-- main arcade -->
+      <g filter="url(#wcHard)">
+        <path d="M268 401 V351 A30 30 0 0 1 328 351 V401 Z" fill="#7C8794" opacity="0.62"></path>
+        <path d="M346 401 V351 A30 30 0 0 1 406 351 V401 Z" fill="#7C8794" opacity="0.62"></path>
+        <path d="M424 401 V351 A30 30 0 0 1 484 351 V401 Z" fill="#EFE4CE"></path>
+        <path d="M502 401 V351 A30 30 0 0 1 562 351 V401 Z" fill="#7C8794" opacity="0.62"></path>
+        <path d="M580 401 V351 A30 30 0 0 1 640 351 V401 Z" fill="#7C8794" opacity="0.62"></path>
+        <path d="M436 401 V356 A18 18 0 0 1 472 356 V401 Z" fill="#7E5C40"></path>
+        <path d="M682 401 V330 A37 37 0 0 1 756 330 V401 Z" fill="#7C8794" opacity="0.55"></path>
+      </g>
+      <g fill="none" stroke="#4A4034" stroke-width="1.7" opacity="0.75" filter="url(#wcInk)">
+        <path d="M268 401 V351 A30 30 0 0 1 328 351 V401"></path>
+        <path d="M346 401 V351 A30 30 0 0 1 406 351 V401"></path>
+        <path d="M424 401 V351 A30 30 0 0 1 484 351 V401"></path>
+        <path d="M502 401 V351 A30 30 0 0 1 562 351 V401"></path>
+        <path d="M580 401 V351 A30 30 0 0 1 640 351 V401"></path>
+        <path d="M682 401 V330 A37 37 0 0 1 756 330 V401"></path>
+        <path d="M436 401 V356 A18 18 0 0 1 472 356 V401"></path>
+        <path d="M454 401 V338"></path>
+      </g>
+      <g fill="#EFE4CE" stroke="#4A4034" stroke-width="1.2" opacity="0.8" filter="url(#wcInk)">
+        <path d="M292 320 l3 -11 h6 l3 11 z"></path><path d="M370 320 l3 -11 h6 l3 11 z"></path>
+        <path d="M448 320 l3 -11 h6 l3 11 z"></path><path d="M526 320 l3 -11 h6 l3 11 z"></path>
+        <path d="M604 320 l3 -11 h6 l3 11 z"></path><path d="M711 291 l4 -12 h6 l4 12 z"></path>
+      </g>
+
+      <!-- upper windows -->
+      <g filter="url(#wcHard)">
+        <path d="M281 262 V216 A17 17 0 0 1 315 216 V262 Z" fill="#7E8FA0" opacity="0.6"></path>
+        <path d="M359 262 V216 A17 17 0 0 1 393 216 V262 Z" fill="#7E8FA0" opacity="0.6"></path>
+        <path d="M437 262 V216 A17 17 0 0 1 471 216 V262 Z" fill="#7E8FA0" opacity="0.6"></path>
+        <path d="M515 262 V216 A17 17 0 0 1 549 216 V262 Z" fill="#7E8FA0" opacity="0.6"></path>
+        <path d="M593 262 V216 A17 17 0 0 1 627 216 V262 Z" fill="#7E8FA0" opacity="0.6"></path>
+        <path d="M676 258 V212 A18 18 0 0 1 712 212 V258 Z" fill="#7C8794" opacity="0.5"></path>
+        <path d="M724 258 V212 A18 18 0 0 1 760 212 V258 Z" fill="#7C8794" opacity="0.5"></path>
+        <path d="M168 380 V322 A13 13 0 0 1 194 322 V380 Z" fill="#7E8FA0" opacity="0.6"></path>
+        <path d="M206 380 V322 A13 13 0 0 1 232 322 V380 Z" fill="#7E8FA0" opacity="0.6"></path>
+        <circle cx="200" cy="256" r="11" fill="#7E8FA0" opacity="0.55"></circle>
+      </g>
+      <g fill="none" stroke="#4A4034" stroke-width="1.6" opacity="0.8" filter="url(#wcInk)">
+        <path d="M281 262 V216 A17 17 0 0 1 315 216 V262 Z M298 262 V199 M281 230 h34"></path>
+        <path d="M359 262 V216 A17 17 0 0 1 393 216 V262 Z M376 262 V199 M359 230 h34"></path>
+        <path d="M437 262 V216 A17 17 0 0 1 471 216 V262 Z M454 262 V199 M437 230 h34"></path>
+        <path d="M515 262 V216 A17 17 0 0 1 549 216 V262 Z M532 262 V199 M515 230 h34"></path>
+        <path d="M593 262 V216 A17 17 0 0 1 627 216 V262 Z M610 262 V199 M593 230 h34"></path>
+        <path d="M676 258 V212 A18 18 0 0 1 712 212 V258 Z M724 258 V212 A18 18 0 0 1 760 212 V258 Z"></path>
+        <path d="M168 380 V322 A13 13 0 0 1 194 322 V380 Z M181 380 V309 M168 344 h26"></path>
+        <path d="M206 380 V322 A13 13 0 0 1 232 322 V380 Z M219 380 V309 M206 344 h26"></path>
+        <circle cx="200" cy="256" r="11"></circle>
+      </g>
+      <g fill="#8DA3B6" opacity="0.62" filter="url(#wcHard)">
+        <path d="M268 220 h10 v42 h-10 z"></path><path d="M318 220 h10 v42 h-10 z"></path>
+        <path d="M346 220 h10 v42 h-10 z"></path><path d="M396 220 h10 v42 h-10 z"></path>
+        <path d="M502 220 h10 v42 h-10 z"></path><path d="M552 220 h10 v42 h-10 z"></path>
+        <path d="M580 220 h10 v42 h-10 z"></path><path d="M630 220 h10 v42 h-10 z"></path>
+      </g>
+
+      <!-- balustrades -->
+      <g filter="url(#wcHard)">
+        <path d="M250 262 h410 v5 h-410 z" fill="#EFE4CE"></path>
+        <rect x="252" y="267" width="406" height="17" fill="url(#balusters)" opacity="0.85"></rect>
+        <path d="M250 284 h410 v5 h-410 z" fill="#EFE4CE"></path>
+        <path d="M660 258 h116 v5 h-116 z" fill="#EFE4CE"></path>
+        <rect x="662" y="263" width="112" height="15" fill="url(#balusters)" opacity="0.8"></rect>
+        <path d="M660 278 h116 v5 h-116 z" fill="#EFE4CE"></path>
+      </g>
+      <g fill="none" stroke="#4A4034" stroke-width="1" opacity="0.45" filter="url(#wcInk)">
+        <path d="M250 262 h410 M250 289 h410 M660 258 h116 M660 283 h116 M246 297 h418 M146 311 h108"></path>
+      </g>
+
+      <!-- lanterns, steps, planting -->
+      <use href="#lantern" transform="translate(252,326)"></use>
+      <use href="#lantern" transform="translate(648,326) scale(-1,1)"></use>
+      <use href="#lantern" transform="translate(660,330)"></use>
+      <use href="#lantern" transform="translate(152,332)"></use>
+      <g filter="url(#wcHard)">
+        <path d="M418 401 h74 l10 13 h-94 z" fill="#F1E6D1"></path>
+        <path d="M408 414 h94 l11 12 h-116 z" fill="#EADCC2"></path>
+      </g>
+      <g filter="url(#wc)">
+        <ellipse cx="196" cy="392" rx="34" ry="14" fill="#6F8A5A" opacity="0.9"></ellipse>
+        <ellipse cx="238" cy="396" rx="22" ry="10" fill="#5C7348" opacity="0.75"></ellipse>
+        <ellipse cx="726" cy="394" rx="30" ry="13" fill="#6F8A5A" opacity="0.88"></ellipse>
+      </g>
+      <use href="#olivepot" transform="translate(392,401) scale(0.72)"></use>
+      <use href="#olivepot" transform="translate(520,401) scale(0.72)"></use>
+      <g stroke="#B49A72" stroke-width="1" opacity="0.35" fill="none" filter="url(#wcInk)">
+        <path d="M290 200 v86 M370 200 v86 M540 200 v86 M620 200 v86 M700 170 v82 M170 232 v66"></path>
+      </g>
+    </g>
+
+    <!-- ============ SCENE A — La Casa & the pool ============ -->
+    <g id="sceneA">
+      <path d="M150 401 H770 L860 568 H58 Z" fill="#F4EAD8" filter="url(#wcHard)"></path>
+      <g clip-path="url(#clipDeckA)">
+        <rect x="58" y="398" width="806" height="172" fill="url(#deckTile)" opacity="0.3"></rect>
+        <rect x="58" y="398" width="806" height="172" fill="#D9AE92" filter="url(#mottle2)" opacity="0.3"></rect>
+      </g>
+      <use href="#villa"></use>
+      <path d="M232 430 H692 L744 552 H176 Z" fill="#9CBFD6" filter="url(#bleedS)" opacity="0.5"></path>
+      <g filter="url(#wcHard)">
+        <path d="M232 430 H692 L744 552 H176 Z" fill="url(#poolG)" opacity="0.9"></path>
+      </g>
+      <g filter="url(#wc)" opacity="0.32">
+        <path d="M250 452 q120 14 250 2 q100 -8 160 6 l-14 30 q-160 -14 -300 2 q-90 10 -120 -6 z" fill="#4F7CA3"></path>
+        <path d="M300 508 q140 16 300 -6 l-10 26 q-180 16 -300 4 z" fill="#4F7CA3" opacity="0.7"></path>
+      </g>
+      <g opacity="0.5">
+        <path d="M284 468 q-8 30 -14 60" stroke="#3F6A92" stroke-width="16" fill="none" filter="url(#bleedS)" opacity="0.35"></path>
+        <path d="M596 470 q10 32 18 62" stroke="#3F6A92" stroke-width="18" fill="none" filter="url(#bleedS)" opacity="0.32"></path>
+      </g>
+      <g stroke="#F1F6FA" stroke-width="4" fill="none" opacity="0.4" stroke-linecap="round" filter="url(#bleedS)">
+        <path d="M268 444 q56 -6 104 1"></path><path d="M478 448 q60 -7 110 2"></path>
+        <path d="M304 486 q70 -7 128 2"></path><path d="M506 498 q54 -6 100 2"></path>
+        <path d="M258 528 q86 -8 158 3"></path><path d="M486 534 q60 -6 108 3"></path>
+      </g>
+      <g fill="none" stroke="#5C86AC" stroke-width="2.2" opacity="0.8" filter="url(#wcInk)">
+        <path d="M232 430 H692 L744 552 H176 Z"></path>
+      </g>
+      <path d="M232 430 H692" stroke="#F6EFE0" stroke-width="4" fill="none" opacity="0.8" filter="url(#wcInk)"></path>
+      <use href="#palm" transform="translate(300,432)"></use>
+      <use href="#palm" transform="translate(618,434) scale(-1.06,1.06)"></use>
+      <g stroke="#C9B08C" stroke-width="1.6" fill="none" opacity="0.4" filter="url(#wcInk)">
+        <path d="M150 401 H770 M96 500 H820"></path>
+      </g>
+    </g>
+
+    <!-- ============ SCENE B — La Casa by the sea ============ -->
+    <g id="sceneB">
+      <g mask="url(#skyMask)" opacity="0.42">
+        <path d="M30 54 q210 -16 420 -4 q210 12 400 -6 v222 q-200 18 -404 6 q-204 -12 -416 8 z" fill="url(#skyG)" filter="url(#bleed)"></path>
+      </g>
+      <g mask="url(#seaMask)">
+        <g filter="url(#wcHard)">
+          <path d="M20 288 q220 -10 440 -5 q220 5 420 -7 v196 q-210 18 -424 6 q-214 -12 -436 8 z" fill="url(#seaG)" opacity="0.92"></path>
+        </g>
+        <g filter="url(#wc)" opacity="0.42">
+          <path d="M40 330 q200 20 430 4 q180 -14 370 4 l-6 34 q-190 -18 -370 0 q-190 20 -424 -4 z" fill="#43698F"></path>
+          <path d="M100 408 q250 22 520 -8 l-8 32 q-260 26 -512 4 z" fill="#43698F" opacity="0.7"></path>
+        </g>
+        <g stroke="#F1F6FA" stroke-width="3.6" fill="none" opacity="0.45" stroke-linecap="round" filter="url(#bleedS)">
+          <path d="M92 318 q66 -6 126 2"></path><path d="M540 310 q70 -6 134 3"></path>
+          <path d="M180 372 q80 -7 152 3"></path><path d="M600 380 q66 -6 124 3"></path>
+          <path d="M120 434 q90 -8 172 3"></path><path d="M480 442 q80 -7 150 4"></path>
+        </g>
+        <path d="M20 290 q220 -10 440 -5 q220 5 420 -7" stroke="#7E9EBB" stroke-width="2" fill="none" opacity="0.55" filter="url(#wcInk)"></path>
+      </g>
+      <ellipse cx="300" cy="150" rx="150" ry="28" fill="#FFFFFF" filter="url(#bleed)" opacity="0.6"></ellipse>
+      <ellipse cx="620" cy="112" rx="100" ry="22" fill="#FFFFFF" filter="url(#bleed)" opacity="0.5"></ellipse>
+      <!-- far headland -->
+      <g filter="url(#wc)">
+        <path d="M600 292 q80 -60 160 -46 q70 12 106 46 z" fill="#83A088" opacity="0.6"></path>
+        <path d="M660 292 q60 -34 118 -22 q40 8 70 22 z" fill="#5E7A52" opacity="0.5"></path>
+      </g>
+      <g filter="url(#wcHard)" opacity="0.85">
+        <path d="M700 268 h16 v14 h-16 z" fill="#F6EFE0"></path><path d="M698 268 l8 -8 l10 8 z" fill="#C6764E"></path>
+        <path d="M726 274 h14 v10 h-14 z" fill="#F6EFE0"></path><path d="M724 274 l7 -7 l9 7 z" fill="#C6764E"></path>
+      </g>
+      <!-- boats -->
+      <g stroke="#4A4034" stroke-width="1.5" fill="none" opacity="0.7" filter="url(#wcInk)">
+        <path d="M250 336 q14 10 30 0 z" fill="#F6EFE0"></path><path d="M264 336 v-24 l14 22 z" fill="#EDF4F8"></path>
+        <path d="M440 314 q10 8 22 0 z" fill="#F6EFE0"></path><path d="M450 314 v-18 l10 16 z" fill="#EDF4F8"></path>
+      </g>
+      <!-- the villa on its terrace -->
+      <use href="#villa" transform="translate(-34,214) scale(0.6)"></use>
+      <use href="#cypress" transform="translate(452,470) scale(1.02)"></use>
+      <use href="#cypress" transform="translate(486,474) scale(0.78)"></use>
+      <!-- terrace + infinity pool -->
+      <path d="M62 452 H524 L562 596 H16 Z" fill="#EFE2C8" filter="url(#bleed)" opacity="0.6"></path>
+      <g filter="url(#wcHard)">
+        <path d="M66 456 H520 L556 592 H24 Z" fill="#F4EAD8"></path>
+        <path d="M66 456 H520 v-9 H66 z" fill="#EADCC2"></path>
+      </g>
+      <g clip-path="url(#clipTerrB)">
+        <rect x="20" y="452" width="546" height="146" fill="#D9AE92" filter="url(#mottle2)" opacity="0.26"></rect>
+      </g>
+      <g filter="url(#wcHard)">
+        <path d="M100 492 H454 L482 570 H62 Z" fill="url(#poolG)" opacity="0.92"></path>
+      </g>
+      <g filter="url(#wc)" opacity="0.34">
+        <path d="M120 514 q150 14 310 -2 l-10 26 q-180 14 -310 0 z" fill="#4F7CA3"></path>
+      </g>
+      <g stroke="#F1F6FA" stroke-width="3.6" fill="none" opacity="0.42" stroke-linecap="round" filter="url(#bleedS)">
+        <path d="M124 504 q60 -6 118 2"></path><path d="M312 508 q52 -6 100 2"></path><path d="M104 550 q86 -8 166 3"></path>
+      </g>
+      <path d="M100 492 H454 L482 570 H62 Z" stroke="#5C86AC" stroke-width="2.2" fill="none" opacity="0.7" filter="url(#wcInk)"></path>
+      <path d="M100 492 H454" stroke="#F6EFE0" stroke-width="4" fill="none" opacity="0.85" filter="url(#wcInk)"></path>
+      <g stroke="#C9B08C" stroke-width="1.8" fill="none" opacity="0.45" filter="url(#wcInk)">
+        <path d="M66 447 H520 M24 592 H556"></path>
+      </g>
+      <g filter="url(#wc)">
+        <ellipse cx="606" cy="566" rx="96" ry="22" fill="#6F8A5A" opacity="0.32"></ellipse>
+        <ellipse cx="690" cy="536" rx="42" ry="16" fill="#5C7348" opacity="0.28"></ellipse>
+      </g>
+      <use href="#palm" transform="translate(752,586) scale(1.02)"></use>
+      <use href="#palm" transform="translate(844,568) scale(-0.82,0.82)"></use>
+    </g>
+
+    <clipPath id="clipTerrB"><path d="M66 456 H520 L556 592 H24 Z"></path></clipPath>
+    <clipPath id="clipWallC"><path d="M120 96 h560 v386 h-560 z"></path></clipPath>
+
+    <!-- ============ SCENE C — the arrival corner ============ -->
+    <g id="sceneC">
+      <ellipse cx="430" cy="492" rx="330" ry="16" fill="#E2D7C2" filter="url(#bleed)" opacity="0.85"></ellipse>
+      <g filter="url(#wcHard)">
+        <path d="M120 96 h560 v386 h-560 z" fill="#F8F1E4"></path>
+        <path d="M620 96 h60 v386 h-60 z" fill="#E2D0AF" opacity="0.45"></path>
+        <path d="M104 96 l32 -34 h528 l32 34 z" fill="#C6764E"></path>
+        <path d="M104 96 h592 v-8 h-592 z" fill="#A85C3C" opacity="0.45"></path>
+        <path d="M112 150 h576 v11 h-576 z" fill="#EFE4CE"></path>
+      </g>
+      <g clip-path="url(#clipWallC)">
+        <rect x="110" y="90" width="580" height="400" fill="#CBB593" filter="url(#mottle)" opacity="0.42"></rect>
+      </g>
+      <g stroke="#A85C3C" stroke-width="1.4" opacity="0.4" fill="none" filter="url(#wcInk)">
+        <path d="M136 62 h528"></path>
+        <path d="M200 68 l-10 24 M300 68 l-6 24 M400 68 l-2 24 M500 68 l3 24 M600 68 l8 24"></path>
+      </g>
+      <path d="M120 96 h560 v18 h-560 z" fill="#D9C8A6" filter="url(#bleedS)" opacity="0.45"></path>
+      <g stroke="#B49A72" stroke-width="1.2" opacity="0.28" fill="none" filter="url(#wcInk)">
+        <path d="M240 168 v300 M436 168 v300 M540 330 v146 M648 168 v300 M170 340 v130"></path>
+      </g>
+      <g fill="none" stroke="#4A4034" stroke-width="1.6" opacity="0.4" filter="url(#wcInk)">
+        <path d="M120 96 v386 M680 96 v386 M112 150 h576 M112 161 h576"></path>
+      </g>
+      <!-- big arched doorway -->
+      <g filter="url(#wcHard)">
+        <path d="M292 482 V332 A64 64 0 0 1 420 332 V482 Z" fill="#EFE4CE"></path>
+        <path d="M306 482 V336 A50 50 0 0 1 406 336 V482 Z" fill="#7C8794" opacity="0.5"></path>
+        <path d="M318 482 V392 A38 38 0 0 1 394 392 V482 Z" fill="#7E5C40"></path>
+      </g>
+      <g fill="none" stroke="#4A4034" stroke-width="1.9" opacity="0.78" filter="url(#wcInk)">
+        <path d="M292 482 V332 A64 64 0 0 1 420 332 V482"></path>
+        <path d="M306 482 V336 A50 50 0 0 1 406 336 V482"></path>
+        <path d="M318 482 V392 A38 38 0 0 1 394 392 V482 M356 482 V354"></path>
+        <path d="M318 424 h76 M318 452 h76"></path>
+        <path d="M320 372 q36 -16 72 0"></path>
+      </g>
+      <path d="M350 320 l4 -14 h8 l4 14 z" fill="#EFE4CE" stroke="#4A4034" stroke-width="1.2" opacity="0.85" filter="url(#wcInk)"></path>
+      <!-- arched windows right -->
+      <g filter="url(#wcHard)">
+        <path d="M470 300 V222 A26 26 0 0 1 522 222 V300 Z" fill="#7E8FA0" opacity="0.6"></path>
+        <path d="M556 300 V222 A26 26 0 0 1 608 222 V300 Z" fill="#7E8FA0" opacity="0.6"></path>
+        <path d="M180 300 V222 A26 26 0 0 1 232 222 V300 Z" fill="#7E8FA0" opacity="0.6"></path>
+      </g>
+      <g fill="none" stroke="#4A4034" stroke-width="1.7" opacity="0.78" filter="url(#wcInk)">
+        <path d="M470 300 V222 A26 26 0 0 1 522 222 V300 Z M496 300 V196 M470 246 h52 M470 274 h52"></path>
+        <path d="M556 300 V222 A26 26 0 0 1 608 222 V300 Z M582 300 V196 M556 246 h52 M556 274 h52"></path>
+        <path d="M180 300 V222 A26 26 0 0 1 232 222 V300 Z M206 300 V196 M180 246 h52 M180 274 h52"></path>
+      </g>
+      <g fill="#8DA3B6" opacity="0.6" filter="url(#wcHard)">
+        <path d="M452 226 h14 v74 h-14 z"></path><path d="M526 226 h14 v74 h-14 z"></path>
+        <path d="M538 226 h14 v74 h-14 z"></path><path d="M612 226 h14 v74 h-14 z"></path>
+        <path d="M162 226 h14 v74 h-14 z"></path><path d="M236 226 h14 v74 h-14 z"></path>
+      </g>
+      <!-- iron balconies under the windows -->
+      <g fill="none" stroke="#4A4034" stroke-width="1.5" opacity="0.7" filter="url(#wcInk)">
+        <path d="M462 300 h68 M462 300 v22 M530 300 v22 M462 322 h68 M474 302 v18 M486 302 v18 M498 302 v18 M510 302 v18 M520 302 v18"></path>
+        <path d="M548 300 h68 M548 300 v22 M616 300 v22 M548 322 h68 M560 302 v18 M572 302 v18 M584 302 v18 M596 302 v18 M606 302 v18"></path>
+      </g>
+      <!-- awning over the door -->
+      <g filter="url(#wcHard)">
+        <path d="M266 258 h180 l14 34 h-208 z" fill="#F1E6D1"></path>
+        <path d="M266 258 h180 l4 10 h-188 z" fill="#C6764E" opacity="0.35"></path>
+      </g>
+      <g fill="none" stroke="#4A4034" stroke-width="1.4" opacity="0.6" filter="url(#wcInk)">
+        <path d="M266 258 h180 l14 34 h-208 z M290 258 l-8 34 M320 258 l-6 34 M350 258 l-4 34 M380 258 l-1 34 M410 258 l2 34 M436 258 l5 34"></path>
+      </g>
+      <use href="#lantern" transform="translate(252,340) scale(1.5)"></use>
+      <use href="#lantern" transform="translate(462,340) scale(-1.5,1.5)"></use>
+      <!-- bougainvillea cascading from the left -->
+      <g filter="url(#wc)">
+        <g stroke="#6B5B44" stroke-width="1.8" fill="none" opacity="0.55">
+          <path d="M118 470 C 130 380 100 300 122 224 C 138 170 118 122 148 84"></path>
+          <path d="M126 380 C 168 340 192 300 224 274"></path>
+          <path d="M132 240 C 176 210 216 196 262 190"></path>
+          <path d="M140 140 C 190 122 250 112 312 108"></path>
+        </g>
+        <g fill="#5C7348" opacity="0.82">
+          <ellipse cx="126" cy="120" rx="62" ry="38"></ellipse><ellipse cx="96" cy="186" rx="48" ry="42"></ellipse>
+          <ellipse cx="120" cy="252" rx="40" ry="38"></ellipse><ellipse cx="98" cy="318" rx="34" ry="34"></ellipse>
+          <ellipse cx="126" cy="376" rx="28" ry="28"></ellipse>
+          <ellipse cx="196" cy="106" rx="42" ry="24"></ellipse><ellipse cx="276" cy="100" rx="36" ry="20"></ellipse>
+          <ellipse cx="212" cy="266" rx="26" ry="20"></ellipse><ellipse cx="252" cy="188" rx="24" ry="18"></ellipse>
+        </g>
+        <g fill="#7E9463" opacity="0.55">
+          <ellipse cx="150" cy="140" rx="30" ry="20"></ellipse><ellipse cx="80" cy="222" rx="26" ry="22"></ellipse><ellipse cx="132" cy="292" rx="22" ry="20"></ellipse>
+          <ellipse cx="236" cy="98" rx="28" ry="15"></ellipse><ellipse cx="188" cy="252" rx="20" ry="14"></ellipse>
+        </g>
+        <g fill="#C46A82" opacity="0.8">
+          <circle cx="164" cy="112" r="8"></circle><circle cx="132" cy="88" r="7"></circle><circle cx="98" cy="146" r="7"></circle>
+          <circle cx="146" cy="196" r="8"></circle><circle cx="70" cy="200" r="6"></circle><circle cx="112" cy="240" r="7"></circle>
+          <circle cx="146" cy="266" r="6"></circle><circle cx="84" cy="300" r="7"></circle><circle cx="140" cy="340" r="6"></circle>
+          <circle cx="108" cy="366" r="7"></circle><circle cx="152" cy="396" r="6"></circle>
+          <circle cx="200" cy="90" r="7"></circle><circle cx="252" cy="112" r="6"></circle><circle cx="292" cy="94" r="7"></circle>
+          <circle cx="222" cy="276" r="6"></circle><circle cx="262" cy="180" r="6"></circle><circle cx="176" cy="258" r="5"></circle>
+        </g>
+      </g>
+      <!-- steps + pots -->
+      <g filter="url(#wcHard)">
+        <path d="M282 482 h148 l14 16 h-176 z" fill="#F1E6D1"></path>
+        <path d="M268 498 h176 l16 16 h-208 z" fill="#EADCC2"></path>
+      </g>
+      <use href="#olivepot" transform="translate(246,486) scale(1.05)"></use>
+      <use href="#olivepot" transform="translate(478,488) scale(0.95)"></use>
+      <!-- ground + pool sliver bottom right -->
+      <path d="M600 540 H880 L920 604 H556 Z" fill="#9CBFD6" filter="url(#bleedS)" opacity="0.45"></path>
+      <g filter="url(#wcHard)">
+        <path d="M60 514 H800 L860 604 H20 Z" fill="#F4EAD8"></path>
+        <path d="M600 540 H880 L920 604 H556 Z" fill="url(#poolG)" opacity="0.9"></path>
+      </g>
+      <g stroke="#F1F6FA" stroke-width="3.6" fill="none" opacity="0.42" stroke-linecap="round" filter="url(#bleedS)">
+        <path d="M630 560 q70 -6 130 3"></path><path d="M666 588 q60 -6 112 3"></path>
+      </g>
+      <path d="M600 540 H880" stroke="#F6EFE0" stroke-width="4" fill="none" opacity="0.8" filter="url(#wcInk)"></path>
+      <path d="M600 540 H880 L920 604 H556 Z" stroke="#5C86AC" stroke-width="2.2" fill="none" opacity="0.7" filter="url(#wcInk)"></path>
+      <use href="#palm" transform="translate(760,536) scale(0.92)"></use>
+      <g stroke="#C9B08C" stroke-width="1.6" fill="none" opacity="0.4" filter="url(#wcInk)">
+        <path d="M60 514 H800"></path>
+      </g>
+    </g>
+  </defs>
+</svg>
+
+<section style="padding:56px 48px 96px; display:flex; flex-direction:column; gap:40px">
+
+  <div style="max-width:820px; display:flex; flex-direction:column; gap:18px">
+    <div style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:#1B3BB3">Fonda · hero art · turn 1 · La Casa developed</div>
+    <h1 style="margin:0; font-size:56px; font-weight:600; letter-spacing:-0.035em; line-height:1.0; color:#0A0A0A">La Casa, three views.</h1>
+    <p style="margin:0; font-size:19px; line-height:1.6; color:#5B5B58; max-width:70ch; text-wrap:pretty">One hotel — the same cream façade, terracotta roof, arcaded loggia and corner tower — drawn three ways. Water is in all three, as you asked: a still pool, an infinity edge above the sea, and a sliver of blue at the arrival corner. Detail sits in the architecture (arches, balustrades, lanterns, shutters); everything else stays a loose wash so the illustration supports the headline instead of competing with it.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:4px">
+      <span style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; color:#1B3BB3; background:#ECEFFC; border-radius:100px; padding:6px 13px">Watercolour + ink line</span>
+      <span style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; color:#5B5B58; background:#F6F6F4; border:1px solid #E8E7E3; border-radius:100px; padding:6px 13px">Same building, three crops</span>
+      <span style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; color:#5B5B58; background:#F6F6F4; border:1px solid #E8E7E3; border-radius:100px; padding:6px 13px">Shown in the real hero</span>
+      <span style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; color:#5B5B58; background:#F6F6F4; border:1px solid #E8E7E3; border-radius:100px; padding:6px 13px">Paint brief per view</span>
+    </div>
+    <div style="background:#FBF3E6; border-radius:16px; padding:18px 24px; margin-top:10px">
+      <div style="font-family:'Geist Mono',ui-monospace,monospace; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:#9A6A2A">On the medium</div>
+      <p style="margin:9px 0 0; font-size:15px; line-height:1.6; color:#0A0A0A; text-wrap:pretty">These are drawn in the browser, so the washes are approximations of a brush — they lock the <b>scene, palette and crop</b>. Each view ships with a paint brief you can hand to an illustrator or paste into an image tool for the final 2×-width artwork.</p>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:36px; align-items:flex-start">
+
+    <!-- ---------------- 1a ---------------- -->
+    <div id="1a" style="width:1000px; display:flex; flex-direction:column; gap:16px">
+      <div style="display:flex; align-items:baseline; gap:12px">
+        <span style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; font-weight:500; letter-spacing:0.1em; color:#FFFFFF; background:#0A0A0A; border-radius:100px; padding:4px 11px">1a</span>
+        <h2 style="margin:0; font-size:30px; font-weight:600; letter-spacing:-0.025em; color:#0A0A0A">La Piscina — the still pool</h2>
+      </div>
+      <p style="margin:0; font-size:16px; line-height:1.6; color:#5B5B58; max-width:74ch; text-wrap:pretty">Your favourite reference, developed: the full symmetrical façade, five-arch loggia with a lantern-lit centre door, first-floor balustrade, and a corner tower — reflected in a quiet pool with a patterned terracotta deck. The most "this is a real, beautiful hotel" of the three.</p>
+      <div style="background:#FCFAF5; border:1px solid #E8E7E3; border-radius:20px; padding:8px">
+        <svg viewBox="0 0 900 600" style="display:block;width:100%;height:auto" role="img" aria-label="Watercolour illustration of a Mediterranean boutique hotel reflected in a still pool between two palms">
+          <use href="#sceneA"></use>
+          <rect x="0" y="0" width="900" height="600" filter="url(#grain)" opacity="{{ grainOpacity }}"></rect>
+        </svg>
+      </div>
+      <sc-if value="{{ showHeroMocks }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#FFFFFF; border:1px solid #E8E7E3; border-radius:20px; overflow:hidden; box-shadow:0 16px 46px -26px rgba(10,10,10,0.22)">
+          <div style="height:60px; border-bottom:1px solid #E8E7E3; display:flex; align-items:center; justify-content:space-between; padding:0 28px">
+            <span style="font-size:19px; font-weight:600; letter-spacing:-0.03em; color:#0A0A0A">FONDAS</span>
+            <div style="display:flex; align-items:center; gap:20px">
+              <span style="font-size:13px; color:#5B5B58">Features</span>
+              <span style="font-size:13px; color:#5B5B58">FAQ</span>
+              <span style="font-size:13px; color:#5B5B58">Sign in</span>
+              <span style="display:inline-flex; align-items:center; height:36px; padding:0 16px; font-size:13px; font-weight:500; letter-spacing:-0.01em; color:#FFFFFF; background:#0A0A0A; border-radius:8px">Get early access</span>
+            </div>
+          </div>
+          <div style="padding:52px 40px 0; display:flex; flex-direction:column; align-items:center; gap:0">
+            <div style="display:inline-flex; align-items:center; gap:8px; font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:#9C9C97">
+              <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden="true"><circle cx="3" cy="3" r="3" fill="#1B3BB3"></circle></svg>
+              Now onboarding the first 20 hotels
+            </div>
+            <h3 style="margin:22px 0 0; font-size:60px; font-weight:600; letter-spacing:-0.035em; line-height:1.0; text-align:center; color:#0A0A0A">Your inbox, answered.<br>Your morning, ready.</h3>
+            <p style="margin:22px 0 0; max-width:44ch; font-size:17px; line-height:1.6; text-align:center; color:#5B5B58; text-wrap:pretty">Fondas runs your hotel's front-office admin — replies drafted in your voice, the morning brief before the first coffee, arrival times that chase themselves.</p>
+            <div style="display:flex; gap:12px; margin-top:26px">
+              <span style="display:inline-flex; align-items:center; height:48px; padding:0 32px; font-size:15px; font-weight:500; letter-spacing:-0.01em; color:#FFFFFF; background:#0A0A0A; border-radius:12px">Get early access</span>
+              <span style="display:inline-flex; align-items:center; height:48px; padding:0 32px; font-size:15px; font-weight:500; letter-spacing:-0.01em; color:#0A0A0A; border:1px solid #DCDBD6; border-radius:12px">See how it works →</span>
+            </div>
+            <svg viewBox="70 90 760 500" style="display:block; width:100%; max-width:800px; height:auto; margin-top:8px" role="img" aria-label="Hero illustration in place beneath the headline">
+              <use href="#sceneA"></use>
+            </svg>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showBriefs }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+          <div style="border:1px solid #E8E7E3; border-radius:16px; padding:20px 22px">
+            <div style="font-family:'Geist Mono',ui-monospace,monospace; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:#9C9C97; margin-bottom:12px">Direction</div>
+            <div style="display:flex; flex-direction:column; gap:9px; font-size:14.5px; line-height:1.5">
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Use</b><span style="color:#5B5B58">Primary hero, centred under the headline.</span></div>
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Mood</b><span style="color:#5B5B58">Calm, symmetrical, arrival at midday.</span></div>
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Detail</b><span style="color:#5B5B58">Architecture crisp; water and deck loose.</span></div>
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Motion</b><span style="color:#5B5B58">Fade-up on load. Nothing else moves.</span></div>
+            </div>
+            <div style="display:flex; gap:7px; margin-top:16px; flex-wrap:wrap">
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#FCFAF5"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#F8F1E4"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#C6764E"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#8DA3B6"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#6E8A5C"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#7FA8C8"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#1B3BB3"></span>
+            </div>
+          </div>
+          <div style="border:1px solid #E8E7E3; border-radius:16px; padding:20px 22px; background:#F6F6F4">
+            <div style="font-family:'Geist Mono',ui-monospace,monospace; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:#1B3BB3; margin-bottom:12px">Paint brief</div>
+            <code style="display:block; background:#FFFFFF; border:1px solid #E8E7E3; border-radius:10px; padding:13px 15px; font-family:'Geist Mono',ui-monospace,monospace; font-size:12.5px; line-height:1.55; color:#5B5B58; white-space:pre-wrap">Delicate watercolour and fine ink illustration of a two-storey Mediterranean boutique hotel, seen straight on. Cream stucco façade; ground-floor loggia of five round arches with a warm wooden door at the centre and stone steps; first floor of five tall arched windows with pale blue-grey shutters and a continuous blue-grey stone balustrade; terracotta pantile roof; a taller corner tower on the right with a pyramid tile roof and two arched openings; wrought-iron wall lanterns; clipped shrubs and two potted olives. In front, a still rectangular swimming pool in soft turquoise-blue with pale reflections, on a patterned terracotta diamond-tile deck. Two tall palm trees rise in front of the façade. Transparent granulating washes, visible brush edges, warm neutral palette — cream, ochre, terracotta, sage green, slate blue. Plain white paper background, nothing behind the building, generous negative space at the top. Elegant, airy, hand-painted. No text.</code>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- ---------------- 1b ---------------- -->
+    <div id="1b" style="width:1000px; display:flex; flex-direction:column; gap:16px">
+      <div style="display:flex; align-items:baseline; gap:12px">
+        <span style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; font-weight:500; letter-spacing:0.1em; color:#FFFFFF; background:#0A0A0A; border-radius:100px; padding:4px 11px">1b</span>
+        <h2 style="margin:0; font-size:30px; font-weight:600; letter-spacing:-0.025em; color:#0A0A0A">Vora Mar — the same house, by the sea</h2>
+      </div>
+      <p style="margin:0; font-size:16px; line-height:1.6; color:#5B5B58; max-width:74ch; text-wrap:pretty">The same building pulled back onto a headland: an infinity pool in the foreground, open blue bay behind, two cypresses, a far village on the point, palms at the right edge. Wider and calmer — the most "boutique hotel somewhere you want to be", and the most negative space for a headline.</p>
+      <div style="background:#FCFAF5; border:1px solid #E8E7E3; border-radius:20px; padding:8px">
+        <svg viewBox="20 30 860 570" style="display:block;width:100%;height:auto" role="img" aria-label="Watercolour illustration of the hotel on a headland above a blue bay with an infinity pool">
+          <use href="#sceneB"></use>
+          <rect x="20" y="30" width="860" height="570" filter="url(#grain)" opacity="{{ grainOpacity }}"></rect>
+        </svg>
+      </div>
+      <sc-if value="{{ showHeroMocks }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#FFFFFF; border:1px solid #E8E7E3; border-radius:20px; overflow:hidden; box-shadow:0 16px 46px -26px rgba(10,10,10,0.22)">
+          <div style="height:60px; border-bottom:1px solid #E8E7E3; display:flex; align-items:center; justify-content:space-between; padding:0 28px">
+            <span style="font-size:19px; font-weight:600; letter-spacing:-0.03em; color:#0A0A0A">FONDAS</span>
+            <div style="display:flex; align-items:center; gap:20px">
+              <span style="font-size:13px; color:#5B5B58">Features</span>
+              <span style="font-size:13px; color:#5B5B58">FAQ</span>
+              <span style="font-size:13px; color:#5B5B58">Sign in</span>
+              <span style="display:inline-flex; align-items:center; height:36px; padding:0 16px; font-size:13px; font-weight:500; letter-spacing:-0.01em; color:#FFFFFF; background:#0A0A0A; border-radius:8px">Get early access</span>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1.15fr 0.85fr; gap:28px; align-items:center; padding:56px 40px 44px">
+            <div style="display:flex; flex-direction:column; align-items:flex-start">
+              <div style="display:inline-flex; align-items:center; gap:8px; font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:#9C9C97">
+                <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden="true"><circle cx="3" cy="3" r="3" fill="#1B3BB3"></circle></svg>
+                Now onboarding the first 20 hotels
+              </div>
+              <h3 style="margin:22px 0 0; font-size:42px; font-weight:600; letter-spacing:-0.035em; line-height:1.0; white-space:nowrap; color:#0A0A0A">Your inbox, answered.<br>Your morning, ready.</h3>
+              <p style="margin:20px 0 0; max-width:40ch; font-size:17px; line-height:1.6; color:#5B5B58; text-wrap:pretty">Fondas runs your hotel's front-office admin, whichever PMS you use — so the front desk can look up.</p>
+              <div style="display:flex; gap:12px; margin-top:26px">
+                <span style="display:inline-flex; align-items:center; height:48px; padding:0 32px; font-size:15px; font-weight:500; letter-spacing:-0.01em; color:#FFFFFF; background:#0A0A0A; border-radius:12px">Get early access</span>
+                <span style="display:inline-flex; align-items:center; height:48px; padding:0 32px; font-size:15px; font-weight:500; letter-spacing:-0.01em; color:#0A0A0A; border:1px solid #DCDBD6; border-radius:12px">See how it works →</span>
+              </div>
+            </div>
+            <svg viewBox="20 30 860 570" style="display:block; width:100%; height:auto" role="img" aria-label="Hero illustration beside the headline">
+              <use href="#sceneB"></use>
+            </svg>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showBriefs }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+          <div style="border:1px solid #E8E7E3; border-radius:16px; padding:20px 22px">
+            <div style="font-family:'Geist Mono',ui-monospace,monospace; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:#9C9C97; margin-bottom:12px">Direction</div>
+            <div style="display:flex; flex-direction:column; gap:9px; font-size:14.5px; line-height:1.5">
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Use</b><span style="color:#5B5B58">Split hero — art right, headline left.</span></div>
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Mood</b><span style="color:#5B5B58">Wide, breezy, late afternoon.</span></div>
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Detail</b><span style="color:#5B5B58">Building small and sharp; sea very loose.</span></div>
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Motion</b><span style="color:#5B5B58">None. Let it be a painting.</span></div>
+            </div>
+            <div style="display:flex; gap:7px; margin-top:16px; flex-wrap:wrap">
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#DCE8F0"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#5A82AA"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#F8F1E4"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#C6764E"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#5E7A52"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#1B3BB3"></span>
+            </div>
+          </div>
+          <div style="border:1px solid #E8E7E3; border-radius:16px; padding:20px 22px; background:#F6F6F4">
+            <div style="font-family:'Geist Mono',ui-monospace,monospace; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:#1B3BB3; margin-bottom:12px">Paint brief</div>
+            <code style="display:block; background:#FFFFFF; border:1px solid #E8E7E3; border-radius:10px; padding:13px 15px; font-family:'Geist Mono',ui-monospace,monospace; font-size:12.5px; line-height:1.55; color:#5B5B58; white-space:pre-wrap">Loose watercolour illustration of a small Mediterranean boutique hotel on a coastal headland. Cream stucco building with an arcaded ground floor, arched shuttered windows, a stone balustrade, terracotta pantile roof and a corner tower — drawn small and precise on the left. Behind it a calm blue bay painted in broad transparent washes, a soft horizon line, a faint green headland with a few terracotta-roofed houses on the far point, two small sailboats. In front, a pale stone terrace and an infinity-edge swimming pool in soft turquoise. Two dark cypresses beside the building, two tall palm trees at the right foreground, low olive shrubs. Warm cream and ochre against cobalt and cerulean blue washes; visible brush strokes and granulation. Plain white paper background, wide format, generous open sky at the top for a headline. Serene, editorial, hand-painted. No text.</code>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- ---------------- 1c ---------------- -->
+    <div id="1c" style="width:1000px; display:flex; flex-direction:column; gap:16px">
+      <div style="display:flex; align-items:baseline; gap:12px">
+        <span style="font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; font-weight:500; letter-spacing:0.1em; color:#FFFFFF; background:#0A0A0A; border-radius:100px; padding:4px 11px">1c</span>
+        <h2 style="margin:0; font-size:30px; font-weight:600; letter-spacing:-0.025em; color:#0A0A0A">L'Arribada — the arrival corner</h2>
+      </div>
+      <p style="margin:0; font-size:16px; line-height:1.6; color:#5B5B58; max-width:74ch; text-wrap:pretty">A close crop of the same hotel: the entrance arch under a striped awning, iron balconies, two big lanterns, bougainvillea spilling down the left wall, potted olives on the steps, and just a corner of the pool at the right. Warmest and most detailed of the three — best where the art sits beside copy rather than under it.</p>
+      <div style="background:#FCFAF5; border:1px solid #E8E7E3; border-radius:20px; padding:8px">
+        <svg viewBox="84 34 796 578" style="display:block;width:100%;height:auto" role="img" aria-label="Watercolour illustration of the hotel entrance corner with bougainvillea, lanterns and a corner of the pool">
+          <use href="#sceneC"></use>
+          <rect x="84" y="34" width="796" height="578" filter="url(#grain)" opacity="{{ grainOpacity }}"></rect>
+        </svg>
+      </div>
+      <sc-if value="{{ showHeroMocks }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#FFFFFF; border:1px solid #E8E7E3; border-radius:20px; overflow:hidden; box-shadow:0 16px 46px -26px rgba(10,10,10,0.22)">
+          <div style="height:60px; border-bottom:1px solid #E8E7E3; display:flex; align-items:center; justify-content:space-between; padding:0 28px">
+            <span style="font-size:19px; font-weight:600; letter-spacing:-0.03em; color:#0A0A0A">FONDAS</span>
+            <div style="display:flex; align-items:center; gap:20px">
+              <span style="font-size:13px; color:#5B5B58">Features</span>
+              <span style="font-size:13px; color:#5B5B58">FAQ</span>
+              <span style="font-size:13px; color:#5B5B58">Sign in</span>
+              <span style="display:inline-flex; align-items:center; height:36px; padding:0 16px; font-size:13px; font-weight:500; letter-spacing:-0.01em; color:#FFFFFF; background:#0A0A0A; border-radius:8px">Get early access</span>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1.15fr 0.85fr; gap:24px; align-items:center; padding:56px 40px 40px">
+            <div style="display:flex; flex-direction:column; align-items:flex-start">
+              <div style="display:inline-flex; align-items:center; gap:8px; font-family:'Geist Mono',ui-monospace,monospace; font-size:12px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:#9C9C97">
+                <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden="true"><circle cx="3" cy="3" r="3" fill="#1B3BB3"></circle></svg>
+                Now onboarding the first 20 hotels
+              </div>
+              <h3 style="margin:22px 0 0; font-size:42px; font-weight:600; letter-spacing:-0.035em; line-height:1.0; white-space:nowrap; color:#0A0A0A">Your inbox, answered.<br>Your morning, ready.</h3>
+              <p style="margin:20px 0 0; max-width:40ch; font-size:17px; line-height:1.6; color:#5B5B58; text-wrap:pretty">Guest email arrives with the reply already drafted in your voice. The brief lands before the first coffee. Arrival times chase themselves.</p>
+              <div style="display:flex; gap:12px; margin-top:26px">
+                <span style="display:inline-flex; align-items:center; height:48px; padding:0 32px; font-size:15px; font-weight:500; letter-spacing:-0.01em; color:#FFFFFF; background:#0A0A0A; border-radius:12px">Get early access</span>
+                <span style="display:inline-flex; align-items:center; height:48px; padding:0 32px; font-size:15px; font-weight:500; letter-spacing:-0.01em; color:#0A0A0A; border:1px solid #DCDBD6; border-radius:12px">See how it works →</span>
+              </div>
+            </div>
+            <svg viewBox="110 34 760 578" style="display:block; width:100%; height:auto" role="img" aria-label="Hero illustration beside the headline">
+              <use href="#sceneC"></use>
+            </svg>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showBriefs }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px">
+          <div style="border:1px solid #E8E7E3; border-radius:16px; padding:20px 22px">
+            <div style="font-family:'Geist Mono',ui-monospace,monospace; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:#9C9C97; margin-bottom:12px">Direction</div>
+            <div style="display:flex; flex-direction:column; gap:9px; font-size:14.5px; line-height:1.5">
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Use</b><span style="color:#5B5B58">Split hero, or a full-bleed footer band.</span></div>
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Mood</b><span style="color:#5B5B58">Intimate, welcoming, late morning.</span></div>
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Detail</b><span style="color:#5B5B58">Highest — crop it tighter if it pulls focus.</span></div>
+              <div style="display:flex; gap:10px"><b style="min-width:92px; font-weight:600">Spin-offs</b><span style="color:#5B5B58">Lantern, olive pot and arch make good spot art.</span></div>
+            </div>
+            <div style="display:flex; gap:7px; margin-top:16px; flex-wrap:wrap">
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#F8F1E4"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#C6764E"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#7E5C40"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#5C7348"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#C46A82"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#7FA8C8"></span>
+              <span style="width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,0.08);background:#1B3BB3"></span>
+            </div>
+          </div>
+          <div style="border:1px solid #E8E7E3; border-radius:16px; padding:20px 22px; background:#F6F6F4">
+            <div style="font-family:'Geist Mono',ui-monospace,monospace; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:#1B3BB3; margin-bottom:12px">Paint brief</div>
+            <code style="display:block; background:#FFFFFF; border:1px solid #E8E7E3; border-radius:10px; padding:13px 15px; font-family:'Geist Mono',ui-monospace,monospace; font-size:12.5px; line-height:1.55; color:#5B5B58; white-space:pre-wrap">Warm watercolour and ink illustration of the entrance corner of a small Mediterranean boutique hotel, seen close up. Cream stucco wall with a stone cornice and a terracotta pantile roof; a tall round-arched doorway with a fanlight and warm wooden double doors, reached by two shallow stone steps; a striped cream-and-terracotta awning above; three arched windows with pale blue-grey shutters and delicate wrought-iron balconies; two large iron wall lanterns flanking the door; pink bougainvillea cascading down the left side of the wall; potted olive trees in terracotta pots on the steps. At the bottom right, one corner of a turquoise swimming pool and the base of a palm tree. Transparent granulating washes with confident fine ink linework, warm sunlit palette — cream, ochre, terracotta, olive green, a little magenta. Plain white paper background, open space at the top. Cosy, boutique, hand-painted. No text.</code>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="background:#0A0A0A; color:#FFFFFF; border-radius:24px; padding:40px; max-width:1000px">
+    <h2 style="margin:0 0 14px; font-size:30px; font-weight:600; letter-spacing:-0.02em">Where I'd land</h2>
+    <p style="margin:0 0 12px; color:#C9C9C6; font-size:16px; line-height:1.65; max-width:72ch; text-wrap:pretty"><b style="color:#FFFFFF"><a href="#1a" style="color:#FFFFFF">1a</a> as the hero.</b> It's the closest to the reference you liked, it's symmetrical enough to sit under a centred headline, and the pool gives you the water without adding a whole landscape. Paint it at 2× hero width with real paper texture.</p>
+    <p style="margin:0 0 12px; color:#C9C9C6; font-size:16px; line-height:1.65; max-width:72ch; text-wrap:pretty"><b style="color:#FFFFFF"><a href="#1b" style="color:#FFFFFF">1b</a> as the second surface</b> — the CTA band or the "about" page, where a wider, quieter piece works. <b style="color:#FFFFFF"><a href="#1c" style="color:#FFFFFF">1c</a> for the pieces</b>: the lantern, the olive pot and the arch pulled out as small spot vignettes for feature rows, exactly like the Pillows sheet.</p>
+    <p style="margin:0; color:#C9C9C6; font-size:16px; line-height:1.65; max-width:72ch; text-wrap:pretty">One rule for whichever you pick: the art stays under 40% of the hero's height, never behind the type, and never more than one illustration per screen. It's the warm layer — the words still do the work.</p>
+  </div>
+</section>
+</x-dc>
+
+</div>
+</div></section>
+
+<section class="block" id="vig"><div class="wrap">
+  <h2 class="sec">2 · The spot-vignette set</h2>
+  <p class="sub">Key, coffee, olive branch, lantern, sun-lounger, sailboat — a matched family to sprinkle across the site (feature tiles, footer, empty states), exactly like the Pillows sheet. Prompt 3 builds these from the hero's own motifs (the lantern, olive pot and arch live inside Scene C).</p>
+  <div class="illo" style="border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:20px">
+<svg viewBox="0 0 760 150" style="display:block;width:100%;height:auto" role="img" aria-label="Watercolour vignette set">
+  <rect width="760" height="150" fill="#FCFAF5"/>
+  <g transform="translate(78,44)"><circle cx="14" cy="18" r="12" fill="none" stroke="#B98A3E" stroke-width="4.5"/><path d="M25 24 l30 26 M46 42 l9 -7 M39 36 l9 -7" stroke="#B98A3E" stroke-width="4.5" fill="none" stroke-linecap="round"/></g>
+  <text x="92" y="128" font-family="Geist Mono,monospace" font-size="10" fill="#9C9C97" text-anchor="middle">key</text>
+  <g transform="translate(208,48)"><path d="M0 6 h40 v13 a20 16 0 0 1 -40 0 z" fill="#F3EAD8" stroke="#7a6a54" stroke-width="2"/><path d="M40 10 q15 2 11 15 q-4 9 -13 7" fill="none" stroke="#7a6a54" stroke-width="2"/><path d="M12 0 q-3 -7 4 -11 M24 0 q-3 -7 4 -11" stroke="#C9B79a" stroke-width="2" fill="none"/></g>
+  <text x="230" y="128" font-family="Geist Mono,monospace" font-size="10" fill="#9C9C97" text-anchor="middle">coffee</text>
+  <g transform="translate(330,44)"><path d="M2 42 q24 -28 52 -38" stroke="#5C7348" stroke-width="3" fill="none"/><g fill="#7E9463"><ellipse cx="18" cy="28" rx="9" ry="4.5" transform="rotate(-30 18 28)"/><ellipse cx="33" cy="17" rx="9" ry="4.5" transform="rotate(-30 33 17)"/><ellipse cx="48" cy="8" rx="9" ry="4.5" transform="rotate(-30 48 8)"/></g><circle cx="26" cy="24" r="4" fill="#5C7348"/></g>
+  <text x="372" y="128" font-family="Geist Mono,monospace" font-size="10" fill="#9C9C97" text-anchor="middle">olive</text>
+  <g transform="translate(452,30)"><rect x="6" y="26" width="30" height="8" rx="2" fill="#B98A3E" opacity="0.65"/><rect x="12" y="10" width="18" height="18" rx="3" fill="#F3EAD8" stroke="#7a6a54" stroke-width="1.6"/><line x1="21" y1="10" x2="21" y2="0" stroke="#7a6a54" stroke-width="1.6"/><path d="M13 2 h16" stroke="#B98A3E" stroke-width="2"/></g>
+  <text x="474" y="128" font-family="Geist Mono,monospace" font-size="10" fill="#9C9C97" text-anchor="middle">lantern</text>
+  <g transform="translate(560,34)"><path d="M6 44 h44 l-6 -12 h-32 z" fill="#EDE4D2" stroke="#7a6a54" stroke-width="2"/><path d="M40 32 v-26" stroke="#7a6a54" stroke-width="3"/><path d="M14 6 q26 -18 52 0 z" fill="#C86A86"/></g>
+  <text x="600" y="128" font-family="Geist Mono,monospace" font-size="10" fill="#9C9C97" text-anchor="middle">lounger</text>
+  <g transform="translate(672,36)"><path d="M4 46 q28 15 56 0 q-28 -8 -56 0 z" fill="#8FB0CE"/><path d="M32 40 v-38 l20 32 z" fill="#F3EAD8" stroke="#7a6a54" stroke-width="2"/></g>
+  <text x="704" y="128" font-family="Geist Mono,monospace" font-size="10" fill="#9C9C97" text-anchor="middle">sail</text>
+</svg></div>
+</div></section>
+
+<section class="block" id="pos"><div class="wrap">
+  <h2 class="sec">3 · New positioning &amp; hero copy</h2>
+  <p class="sub">Fondas is the <b>AI front office for independent hotels</b> — not an inbox tool. The exact hero copy to ship, in all three locales:</p>
+  <table class="t"><thead><tr><th>Locale</th><th>Headline</th><th>Subhead</th></tr></thead><tbody><tr><td class="mono">EN</td><td><b>The admin runs itself.</b><br>You run the hotel.</td><td>Fondas is the AI front office for independent hotels — it drafts your guest email, chases arrival times, briefs you every morning, and answers anything about your property. It learns your hotel once and works on top of the PMS you already run.</td></tr><tr><td class="mono">ES</td><td><b>La gestión se hace sola.</b><br>Tú llevas el hotel.</td><td>Fondas es la recepción con IA para hoteles independientes: redacta el correo de tus huéspedes, reclama las horas de llegada, te prepara un resumen cada mañana y responde cualquier cosa sobre tu alojamiento. Aprende cómo es tu hotel una vez y funciona sobre el PMS que ya usas.</td></tr><tr><td class="mono">CA</td><td><b>La gestió es fa sola.</b><br>Tu portes l'hotel.</td><td>Fondas és la recepció amb IA per a hotels independents: redacta el correu dels teus hostes, reclama les hores d'arribada, et prepara un resum cada matí i respon qualsevol cosa sobre el teu allotjament. Aprèn com és el teu hotel un cop i funciona sobre el PMS que ja fas servir.</td></tr></tbody></table>
+  <div class="note"><b>Recommended lockup.</b> Headline: "The admin runs itself. You run the hotel." · Eyebrow: "For independent hotel GMs · Private beta" · Primary CTA: "Get early access" · Secondary: "Book a demo". Full reasoning: fonda-positioning-gtm.html.</div>
+</div></section>
+
+<section class="block" id="audit"><div class="wrap">
+  <h2 class="sec">4 · Audit change-list</h2>
+  <p class="sub">The Mobbin audit, condensed to what changes and when. Full per-area detail: fonda-mobbin-audit.html.</p>
+  <table class="t"><thead><tr><th>Area</th><th>Grade</th><th>Priority</th><th>Change</th></tr></thead><tbody><tr><td><b>Social proof</b></td><td><span class="grade g-d">D</span></td><td><span class="pri p-now">Now</span></td><td>No evidence anyone uses it. Add design-partner quotes (name · role · property + one metric), a hotel-logo row, and a 'first 20 hotels' line.</td></tr><tr><td><b>Hero headline</b></td><td><span class="grade g-b">B</span></td><td><span class="pri p-now">Now</span></td><td>Undersells the product as an inbox tool. Adopt the new 'AI front office' positioning + copy (below).</td></tr><tr><td><b>Footer</b></td><td><span class="grade g-d">D</span></td><td><span class="pri p-now">Now</span></td><td>A 3-link footer looks like a side project. Build Product / Company / Resources / Legal columns + newsletter + wordmark.</td></tr><tr><td><b>Mobile nav</b></td><td><span class="grade g-c">C</span></td><td><span class="pri p-now">Now</span></td><td>Links vanish on phones with no menu. Add a mobile disclosure/sheet with the links + CTA.</td></tr><tr><td><b>Pricing</b></td><td><span class="grade g-c">C</span></td><td><span class="pri p-now">Now</span></td><td>'Talk to us' button links to /signup and contradicts the €199 stat. Commit to the flat price + a real contact link.</td></tr><tr><td><b>Comparison</b></td><td><span class="grade g-n">—</span></td><td><span class="pri p-soon">Soon</span></td><td>Add the deferred 'Status quo vs Fondas' section (Sana model) — sells the shift from the manual front desk.</td></tr><tr><td><b>Features bento</b></td><td><span class="grade g-b">B</span></td><td><span class="pri p-soon">Soon</span></td><td>Motifs are sketches. Swap for real product crops or the new watercolour vignettes.</td></tr><tr><td><b>Product showcase</b></td><td><span class="grade g-b">B</span></td><td><span class="pri p-soon">Soon</span></td><td>Single hand-built window. Use a real Morning-Brief screenshot + a 'watch the brief' play.</td></tr><tr><td><b>ROI stats</b></td><td><span class="grade g-b">B</span></td><td><span class="pri p-soon">Soon</span></td><td>Numbers are unattributed. Attribute one to a pilot; reconcile the €199 stat with the pricing band.</td></tr><tr><td><b>SEO / OG / IA</b></td><td><span class="grade g-c">C</span></td><td><span class="pri p-soon">Soon</span></td><td>No OG image, no structured data, thin site IA. Add OG, JSON-LD, sitemap/robots, hreflang; plan Features/Customers pages.</td></tr><tr><td><b>Accessibility</b></td><td><span class="grade g-b">B</span></td><td><span class="pri p-soon">Soon</span></td><td>Verify AA contrast on muted text, focus rings, skip-link, heading order.</td></tr><tr><td><b>How it works</b></td><td><span class="grade g-a">A</span></td><td><span class="pri p-later">Later</span></td><td>Solid. Optionally add a small product peek per step + one CTA.</td></tr><tr><td><b>FAQ</b></td><td><span class="grade g-a">A</span></td><td><span class="pri p-later">Later</span></td><td>Solid. Add FAQPage JSON-LD for SEO.</td></tr><tr><td><b>Final CTA</b></td><td><span class="grade g-a">A</span></td><td><span class="pri p-later">Later</span></td><td>Clean ink band. Optionally add a secondary 'Book a demo'.</td></tr><tr><td><b>Auth (split-screen)</b></td><td><span class="grade g-a">A</span></td><td><span class="pri p-later">Later</span></td><td>Good. Add 'Open Gmail/Outlook' on the verify-email step.</td></tr><tr><td><b>Onboarding</b></td><td><span class="grade g-b">B</span></td><td><span class="pri p-later">Later</span></td><td>Progressive + summary. Wrap in the split-screen brand panel; end on a 'Connect PMS & inbox' CTA.</td></tr></tbody></table>
+</div></section>
+
+<section class="block" id="prompts"><div class="wrap">
+  <h2 class="sec">5 · Prompts for Claude Code</h2>
+  <p class="sub">Paste Prompt 0 first, then 1–11 one at a time, letting each lint clean before the next. These are identical to FONDA_CLAUDE_CODE_BRIEF.md — use whichever is handier.</p>
+  
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 0</span><h3>Context &amp; guardrails — paste first</h3></div>
+    <pre>You are working in the Fondas repo (Next.js 16 App Router, React 19, Tailwind CSS v4, Supabase). Before changing anything, read CLAUDE.md, AGENTS.md, README.md and FONDA_DESIGN_IDENTITY.md.
+
+All UI must follow the v2 "Signal" identity: Geist + Geist Mono, a single cool-navy signal colour #1B3BB3 used sparingly (max 2–3 per screen), flat white cards with hairline borders, soft 10px corners, generous space, light only. No gradients, no dark mode, no second accent, no pill buttons.
+
+Key facts:
+- The marketing page is app/[lang]/page.tsx. Auth is app/[lang]/(auth). Onboarding is app/[lang]/onboarding.
+- All copy lives in dictionaries/en.json, es.json and ca.json. es and ca are type-checked against en.json, so every new key MUST be added to all three locales with a translation, or the build breaks. The customer-facing product name is "Fondas".
+- Use @supabase/ssr helpers correctly (server vs browser client). Never commit secrets or .env files.
+- After every task, run npm run lint and fix what it reports. Do not add new dependencies without flagging first.
+
+Confirm you have read FONDA_DESIGN_IDENTITY.md and understood the Signal rules, then wait for Task 1. Do the tasks one at a time, in order.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 1</span><h3>Reposition the hero copy (en/es/ca)</h3></div>
+    <pre>Reposition the hero from an "inbox tool" to the "AI front office for independent hotels". Do NOT touch layout yet — copy only.
+
+In dictionaries/en.json, es.json and ca.json, set these hero keys (keep all three locales in sync):
+
+EN  hero.headlineLine1: "The admin runs itself."
+EN  hero.headlineLine2: "You run the hotel."
+EN  hero.subhead: "Fondas is the AI front office for independent hotels — it drafts your guest email, chases arrival times, briefs you every morning, and answers anything about your property. It learns your hotel once and works on top of the PMS you already run."
+
+ES  hero.headlineLine1: "La gestión se hace sola."
+ES  hero.headlineLine2: "Tú llevas el hotel."
+ES  hero.subhead: "Fondas es la recepción con IA para hoteles independientes: redacta el correo de tus huéspedes, reclama las horas de llegada, te prepara un resumen cada mañana y responde cualquier cosa sobre tu alojamiento. Aprende cómo es tu hotel una vez y funciona sobre el PMS que ya usas."
+
+CA  hero.headlineLine1: "La gestió es fa sola."
+CA  hero.headlineLine2: "Tu portes l'hotel."
+CA  hero.subhead: "Fondas és la recepció amb IA per a hotels independents: redacta el correu dels teus hostes, reclama les hores d'arribada, et prepara un resum cada matí i respon qualsevol cosa sobre el teu allotjament. Aprèn com és el teu hotel un cop i funciona sobre el PMS que ja fas servir."
+
+Also update meta.description in en.json (and provide es/ca equivalents) to lead with the new positioning:
+EN meta.description: "Fondas is the AI front office for independent hotels: guest email drafted for your review, a morning brief before the desk opens, check-in times chased automatically, and plain-language answers about your hotel — on top of the PMS you already run."
+
+Keep hero.eyebrow, hero.ctaPrimary and hero.ctaSecondary as they are. Run npm run lint.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 2</span><h3>Add the La Casa watercolour hero illustration</h3></div>
+    <pre>The file design/la-casa-hero.html contains a finished watercolour SVG illustration of the hotel (built earlier). It has:
+- a hidden &lt;svg width="0" height="0"&gt; defs block with filters (ids: wc, wcHard, wcInk, grain, mottle, mottle2), gradients (skyG, seaG, poolG, skyMask, seaMask, fadeX) and reusable symbols/defs (villa, palm, cypress, olivepot, lantern, balusters, deckTile, frondL, frondD, clip* ids);
+- three scene SVGs: Scene A (viewBox "0 0 900 600", the villa reflected in a still pool between two palms — the intended HERO), Scene B (viewBox "20 30 860 570", headland above a bay with an infinity pool), Scene C (entrance corner with bougainvillea, lanterns and a pool corner).
+
+Task: extract Scene A plus every def/filter/gradient/symbol it references into ONE self-contained React server component at components/marketing/hero-illustration.tsx that exports &lt;HeroIllustration/&gt; rendering a single inline &lt;svg&gt; (no external files). IMPORTANT: prefix every def id to avoid collisions with the rest of the page, e.g. "wc" -&gt; "hero-wc", and update all url(#…) references to match. Mark the root svg aria-hidden (it is decorative).
+
+Then place &lt;HeroIllustration/&gt; in the hero of app/[lang]/page.tsx, following the illustration's own placement rules (documented at the bottom of design/la-casa-hero.html): under the headline + subhead + CTAs (you may replace or sit alongside the existing EmailDraftPreviewWindow — keep the strongest single visual), the art no more than ~40% of the hero's height, never behind the type, only one illustration per screen. Wrap it in the existing Reveal so it fades up, and make sure it collapses gracefully on mobile. Respect prefers-reduced-motion (already handled globally). Run npm run lint.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 3</span><h3>Build the watercolour vignette set</h3></div>
+    <pre>Create a small family of watercolour spot-vignettes that match the hero's style. Reuse the motifs already drawn inside design/la-casa-hero.html — pull the lantern, the olive pot and the arch out of Scene C — and add a room key, an espresso cup, an olive branch, a sun-lounger with a striped parasol, and a small sailboat.
+
+Build components/marketing/vignettes.tsx exporting a &lt;Vignette name="key|coffee|olive|lantern|lounger|sail|arch|olivepot" size={...}/&gt; that renders each as an inline SVG at ~80–120px, flat on white, one navy accent maximum, in the same warm palette as the hero. Then use them:
+- as the small icon at the top of each of the four feature bento tiles in app/[lang]/page.tsx (replace the current sketch FeatureMotif visuals, or sit above them);
+- one in the new footer.
+No dictionary changes. Run npm run lint. Note in a code comment that these are placeholders in the hero's style and may be repainted by an illustrator to final finish.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 4</span><h3>Add a social-proof section (audit's #1 gap)</h3></div>
+    <pre>Add a social-proof section immediately after the trust bar in app/[lang]/page.tsx. Two parts:
+(a) a hotel-logo row: a Geist-Mono label ("Trusted by independents like…") + 4–6 clearly-marked PLACEHOLDER logos (neutral grey wordmark chips are fine) + a line "The first 20 hotels are onboarding now."
+(b) a 3-card testimonial grid (Hex model): each card has a one-line quote, a name, a role, a property, and one metric rendered in navy. Fill with clearly-marked PLACEHOLDER content I can swap for real design-partner quotes later.
+
+Flat white cards, hairline borders, one navy accent per card (the metric), per Signal. Add every new string to en.json, es.json and ca.json (keep in sync). Run npm run lint.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 5</span><h3>Replace the footer with a real one (audit gap)</h3></div>
+    <pre>Replace the thin footer in app/[lang]/page.tsx with a real multi-column footer. Columns: Product / Company / Resources / Legal. Use existing routes where they exist (/sample-brief, /privacy, /terms) and clearly mark the rest as placeholder links (#). Include: a newsletter email capture (non-functional placeholder, clearly commented), the LanguageSwitcher, a large FONDAS wordmark, one line of the value prop, and the copyright line. Keep it flat, hairline-ruled and light — NOT a dark mega-footer. Add all new labels to en.json, es.json and ca.json. Run npm run lint.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 6</span><h3>Add a mobile navigation menu</h3></div>
+    <pre>The top nav in app/[lang]/page.tsx hides its links below the md breakpoint with no replacement, so the nav is unusable on phones. Create a client component components/marketing/mobile-nav.tsx: a hamburger button that toggles a disclosure/sheet containing the same links (How it works, Features, FAQ, Sign in), the LanguageSwitcher, and the primary "Get early access" CTA. Wire it into the header, visible only below md; leave the desktop nav unchanged. Make it accessible: button with aria-expanded/aria-controls, close on Escape, return focus on close. Follow Signal styling. Run npm run lint.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 7</span><h3>Reconcile the pricing story</h3></div>
+    <pre>There is a conflict: the ROI stat row shows "€199 per property / month" while the pricing band says "Talk to us" and its button links to /signup. Commit to the flat price. In app/[lang]/page.tsx: keep the €199 stat; change the pricing band to state the flat per-property price clearly (e.g. headline stays "One flat price per property", add a visible "€199 / property / month — everything included" line) and point the button at a real contact — a mailto:hello@fondas… placeholder or a new /contact route stub — NOT /signup. Update the pricing.* copy in en.json, es.json and ca.json accordingly. Run npm run lint.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 8</span><h3>Add a 'Status quo vs Fondas' comparison</h3></div>
+    <pre>Add a comparison section (Sana model — the high-impact piece deferred earlier) before the FAQ in app/[lang]/page.tsx. Two columns:
+- "The manual front desk": spreadsheets and inbox rules, replies written at midnight, arrival times chased by hand, missed arrivals, no morning picture.
+- "With Fondas": every reply drafted for review, arrival times chased automatically, one morning brief before the desk opens, ask-anything answers from live data.
+Hairline-ruled rows; a small navy check or emphasis on the Fondas column only; flat, light, per Signal. Add all rows/labels to en.json, es.json and ca.json. Run npm run lint.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 9</span><h3>SEO, OpenGraph and structured data</h3></div>
+    <pre>SEO pass. (1) Add an OpenGraph/Twitter image: create a Signal-styled public/og.png (or a clearly-marked placeholder) and wire openGraph.images + twitter.card in the metadata in app/[lang]/layout.tsx, with locale-correct values. (2) Add JSON-LD structured data on the marketing page: Organization, SoftwareApplication (or Product), and FAQPage built from the FAQ copy. (3) Add app/sitemap.ts and app/robots.ts. (4) Verify hreflang alternates for en/es/ca via metadata.alternates.languages. Run npm run lint and npm run build.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 10</span><h3>Accessibility pass</h3></div>
+    <pre>Accessibility. (1) Audit muted/eyebrow text: #9C9C97 on white fails WCAG AA at small sizes — darken it or increase size where used for readable content (keep it only for truly decorative labels). (2) Ensure a visible focus-visible ring on every link, the FAQ &lt;summary&gt; elements, the language switcher and the mobile-nav trigger. (3) Add a skip-to-content link in app/[lang]/layout.tsx. (4) Confirm exactly one &lt;h1&gt; per page and sequential heading order on the marketing page. Run npm run lint.</pre>
+  </div>
+  <div class="prompt">
+    <div class="ptop"><span class="pn">Prompt 11</span><h3>Verify and finish</h3></div>
+    <pre>Final verification. Run npm run lint and npm run build and fix anything they report (remember es/ca must match en.json exactly). Then run npm run dev and confirm that /en, /es and /ca all render fully styled with: the new hero copy, the La Casa illustration, the social-proof section, the comparison, the new footer, the mobile menu, and the reconciled pricing. If the dev server ever renders with NO styling (serif font, no layout), that is a CSS pipeline issue, not these changes — stop the server, run: rm -rf .next &amp;&amp; npm run dev, and hard-refresh. Report anything you could not complete.</pre>
+  </div>
+</div></section>
+
+<section class="block" id="files"><div class="wrap">
+  <h2 class="sec">6 · What's in the repo</h2>
+  <div class="files">
+    <div class="file"><div class="fn">FONDA_CLAUDE_CODE_BRIEF.md</div><p>The feedable document — positioning, copy, audit list and all 12 prompts. Point Claude Code at this.</p></div>
+    <div class="file"><div class="fn">design/la-casa-hero.html</div><p>The finished watercolour illustration (Scenes A/B/C). Prompt 2 extracts Scene A into a component.</p></div>
+    <div class="file"><div class="fn">fonda-master-brief.html</div><p>This page — the visual consolidation of everything.</p></div>
+    <div class="file"><div class="fn">fonda-positioning-gtm.html · fonda-mobbin-audit.html</div><p>The full reasoning behind the copy and the change-list.</p></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">Fondas · master brief · internal. Illustration by you (via Claude Code); packaging, audit &amp; positioning via Mobbin research.</div></footer>
+</body>
+</html>
