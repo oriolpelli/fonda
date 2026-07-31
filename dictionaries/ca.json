@@ -44,35 +44,8 @@
     "draftBody": "Bona nit, Laura: cap problema amb les 21:40, la recepció està atesa fins a mitjanit i tindrem les seves claus preparades. Per al cotxe, treballem amb el pàrquing del carrer del Pi, a dos minuts (24 € la nit). Li reservo una plaça per divendres?"
   },
   "trust": {
-    "worksWith": "Compatible amb"
-  },
-  "socialProof": {
-    "logosLabel": "La confiança d'independents com…",
-    "placeholderTag": "Provisional",
-    "onboardingNote": "Els primers 20 hotels ja s'estan incorporant.",
-    "logo1": "Logo 01",
-    "logo2": "Logo 02",
-    "logo3": "Logo 03",
-    "logo4": "Logo 04",
-    "logo5": "Logo 05",
-    "quote1": "Cita provisional — una línia sobre com el resum matinal va canviar l'inici del dia.",
-    "metric1": "6 h",
-    "metricLabel1": "estalviades cada setmana",
-    "name1": "Nom per confirmar",
-    "role1": "Direcció de l'hotel",
-    "property1": "Allotjament provisional · 48 habitacions",
-    "quote2": "Cita provisional — una línia sobre el correu d'hostes contestat abans d'obrir recepció.",
-    "metric2": "92%",
-    "metricLabel2": "del correu redactat",
-    "name2": "Nom per confirmar",
-    "role2": "Direcció de recepció",
-    "property2": "Allotjament provisional · 26 habitacions",
-    "quote3": "Cita provisional — una línia sobre les hores d'arribada que arriben soles, sense reclamar-les.",
-    "metric3": "3 min",
-    "metricLabel3": "de revisió de mitjana",
-    "name3": "Nom per confirmar",
-    "role3": "Propietat",
-    "property3": "Allotjament provisional · 74 habitacions"
+    "worksWith": "Compatible amb",
+    "onboardingNote": "Estem incorporant els nostres primers hotels."
   },
   "featuresSection": {
     "eyebrow": "Què fa Fondas",
@@ -184,11 +157,40 @@
     "cookies": "Galetes",
     "security": "Seguretat",
     "newsletterTitle": "Notes de producte, un cop al mes.",
-    "newsletterHint": "Què hem llançat, què ve i què aprenem dels primers 20 hotels.",
+    "newsletterHint": "Què hem llançat, què ve i què aprenem dels hotels que estem incorporant.",
     "newsletterPlaceholder": "tu@elteuhotel.com",
     "newsletterButton": "Subscriu-me",
-    "newsletterNote": "Provisional — aquest formulari encara no està connectat.",
+    "newsletterSending": "Enviant…",
+    "newsletterSent": "Revisa el teu correu: t'hem enviat un enllaç per confirmar. No hi estaràs subscrit fins que ho facis.",
+    "newsletterInvalid": "Això no sembla una adreça de correu.",
+    "newsletterError": "Alguna cosa ha fallat per la nostra banda. Torna-ho a provar d'aquí a un moment.",
+    "newsletterPrivacy": "Un correu al mes, pots donar-te de baixa quan vulguis. Només fem servir la teva adreça per a aquestes notes —",
     "placeholderNote": "° Enllaç provisional — encara no és actiu."
+  },
+  "newsletterEmail": {
+    "subject": "Confirma la teva subscripció a Fondas",
+    "heading": "Un clic i ja ets a la llista.",
+    "body": "Has demanat les notes de producte de Fondas: un correu al mes sobre què hem llançat, què ve i què anem aprenent. Confirma a sota i t'hi afegim.",
+    "button": "Confirmar la subscripció",
+    "ignore": "No ho has demanat? Ignora aquest correu i no passarà res: no t'hi afegirem ni et tornarem a escriure.",
+    "footer": "Enviat per Fondas perquè algú ha introduït aquesta adreça a fondas.app."
+  },
+  "newsletterConfirm": {
+    "heading": "Confirma la teva subscripció",
+    "body": "Últim pas: prem el botó per afegir aquesta adreça a les notes de producte de Fondas.",
+    "button": "Confirmar la subscripció",
+    "working": "Confirmant…",
+    "doneHeading": "Ja ets a la llista.",
+    "doneBody": "Les notes de producte arribaran aproximadament un cop al mes. Totes inclouen un enllaç per donar-te de baixa.",
+    "alreadyHeading": "Ja eres a la llista.",
+    "alreadyBody": "Aquesta adreça es va confirmar abans: no cal fer res més.",
+    "expiredHeading": "Aquest enllaç ha caducat.",
+    "expiredBody": "Els enllaços de confirmació duren set dies. Torna a introduir la teva adreça al web i te'n enviarem un de nou.",
+    "invalidHeading": "Aquest enllaç no és vàlid.",
+    "invalidBody": "Pot ser que ja s'hagi fet servir o que un de més recent l'hagi substituït. Torna a introduir la teva adreça al web per rebre un enllaç nou.",
+    "errorHeading": "Alguna cosa ha fallat.",
+    "errorBody": "No hem pogut confirmar la teva subscripció ara mateix. Prova l'enllaç una altra vegada d'aquí a un moment.",
+    "backHome": "Tornar a fondas.app"
   },
   "sampleBrief": {
     "title": "Resum matinal",
@@ -213,29 +215,56 @@
     "signInLink": "Inicia la sessió"
   },
   "onboarding": {
-    "title": "Configura el teu hotel",
-    "desc": "Uns quants detalls perquè Fondas adapti els resums i sincronitzi el teu PMS.",
     "hotelName": "Nom de l'hotel",
     "hotelNamePlaceholder": "El Gran Ribera",
     "rooms": "Nombre d'habitacions",
     "roomsPlaceholder": "80",
     "timezone": "Zona horària",
-    "pms": "Sistema de gestió hotelera (PMS)",
+    "timezoneHint": "S'utilitza per al teu resum matinal i per saber què vol dir «avui» en cada dada que et mostra Fondas.",
     "settingUp": "Configurant…",
-    "createHotel": "Crea l'hotel",
+    "continue": "Continua",
     "stepLabel": "Pas {current} de {total}",
     "step1Title": "El teu allotjament",
-    "step1Desc": "El bàsic, perquè Fondas adapti els teus resums.",
-    "step2Title": "Connecta els teus sistemes",
-    "step2Desc": "Tria el teu PMS i la zona horària — després vincularàs els comptes.",
-    "step3Title": "Tot a punt",
-    "step3Desc": "Això és el que Fondas comença a fer tan bon punt acabis la configuració.",
-    "back": "Enrere",
-    "continue": "Continua",
-    "ready1": "Redactar respostes al correu d'hostes de la nit",
-    "ready2": "Reclamar automàticament les hores d'arribada que falten",
-    "ready3": "Lliurar el teu resum matinal abans d'obrir recepció",
-    "ready4": "Respondre preguntes sobre el teu hotel a l'instant"
+    "step1Desc": "Tres dades sense les quals Fondas no pot treballar.",
+    "step2Title": "Connecta el teu PMS",
+    "step2Desc": "D'aquí surten les teves reserves. Res més no funciona fins que estigui connectat.",
+    "step3Title": "La teva primera sincronització",
+    "step3Desc": "Estem llegint les teves reserves — sol trigar menys d'un minut.",
+    "step4Title": "Tot a punt",
+    "step4Desc": "Fondas ja té les teves reserves i comença a treballar aquesta nit.",
+    "step4DescBrief": "El teu primer resum ja està escrit i t'espera.",
+    "step4DescSkipped": "El teu hotel està creat, però Fondas encara no té reserves amb què treballar.",
+    "skipPms": "Omet per ara →",
+    "skipPmsNote": "Pots connectar-lo més tard des del tauler. Fins llavors Fondas no té reserves per llegir: no hi haurà resum matinal, ni arribades, ni seguiment de check-in.",
+    "syncing": "Llegint les teves reserves…",
+    "syncingNote": "Fondas està important les dues setmanes anteriors i posteriors a avui des del teu PMS. Deixa aquesta finestra oberta — sol trigar menys d'un minut.",
+    "syncFailed": "La sincronització no s'ha completat.",
+    "syncFailedNote": "El teu PMS està connectat, així que Fondas ho tornarà a provar pel seu compte dins de la propera hora. També pots reintentar-ho ara.",
+    "continueAnyway": "Continua igualment",
+    "syncFoundOne": "Hem trobat {count} reserva.",
+    "syncFoundOther": "Hem trobat {count} reserves.",
+    "syncFoundNone": "No hi ha reserves en les dues setmanes al voltant d'avui.",
+    "syncFoundNoneNote": "És el que ha retornat el teu PMS. Si et sembla incorrecte, revisa la connexió a Configuració; si no, Fondas anirà recollint les reserves noves a mesura que entrin.",
+    "firstBriefAt": "El teu primer resum arribarà demà a les {time}.",
+    "generatePreview": "Genera un resum de prova ara",
+    "generatingPreview": "Escrivint el teu resum…",
+    "skipPreview": "Omet — espera el de demà",
+    "readFirstBrief": "Llegeix el teu primer resum →",
+    "goToDashboard": "Ves al tauler",
+    "connectPmsNow": "Connecta el teu PMS",
+    "next1": "Cada matí rebràs un resum abans que obri recepció.",
+    "next2": "Les hores d'arribada es demanen automàticament.",
+    "next3": "Pregunta el que vulguis sobre el teu hotel des del botó de xat.",
+    "next1Skipped": "Connecta el teu PMS i Fondas s'omplirà a l'instant.",
+    "next2Skipped": "Fins llavors el tauler estarà buit: no és que hi hagi res espatllat.",
+    "gmailTitle": "Opcional: connecta la teva bústia",
+    "gmailDesc": "Enllaça el correu on t'escriuen els hostes i Fondas redactarà les respostes de la nit perquè les revisis. Ho pots fer quan vulguis.",
+    "gmailCta": "Connecta Gmail →"
+  },
+  "setup": {
+    "bannerTitle": "Acaba la configuració — connecta el teu PMS",
+    "bannerBody": "Fondas no té res per llegir fins que connectis el teu sistema de gestió hotelera.",
+    "bannerCta": "Acaba la configuració"
   },
   "dashboardNav": {
     "briefing": "Resum",
@@ -253,7 +282,8 @@
     "analytics": "Analítica",
     "chat": "Chat",
     "waitingOne": "{count} missatge pendent",
-    "waitingOther": "{count} missatges pendents"
+    "waitingOther": "{count} missatges pendents",
+    "menu": "Menú"
   },
   "concierge": {
     "eyebrow": "Hostes allotjats",
@@ -263,7 +293,10 @@
   "communications": {
     "eyebrow": "Missatges d'hostes",
     "title": "Comunicacions",
-    "emptyState": "No hi ha missatges d'hostes ara mateix."
+    "emptyState": "No hi ha missatges d'hostes ara mateix.",
+    "presyncTitle": "Connecta la bústia on t'escriuen els hostes",
+    "presyncBody": "Fondas llegeix el correu nocturn dels hostes, dedueix qui pregunta i amb quina urgència, i deixa una resposta redactada perquè la revisis. Enllaça la bústia i els primers esborranys apareixeran en menys d'una hora.",
+    "presyncCta": "Connecta Gmail"
   },
   "analytics": {
     "eyebrow": "Rendiment",
@@ -306,8 +339,8 @@
       "lowOccupancyOthers": "El {date} només està al {percent}%, i hi ha {others} nits més fluixes."
     },
     "presyncTitle": "Connecta el teu PMS per veure el dia d'avui",
-    "presyncBody": "Fondas llegeix l'ocupació, les entrades i les sortides directament del teu sistema de gestió hotelera. Connecta'l a Configuració → Integracions i aquesta pàgina s'omplirà amb les dades reals del teu hotel.",
-    "presyncCta": "Anar a Configuració"
+    "presyncBody": "L'ocupació, les arribades, les sortides i la teva llista de tasques surten directament del teu sistema de gestió hotelera. Connecta'l i aquesta pàgina s'omplirà amb les dades reals del teu hotel.",
+    "presyncCta": "Connecta el teu PMS"
   },
   "briefing": {
     "title": "Resum matinal",
@@ -331,7 +364,13 @@
     "sendHour": "Hora d'enviament",
     "historyTitle": "Historial de resums",
     "openBrief": "Obre",
-    "backToToday": "Torna al resum d'avui"
+    "backToToday": "Torna al resum d'avui",
+    "presyncTitle": "Aquí comença el teu resum matinal",
+    "presyncBody": "Cada matí Fondas t'escriu un comunicat: qui arriba, què ha entrat durant la nit i què necessita una decisió. Primer li calen les teves reserves.",
+    "presyncCta": "Connecta el teu PMS",
+    "syncingTitle": "La teva primera sincronització no ha acabat",
+    "syncingBody": "El teu PMS està connectat i Fondas està llegint les teves reserves. El teu primer resum s'escriurà quan acabi.",
+    "syncingCta": "Mira la sincronització"
   },
   "emails": {
     "title": "Correus",
@@ -348,6 +387,7 @@
     "needAttentionBannerOther": "{count} correus necessiten la teva atenció personal — no s'ha generat cap esborrany amb IA.",
     "noEmails": "Encara no hi ha correus.",
     "selectPrompt": "Selecciona un correu per revisar-lo.",
+    "backToList": "Tots els missatges",
     "unknownSender": "Remitent desconegut",
     "noSubject": "(sense assumpte)",
     "emptyMessage": "(missatge buit)",
@@ -404,7 +444,10 @@
     "guest": "Hoste",
     "arrives": "Arriba el {date}",
     "confirmBulkOne": "Vols enviar el {count} seguiment pendent?",
-    "confirmBulkOther": "Vols enviar els {count} seguiments pendents?"
+    "confirmBulkOther": "Vols enviar els {count} seguiments pendents?",
+    "presyncTitle": "El seguiment comença quan hi hagi les teves reserves",
+    "presyncBody": "Fondas detecta els hostes confirmats que arriben els propers set dies sense hora d'arribada, redacta una nota breu per demanar-la i arxiva les respostes. Primer li cal el teu PMS.",
+    "presyncCta": "Connecta el teu PMS"
   },
   "askYourHotel": {
     "label": "Pregunta al teu hotel",

@@ -44,35 +44,8 @@
     "draftBody": "Good evening Laura — 21:40 is no problem at all: reception is staffed until midnight and your keys will be ready. For the car, we work with the garage on Carrer del Pi, two minutes away (€24 per night). Shall I reserve a space for Friday?"
   },
   "trust": {
-    "worksWith": "Works with"
-  },
-  "socialProof": {
-    "logosLabel": "Trusted by independents like…",
-    "placeholderTag": "Placeholder",
-    "onboardingNote": "The first 20 hotels are onboarding now.",
-    "logo1": "Logo 01",
-    "logo2": "Logo 02",
-    "logo3": "Logo 03",
-    "logo4": "Logo 04",
-    "logo5": "Logo 05",
-    "quote1": "Placeholder quote — one line on how the morning brief changed the start of the day.",
-    "metric1": "6 h",
-    "metricLabel1": "saved each week",
-    "name1": "Name to confirm",
-    "role1": "General manager",
-    "property1": "Placeholder property · 48 rooms",
-    "quote2": "Placeholder quote — one line on guest email being answered before the desk opens.",
-    "metric2": "92%",
-    "metricLabel2": "of email drafted",
-    "name2": "Name to confirm",
-    "role2": "Front-office manager",
-    "property2": "Placeholder property · 26 rooms",
-    "quote3": "Placeholder quote — one line on arrival times landing without anyone chasing them.",
-    "metric3": "3 min",
-    "metricLabel3": "average review time",
-    "name3": "Name to confirm",
-    "role3": "Owner",
-    "property3": "Placeholder property · 74 rooms"
+    "worksWith": "Works with",
+    "onboardingNote": "Now onboarding our first hotels."
   },
   "featuresSection": {
     "eyebrow": "What Fondas does",
@@ -184,11 +157,40 @@
     "cookies": "Cookies",
     "security": "Security",
     "newsletterTitle": "Product notes, once a month.",
-    "newsletterHint": "What shipped, what's next, and what we're learning from the first 20 hotels.",
+    "newsletterHint": "What shipped, what's next, and what we're learning from the hotels we're onboarding.",
     "newsletterPlaceholder": "you@yourhotel.com",
     "newsletterButton": "Subscribe",
-    "newsletterNote": "Placeholder — this form isn't connected yet.",
+    "newsletterSending": "Sending…",
+    "newsletterSent": "Check your inbox — we've sent you a link to confirm. You're not subscribed until you do.",
+    "newsletterInvalid": "That doesn't look like an email address.",
+    "newsletterError": "Something went wrong at our end. Please try again in a moment.",
+    "newsletterPrivacy": "One email a month, unsubscribe any time. We only use your address for these notes —",
     "placeholderNote": "° Placeholder link — not live yet."
+  },
+  "newsletterEmail": {
+    "subject": "Confirm your Fondas subscription",
+    "heading": "One click and you're on the list.",
+    "body": "You asked for Fondas product notes — one email a month on what shipped, what's next, and what we're learning. Confirm below and we'll add you.",
+    "button": "Confirm subscription",
+    "ignore": "Didn't ask for this? Ignore this email and nothing happens — we won't add you, and we won't write again.",
+    "footer": "Sent by Fondas because someone entered this address on fondas.app."
+  },
+  "newsletterConfirm": {
+    "heading": "Confirm your subscription",
+    "body": "One last step: press the button to add this address to Fondas product notes.",
+    "button": "Confirm subscription",
+    "working": "Confirming…",
+    "doneHeading": "You're on the list.",
+    "doneBody": "Product notes will arrive about once a month. Every one has an unsubscribe link.",
+    "alreadyHeading": "You're already on the list.",
+    "alreadyBody": "This address was confirmed earlier — there's nothing more to do.",
+    "expiredHeading": "This link has expired.",
+    "expiredBody": "Confirmation links last seven days. Enter your address again on the site and we'll send a fresh one.",
+    "invalidHeading": "This link isn't valid.",
+    "invalidBody": "It may have already been used, or been replaced by a newer one. Enter your address again on the site to get a fresh link.",
+    "errorHeading": "Something went wrong.",
+    "errorBody": "We couldn't confirm your subscription just now. Please try the link again in a moment.",
+    "backHome": "Back to fondas.app"
   },
   "sampleBrief": {
     "title": "Morning brief",
@@ -213,29 +215,56 @@
     "signInLink": "Sign in"
   },
   "onboarding": {
-    "title": "Set up your hotel",
-    "desc": "A few details so Fondas can tailor briefings and sync your PMS.",
     "hotelName": "Hotel name",
     "hotelNamePlaceholder": "The Grand Riverside",
     "rooms": "Number of rooms",
     "roomsPlaceholder": "80",
     "timezone": "Timezone",
-    "pms": "Property management system",
+    "timezoneHint": "Used for your morning brief, and for what “today” means in every number Fondas shows you.",
     "settingUp": "Setting up…",
-    "createHotel": "Create hotel",
+    "continue": "Continue",
     "stepLabel": "Step {current} of {total}",
     "step1Title": "Your property",
-    "step1Desc": "The basics, so Fondas can tailor your briefs.",
-    "step2Title": "Connect your systems",
-    "step2Desc": "Choose your PMS and timezone — you'll link the accounts next.",
-    "step3Title": "You're all set",
-    "step3Desc": "Here's what Fondas starts doing the moment setup finishes.",
-    "back": "Back",
-    "continue": "Continue",
-    "ready1": "Draft replies to overnight guest email",
-    "ready2": "Chase missing arrival times automatically",
-    "ready3": "Deliver your morning brief before the desk opens",
-    "ready4": "Answer questions about your hotel on demand"
+    "step1Desc": "Three things Fondas can't work without.",
+    "step2Title": "Connect your PMS",
+    "step2Desc": "This is where your bookings come from. Nothing else works until it's connected.",
+    "step3Title": "Your first sync",
+    "step3Desc": "Reading your bookings now — this usually takes under a minute.",
+    "step4Title": "You're set up",
+    "step4Desc": "Fondas has your bookings and starts work tonight.",
+    "step4DescBrief": "Your first brief is written and waiting.",
+    "step4DescSkipped": "Your hotel is created — but Fondas has no bookings to work from yet.",
+    "skipPms": "Skip for now →",
+    "skipPmsNote": "You can connect later from the dashboard. Until you do, Fondas has no bookings to read — so no morning brief, no arrivals, and no check-in chasing.",
+    "syncing": "Reading your bookings…",
+    "syncingNote": "Fondas is pulling the fortnight either side of today from your PMS. Leave this open — it usually takes under a minute.",
+    "syncFailed": "The sync didn't finish.",
+    "syncFailedNote": "Your PMS is connected, so Fondas will try again on its own within the hour. You can also retry now.",
+    "continueAnyway": "Continue anyway",
+    "syncFoundOne": "We found {count} reservation.",
+    "syncFoundOther": "We found {count} reservations.",
+    "syncFoundNone": "No reservations in the fortnight around today.",
+    "syncFoundNoneNote": "That's what your PMS returned. If it looks wrong, check the connection in Settings — otherwise Fondas will pick new bookings up as they come in.",
+    "firstBriefAt": "Your first brief arrives tomorrow at {time}.",
+    "generatePreview": "Generate a preview brief now",
+    "generatingPreview": "Writing your brief…",
+    "skipPreview": "Skip — wait for tomorrow's",
+    "readFirstBrief": "Read your first brief →",
+    "goToDashboard": "Go to the dashboard",
+    "connectPmsNow": "Connect your PMS",
+    "next1": "A morning brief lands before the desk opens.",
+    "next2": "Arrival times get chased automatically.",
+    "next3": "Ask anything about your hotel from the chat button.",
+    "next1Skipped": "Connect your PMS and Fondas fills in straight away.",
+    "next2Skipped": "Until then the dashboard stays empty — nothing is broken.",
+    "gmailTitle": "Optional: connect your inbox",
+    "gmailDesc": "Link the mailbox guests write to and Fondas drafts overnight replies for you to review. You can do this any time.",
+    "gmailCta": "Connect Gmail →"
+  },
+  "setup": {
+    "bannerTitle": "Finish setup — connect your PMS",
+    "bannerBody": "Fondas has nothing to read until your property management system is connected.",
+    "bannerCta": "Finish setup"
   },
   "dashboardNav": {
     "briefing": "Briefing",
@@ -253,7 +282,8 @@
     "analytics": "Analytics",
     "chat": "Chat",
     "waitingOne": "{count} message waiting",
-    "waitingOther": "{count} messages waiting"
+    "waitingOther": "{count} messages waiting",
+    "menu": "Menu"
   },
   "concierge": {
     "eyebrow": "In-house guests",
@@ -263,7 +293,10 @@
   "communications": {
     "eyebrow": "Guest messages",
     "title": "Communications",
-    "emptyState": "No guest messages right now."
+    "emptyState": "No guest messages right now.",
+    "presyncTitle": "Connect the inbox guests write to",
+    "presyncBody": "Fondas reads overnight guest email, works out who's asking and how urgent it is, and has a reply drafted for you to check. Link the mailbox and the first drafts appear within the hour.",
+    "presyncCta": "Connect Gmail"
   },
   "analytics": {
     "eyebrow": "Performance",
@@ -306,8 +339,8 @@
       "lowOccupancyOthers": "{date} is only {percent}% full, and {others} other nights are soft."
     },
     "presyncTitle": "Connect your PMS to see today",
-    "presyncBody": "Fondas reads occupancy, arrivals and departures straight from your property management system. Connect it in Settings → Integrations and this page fills in with your hotel's real numbers.",
-    "presyncCta": "Go to Settings"
+    "presyncBody": "Occupancy, arrivals, departures and your to-do list all read straight from your property management system. Connect it and this page fills in with your hotel's real numbers.",
+    "presyncCta": "Connect your PMS"
   },
   "briefing": {
     "title": "Morning briefing",
@@ -331,7 +364,13 @@
     "sendHour": "Send time",
     "historyTitle": "Brief history",
     "openBrief": "Open",
-    "backToToday": "Back to today's brief"
+    "backToToday": "Back to today's brief",
+    "presyncTitle": "Your morning brief starts here",
+    "presyncBody": "Every morning Fondas writes you a handover: who's arriving, what came in overnight, and what needs a decision. It needs your bookings first.",
+    "presyncCta": "Connect your PMS",
+    "syncingTitle": "Your first sync hasn't finished",
+    "syncingBody": "Your PMS is connected and Fondas is reading your bookings. Your first brief is written as soon as that's done.",
+    "syncingCta": "Check the sync"
   },
   "emails": {
     "title": "Emails",
@@ -348,6 +387,7 @@
     "needAttentionBannerOther": "{count} emails need your personal attention — no AI draft was generated.",
     "noEmails": "No emails yet.",
     "selectPrompt": "Select an email to review.",
+    "backToList": "All messages",
     "unknownSender": "Unknown sender",
     "noSubject": "(no subject)",
     "emptyMessage": "(empty message)",
@@ -404,7 +444,10 @@
     "guest": "Guest",
     "arrives": "Arrives {date}",
     "confirmBulkOne": "Send all {count} pending chaser?",
-    "confirmBulkOther": "Send all {count} pending chasers?"
+    "confirmBulkOther": "Send all {count} pending chasers?",
+    "presyncTitle": "Chasing starts once your bookings are in",
+    "presyncBody": "Fondas spots confirmed guests arriving in the next week with no arrival time, drafts a short note asking for one, and files the answers. It needs your PMS first.",
+    "presyncCta": "Connect your PMS"
   },
   "askYourHotel": {
     "label": "Ask your hotel",

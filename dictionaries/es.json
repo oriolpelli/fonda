@@ -44,35 +44,8 @@
     "draftBody": "Buenas noches, Laura: ningún problema con las 21:40, la recepción está atendida hasta medianoche y tendremos sus llaves preparadas. Para el coche, trabajamos con el parking de la calle del Pi, a dos minutos (24 € la noche). ¿Le reservo una plaza para el viernes?"
   },
   "trust": {
-    "worksWith": "Compatible con"
-  },
-  "socialProof": {
-    "logosLabel": "La confianza de independientes como…",
-    "placeholderTag": "Provisional",
-    "onboardingNote": "Los primeros 20 hoteles ya se están incorporando.",
-    "logo1": "Logo 01",
-    "logo2": "Logo 02",
-    "logo3": "Logo 03",
-    "logo4": "Logo 04",
-    "logo5": "Logo 05",
-    "quote1": "Cita provisional — una línea sobre cómo el resumen matinal cambió el inicio del día.",
-    "metric1": "6 h",
-    "metricLabel1": "ahorradas cada semana",
-    "name1": "Nombre por confirmar",
-    "role1": "Dirección del hotel",
-    "property1": "Alojamiento provisional · 48 habitaciones",
-    "quote2": "Cita provisional — una línea sobre el correo de huéspedes contestado antes de abrir recepción.",
-    "metric2": "92%",
-    "metricLabel2": "del correo redactado",
-    "name2": "Nombre por confirmar",
-    "role2": "Jefatura de recepción",
-    "property2": "Alojamiento provisional · 26 habitaciones",
-    "quote3": "Cita provisional — una línea sobre las horas de llegada que llegan solas, sin reclamarlas.",
-    "metric3": "3 min",
-    "metricLabel3": "de revisión de media",
-    "name3": "Nombre por confirmar",
-    "role3": "Propiedad",
-    "property3": "Alojamiento provisional · 74 habitaciones"
+    "worksWith": "Compatible con",
+    "onboardingNote": "Estamos incorporando nuestros primeros hoteles."
   },
   "featuresSection": {
     "eyebrow": "Qué hace Fondas",
@@ -184,11 +157,40 @@
     "cookies": "Cookies",
     "security": "Seguridad",
     "newsletterTitle": "Notas de producto, una vez al mes.",
-    "newsletterHint": "Qué hemos lanzado, qué viene y qué aprendemos de los primeros 20 hoteles.",
+    "newsletterHint": "Qué hemos lanzado, qué viene y qué aprendemos de los hoteles que estamos incorporando.",
     "newsletterPlaceholder": "tu@tuhotel.com",
     "newsletterButton": "Suscribirme",
-    "newsletterNote": "Provisional — este formulario aún no está conectado.",
+    "newsletterSending": "Enviando…",
+    "newsletterSent": "Revisa tu correo: te hemos enviado un enlace para confirmar. No estarás suscrito hasta que lo hagas.",
+    "newsletterInvalid": "Esto no parece una dirección de correo.",
+    "newsletterError": "Algo ha fallado por nuestra parte. Inténtalo de nuevo en un momento.",
+    "newsletterPrivacy": "Un correo al mes, puedes darte de baja cuando quieras. Solo usamos tu dirección para estas notas —",
     "placeholderNote": "° Enlace provisional — todavía no está activo."
+  },
+  "newsletterEmail": {
+    "subject": "Confirma tu suscripción a Fondas",
+    "heading": "Un clic y ya estás en la lista.",
+    "body": "Has pedido las notas de producto de Fondas: un correo al mes sobre qué hemos lanzado, qué viene y qué vamos aprendiendo. Confirma abajo y te añadimos.",
+    "button": "Confirmar suscripción",
+    "ignore": "¿No lo has pedido? Ignora este correo y no pasará nada: no te añadiremos ni volveremos a escribirte.",
+    "footer": "Enviado por Fondas porque alguien introdujo esta dirección en fondas.app."
+  },
+  "newsletterConfirm": {
+    "heading": "Confirma tu suscripción",
+    "body": "Último paso: pulsa el botón para añadir esta dirección a las notas de producto de Fondas.",
+    "button": "Confirmar suscripción",
+    "working": "Confirmando…",
+    "doneHeading": "Ya estás en la lista.",
+    "doneBody": "Las notas de producto llegarán aproximadamente una vez al mes. Todas incluyen un enlace para darte de baja.",
+    "alreadyHeading": "Ya estabas en la lista.",
+    "alreadyBody": "Esta dirección se confirmó antes: no hay nada más que hacer.",
+    "expiredHeading": "Este enlace ha caducado.",
+    "expiredBody": "Los enlaces de confirmación duran siete días. Vuelve a introducir tu dirección en la web y te enviaremos uno nuevo.",
+    "invalidHeading": "Este enlace no es válido.",
+    "invalidBody": "Puede que ya se haya usado o que otro más reciente lo haya sustituido. Vuelve a introducir tu dirección en la web para recibir un enlace nuevo.",
+    "errorHeading": "Algo ha fallado.",
+    "errorBody": "No hemos podido confirmar tu suscripción ahora mismo. Prueba el enlace otra vez en un momento.",
+    "backHome": "Volver a fondas.app"
   },
   "sampleBrief": {
     "title": "Resumen matinal",
@@ -213,29 +215,56 @@
     "signInLink": "Inicia sesión"
   },
   "onboarding": {
-    "title": "Configura tu hotel",
-    "desc": "Unos pocos datos para que Fondas adapte los resúmenes y sincronice tu PMS.",
     "hotelName": "Nombre del hotel",
     "hotelNamePlaceholder": "El Gran Ribera",
     "rooms": "Número de habitaciones",
     "roomsPlaceholder": "80",
     "timezone": "Zona horaria",
-    "pms": "Sistema de gestión hotelera (PMS)",
+    "timezoneHint": "Se usa para tu resumen matinal y para saber qué significa «hoy» en cada dato que te muestra Fondas.",
     "settingUp": "Configurando…",
-    "createHotel": "Crear hotel",
+    "continue": "Continuar",
     "stepLabel": "Paso {current} de {total}",
     "step1Title": "Tu alojamiento",
-    "step1Desc": "Lo básico, para que Fondas adapte tus resúmenes.",
-    "step2Title": "Conecta tus sistemas",
-    "step2Desc": "Elige tu PMS y tu zona horaria — vincularás las cuentas a continuación.",
-    "step3Title": "Todo listo",
-    "step3Desc": "Esto es lo que Fondas empieza a hacer en cuanto termines la configuración.",
-    "back": "Atrás",
-    "continue": "Continuar",
-    "ready1": "Redactar respuestas al correo de huéspedes de la noche",
-    "ready2": "Pedir automáticamente las horas de llegada que faltan",
-    "ready3": "Entregar tu resumen matinal antes de abrir recepción",
-    "ready4": "Responder preguntas sobre tu hotel al instante"
+    "step1Desc": "Tres datos sin los que Fondas no puede trabajar.",
+    "step2Title": "Conecta tu PMS",
+    "step2Desc": "De aquí salen tus reservas. Nada más funciona hasta que esté conectado.",
+    "step3Title": "Tu primera sincronización",
+    "step3Desc": "Estamos leyendo tus reservas — suele tardar menos de un minuto.",
+    "step4Title": "Todo listo",
+    "step4Desc": "Fondas ya tiene tus reservas y empieza a trabajar esta noche.",
+    "step4DescBrief": "Tu primer resumen ya está escrito y te espera.",
+    "step4DescSkipped": "Tu hotel está creado, pero Fondas todavía no tiene reservas con las que trabajar.",
+    "skipPms": "Omitir por ahora →",
+    "skipPmsNote": "Puedes conectarlo más tarde desde el panel. Hasta entonces Fondas no tiene reservas que leer: no habrá resumen matinal, ni llegadas, ni seguimiento de check-in.",
+    "syncing": "Leyendo tus reservas…",
+    "syncingNote": "Fondas está importando las dos semanas anteriores y posteriores a hoy desde tu PMS. Deja esta ventana abierta — suele tardar menos de un minuto.",
+    "syncFailed": "La sincronización no terminó.",
+    "syncFailedNote": "Tu PMS está conectado, así que Fondas lo intentará de nuevo por su cuenta dentro de la próxima hora. También puedes reintentarlo ahora.",
+    "continueAnyway": "Continuar igualmente",
+    "syncFoundOne": "Hemos encontrado {count} reserva.",
+    "syncFoundOther": "Hemos encontrado {count} reservas.",
+    "syncFoundNone": "No hay reservas en las dos semanas alrededor de hoy.",
+    "syncFoundNoneNote": "Es lo que ha devuelto tu PMS. Si te parece incorrecto, revisa la conexión en Ajustes; si no, Fondas irá recogiendo las reservas nuevas según entren.",
+    "firstBriefAt": "Tu primer resumen llegará mañana a las {time}.",
+    "generatePreview": "Generar un resumen de prueba ahora",
+    "generatingPreview": "Escribiendo tu resumen…",
+    "skipPreview": "Omitir — esperar al de mañana",
+    "readFirstBrief": "Leer tu primer resumen →",
+    "goToDashboard": "Ir al panel",
+    "connectPmsNow": "Conectar tu PMS",
+    "next1": "Cada mañana recibirás un resumen antes de que abra recepción.",
+    "next2": "Las horas de llegada se piden automáticamente.",
+    "next3": "Pregunta lo que quieras sobre tu hotel desde el botón de chat.",
+    "next1Skipped": "Conecta tu PMS y Fondas se llenará al instante.",
+    "next2Skipped": "Hasta entonces el panel estará vacío: no es que algo falle.",
+    "gmailTitle": "Opcional: conecta tu buzón",
+    "gmailDesc": "Enlaza el correo al que escriben los huéspedes y Fondas redactará las respuestas de la noche para que las revises. Puedes hacerlo cuando quieras.",
+    "gmailCta": "Conectar Gmail →"
+  },
+  "setup": {
+    "bannerTitle": "Termina la configuración — conecta tu PMS",
+    "bannerBody": "Fondas no tiene nada que leer hasta que conectes tu sistema de gestión hotelera.",
+    "bannerCta": "Terminar configuración"
   },
   "dashboardNav": {
     "briefing": "Resumen",
@@ -253,7 +282,8 @@
     "analytics": "Analítica",
     "chat": "Chat",
     "waitingOne": "{count} mensaje pendiente",
-    "waitingOther": "{count} mensajes pendientes"
+    "waitingOther": "{count} mensajes pendientes",
+    "menu": "Menú"
   },
   "concierge": {
     "eyebrow": "Huéspedes alojados",
@@ -263,7 +293,10 @@
   "communications": {
     "eyebrow": "Mensajes de huéspedes",
     "title": "Comunicaciones",
-    "emptyState": "No hay mensajes de huéspedes ahora mismo."
+    "emptyState": "No hay mensajes de huéspedes ahora mismo.",
+    "presyncTitle": "Conecta el buzón al que escriben tus huéspedes",
+    "presyncBody": "Fondas lee el correo nocturno de los huéspedes, deduce quién pregunta y con qué urgencia, y deja una respuesta redactada para que la revises. Enlaza el buzón y los primeros borradores aparecerán en menos de una hora.",
+    "presyncCta": "Conectar Gmail"
   },
   "analytics": {
     "eyebrow": "Rendimiento",
@@ -306,8 +339,8 @@
       "lowOccupancyOthers": "El {date} solo está al {percent}%, y hay {others} noches más flojas."
     },
     "presyncTitle": "Conecta tu PMS para ver el día de hoy",
-    "presyncBody": "Fondas lee la ocupación, las entradas y las salidas directamente de tu sistema de gestión hotelera. Conéctalo en Configuración → Integraciones y esta página se llenará con los datos reales de tu hotel.",
-    "presyncCta": "Ir a Configuración"
+    "presyncBody": "La ocupación, las llegadas, las salidas y tu lista de tareas salen directamente de tu sistema de gestión hotelera. Conéctalo y esta página se llenará con los datos reales de tu hotel.",
+    "presyncCta": "Conectar tu PMS"
   },
   "briefing": {
     "title": "Resumen matutino",
@@ -331,7 +364,13 @@
     "sendHour": "Hora de envío",
     "historyTitle": "Historial de resúmenes",
     "openBrief": "Abrir",
-    "backToToday": "Volver al resumen de hoy"
+    "backToToday": "Volver al resumen de hoy",
+    "presyncTitle": "Aquí empieza tu resumen matinal",
+    "presyncBody": "Cada mañana Fondas te escribe un parte: quién llega, qué ha entrado durante la noche y qué necesita una decisión. Primero necesita tus reservas.",
+    "presyncCta": "Conectar tu PMS",
+    "syncingTitle": "Tu primera sincronización no ha terminado",
+    "syncingBody": "Tu PMS está conectado y Fondas está leyendo tus reservas. Tu primer resumen se escribirá en cuanto termine.",
+    "syncingCta": "Ver la sincronización"
   },
   "emails": {
     "title": "Correos",
@@ -348,6 +387,7 @@
     "needAttentionBannerOther": "{count} correos necesitan tu atención personal — no se generó borrador con IA.",
     "noEmails": "Aún no hay correos.",
     "selectPrompt": "Selecciona un correo para revisarlo.",
+    "backToList": "Todos los mensajes",
     "unknownSender": "Remitente desconocido",
     "noSubject": "(sin asunto)",
     "emptyMessage": "(mensaje vacío)",
@@ -404,7 +444,10 @@
     "guest": "Huésped",
     "arrives": "Llega el {date}",
     "confirmBulkOne": "¿Enviar el {count} seguimiento pendiente?",
-    "confirmBulkOther": "¿Enviar los {count} seguimientos pendientes?"
+    "confirmBulkOther": "¿Enviar los {count} seguimientos pendientes?",
+    "presyncTitle": "El seguimiento empieza cuando estén tus reservas",
+    "presyncBody": "Fondas detecta a los huéspedes confirmados que llegan en los próximos siete días sin hora de llegada, redacta una nota breve para pedírsela y archiva las respuestas. Primero necesita tu PMS.",
+    "presyncCta": "Conectar tu PMS"
   },
   "askYourHotel": {
     "label": "Pregunta a tu hotel",

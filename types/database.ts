@@ -437,6 +437,45 @@ export type Database = {
           },
         ];
       };
+      // Marketing newsletter list (migration 0016). No hotel_id: these rows
+      // belong to members of the public, not to a hotel, so RLS denies every
+      // client and only the service_role key reaches them.
+      newsletter_subscribers: {
+        Row: {
+          id: string;
+          email: string;
+          status: string;
+          locale: string;
+          confirm_token_hash: string | null;
+          confirm_sent_at: string | null;
+          confirmed_at: string | null;
+          unsubscribed_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          status?: string;
+          locale?: string;
+          confirm_token_hash?: string | null;
+          confirm_sent_at?: string | null;
+          confirmed_at?: string | null;
+          unsubscribed_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          status?: string;
+          locale?: string;
+          confirm_token_hash?: string | null;
+          confirm_sent_at?: string | null;
+          confirmed_at?: string | null;
+          unsubscribed_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       chat_logs: {
         Row: {
           id: string;

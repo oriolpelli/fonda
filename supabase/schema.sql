@@ -505,6 +505,51 @@ create policy "cron_logs: read own hotel"
 
 
 -- ############################################################################
+-- 0016 — newsletter subscribers (double opt-in)
+--
+-- The one table with no hotel_id and no policies. These addresses come from
+-- the public marketing footer, so there is no hotel to scope them to and no
+-- signed-in user at capture time. RLS is enabled with NO policy, which denies
+-- both the anon and the authenticated key outright; only the service_role key
+-- (bypasses RLS) reaches this table, from the newsletter server action.
+-- ############################################################################
+
+create table public.newsletter_subscribers (
+  id                 uuid primary key default gen_random_uuid(),
+  email              text not null,
+  status             text not null default 'pending'
+                       check (status in ('pending', 'subscribed', 'unsubscribed')),
+  locale             text not null default 'en'
+                       check (locale in ('en', 'es', 'ca')),
+  confirm_token_hash text,
+  confirm_sent_at    timestamptz,
+  confirmed_at       timestamptz,
+  unsubscribed_at    timestamptz,
+  created_at         timestamptz not null default now()
+);
+
+comment on table public.newsletter_subscribers is
+  'Marketing newsletter list, double opt-in. Public PII: no hotel owns these '
+  'rows, so RLS denies all client access and only the service_role key writes.';
+comment on column public.newsletter_subscribers.status is
+  'pending = confirmation email sent, no consent yet — NEVER send marketing to '
+  'a pending row. subscribed = confirmed via the emailed link. unsubscribed = '
+  'opted out; keep the row so a later re-subscribe is still auditable.';
+comment on column public.newsletter_subscribers.confirm_token_hash is
+  'SHA-256 of the confirmation token, never the token itself. Cleared once '
+  'confirmed.';
+
+create unique index newsletter_subscribers_email_key
+  on public.newsletter_subscribers (lower(email));
+
+create index newsletter_subscribers_token_idx
+  on public.newsletter_subscribers (confirm_token_hash)
+  where confirm_token_hash is not null;
+
+alter table public.newsletter_subscribers enable row level security;
+
+
+-- ############################################################################
 -- reload PostgREST schema cache so RPCs resolve immediately
 -- ############################################################################
 
