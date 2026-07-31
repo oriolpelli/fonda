@@ -20,6 +20,16 @@ export function apaleoRedirectUri(request: Request): string {
 }
 
 /**
+ * Where the callback should land. Apaleo's redirect URI is fixed and registered
+ * with them, so the destination can't travel in the URL — it rides in a
+ * short-lived cookie set here instead, alongside the CSRF state.
+ *
+ * Only ever holds the literal "onboarding": never a caller-supplied URL, so
+ * this can't be turned into an open redirect.
+ */
+export const APALEO_RETURN_COOKIE = "apaleo_oauth_return";
+
+/**
  * Starts the Apaleo OAuth2 authorization-code flow: sets a CSRF `state` cookie
  * and redirects the GM to Apaleo's consent screen.
  */
@@ -57,12 +67,16 @@ export async function GET(request: Request) {
   authorizeUrl.searchParams.set("state", state);
 
   const response = NextResponse.redirect(authorizeUrl);
-  response.cookies.set("apaleo_oauth_state", state, {
+  const cookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "lax" as const,
     path: "/connect/apaleo",
     maxAge: 600,
-  });
+  };
+  response.cookies.set("apaleo_oauth_state", state, cookieOptions);
+  if (new URL(request.url).searchParams.get("from") === "onboarding") {
+    response.cookies.set(APALEO_RETURN_COOKIE, "onboarding", cookieOptions);
+  }
   return response;
 }

@@ -12,8 +12,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export function ApaleoConnectionCard({ connected }: { connected: boolean }) {
+export function ApaleoConnectionCard({
+  connected,
+  fromOnboarding = false,
+}: {
+  connected: boolean;
+  /**
+   * Tells the OAuth round-trip to come back to the setup wizard instead of
+   * Settings, so connecting mid-onboarding doesn't drop you out of it.
+   */
+  fromOnboarding?: boolean;
+}) {
   const { dict } = useDictionary();
+  const authorizeHref = fromOnboarding
+    ? "/connect/apaleo?from=onboarding"
+    : "/connect/apaleo";
   return (
     <Card>
       <CardHeader>
@@ -27,12 +40,11 @@ export function ApaleoConnectionCard({ connected }: { connected: boolean }) {
             : dict.settings.apaleoNotConnected}
         </p>
       </CardContent>
-      <CardFooter className="flex gap-3">
+      <CardFooter className="flex flex-wrap gap-3">
         <Button asChild>
           {/* Full-page navigation to an OAuth route handler (not a page), so a
               plain anchor — next/link would prefetch/SPA-navigate incorrectly. */}
-          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a href="/connect/apaleo">
+          <a href={authorizeHref}>
             {connected
               ? dict.settings.reconnectApaleo
               : dict.settings.connectApaleo}

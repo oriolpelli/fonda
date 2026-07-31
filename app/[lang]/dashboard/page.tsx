@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { FirstRunState } from "@/components/dashboard/first-run-state";
 import { NeedsReplyCard } from "@/components/dashboard/needs-reply-card";
 import { OccupancyStrip } from "@/components/dashboard/occupancy-strip";
 import { StatRow, type Stat } from "@/components/dashboard/stat-row";
@@ -70,23 +71,18 @@ export default async function DashboardPage({
 
   // Nothing connected: there is no "today" to show yet, so say so plainly and
   // point at the one action that fixes it, rather than rendering four zeroes.
+  // The action is the setup wizard, not Settings — finishing setup is a guided
+  // flow that ends in a real brief.
   if (!snapshot.connected) {
     return (
       <div className="flex flex-col gap-8">
         {header}
-        <section className="rounded-[16px] border border-border bg-muted px-8 py-14 text-center">
-          <h2 className="text-xl font-semibold tracking-[-0.02em] text-foreground">
-            {dict.home.presyncTitle}
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-            {dict.home.presyncBody}
-          </p>
-          <Button asChild className="mt-6">
-            <Link href={localizedHref(locale, "/dashboard/settings")}>
-              {dict.home.presyncCta}
-            </Link>
-          </Button>
-        </section>
+        <FirstRunState
+          title={dict.home.presyncTitle}
+          body={dict.home.presyncBody}
+          ctaLabel={dict.home.presyncCta}
+          ctaHref={localizedHref(locale, "/onboarding/connect")}
+        />
       </div>
     );
   }
@@ -150,7 +146,10 @@ export default async function DashboardPage({
         softBelowPct={LOW_OCCUPANCY_PCT}
       />
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* grid-cols-1 rather than a bare `grid`: Tailwind's grid-cols-* tracks
+          are minmax(0,1fr), so a long unbreakable line inside a card can't
+          widen the column past the viewport. An implicit `auto` track can. */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <NeedsReplyCard
           dict={dict}
           locale={locale}

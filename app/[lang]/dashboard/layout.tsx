@@ -4,6 +4,7 @@ import { logout } from "@/app/[lang]/(auth)/actions";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { AskYourHotel } from "@/components/dashboard/ask-your-hotel";
 import { deriveConnectionState } from "@/components/dashboard/connection-status";
+import { SetupBanner } from "@/components/dashboard/setup-banner";
 import { Sidebar, type NavItem } from "@/components/dashboard/sidebar";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { plural } from "@/lib/i18n/format";
@@ -131,9 +132,33 @@ export default async function DashboardLayout({
         signOutAction={logout}
         signOutLabel={dict.common.signOut}
         locale={locale}
+        menuLabel={dict.sidebar.menu}
+        openLabel={dict.nav.openMenu}
+        closeLabel={dict.nav.closeMenu}
       />
-      <div className="flex flex-1 flex-col pl-64">
-        <main className="mx-auto w-full max-w-[1120px] flex-1 px-8 py-10">
+      {/* pt-14 clears the fixed mobile top bar; pl-64 the desktop rail.
+
+          min-w-0 is load-bearing: a flex item defaults to `min-width: auto`,
+          so this column refused to shrink below the widest thing inside it —
+          the dashboard's 14-night strip — and pushed the entire page sideways
+          on a phone. Zeroing the minimum lets the column match the viewport
+          and leaves each scroll container to handle its own overflow. */}
+      <div className="flex min-w-0 flex-1 flex-col pt-14 md:pl-64 md:pt-0">
+        {/* The extra bottom padding on mobile keeps the floating "Ask your
+            hotel" button from covering the last row of a list. */}
+        <main className="mx-auto w-full max-w-[1120px] flex-1 px-5 pb-24 pt-6 md:px-8 md:pb-10 md:pt-10">
+          {/* No PMS means every page below is empty for a reason the page
+              itself can't explain. Say so once, at the top, wherever they are. */}
+          {!hotel?.pms_connected ? (
+            <div className="mb-8">
+              <SetupBanner
+                href={localizedHref(locale, "/onboarding/connect")}
+                title={dict.setup.bannerTitle}
+                body={dict.setup.bannerBody}
+                cta={dict.setup.bannerCta}
+              />
+            </div>
+          ) : null}
           {children}
         </main>
       </div>

@@ -29,7 +29,7 @@ export function GmailConnectionCard({ email }: { email: string | null }) {
             : dict.settings.gmailNotConnected}
         </p>
       </CardContent>
-      <CardFooter className="flex gap-3">
+      <CardFooter className="flex flex-wrap gap-3">
         <Button asChild>
           {/* Full-page navigation to an OAuth route handler (not a page), so a
               plain anchor — next/link would prefetch/SPA-navigate incorrectly. */}

@@ -6,6 +6,7 @@ import { BriefingArticle } from "@/components/dashboard/briefing-article";
 import { BriefingGenerating } from "@/components/dashboard/briefing-generating";
 import { BriefingRefreshButton } from "@/components/dashboard/briefing-refresh-button";
 import { BriefDeliverySettingsForm } from "@/components/dashboard/brief-delivery-settings-form";
+import { FirstRunState } from "@/components/dashboard/first-run-state";
 import { Button } from "@/components/ui/button";
 import type { BriefingContent } from "@/lib/briefing";
 import { intlLocale } from "@/lib/i18n/config";
@@ -59,7 +60,7 @@ export default async function BriefingPage({
 
   const { data: hotel } = await supabase
     .from("hotels")
-    .select("name, timezone")
+    .select("name, timezone, pms_connected, last_synced_at")
     .single();
 
   const tz = hotel?.timezone || "UTC";
@@ -113,6 +114,11 @@ export default async function BriefingPage({
         {briefing ? <BriefingRefreshButton /> : null}
       </div>
 
+      {/* Three ways to have no brief, and they need different answers. With no
+          PMS there is nothing to write about, so asking Claude would produce a
+          confidently empty page — say what's missing instead. With a PMS but no
+          finished sync, the data is on its way. Only past both is "generating"
+          the truth. */}
       {briefing ? (
         <>
           <BriefingArticle content={briefing} dict={dict} />
@@ -127,6 +133,20 @@ export default async function BriefingPage({
             ))}
           </div>
         </>
+      ) : !hotel?.pms_connected ? (
+        <FirstRunState
+          title={dict.briefing.presyncTitle}
+          body={dict.briefing.presyncBody}
+          ctaLabel={dict.briefing.presyncCta}
+          ctaHref={localizedHref(locale, "/onboarding/connect")}
+        />
+      ) : !hotel.last_synced_at ? (
+        <FirstRunState
+          title={dict.briefing.syncingTitle}
+          body={dict.briefing.syncingBody}
+          ctaLabel={dict.briefing.syncingCta}
+          ctaHref={localizedHref(locale, "/onboarding/sync")}
+        />
       ) : (
         <BriefingGenerating />
       )}

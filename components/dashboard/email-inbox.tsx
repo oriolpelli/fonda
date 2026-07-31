@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 import {
   approveAllStandard,
@@ -24,7 +25,20 @@ import { cn } from "@/lib/utils";
  * message and a sort toggle. Kept parameterized (empty state, icon, initial
  * sort) so the parked Concierge route can reuse it if in-house messaging comes
  * back as its own surface.
+ *
+ * Two layouts, one component. From `lg` up it's the classic two-pane inbox:
+ * list on the left, the open message on the right. Below that it becomes
+ * stacked navigation — the list, then the message, then back — which is what a
+ * phone user expects anyway. Both panes stay mounted and one is hidden with
+ * CSS, so switching costs no re-render of the draft.
+ *
+ * The split is at `lg`, not `md`: the 256px nav rail appears at `md`, which
+ * would leave a 768px tablet about 110px for the message next to the 320px
+ * list. Stacked is the honest layout at that width.
  */
+
+/** Tailwind's `lg` breakpoint — kept in sync with the `lg:` classes below. */
+const LG_QUERY = "(min-width: 64rem)";
 
 export interface InboxEmail {
   id: string;
@@ -105,6 +119,35 @@ export function EmailInbox({
   const [actionError, setActionError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const draftRef = useRef<HTMLTextAreaElement>(null);
+
+  // Which pane a phone is looking at. A deep link from the dashboard names a
+  // specific message, so it opens straight into it rather than into the list.
+  const [mobileView, setMobileView] = useState<"list" | "detail">(
+    initialSelectedId ? "detail" : "list"
+  );
+  const listRef = useRef<HTMLDivElement>(null);
+  const detailRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
+
+  // Moving between the panes on a phone is a navigation, so move focus with it
+  // — otherwise the page looks like it changed but a screen reader is still
+  // reading the pane that just disappeared. Skipped from `lg` up, where both
+  // panes are visible and nothing has navigated.
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (window.matchMedia(LG_QUERY).matches) return;
+    const pane = mobileView === "detail" ? detailRef.current : listRef.current;
+    pane?.focus();
+  }, [mobileView]);
+
+  /** Select a message, and on a phone move into it. */
+  function openEmail(id: string) {
+    setSelectedId(id);
+    setMobileView("detail");
+  }
 
   // Sorting is client-side so the toggle is instant; the server always sends
   // the same rows with their urgency already computed.
@@ -242,7 +285,14 @@ export function EmailInbox({
         </div>
       ) : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      {/* Count, sort and bulk approve all belong to the list — on a phone
+          showing one message they'd be chrome for a screen you've left. */}
+      <div
+        className={cn(
+          "flex flex-wrap items-center justify-between gap-3",
+          mobileView === "detail" && "hidden lg:flex"
+        )}
+      >
         <p className="text-sm text-muted-foreground">
           {plural(sorted.length, dict.emails.countOne, dict.emails.countOther)}
         </p>
@@ -291,19 +341,32 @@ export function EmailInbox({
         </p>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-[320px_1fr]">
-        {/* Left: list */}
-        <div className="flex max-h-[70vh] flex-col divide-y divide-border overflow-y-auto rounded-[16px] border border-border">
+      {/* minmax(0,1fr), not 1fr: a plain 1fr track takes its minimum from the
+          pane's min-content, and a long subject line would then widen the
+          whole page instead of being truncated. */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
+        {/* Left: list. On a phone it is the whole page until you tap a row, and
+            scrolls with the page rather than inside its own 70vh well. */}
+        <div
+          ref={listRef}
+          tabIndex={-1}
+          className={cn(
+            "flex flex-col divide-y divide-border overflow-hidden rounded-[16px] border border-border lg:max-h-[70vh] lg:overflow-y-auto",
+            mobileView === "detail" && "hidden lg:flex"
+          )}
+        >
           {sorted.map((email) => {
             const isSelected = email.id === selectedId;
             const note = urgencyNote(email.urgency);
             return (
               <button
                 key={email.id}
-                onClick={() => setSelectedId(email.id)}
+                onClick={() => openEmail(email.id)}
                 className={cn(
                   "flex flex-col gap-1 px-4 py-3 text-left transition-colors hover:bg-muted",
-                  isSelected && "bg-accent"
+                  // The selected row only reads as selected next to a detail
+                  // pane; on a phone the detail has replaced the list entirely.
+                  isSelected && "lg:bg-accent"
                 )}
               >
                 <div className="flex items-center justify-between gap-2">
@@ -354,10 +417,26 @@ export function EmailInbox({
           })}
         </div>
 
-        {/* Right: detail */}
-        <div className="rounded-[16px] border border-border p-5">
+        {/* Right: detail. Its own screen below `md`. */}
+        <div
+          ref={detailRef}
+          tabIndex={-1}
+          className={cn(
+            "rounded-[16px] border border-border p-4 lg:p-5",
+            mobileView === "list" && "hidden lg:block"
+          )}
+        >
           {selected ? (
             <div className="flex flex-col gap-4">
+              <button
+                type="button"
+                onClick={() => setMobileView("list")}
+                className="-ml-1 inline-flex items-center gap-1.5 self-start rounded-[8px] px-1 py-1 text-sm font-medium text-[var(--fonda-text-2)] transition-colors hover:text-foreground lg:hidden"
+              >
+                <ArrowLeft className="size-4" strokeWidth={1.5} />
+                {dict.emails.backToList}
+              </button>
+
               <div>
                 <h2 className="font-semibold">
                   {selected.subject || dict.emails.noSubject}

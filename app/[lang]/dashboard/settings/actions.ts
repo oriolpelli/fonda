@@ -346,6 +346,9 @@ export async function connectMews(
 
   revalidatePath("/dashboard/settings");
   revalidatePath("/dashboard");
+  // Connecting changes which setup step is the right one to be on, so the
+  // wizard's server components must not be served from the client router cache.
+  revalidatePath("/onboarding", "layout");
   return { ok: true, message: "MEWS connected. Your tokens are stored encrypted." };
 }
 

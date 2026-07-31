@@ -5,6 +5,8 @@ import {
   CheckinChasers,
   type ChaserCard,
 } from "@/components/dashboard/checkin-chasers";
+import { FirstRunState } from "@/components/dashboard/first-run-state";
+import { localizedHref } from "@/lib/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export async function generateMetadata({
@@ -21,8 +23,33 @@ export default async function CheckinPage({
 }: {
   params: Promise<{ lang: string }>;
 }) {
-  const { dict } = await loadDictionary((await params).lang);
+  const { locale, dict } = await loadDictionary((await params).lang);
   const supabase = await createClient();
+
+  // Chasing arrival times means knowing who is arriving, which means a PMS.
+  // Without one, "Generate now" can only fail — so don't offer it.
+  const { data: hotel } = await supabase
+    .from("hotels")
+    .select("pms_connected")
+    .maybeSingle();
+  if (!hotel?.pms_connected) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
+            {dict.checkin.title}
+          </h1>
+          <p className="text-muted-foreground">{dict.checkin.desc}</p>
+        </div>
+        <FirstRunState
+          title={dict.checkin.presyncTitle}
+          body={dict.checkin.presyncBody}
+          ctaLabel={dict.checkin.presyncCta}
+          ctaHref={localizedHref(locale, "/onboarding/connect")}
+        />
+      </div>
+    );
+  }
 
   // RLS scopes chasers to the caller's hotel.
   const { data: chasers } = await supabase

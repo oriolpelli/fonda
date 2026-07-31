@@ -112,7 +112,9 @@ export function AskYourHotel() {
         onClick={() => setOpen(true)}
         aria-label={dict.askYourHotel.label}
         className={cn(
-          "fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          // z-30: above the page and the desktop rail (z-20), but below the
+          // mobile nav drawer and its scrim, which must be able to cover it.
+          "fixed bottom-6 right-6 z-30 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           open ? "pointer-events-none scale-90 opacity-0" : "opacity-100"
         )}
       >
@@ -123,7 +125,9 @@ export function AskYourHotel() {
       <div
         aria-hidden={!open}
         className={cn(
-          "fixed bottom-6 right-6 z-50 flex h-[550px] max-h-[calc(100dvh-3rem)] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl transition-all duration-300 ease-out",
+          // The mobile cap leaves the dashboard's top bar uncovered, so the
+          // menu is still reachable with the chat open.
+          "fixed bottom-6 right-6 z-30 flex h-[550px] max-h-[calc(100dvh-6rem)] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl transition-all duration-300 ease-out md:max-h-[calc(100dvh-3rem)]",
           open
             ? "translate-y-0 opacity-100"
             : "pointer-events-none translate-y-4 opacity-0"

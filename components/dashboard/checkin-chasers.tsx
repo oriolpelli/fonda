@@ -73,7 +73,7 @@ function ChaserItem({
           placeholder={dict.checkin.chasePlaceholder}
         />
       </CardContent>
-      <CardFooter className="flex gap-2">
+      <CardFooter className="flex flex-wrap gap-2">
         <Button
           onClick={() => onSend(chaser.id, draftRef.current?.value ?? "")}
           disabled={disabled}

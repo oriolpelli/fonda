@@ -3,8 +3,10 @@ import { cookies } from "next/headers";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { EmailInbox } from "@/components/dashboard/email-inbox";
+import { FirstRunState } from "@/components/dashboard/first-run-state";
 import { InboxStats } from "@/components/dashboard/inbox-stats";
 import { loadInbox } from "@/lib/inbox";
+import { createClient } from "@/lib/supabase/server";
 // Server-readable sort contract — deliberately NOT imported from the client
 // inbox module, whose exports become throwing client references here.
 import { isSortMode, SORT_COOKIE } from "@/lib/inbox-sort";
@@ -33,11 +35,21 @@ export default async function CommunicationsPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { dict } = await loadDictionary((await params).lang);
-  const [inbox, cookieStore, query] = await Promise.all([
+  const [inbox, cookieStore, query, supabase] = await Promise.all([
     loadInbox(),
     cookies(),
     searchParams,
+    createClient(),
   ]);
+
+  // This inbox is fed by Gmail, not the PMS — a hotel can be fully synced and
+  // still have nothing here. "No guest messages right now" would be a lie when
+  // the real answer is that no mailbox is connected yet.
+  const { data: hotel } = await supabase
+    .from("hotels")
+    .select("gmail_email")
+    .maybeSingle();
+  const inboxConnected = Boolean(hotel?.gmail_email);
 
   // Read the remembered sort server-side so the list doesn't flip after paint.
   const saved = cookieStore.get(SORT_COOKIE)?.value;
@@ -61,21 +73,33 @@ export default async function CommunicationsPage({
         <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
           {dict.communications.title}
         </h1>
-        <InboxStats
-          dict={dict}
-          draftsReady={inbox.draftsReady}
-          sentToday={inbox.sentToday}
-          avgResponseHours={inbox.avgResponseHours}
-        />
+        {inboxConnected ? (
+          <InboxStats
+            dict={dict}
+            draftsReady={inbox.draftsReady}
+            sentToday={inbox.sentToday}
+            avgResponseHours={inbox.avgResponseHours}
+          />
+        ) : null}
       </div>
 
-      <EmailInbox
-        emails={inbox.emails}
-        emptyMessage={dict.communications.emptyState}
-        emptyIcon="emails"
-        initialSort={initialSort}
-        initialSelectedId={initialSelectedId}
-      />
+      {!inboxConnected && inbox.emails.length === 0 ? (
+        <FirstRunState
+          title={dict.communications.presyncTitle}
+          body={dict.communications.presyncBody}
+          ctaLabel={dict.communications.presyncCta}
+          ctaHref="/connect/gmail"
+          external
+        />
+      ) : (
+        <EmailInbox
+          emails={inbox.emails}
+          emptyMessage={dict.communications.emptyState}
+          emptyIcon="emails"
+          initialSort={initialSort}
+          initialSelectedId={initialSelectedId}
+        />
+      )}
     </div>
   );
 }

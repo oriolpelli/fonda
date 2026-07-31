@@ -1,14 +1,9 @@
-import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
-import { Wordmark } from "@/components/brand/wordmark";
-import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { OnboardingForm } from "@/components/onboarding/onboarding-form";
-import { localizedHref } from "@/lib/i18n/navigation";
-import { createClient } from "@/lib/supabase/server";
-
-export const metadata: Metadata = { title: "Welcome" };
+import { OnboardingShell } from "@/components/onboarding/onboarding-shell";
+import { loadOnboardingState, resumeHref } from "@/lib/onboarding";
 
 const FALLBACK_TIMEZONES = [
   "UTC",
@@ -29,38 +24,34 @@ function getTimezones(): string[] {
   return values && values.length > 0 ? values : FALLBACK_TIMEZONES;
 }
 
+/**
+ * Step 1 — the hotel itself. This is the only step that creates anything; from
+ * here on the wizard is working on a hotel that already exists.
+ *
+ * Anyone who already has a hotel is sent on to whichever step they left off at.
+ * That is what makes the dashboard's "Finish setup" banner work: it points
+ * here, and this lands them in the right place.
+ */
 export default async function OnboardingPage({
   params,
 }: {
   params: Promise<{ lang: string }>;
 }) {
-  const { locale } = await loadDictionary((await params).lang);
+  const { locale, dict } = await loadDictionary((await params).lang);
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    redirect(localizedHref(locale, "/login"));
-  }
-
-  // Already onboarded → straight to the dashboard.
-  const { data: profile } = await supabase
-    .from("users")
-    .select("hotel_id")
-    .eq("id", user.id)
-    .maybeSingle();
-  if (profile) {
-    redirect(localizedHref(locale, "/dashboard"));
+  const state = await loadOnboardingState();
+  if (state.hasHotel) {
+    redirect(resumeHref(locale, state));
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-muted px-4 py-12">
-      <div className="absolute right-4 top-4">
-        <LanguageSwitcher />
-      </div>
-      <Wordmark href={localizedHref(locale, "/onboarding")} />
+    <OnboardingShell
+      step={1}
+      title={dict.onboarding.step1Title}
+      description={dict.onboarding.step1Desc}
+      dict={dict}
+    >
       <OnboardingForm timezones={getTimezones()} />
-    </div>
+    </OnboardingShell>
   );
 }

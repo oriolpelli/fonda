@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 
 import { connectMews, type ConnectState } from "@/app/[lang]/dashboard/settings/actions";
@@ -31,12 +31,27 @@ function SubmitButton({ connected }: { connected: boolean }) {
   );
 }
 
-export function MewsConnectionForm({ connected }: { connected: boolean }) {
+export function MewsConnectionForm({
+  connected,
+  onConnected,
+}: {
+  connected: boolean;
+  /**
+   * Fired once the tokens verify. Settings has nowhere to go afterwards, so it
+   * omits this; the setup wizard uses it to advance to the first sync.
+   * Must be referentially stable — memoize it in the caller.
+   */
+  onConnected?: () => void;
+}) {
   const { dict } = useDictionary();
   const [state, formAction] = useActionState<ConnectState, FormData>(
     connectMews,
     undefined
   );
+
+  useEffect(() => {
+    if (state && "ok" in state) onConnected?.();
+  }, [state, onConnected]);
 
   return (
     <Card>

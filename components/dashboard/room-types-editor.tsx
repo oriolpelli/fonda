@@ -37,12 +37,18 @@ export function RoomTypesEditor({ initialRoomTypes }: RoomTypesEditorProps) {
 
       <div className="flex flex-col gap-3">
         {rows.map((row, index) => (
+          // Four columns don't fit a 375px phone — nor a 768px tablet, once the
+          // 256px nav rail is out. Below `lg` the row becomes
+          // name / count + category / remove, and every row carries its own
+          // labels — stacked rows are too far from the header row to borrow it.
           <div
             key={index}
-            className="grid grid-cols-[1fr_90px_1fr_auto] items-end gap-3 border-b border-border pb-3"
+            className="grid grid-cols-2 items-end gap-3 border-b border-border pb-3 lg:grid-cols-[1fr_90px_1fr_auto]"
           >
-            <div className="flex flex-col gap-1.5">
-              {index === 0 ? <Label>{dict.settings.roomTypeName}</Label> : null}
+            <div className="col-span-2 flex flex-col gap-1.5 lg:col-span-1">
+              <Label className={index === 0 ? undefined : "lg:hidden"}>
+                {dict.settings.roomTypeName}
+              </Label>
               <Input
                 value={row.name}
                 onChange={(e) => updateRow(index, { name: e.target.value })}
@@ -50,7 +56,9 @@ export function RoomTypesEditor({ initialRoomTypes }: RoomTypesEditorProps) {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              {index === 0 ? <Label>{dict.settings.roomTypeCount}</Label> : null}
+              <Label className={index === 0 ? undefined : "lg:hidden"}>
+                {dict.settings.roomTypeCount}
+              </Label>
               <Input
                 type="number"
                 min={0}
@@ -61,7 +69,9 @@ export function RoomTypesEditor({ initialRoomTypes }: RoomTypesEditorProps) {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              {index === 0 ? <Label>{dict.settings.roomTypeCategory}</Label> : null}
+              <Label className={index === 0 ? undefined : "lg:hidden"}>
+                {dict.settings.roomTypeCategory}
+              </Label>
               <Input
                 value={row.category}
                 onChange={(e) => updateRow(index, { category: e.target.value })}
@@ -74,6 +84,7 @@ export function RoomTypesEditor({ initialRoomTypes }: RoomTypesEditorProps) {
               size="icon"
               aria-label={dict.settings.removeRoomType}
               onClick={() => removeRow(index)}
+              className="col-span-2 justify-self-end lg:col-span-1 lg:justify-self-auto"
             >
               <Trash2 className="size-4" />
             </Button>
@@ -81,7 +92,7 @@ export function RoomTypesEditor({ initialRoomTypes }: RoomTypesEditorProps) {
         ))}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <Button type="button" variant="outline" size="sm" onClick={addRow}>
           <Plus className="size-4" />
           {dict.settings.addRoomType}

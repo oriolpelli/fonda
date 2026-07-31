@@ -73,7 +73,8 @@ export default async function SampleBriefPage({
             <h2 className="mb-3 font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
               {dict.sampleBrief.overnightTitle}
             </h2>
-            <p className="text-lg leading-relaxed text-foreground/90">
+            {/* Same 60ch measure as the article above it. */}
+            <p className="max-w-[60ch] text-lg leading-relaxed text-foreground/90 print:max-w-none">
               {sample.overnight}
             </p>
           </section>

@@ -1,11 +1,21 @@
 import type { Dictionary } from "@/app/[lang]/dictionaries";
 import type { BriefingContent } from "@/lib/briefing";
 
-/** Renders briefing prose: blank-line-separated paragraphs. */
+/**
+ * Renders briefing prose: blank-line-separated paragraphs.
+ *
+ * Capped at 60ch (design identity §3, "body never exceeds ~60ch"). This is a
+ * document a GM reads top to bottom at 6:45am, so the measure matters more here
+ * than anywhere else in the app — the container is wider than that on a laptop,
+ * and 18px text run to its full width is tiring to read.
+ *
+ * Except in print: /sample-brief's A4 rules are tuned to land on one sheet, and
+ * a narrower measure would run it onto a second page.
+ */
 function Prose({ text }: { text: string }) {
   const paragraphs = text.split(/\n{2,}/).filter((p) => p.trim());
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex max-w-[60ch] flex-col gap-4 print:max-w-none">
       {paragraphs.map((p, i) => (
         <p key={i} className="text-lg leading-relaxed text-foreground/90">
           {p.trim()}

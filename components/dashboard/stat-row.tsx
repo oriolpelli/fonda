@@ -20,24 +20,28 @@ export interface Stat {
 
 export function StatRow({ stats }: { stats: Stat[] }) {
   return (
-    <div className="grid grid-cols-2 overflow-hidden rounded-[16px] border border-border bg-card md:grid-cols-4">
+    // 2×2 all the way up to `lg`. At exactly `md` the desktop rail is already
+    // taking 256px, which leaves each of four cells ~64px of text — narrow
+    // enough that "OCCUPANCY TONIGHT" spills out of its cell.
+    <div className="grid grid-cols-2 overflow-hidden rounded-[16px] border border-border bg-card lg:grid-cols-4">
       {stats.map((stat, i) => (
         <div
           key={stat.key}
           className={cn(
-            "px-6 py-7",
-            // 2×2 on small screens: second column and second row get a rule.
+            // Tighter cells on a phone, where four numbers share ~335px.
+            "px-4 py-5 md:px-6 md:py-7",
+            // 2×2: second column and second row get a rule.
             i % 2 === 1 && "border-l border-border",
             i >= 2 && "border-t border-border",
-            // One row from md up: rules between columns only.
-            "md:border-t-0",
-            i > 0 && "md:border-l md:border-border"
+            // One row from lg up: rules between columns only.
+            "lg:border-t-0",
+            i > 0 && "lg:border-l lg:border-border"
           )}
         >
-          <div className="text-4xl font-semibold leading-none tracking-[-0.03em] text-foreground">
+          <div className="text-3xl font-semibold leading-none tracking-[-0.03em] text-foreground lg:text-4xl">
             {stat.value}
           </div>
-          <div className="mt-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+          <div className="mt-2 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)] lg:mt-3">
             {stat.label}
           </div>
         </div>

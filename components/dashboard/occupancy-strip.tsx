@@ -45,13 +45,19 @@ export function OccupancyStrip({
   return (
     <section
       id="occupancy"
-      className="scroll-mt-8 rounded-[16px] border border-border bg-card p-6"
+      // scroll-mt-20 on mobile so the to-do list's "#occupancy" jump doesn't
+      // park this section underneath the fixed 56px top bar.
+      className="scroll-mt-20 rounded-[16px] border border-border bg-card p-6 md:scroll-mt-8"
     >
       <h2 className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
         {dict.home.outlookTitle}
       </h2>
 
-      <div className="mt-5 flex gap-1.5 overflow-x-auto pb-1">
+      {/* Fourteen 42px columns don't fit a 375px phone, so the strip scrolls
+          sideways and snaps night-to-night. The negative margin lets it run to
+          the card's edges — so a half-cut column reads as "there's more" — while
+          the matching padding and scroll-padding keep the ends inset. */}
+      <div className="-mx-6 mt-5 flex snap-x snap-mandatory gap-1.5 overflow-x-auto scroll-px-6 px-6 pb-1">
         {outlook.map((day) => {
           const date = new Date(`${day.date}T00:00:00Z`);
           const isToday = day.date === today;
@@ -60,7 +66,7 @@ export function OccupancyStrip({
           return (
             <div
               key={day.date}
-              className="flex min-w-[42px] flex-1 flex-col items-center gap-2"
+              className="flex min-w-[42px] flex-1 snap-start flex-col items-center gap-2"
             >
               <span
                 className={cn(

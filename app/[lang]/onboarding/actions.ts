@@ -10,7 +10,13 @@ import { createClient } from "@/lib/supabase/server";
 
 export type OnboardingState = { error: string } | undefined;
 
-const PMS_TYPES = ["mews", "apaleo"] as const;
+/**
+ * The PMS a fresh hotel is provisioned against. Which one they actually run is
+ * settled on the next step by connecting it — `storeMewsCredentials` /
+ * `storeApaleoCredentials` both write `pms_type` themselves — so this is only
+ * the placeholder until then, and MEWS is the one Fondas fully supports today.
+ */
+const INITIAL_PMS_TYPE = "mews";
 
 export async function provisionHotel(
   _prevState: OnboardingState,
@@ -19,7 +25,6 @@ export async function provisionHotel(
   const hotelName = String(formData.get("hotelName") ?? "").trim();
   const roomsRaw = String(formData.get("roomsCount") ?? "").trim();
   const timezone = String(formData.get("timezone") ?? "").trim();
-  const pmsType = String(formData.get("pmsType") ?? "").trim();
   const localeValue = String(formData.get("locale") ?? "");
   const locale = isLocale(localeValue) ? localeValue : defaultLocale;
 
@@ -32,9 +37,6 @@ export async function provisionHotel(
   }
   if (!timezone) {
     return { error: "Pick a timezone." };
-  }
-  if (!PMS_TYPES.includes(pmsType as (typeof PMS_TYPES)[number])) {
-    return { error: "Select a property management system." };
   }
 
   const supabase = await createClient();
@@ -52,7 +54,7 @@ export async function provisionHotel(
     p_hotel_name: hotelName,
     p_rooms_count: roomsCount,
     p_timezone: timezone,
-    p_pms_type: pmsType,
+    p_pms_type: INITIAL_PMS_TYPE,
   });
 
   if (error) {
@@ -60,5 +62,8 @@ export async function provisionHotel(
   }
 
   revalidatePath("/", "layout");
-  redirect(localizedHref(locale, "/dashboard"));
+  // On to step 2 rather than the dashboard: a hotel with no PMS has nothing to
+  // show there yet, and this is the whole point of the wizard — you reach a
+  // real brief in one sitting instead of having to find Settings later.
+  redirect(localizedHref(locale, "/onboarding/connect"));
 }
