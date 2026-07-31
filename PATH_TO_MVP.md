@@ -96,7 +96,7 @@ onboard a hotel without hitting anything fake or broken.
 - [ ] The newsletter either collects addresses properly (form + double opt-in + privacy line) or is removed
 - [ ] `/en`, `/es`, `/ca` all build clean and render fully styled
 - [ ] Every visible link goes somewhere real (no `href="#"` dead links)
-- [ ] `hello@fondas.app` is monitored — it's the contact on the site
+- [ ] `hello@fondas.app` can actually **receive** mail (forwarding or a real inbox set up) and is monitored — it's the contact on the site. See the final step, "Give the contact address a home."
 - [ ] `NEXT_PUBLIC_SITE_URL` is set per-environment so non-prod deploys don't poison SEO
 
 **Deliberately still not in scope:** billing, user permissions, analytics page, live rate
@@ -147,7 +147,10 @@ moving on.
 
 ### Block B — Ship the redesign safely (~3h · the 🔴 must-fix punchlist)
 
-Nothing provisional can go live. Do all five, then deploy the redesign as one clean release.
+Nothing provisional can go live. Do B-1, B-2, B-3 and B-5, then deploy the redesign as one
+clean release. **B-4 (the contact mailbox) moved to the final step** — `hello@fondas.app`
+has no inbox behind it yet, and setting that up is a separate ~10-minute job that doesn't
+block the redesign.
 
 **B-1 · Replace the fake social proof.** Paste kickoff (`[TASK ID] = punchlist social proof`), then:
 
@@ -196,11 +199,10 @@ and JSON-LD IDs all pointing at production — which confuses Google about which
 *Acceptance check:* on a preview deploy, view source and confirm the canonical/`og:url`
 points at the preview domain, not production.
 
-**B-4 · Confirm `hello@fondas.app` is monitored (dashboard clicks).** It's the "Talk to
-us" address on pricing and the contact in the site's structured data. Send it a test email
-and make sure it lands somewhere you'll actually read.
-
-*Acceptance check:* your test email to `hello@fondas.app` arrives in a mailbox you check daily.
+**B-4 · Moved to the final step.** `hello@fondas.app` doesn't have an inbox yet — the domain
+can *send* (Resend) but nothing is set up to *receive*, so a message to it currently bounces.
+Fixing that is a small standalone job; it's the last step of this document ("Give the contact
+address a home") so it doesn't hold up the redesign deploy.
 
 **B-5 · Real build + eyeball all three locales.** In Terminal:
 
@@ -346,6 +348,36 @@ makes it feel finished. The 🟢 items can wait until after your first pilot con
   "AI software for hotels" positioning has room.
 - [ ] Confirm Sentry is configured for production via `instrumentation.ts` (per
   `next.config.ts`) — alerting is already live; this is a belt-and-braces check.
+
+---
+
+### Final step — give the contact address a home (~10 min)
+
+The site tells visitors to reach you at `hello@fondas.app` (the pricing "Talk to us" link
+and the contact in your structured data). That address has **no inbox behind it yet.** The
+domain can *send* mail (Resend, `briefings@fondas.app`), but *receiving* is a separate setup
+— without it, a message to `hello@fondas.app` bounces or disappears. This must be true before
+you point real hotels at the site.
+
+Sending and receiving are independent. To receive, the domain needs MX records pointing at a
+mail host. Three ways, cheapest first:
+
+1. **Free forwarding (recommended for now).** Route `hello@fondas.app` → your iCloud
+   (`oriolpelli@icloud.com`) with Cloudflare Email Routing (free) or your registrar's
+   forwarding. Add a couple of MX records and mail to `hello@` lands in your normal inbox.
+   You can receive but not easily reply *as* `hello@` — fine for a pre-launch contact address.
+2. **A real mailbox** (Google Workspace / iCloud+ custom domain / Fastmail, ~€6/mo). A true
+   `hello@fondas.app` inbox you can send *and* receive from. Worth it once you start pilot
+   outreach; overkill today.
+3. **Change the address on the site** to one you already control, or swap the `mailto:` for a
+   simple contact form. Least professional-looking, zero setup.
+
+**Recommended path:** option 1 now, upgrade to option 2 when outreach begins. To do it I need
+to know where `fondas.app`'s DNS is managed (Cloudflare, Vercel, or your registrar) — then
+it's a guided, few-record change.
+
+*Acceptance check:* send a test email to `hello@fondas.app` from an outside account; it lands
+in a mailbox you check daily.
 
 ---
 
