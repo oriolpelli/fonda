@@ -141,10 +141,9 @@ export default async function Home({
   // way to lose a GM's trust. Reinstate it only from quotes a named hotel has
   // agreed in writing to have published, with metrics that hotel can back.
 
-  // Footer navigation. `href: null` marks a PLACEHOLDER destination: it renders
-  // as href="#" with a ° marker and the footnote in the bottom bar. Only the
-  // on-page anchors and /sample-brief, /privacy, /terms exist today — give a
-  // link a real href here the moment its page ships.
+  // Footer navigation. Every link points somewhere real today. `href: null`
+  // still renders as a ° placeholder (kept for future use) — but nothing uses
+  // it right now, so no dead links ship.
   const FOOTER_COLUMNS: {
     title: string;
     links: { label: string; href: string | null }[];
@@ -155,16 +154,13 @@ export default async function Home({
         { label: dict.nav.features, href: "#features" },
         { label: dict.nav.howItWorks, href: "#how" },
         { label: dict.footer.pricing, href: "#pricing" },
-        { label: dict.footer.integrations, href: null },
+        { label: dict.footer.integrations, href: "#works-with" },
       ],
     },
     {
       title: dict.footer.companyTitle,
       links: [
-        { label: dict.footer.about, href: null },
-        { label: dict.footer.careers, href: null },
         { label: dict.footer.contact, href: localizedHref(locale, "/contact") },
-        { label: dict.footer.press, href: null },
       ],
     },
     {
@@ -175,8 +171,6 @@ export default async function Home({
           href: localizedHref(locale, "/sample-brief"),
         },
         { label: dict.nav.faq, href: "#faq" },
-        { label: dict.footer.helpCentre, href: null },
-        { label: dict.footer.changelog, href: null },
       ],
     },
     {
@@ -184,8 +178,7 @@ export default async function Home({
       links: [
         { label: dict.footer.privacy, href: localizedHref(locale, "/privacy") },
         { label: dict.footer.terms, href: localizedHref(locale, "/terms") },
-        { label: dict.footer.cookies, href: null },
-        { label: dict.footer.security, href: null },
+        { label: dict.footer.cookies, href: localizedHref(locale, "/privacy") },
       ],
     },
   ];
@@ -420,7 +413,7 @@ export default async function Home({
             deliberately unnumbered — we are pre-pilot, so it says we are
             onboarding our first hotels and stops there. Do not put a count
             here until it is one a hotel could verify. */}
-        <section className="border-y border-border px-6 py-5">
+        <section id="works-with" className="border-y border-border px-6 py-5">
           <Reveal className="mx-auto flex max-w-[1120px] flex-col items-center gap-2.5">
             <div className="flex flex-wrap items-center justify-center gap-2.5">
               <span className="mr-1 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
@@ -937,9 +930,6 @@ export default async function Home({
             <div className="flex flex-col gap-1">
               <span className="text-sm text-muted-foreground">
                 {t(dict.footer.rights, { year: new Date().getFullYear() })}
-              </span>
-              <span className="text-[13px] text-[var(--fonda-text-3)]">
-                {dict.footer.placeholderNote}
               </span>
             </div>
             <LanguageSwitcher />
