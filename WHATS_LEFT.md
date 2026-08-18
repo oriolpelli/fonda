@@ -59,16 +59,14 @@ shared files and docs). None of it is deployed. This is the exact failure mode t
 flagged for 29–30 July, now three tasks deep — if this tree is lost, three sessions go with
 it. Everything below waits on this.
 
-- [ ] **Commit the uncommitted work** in three labelled groups (newsletter · B9 · B10). Have
-  Claude Code do it — it knows the grouping — or I can do it from here.
-- [ ] **Decide the `90s` stat.** "90 seconds to review a reply" is a performance claim in the
-  ROI band. If you haven't timed it, it's the same unverified-number problem you already
-  removed from the testimonials. Time it and keep it, or soften it — but settle it before it
-  goes live.
-- [ ] **Deploy the redesign** (push). This is the end-of-Block-B release. Do it after the two
-  boxes above.
-- [ ] **Eyeball `/en`, `/es`, `/ca` on the live site** end to end after deploy — hero,
-  illustration, comparison, footer, mobile menu, pricing.
+- [x] **Commit the uncommitted work** — done. Claude Code committed all 54 files in four
+  labelled groups (shared i18n/schema · newsletter · dashboard+onboarding · docs).
+- [x] **Decide the `90s` stat** — decided: **keep it.**
+- [x] **Deploy the redesign** — done. The commits were pushed to `main`, which auto-deploys on
+  Vercel. Redesign + newsletter + B9 + B10 are live.
+- [ ] **Confirm the deploy + eyeball `/en`, `/es`, `/ca` on the LIVE site** — check Vercel →
+  Deployments shows the latest as Ready, then load all three locales: hero, illustration,
+  comparison, footer, mobile menu, pricing.
 
 ---
 

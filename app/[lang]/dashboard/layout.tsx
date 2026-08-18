@@ -9,6 +9,7 @@ import { Sidebar, type NavItem } from "@/components/dashboard/sidebar";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { plural } from "@/lib/i18n/format";
 import { loadInboxBadge } from "@/lib/inbox";
+import { roadmapNavFeatures } from "@/lib/roadmap";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardLayout({
@@ -74,8 +75,6 @@ export default async function DashboardLayout({
       href: localizedHref(locale, "/dashboard/checkins"),
     },
     {
-      // Concierge is parked (see its page) — the route still resolves, but it
-      // stays out of the sidebar until in-house messaging is real.
       key: "communications",
       label: dict.sidebar.communications,
       href: localizedHref(locale, "/dashboard/communications"),
@@ -89,16 +88,15 @@ export default async function DashboardLayout({
         ),
       },
     },
-    {
-      key: "analytics",
-      label: dict.sidebar.analytics,
-      href: localizedHref(locale, "/dashboard/analytics"),
-    },
-    {
-      key: "chat",
-      label: dict.sidebar.chat,
-      href: localizedHref(locale, "/dashboard/chat"),
-    },
+    // Everything that isn't built yet — order, labels and the "Coming soon"
+    // badge all come from lib/roadmap.ts. Add a feature there, not here.
+    ...roadmapNavFeatures().map((feature) => ({
+      key: feature.key,
+      label: feature.label(dict),
+      href: localizedHref(locale, feature.route),
+      comingSoon: feature.status === "coming-soon",
+      comingSoonLabel: dict.roadmap.badge,
+    })),
   ];
 
   const settingsItem: NavItem = {

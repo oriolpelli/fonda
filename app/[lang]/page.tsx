@@ -28,10 +28,18 @@ import {
 } from "@/lib/seo";
 import { t } from "@/lib/i18n/format";
 
-// Only list integrations that are actually built. Add Outlook / Booking.com /
-// SiteMinder here (or a "coming soon" variant) once they ship — don't advertise
-// what we can't connect yet.
-const INTEGRATIONS = ["MEWS", "Apaleo", "Gmail"];
+// Two lists, and the difference between them is the honesty of the section.
+//
+// LIVE_INTEGRATIONS are built and connectable today — a hotel can sign up this
+// afternoon and link one. Anything here must be true in the product.
+//
+// ON_REQUEST_INTEGRATIONS are ones we'd build for a specific hotel during
+// onboarding. They're rendered in a lighter chip under their own "On request"
+// label so they read as "we can", never as "already connected". Moving a name
+// from the second list to the first is a claim — only do it once the
+// connection actually works in the app.
+const LIVE_INTEGRATIONS = ["MEWS", "Apaleo", "Gmail"];
+const ON_REQUEST_INTEGRATIONS = ["Outlook"] as const;
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -418,7 +426,7 @@ export default async function Home({
               <span className="mr-1 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
                 {dict.trust.worksWith}
               </span>
-              {INTEGRATIONS.map((name) => (
+              {LIVE_INTEGRATIONS.map((name) => (
                 <span
                   key={name}
                   className="rounded-full border border-border px-3.5 py-1 text-[13px] font-medium text-muted-foreground"
@@ -426,7 +434,27 @@ export default async function Home({
                   {name}
                 </span>
               ))}
+              {/* The "we'd build it for you" set: its own label, and a filled,
+                  borderless, lighter chip so it can't be mistaken for the live
+                  ones above. Same tokens — no new colour. */}
+              <span className="ml-1 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
+                {dict.trust.onRequest}
+              </span>
+              {[...ON_REQUEST_INTEGRATIONS, dict.trust.customPms].map((name) => (
+                <span
+                  key={name}
+                  className="rounded-full bg-[var(--fonda-surface)] px-3.5 py-1 text-[13px] text-[var(--fonda-text-3)]"
+                >
+                  {name}
+                </span>
+              ))}
             </div>
+            {/* One line, and every clause in it has to stay true: what runs
+                today, what we'd build, and the scale cue. No connection count —
+                we don't have a number a hotel could verify. */}
+            <p className="max-w-[68ch] text-center text-[13px] leading-[1.6] text-muted-foreground">
+              {dict.trust.adaptNote}
+            </p>
             <p className="text-[13px] text-muted-foreground">
               {dict.trust.onboardingNote}
             </p>

@@ -57,52 +57,121 @@ function escapeHtml(s: string): string {
     .replace(/>/g, "&gt;");
 }
 
-function paragraphs(text: string): string {
+// --- Signal, in literal hex -------------------------------------------------
+//
+// CLAUDE.md forbids hard-coded hex in components, and this is the one place it
+// can't be honoured: email clients don't evaluate CSS custom properties, so
+// `var(--fonda-*)` would resolve to nothing and the mail would render unstyled.
+// Every value below is copied from FONDA_DESIGN_IDENTITY.md §2 — if a token
+// changes there, change it here too. Do not introduce a shade that isn't in
+// that table.
+const GROUND = "#F6F6F4"; // --fonda-surface, the ground behind the card
+const CARD = "#FFFFFF"; // --fonda-bg
+const HAIRLINE = "#E8E7E3"; // --fonda-border
+const TEXT = "#0A0A0A"; // --fonda-text
+const TEXT_MUTED = "#6F6F6A"; // --fonda-text-3 (AA on both grounds above)
+const ACCENT = "#1B3BB3"; // --fonda-accent — the single signal, used once
+
+// Geist first, then a clean neutral fallback: custom web fonts don't load in
+// Gmail or Outlook, so the fallback is what most GMs will actually see. The
+// mono stack mirrors it for the one place the system uses mono — eyebrows.
+const SANS =
+  "Geist,system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif";
+const MONO =
+  "'Geist Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,'Courier New',monospace";
+
+/**
+ * Brief prose: blank-line-separated paragraphs, near-black on white.
+ *
+ * `mso-line-height-rule:exactly` makes Outlook's Word engine honour the
+ * line-height instead of tightening it — the leading is what makes this
+ * readable at 6:45am on a phone.
+ */
+function paragraphs(text: string, fontSize = 16): string {
   return text
     .split(/\n{2,}/)
     .filter((p) => p.trim())
     .map(
       (p) =>
-        `<p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:#0f172a;">${escapeHtml(
+        `<p style="margin:0 0 16px;font-family:${SANS};font-size:${fontSize}px;line-height:1.65;mso-line-height-rule:exactly;color:${TEXT};">${escapeHtml(
           p.trim()
         )}</p>`
     )
     .join("");
 }
 
+/**
+ * One section: a hairline rule, a Geist Mono uppercase eyebrow, then prose —
+ * the same construction as the in-app brief (components/dashboard/
+ * briefing-article.tsx), so the email and the dashboard read as one product.
+ */
 function section(title: string, text: string): string {
   return `
-    <tr><td style="padding-top:20px;border-top:1px solid #e2e8f0;">
-      <h2 style="margin:0 0 8px;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;color:#64748b;">${escapeHtml(
-        title
-      )}</h2>
-      ${paragraphs(text)}
-    </td></tr>`;
+        <tr><td style="padding-top:24px;border-top:1px solid ${HAIRLINE};">
+          <h2 style="margin:0 0 10px;font-family:${MONO};font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:${TEXT_MUTED};">${escapeHtml(
+            title
+          )}</h2>
+          ${paragraphs(text)}
+        </td></tr>`;
 }
 
+/**
+ * The morning brief, in the Signal design identity.
+ *
+ * Email constraints that shape the markup: tables rather than flex/grid
+ * (Outlook ignores both), every style inline (no stylesheet survives Gmail),
+ * and a fluid card capped at 600px with an MSO-only fixed-width wrapper, since
+ * Outlook ignores `max-width`. Light only — the `color-scheme` metas tell
+ * Apple Mail and Outlook.com not to auto-invert it.
+ */
 function briefingEmailHtml(
   hotelName: string,
   dateLabel: string,
   content: BriefingContent
 ): string {
-  return `<!doctype html><html><body style="margin:0;background:#f8fafc;font-family:Inter,Arial,sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:24px 0;">
-    <tr><td align="center">
-      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:32px;">
-        <tr><td>
-          <h1 style="margin:0;font-size:20px;color:#0f172a;">${escapeHtml(hotelName)}</h1>
-          <p style="margin:4px 0 24px;font-size:14px;color:#64748b;">${escapeHtml(dateLabel)}</p>
-          ${paragraphs(content.summary)}
-        </td></tr>
-        ${section("Arrivals & departures", content.arrivals)}
-        ${section("Overnight email", content.emails)}
-        ${section("Rate alert", content.rate_alert)}
-        <tr><td style="padding-top:24px;">
-          <p style="margin:0;font-size:12px;color:#94a3b8;">Sent by Fondas — hotel operations, on autopilot.</p>
+  return `<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+</head>
+<body style="margin:0;padding:0;width:100%;background-color:${GROUND};font-family:${SANS};-webkit-font-smoothing:antialiased;">
+  <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:${GROUND};">
+    <tr><td align="center" style="padding:24px 12px 32px;">
+      <!--[if mso]><table role="presentation" width="600" border="0" cellpadding="0" cellspacing="0" align="center"><tr><td><![endif]-->
+      <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:${CARD};border:1px solid ${HAIRLINE};border-radius:16px;">
+        <!-- 12px bottom, not 28: the last paragraph already carries a 16px
+             bottom margin, and 12 + 16 balances the 28px above. -->
+        <tr><td style="padding:28px 24px 12px;">
+          <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
+            <tr><td>
+              <p style="margin:0 0 10px;font-family:${MONO};font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:${ACCENT};">${escapeHtml(
+                dateLabel
+              )}</p>
+              <h1 style="margin:0 0 20px;font-family:${SANS};font-size:26px;font-weight:600;line-height:1.12;letter-spacing:-0.02em;color:${TEXT};">${escapeHtml(
+                hotelName
+              )}</h1>
+              ${paragraphs(content.summary, 17)}
+            </td></tr>
+            ${section("Arrivals & departures", content.arrivals)}
+            ${section("Overnight email", content.emails)}
+            ${section("Rate alert", content.rate_alert)}
+          </table>
         </td></tr>
       </table>
+      <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:600px;">
+        <tr><td align="center" style="padding:20px 8px 0;">
+          <p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.5;color:${TEXT_MUTED};">Sent by Fondas — hotel operations, on autopilot.</p>
+        </td></tr>
+      </table>
+      <!--[if mso]></td></tr></table><![endif]-->
     </td></tr>
-  </table></body></html>`;
+  </table>
+</body>
+</html>`;
 }
 
 async function sendBriefingEmail(

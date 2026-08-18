@@ -45,6 +45,9 @@
   },
   "trust": {
     "worksWith": "Works with",
+    "onRequest": "On request",
+    "customPms": "Custom PMS",
+    "adaptNote": "Runs on MEWS, Apaleo and Gmail today — plus Outlook and custom PMS integrations we build on request. Different stack? We'll adapt to almost any PMS or inbox.",
     "onboardingNote": "Now onboarding our first hotels."
   },
   "featuresSection": {
@@ -285,10 +288,13 @@
     "waitingOther": "{count} messages waiting",
     "menu": "Menu"
   },
-  "concierge": {
-    "eyebrow": "In-house guests",
-    "title": "Concierge",
-    "comingSoon": "In-house guest messaging is coming here — including WhatsApp. For now, every guest email lives in Communications, where arriving guests are flagged for you."
+  "roadmap": {
+    "badge": "Coming soon",
+    "blurb": {
+      "analytics": "Occupancy, revenue and response times charted over the months, so you can see the trends behind each morning's brief.",
+      "chat": "A full page for asking your hotel anything, with the whole conversation kept. The button in the corner already answers one-off questions.",
+      "concierge": "Messaging for guests who are already in-house, WhatsApp included. Until then, every guest email sits in Communications, where arriving guests are flagged for you."
+    }
   },
   "communications": {
     "eyebrow": "Guest messages",
@@ -297,16 +303,6 @@
     "presyncTitle": "Connect the inbox guests write to",
     "presyncBody": "Fondas reads overnight guest email, works out who's asking and how urgent it is, and has a reply drafted for you to check. Link the mailbox and the first drafts appear within the hour.",
     "presyncCta": "Connect Gmail"
-  },
-  "analytics": {
-    "eyebrow": "Performance",
-    "title": "Analytics",
-    "emptyState": "Analytics and reporting are coming soon."
-  },
-  "chat": {
-    "eyebrow": "Ask your hotel",
-    "title": "Chat",
-    "emptyState": "A full-page chat experience is coming soon."
   },
   "connection": {
     "synced": "Synced",

@@ -52,6 +52,15 @@ export interface NavItem {
   label: string;
   href: string;
   badge?: NavBadge;
+  /**
+   * Not built yet (driven by `lib/roadmap.ts`). The item stays clickable — its
+   * page explains what's coming — but reads as secondary: muted label, a quiet
+   * gray "Coming soon" chip, and a neutral (never navy) active state, so the
+   * signal colour stays with the surfaces that actually work.
+   */
+  comingSoon?: boolean;
+  /** Localized "Coming soon", supplied by the server layout. */
+  comingSoonLabel?: string;
 }
 
 // Icons live here in the Client Component and are looked up by key. They must
@@ -81,20 +90,45 @@ function NavLink({
   onNavigate?: () => void;
 }) {
   const Icon = ICONS[item.key] ?? Settings;
+  const soon = item.comingSoon === true;
   return (
     <Link
       href={item.href}
       onClick={onNavigate}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
-        active
-          ? "bg-[var(--fonda-accent-light)] text-[var(--fonda-accent)] font-semibold shadow-[inset_2px_0_0_0_var(--fonda-accent)]"
-          : "text-[var(--fonda-text-2)] hover:bg-[var(--fonda-surface)] hover:text-foreground"
+        "group flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
+        // Unbuilt items never take the navy signal, active or not — it belongs
+        // to the surfaces that work. They get the neutral inset instead.
+        active && soon
+          ? "bg-[var(--fonda-inset)] font-semibold text-foreground shadow-[inset_2px_0_0_0_var(--fonda-border-2)]"
+          : active
+            ? "bg-[var(--fonda-accent-light)] text-[var(--fonda-accent)] font-semibold shadow-[inset_2px_0_0_0_var(--fonda-accent)]"
+            : soon
+              ? "text-[var(--fonda-text-3)] hover:bg-[var(--fonda-inset)] hover:text-[var(--fonda-text-2)]"
+              : "text-[var(--fonda-text-2)] hover:bg-[var(--fonda-surface)] hover:text-foreground"
       )}
     >
-      <Icon className="size-[18px]" strokeWidth={1.5} />
-      {item.label}
+      <Icon className="size-[18px] shrink-0" strokeWidth={1.5} />
+      <span className="min-w-0 truncate">{item.label}</span>
+      {soon && item.comingSoonLabel ? (
+        // Badge per the design identity §5.4 — Geist Mono, hairline border,
+        // pill radius, muted text. Gray on purpose: it must read quieter than
+        // the live items above it.
+        <span
+          className={cn(
+            "ml-auto shrink-0 rounded-full border border-[var(--fonda-border-2)] px-1.5 py-0.5 font-mono text-[10px] font-normal leading-[1.5] tracking-[0.04em] transition-colors",
+            // Same trap as the count badge below: on the hover/active
+            // --fonda-inset background, text-3 is only 4.31:1 — under AA — so
+            // those two states step up to text-2.
+            active
+              ? "text-[var(--fonda-text-2)]"
+              : "text-[var(--fonda-text-3)] group-hover:text-[var(--fonda-text-2)]"
+          )}
+        >
+          {item.comingSoonLabel}
+        </span>
+      ) : null}
       {item.badge && item.badge.count > 0 ? (
         <span
           aria-label={item.badge.srLabel}

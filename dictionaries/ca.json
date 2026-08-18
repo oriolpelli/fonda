@@ -45,6 +45,9 @@
   },
   "trust": {
     "worksWith": "Compatible amb",
+    "onRequest": "Sota petició",
+    "customPms": "PMS a mida",
+    "adaptNote": "Avui funciona amb MEWS, Apaleo i Gmail, a més d'integracions amb Outlook i PMS a mida que desenvolupem sota petició. Un altre sistema? Ens adaptem a gairebé qualsevol PMS o safata d'entrada.",
     "onboardingNote": "Estem incorporant els nostres primers hotels."
   },
   "featuresSection": {
@@ -285,10 +288,13 @@
     "waitingOther": "{count} missatges pendents",
     "menu": "Menú"
   },
-  "concierge": {
-    "eyebrow": "Hostes allotjats",
-    "title": "Consergeria",
-    "comingSoon": "Aquí arribaran els missatges d'hostes allotjats, inclòs WhatsApp. De moment, tots els correus d'hostes són a Comunicacions, on es destaquen els que arriben aviat."
+  "roadmap": {
+    "badge": "Properament",
+    "blurb": {
+      "analytics": "L'ocupació, els ingressos i els temps de resposta mes a mes, per veure les tendències que hi ha darrere de cada resum matinal.",
+      "chat": "Una pàgina sencera per preguntar el que vulguis sobre el teu hotel, amb tota la conversa desada. El botó del cantó ja respon preguntes soltes.",
+      "concierge": "Missatgeria per a hostes ja allotjats, inclòs WhatsApp. Fins llavors, tots els correus d'hostes són a Comunicacions, on es destaquen els que arriben aviat."
+    }
   },
   "communications": {
     "eyebrow": "Missatges d'hostes",
@@ -297,16 +303,6 @@
     "presyncTitle": "Connecta la bústia on t'escriuen els hostes",
     "presyncBody": "Fondas llegeix el correu nocturn dels hostes, dedueix qui pregunta i amb quina urgència, i deixa una resposta redactada perquè la revisis. Enllaça la bústia i els primers esborranys apareixeran en menys d'una hora.",
     "presyncCta": "Connecta Gmail"
-  },
-  "analytics": {
-    "eyebrow": "Rendiment",
-    "title": "Analítica",
-    "emptyState": "L'analítica i els informes estaran disponibles properament."
-  },
-  "chat": {
-    "eyebrow": "Pregunta al teu hotel",
-    "title": "Chat",
-    "emptyState": "Una experiència de xat a pantalla completa estarà disponible properament."
   },
   "connection": {
     "synced": "Sincronitzat",

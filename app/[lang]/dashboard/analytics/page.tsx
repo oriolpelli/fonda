@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
-import { EmptyState } from "@/components/dashboard/empty-state";
+import { ComingSoon } from "@/components/dashboard/coming-soon";
+
+// Status, label and blurb all live in lib/roadmap.ts — flip this feature to
+// "live" there and replace the body below when the real page ships.
 
 export async function generateMetadata({
   params,
@@ -9,7 +12,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   const { dict } = await loadDictionary((await params).lang);
-  return { title: dict.analytics.title };
+  return { title: dict.sidebar.analytics };
 }
 
 export default async function AnalyticsPage({
@@ -18,18 +21,5 @@ export default async function AnalyticsPage({
   params: Promise<{ lang: string }>;
 }) {
   const { dict } = await loadDictionary((await params).lang);
-
-  return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-1">
-        <span className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-          {dict.analytics.eyebrow}
-        </span>
-        <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
-          {dict.analytics.title}
-        </h1>
-      </div>
-      <EmptyState icon="analytics" message={dict.analytics.emptyState} />
-    </div>
-  );
+  return <ComingSoon featureKey="analytics" dict={dict} />;
 }

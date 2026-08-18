@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Clock,
   ConciergeBell,
   DoorOpen,
   Inbox,
@@ -9,7 +10,14 @@ import {
 
 import { cn } from "@/lib/utils";
 
-export type EmptyStateIcon = "concierge" | "analytics" | "chat" | "checkins" | "emails";
+export type EmptyStateIcon =
+  | "concierge"
+  | "analytics"
+  | "chat"
+  | "checkins"
+  | "emails"
+  /** Generic fallback for a roadmap feature with no icon of its own. */
+  | "upcoming";
 
 // Icons are resolved here by string key, never passed in as a component/function
 // prop — matches the pattern in components/dashboard/sidebar.tsx (icons must
@@ -20,7 +28,13 @@ const ICONS: Record<EmptyStateIcon, LucideIcon> = {
   chat: MessageSquare,
   checkins: DoorOpen,
   emails: Inbox,
+  upcoming: Clock,
 };
+
+/** Lets a caller with an arbitrary key fall back instead of failing to build. */
+export function isEmptyStateIcon(value: string): value is EmptyStateIcon {
+  return value in ICONS;
+}
 
 export function EmptyState({
   icon,

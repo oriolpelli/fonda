@@ -45,6 +45,9 @@
   },
   "trust": {
     "worksWith": "Compatible con",
+    "onRequest": "Bajo petición",
+    "customPms": "PMS a medida",
+    "adaptNote": "Hoy funciona con MEWS, Apaleo y Gmail, además de integraciones con Outlook y PMS a medida que desarrollamos bajo petición. ¿Otro sistema? Nos adaptamos a casi cualquier PMS o bandeja de entrada.",
     "onboardingNote": "Estamos incorporando nuestros primeros hoteles."
   },
   "featuresSection": {
@@ -285,10 +288,13 @@
     "waitingOther": "{count} mensajes pendientes",
     "menu": "Menú"
   },
-  "concierge": {
-    "eyebrow": "Huéspedes alojados",
-    "title": "Conserjería",
-    "comingSoon": "Aquí llegarán los mensajes de huéspedes alojados, incluido WhatsApp. Por ahora, todos los correos de huéspedes están en Comunicaciones, donde se destacan los que llegan pronto."
+  "roadmap": {
+    "badge": "Próximamente",
+    "blurb": {
+      "analytics": "La ocupación, los ingresos y los tiempos de respuesta mes a mes, para ver las tendencias que hay detrás de cada resumen matutino.",
+      "chat": "Una página entera para preguntar lo que quieras sobre tu hotel, con toda la conversación guardada. El botón de la esquina ya responde preguntas sueltas.",
+      "concierge": "Mensajería para huéspedes ya alojados, incluido WhatsApp. Hasta entonces, todos los correos de huéspedes están en Comunicaciones, donde se destacan los que llegan pronto."
+    }
   },
   "communications": {
     "eyebrow": "Mensajes de huéspedes",
@@ -297,16 +303,6 @@
     "presyncTitle": "Conecta el buzón al que escriben tus huéspedes",
     "presyncBody": "Fondas lee el correo nocturno de los huéspedes, deduce quién pregunta y con qué urgencia, y deja una respuesta redactada para que la revises. Enlaza el buzón y los primeros borradores aparecerán en menos de una hora.",
     "presyncCta": "Conectar Gmail"
-  },
-  "analytics": {
-    "eyebrow": "Rendimiento",
-    "title": "Analítica",
-    "emptyState": "La analítica y los informes estarán disponibles próximamente."
-  },
-  "chat": {
-    "eyebrow": "Pregunta a tu hotel",
-    "title": "Chat",
-    "emptyState": "Una experiencia de chat a pantalla completa estará disponible próximamente."
   },
   "connection": {
     "synced": "Sincronizado",
