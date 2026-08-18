@@ -96,3 +96,36 @@ function escapeHtml(value: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
+
+
+/**
+ * Unsubscribe tokens work exactly like confirmation tokens: a fresh 256-bit
+ * random value goes in the emailed link, only its SHA-256 is stored, and it is
+ * spent on use. A newsletter send issues one per recipient — store the hash on
+ * the row, put the raw token in that email's link — and the unsubscribe page
+ * looks the row up by the hash. A leak of the table therefore can't be used to
+ * unsubscribe anyone.
+ */
+export function generateUnsubscribeToken(): { token: string; hash: string } {
+  const token = randomBytes(32).toString("base64url");
+  return { token, hash: hashUnsubscribeToken(token) };
+}
+
+export function hashUnsubscribeToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+export function unsubscribeUrl(locale: Locale, token: string): string {
+  return `${absoluteUrl(locale, "/newsletter/unsubscribe")}?token=${encodeURIComponent(token)}`;
+}
+
+/**
+ * The footer every newsletter must carry: why they're getting it, plus a
+ * working unsubscribe link. Append this to the broadcast email's HTML. Sending
+ * marketing mail without a working unsubscribe link is unlawful, so this is the
+ * piece that makes the list sendable.
+ */
+export function unsubscribeFooterHtml(dict: Dictionary, url: string): string {
+  const t = dict.newsletterEmail;
+  return `<p style="margin:24px 0 0;padding-top:20px;border-top:1px solid #e8e7e3;font-size:12px;line-height:1.6;color:#6f6f6a;">${escapeHtml(t.unsubscribeNote)} <a href="${escapeHtml(url)}" style="color:#6f6f6a;text-decoration:underline;">${escapeHtml(t.unsubscribeLink)}</a></p>`;
+}

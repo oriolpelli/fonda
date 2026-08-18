@@ -1,4 +1,19 @@
 {
+  "newsletterUnsubscribe": {
+    "heading": "Unsubscribe from Fondas product notes",
+    "body": "Press the button to stop receiving Fondas product notes at this address.",
+    "button": "Unsubscribe",
+    "working": "Unsubscribing…",
+    "doneHeading": "You're unsubscribed.",
+    "doneBody": "You won't receive Fondas product notes anymore. You can re-subscribe any time on fondas.app.",
+    "alreadyHeading": "You're already unsubscribed.",
+    "alreadyBody": "This address is already off the list — there's nothing more to do.",
+    "invalidHeading": "This link isn't valid.",
+    "invalidBody": "It may have already been used, or been replaced by a newer one. If you're still getting emails, use the unsubscribe link in the most recent one.",
+    "errorHeading": "Something went wrong.",
+    "errorBody": "We couldn't unsubscribe you just now. Please try the link again in a moment.",
+    "backHome": "Back to fondas.app"
+  },
   "contact": {
     "metaTitle": "Contact — Fondas",
     "heading": "Get in touch",
@@ -182,6 +197,8 @@
     "placeholderNote": "° Placeholder link — not live yet."
   },
   "newsletterEmail": {
+    "unsubscribeNote": "You're receiving this because you signed up for Fondas product notes at fondas.app.",
+    "unsubscribeLink": "Unsubscribe",
     "subject": "Confirm your Fondas subscription",
     "heading": "One click and you're on the list.",
     "body": "You asked for Fondas product notes — one email a month on what shipped, what's next, and what we're learning. Confirm below and we'll add you.",

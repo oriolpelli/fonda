@@ -447,6 +447,7 @@ export type Database = {
           status: string;
           locale: string;
           confirm_token_hash: string | null;
+          unsubscribe_token_hash: string | null;
           confirm_sent_at: string | null;
           confirmed_at: string | null;
           unsubscribed_at: string | null;
@@ -458,6 +459,7 @@ export type Database = {
           status?: string;
           locale?: string;
           confirm_token_hash?: string | null;
+          unsubscribe_token_hash?: string | null;
           confirm_sent_at?: string | null;
           confirmed_at?: string | null;
           unsubscribed_at?: string | null;
@@ -469,6 +471,7 @@ export type Database = {
           status?: string;
           locale?: string;
           confirm_token_hash?: string | null;
+          unsubscribe_token_hash?: string | null;
           confirm_sent_at?: string | null;
           confirmed_at?: string | null;
           unsubscribed_at?: string | null;

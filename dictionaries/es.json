@@ -1,4 +1,19 @@
 {
+  "newsletterUnsubscribe": {
+    "heading": "Darte de baja de las novedades de Fondas",
+    "body": "Pulsa el botón para dejar de recibir las novedades de Fondas en esta dirección.",
+    "button": "Darme de baja",
+    "working": "Dándote de baja…",
+    "doneHeading": "Te has dado de baja.",
+    "doneBody": "Ya no recibirás las novedades de Fondas. Puedes volver a suscribirte cuando quieras en fondas.app.",
+    "alreadyHeading": "Ya estabas dado de baja.",
+    "alreadyBody": "Esta dirección ya no está en la lista — no hay nada más que hacer.",
+    "invalidHeading": "Este enlace no es válido.",
+    "invalidBody": "Puede que ya se haya usado o que otro más reciente lo haya sustituido. Si sigues recibiendo correos, usa el enlace de baja del último.",
+    "errorHeading": "Algo ha ido mal.",
+    "errorBody": "No hemos podido darte de baja ahora mismo. Prueba el enlace de nuevo en un momento.",
+    "backHome": "Volver a fondas.app"
+  },
   "contact": {
     "metaTitle": "Contacto — Fondas",
     "heading": "Hablemos",
@@ -182,6 +197,8 @@
     "placeholderNote": "° Enlace provisional — todavía no está activo."
   },
   "newsletterEmail": {
+    "unsubscribeNote": "Recibes esto porque te suscribiste a las novedades de Fondas en fondas.app.",
+    "unsubscribeLink": "Darse de baja",
     "subject": "Confirma tu suscripción a Fondas",
     "heading": "Un clic y ya estás en la lista.",
     "body": "Has pedido las notas de producto de Fondas: un correo al mes sobre qué hemos lanzado, qué viene y qué vamos aprendiendo. Confirma abajo y te añadimos.",

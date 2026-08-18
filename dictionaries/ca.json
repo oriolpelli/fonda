@@ -1,4 +1,19 @@
 {
+  "newsletterUnsubscribe": {
+    "heading": "Donar-te de baixa de les novetats de Fondas",
+    "body": "Prem el botó per deixar de rebre les novetats de Fondas en aquesta adreça.",
+    "button": "Donar-me de baixa",
+    "working": "Donant-te de baixa…",
+    "doneHeading": "T'has donat de baixa.",
+    "doneBody": "Ja no rebràs les novetats de Fondas. Pots tornar a subscriure't quan vulguis a fondas.app.",
+    "alreadyHeading": "Ja estaves donat de baixa.",
+    "alreadyBody": "Aquesta adreça ja no és a la llista — no hi ha res més a fer.",
+    "invalidHeading": "Aquest enllaç no és vàlid.",
+    "invalidBody": "Potser ja s'ha fet servir o un de més recent l'ha substituït. Si encara reps correus, fes servir l'enllaç de baixa del darrer.",
+    "errorHeading": "Alguna cosa ha anat malament.",
+    "errorBody": "No t'hem pogut donar de baixa ara mateix. Torna a provar l'enllaç d'aquí a un moment.",
+    "backHome": "Tornar a fondas.app"
+  },
   "contact": {
     "metaTitle": "Contacte — Fondas",
     "heading": "Parlem-ne",
@@ -182,6 +197,8 @@
     "placeholderNote": "° Enllaç provisional — encara no és actiu."
   },
   "newsletterEmail": {
+    "unsubscribeNote": "Reps això perquè et vas subscriure a les novetats de Fondas a fondas.app.",
+    "unsubscribeLink": "Donar-se de baixa",
     "subject": "Confirma la teva subscripció a Fondas",
     "heading": "Un clic i ja ets a la llista.",
     "body": "Has demanat les notes de producte de Fondas: un correu al mes sobre què hem llançat, què ve i què anem aprenent. Confirma a sota i t'hi afegim.",

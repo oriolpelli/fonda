@@ -11,6 +11,7 @@ import {
   confirmUrl,
   generateConfirmToken,
   hashConfirmToken,
+  hashUnsubscribeToken,
   normalizeEmail,
 } from "@/lib/newsletter";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -178,6 +179,63 @@ export async function confirmSubscription(
   } catch (error) {
     console.error(
       "[newsletter] confirm failed:",
+      error instanceof Error ? error.message : error
+    );
+    return { status: "error" };
+  }
+}
+
+
+export type UnsubscribeState =
+  | { status: "idle" }
+  | { status: "unsubscribed" }
+  | { status: "already" }
+  | { status: "invalid" }
+  | { status: "error" };
+
+/**
+ * Reached from the button on the unsubscribe page (never on GET), so a mail
+ * scanner prefetching the link can't unsubscribe anyone. Looks the row up by
+ * the token hash and spends the token, mirroring confirmation.
+ */
+export async function unsubscribeFromNewsletter(
+  _prevState: UnsubscribeState,
+  formData: FormData
+): Promise<UnsubscribeState> {
+  const token = String(formData.get("token") ?? "").trim();
+  if (!token) return { status: "invalid" };
+
+  const admin = createAdminClient();
+
+  try {
+    const { data: row, error: lookupError } = await admin
+      .from("newsletter_subscribers")
+      .select("id, status")
+      .eq("unsubscribe_token_hash", hashUnsubscribeToken(token))
+      .maybeSingle();
+    if (lookupError) throw lookupError;
+
+    // No row: wrong token, already spent, or superseded by a newer send.
+    // Unsubscribing clears the hash, so a second click also lands here.
+    if (!row) return { status: "invalid" };
+
+    if (row.status === "unsubscribed") return { status: "already" };
+
+    const { error: updateError } = await admin
+      .from("newsletter_subscribers")
+      .update({
+        status: "unsubscribed",
+        unsubscribed_at: new Date().toISOString(),
+        // Spend the token so the link can't be replayed.
+        unsubscribe_token_hash: null,
+      })
+      .eq("id", row.id);
+    if (updateError) throw updateError;
+
+    return { status: "unsubscribed" };
+  } catch (error) {
+    console.error(
+      "[newsletter] unsubscribe failed:",
       error instanceof Error ? error.message : error
     );
     return { status: "error" };
