@@ -6,6 +6,7 @@ import { useCallback } from "react";
 
 import { ApaleoConnectionCard } from "@/components/dashboard/apaleo-connection-card";
 import { MewsConnectionForm } from "@/components/dashboard/mews-connection-form";
+import { SheetConnectionForm } from "@/components/dashboard/sheet-connection-form";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 
 /**
@@ -42,6 +43,7 @@ export function PmsConnectStep({
     <>
       <MewsConnectionForm connected={connected} onConnected={onConnected} />
       <ApaleoConnectionCard connected={connected} fromOnboarding />
+      <SheetConnectionForm connected={connected} onConnected={onConnected} />
 
       <div className="flex flex-col gap-1.5 border-t border-border pt-4">
         <Link

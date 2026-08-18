@@ -489,6 +489,14 @@
     "suggestion5": "How many emails need my attention?"
   },
   "settings": {
+    "sheetTitle": "Google Sheet",
+    "sheetDesc": "No PMS? Connect a spreadsheet of your reservations instead.",
+    "sheetUrlLabel": "Google Sheet link",
+    "sheetUrlPlaceholder": "https://docs.google.com/spreadsheets/…",
+    "sheetStored": "A sheet is already connected — paste a new link to replace it",
+    "connectSheet": "Connect sheet",
+    "sheetHelp": "Share the sheet as “anyone with the link (Viewer)”, or use File → Share → Publish to web, then paste the link. We only read it.",
+    "sheetTemplate": "Download the column template",
     "title": "Settings",
     "desc": "Connect {hotel}'s property management system so Fondas can sync reservations and guests.",
     "fallbackHotel": "your hotel",

@@ -489,6 +489,14 @@
     "suggestion5": "¿Cuántos correos necesitan mi atención?"
   },
   "settings": {
+    "sheetTitle": "Hoja de Google",
+    "sheetDesc": "¿Sin PMS? Conecta una hoja de cálculo con tus reservas.",
+    "sheetUrlLabel": "Enlace de la hoja de Google",
+    "sheetUrlPlaceholder": "https://docs.google.com/spreadsheets/…",
+    "sheetStored": "Ya hay una hoja conectada — pega un enlace nuevo para reemplazarla",
+    "connectSheet": "Conectar hoja",
+    "sheetHelp": "Comparte la hoja como «cualquiera con el enlace (Lector)», o usa Archivo → Compartir → Publicar en la web, y pega el enlace. Solo la leemos.",
+    "sheetTemplate": "Descargar la plantilla de columnas",
     "title": "Ajustes",
     "desc": "Conecta el sistema de gestión de {hotel} para que Fondas pueda sincronizar reservas y huéspedes.",
     "fallbackHotel": "tu hotel",

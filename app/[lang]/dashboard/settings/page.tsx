@@ -11,6 +11,7 @@ import { GmNameForm } from "@/components/dashboard/gm-name-form";
 import { HotelDetailsForm } from "@/components/dashboard/hotel-details-form";
 import { HotelProfileForm } from "@/components/dashboard/hotel-profile-form";
 import { MewsConnectionForm } from "@/components/dashboard/mews-connection-form";
+import { SheetConnectionForm } from "@/components/dashboard/sheet-connection-form";
 import { TripAdvisorForm } from "@/components/dashboard/tripadvisor-form";
 import { Button } from "@/components/ui/button";
 import { t } from "@/lib/i18n/format";
@@ -132,6 +133,8 @@ export default async function SettingsPage({
 
       {pmsType === "apaleo" ? (
         <ApaleoConnectionCard connected={connected} />
+      ) : pmsType === "sheet" ? (
+        <SheetConnectionForm connected={connected} />
       ) : (
         <>
           <MewsConnectionForm connected={connected} />
@@ -141,7 +144,9 @@ export default async function SettingsPage({
                 {dict.settings.disconnectMews}
               </Button>
             </form>
-          ) : null}
+          ) : (
+            <SheetConnectionForm connected={false} />
+          )}
         </>
       )}
 

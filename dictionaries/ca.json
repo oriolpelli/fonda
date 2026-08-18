@@ -489,6 +489,14 @@
     "suggestion5": "Quants correus necessiten la meva atenció?"
   },
   "settings": {
+    "sheetTitle": "Full de Google",
+    "sheetDesc": "Sense PMS? Connecta un full de càlcul amb les teves reserves.",
+    "sheetUrlLabel": "Enllaç del full de Google",
+    "sheetUrlPlaceholder": "https://docs.google.com/spreadsheets/…",
+    "sheetStored": "Ja hi ha un full connectat — enganxa un enllaç nou per substituir-lo",
+    "connectSheet": "Connectar full",
+    "sheetHelp": "Comparteix el full com a «qualsevol amb l'enllaç (Lector)», o fes servir Fitxer → Comparteix → Publica a la web, i enganxa l'enllaç. Només el llegim.",
+    "sheetTemplate": "Baixa la plantilla de columnes",
     "title": "Configuració",
     "desc": "Connecta el sistema de gestió de {hotel} perquè Fondas pugui sincronitzar reserves i hostes.",
     "fallbackHotel": "el teu hotel",

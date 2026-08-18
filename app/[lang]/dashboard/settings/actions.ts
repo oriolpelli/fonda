@@ -8,6 +8,7 @@ import {
   storeMewsCredentials,
   verifyMewsCredentials,
 } from "@/lib/mews";
+import { loadSheet, normalizeSheetCsvUrl, storeSheetSource } from "@/lib/sheet";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { RoomType, Upsell } from "@/types";
@@ -409,4 +410,55 @@ export async function disconnectApaleo(): Promise<void> {
 
   revalidatePath("/dashboard/settings");
   revalidatePath("/dashboard");
+}
+
+
+export async function connectSheet(
+  _prevState: ConnectState,
+  formData: FormData
+): Promise<ConnectState> {
+  const raw = String(formData.get("sheetUrl") ?? "").trim();
+  if (!raw) {
+    return { error: "Paste the link to your Google Sheet." };
+  }
+  const csvUrl = normalizeSheetCsvUrl(raw);
+  if (!csvUrl) {
+    return { error: "That does not look like a Google Sheets link." };
+  }
+
+  let hotelId: string;
+  try {
+    hotelId = await requireHotelId();
+  } catch (err) {
+    return { error: (err as Error).message };
+  }
+
+  // Verify the sheet is reachable and readable before storing it — the same
+  // contract as verifying MEWS tokens against MEWS.
+  let parsed;
+  try {
+    parsed = await loadSheet(csvUrl, hotelId);
+  } catch (err) {
+    return { error: (err as Error).message };
+  }
+  if (parsed.reservations.length === 0) {
+    return {
+      error:
+        "We could not read any bookings from that sheet. Check the columns match the template and the sheet is shared.",
+    };
+  }
+
+  try {
+    await storeSheetSource(hotelId, raw);
+  } catch (err) {
+    return { error: (err as Error).message };
+  }
+
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard");
+  revalidatePath("/onboarding", "layout");
+  return {
+    ok: true,
+    message: `Google Sheet connected — ${parsed.reservations.length} bookings found.`,
+  };
 }
