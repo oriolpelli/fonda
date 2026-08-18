@@ -48,7 +48,7 @@ export const ogLocale: Record<Locale, string> = {
 };
 
 /** Public, indexable paths. Keep in sync with app/sitemap.ts consumers. */
-export const PUBLIC_PATHS = ["/", "/sample-brief", "/privacy", "/terms"] as const;
+export const PUBLIC_PATHS = ["/", "/sample-brief", "/privacy", "/terms", "/contact"] as const;
 
 /**
  * The complete `openGraph` block for a locale.

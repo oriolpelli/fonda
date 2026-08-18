@@ -1,4 +1,15 @@
 {
+  "contact": {
+    "metaTitle": "Contacto — Fondas",
+    "heading": "Hablemos",
+    "intro": "Estamos construyendo Fondas para hoteles independientes y boutique, y respondemos nuestro propio correo. La forma más rápida de contactarnos es escribir — solemos responder en un día.",
+    "emailHeading": "Correo",
+    "emailHint": "Dudas, pilotos, lo que necesites.",
+    "pilotHeading": "Míralo en tu hotel",
+    "pilotBody": "Cuéntanos tu propiedad y qué PMS usas, y organizamos una demo de 20 minutos — sin compromiso.",
+    "locationHeading": "Dónde estamos",
+    "locationBody": "En Barcelona. Encantados de acercarnos a hoteles de la zona."
+  },
   "meta": {
     "title": "Fondas — Operaciones hoteleras, en piloto automático",
     "description": "Fondas es la recepción con IA para hoteles: correos de huéspedes con la respuesta ya redactada para que la revises, un resumen matinal antes de que abra la recepción, horas de llegada reclamadas automáticamente y respuestas sobre tu hotel en lenguaje natural, sobre el PMS que ya usas."

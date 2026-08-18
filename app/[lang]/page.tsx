@@ -163,7 +163,7 @@ export default async function Home({
       links: [
         { label: dict.footer.about, href: null },
         { label: dict.footer.careers, href: null },
-        { label: dict.footer.contact, href: null },
+        { label: dict.footer.contact, href: localizedHref(locale, "/contact") },
         { label: dict.footer.press, href: null },
       ],
     },

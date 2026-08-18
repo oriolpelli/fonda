@@ -1,4 +1,15 @@
 {
+  "contact": {
+    "metaTitle": "Contact — Fondas",
+    "heading": "Get in touch",
+    "intro": "We're building Fondas for independent and boutique hotels, and we answer our own email. The fastest way to reach us is to write — we usually reply within a day.",
+    "emailHeading": "Email",
+    "emailHint": "General questions, pilots, anything at all.",
+    "pilotHeading": "See it on your hotel",
+    "pilotBody": "Tell us your property and which PMS you use, and we'll set up a 20-minute walkthrough — no commitment.",
+    "locationHeading": "Where we are",
+    "locationBody": "Based in Barcelona. Happy to visit hotels in the area."
+  },
   "meta": {
     "title": "Fondas — Hotel operations, on autopilot",
     "description": "Fondas is the AI front office for hotels: guest email drafted for your review, a morning brief before the desk opens, check-in times chased automatically, and plain-language answers about your hotel — on top of the PMS you already run."
