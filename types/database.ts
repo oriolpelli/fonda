@@ -32,6 +32,7 @@ export type Database = {
           mews_client_token_encrypted: string | null;
           mews_access_token_encrypted: string | null;
           apaleo_refresh_token_encrypted: string | null;
+          sheet_url_encrypted: string | null;
           gmail_refresh_token_encrypted: string | null;
           gmail_email: string | null;
         };
@@ -47,6 +48,7 @@ export type Database = {
           mews_client_token_encrypted?: string | null;
           mews_access_token_encrypted?: string | null;
           apaleo_refresh_token_encrypted?: string | null;
+          sheet_url_encrypted?: string | null;
           gmail_refresh_token_encrypted?: string | null;
           gmail_email?: string | null;
         };
@@ -62,6 +64,7 @@ export type Database = {
           mews_client_token_encrypted?: string | null;
           mews_access_token_encrypted?: string | null;
           apaleo_refresh_token_encrypted?: string | null;
+          sheet_url_encrypted?: string | null;
           gmail_refresh_token_encrypted?: string | null;
           gmail_email?: string | null;
         };

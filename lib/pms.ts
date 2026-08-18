@@ -2,6 +2,7 @@ import "server-only";
 
 import { getApaleoClientForHotel } from "@/lib/apaleo";
 import { getMewsClientForHotel } from "@/lib/mews";
+import { getSheetClientForHotel } from "@/lib/sheet";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
@@ -35,7 +36,7 @@ import type {
   GetRatesOptions,
 } from "@/lib/mews";
 
-export type PmsType = "mews" | "apaleo";
+export type PmsType = "mews" | "apaleo" | "sheet";
 
 /** The capabilities every PMS client exposes, with identical output types. */
 export interface PmsClient {
@@ -68,6 +69,8 @@ export async function getPmsClientForHotel(
       return getMewsClientForHotel(hotelId);
     case "apaleo":
       return getApaleoClientForHotel(hotelId);
+    case "sheet":
+      return getSheetClientForHotel(hotelId);
     default:
       return null;
   }
