@@ -5,23 +5,27 @@ import { OnboardingForm } from "@/components/onboarding/onboarding-form";
 import { OnboardingShell } from "@/components/onboarding/onboarding-shell";
 import { loadOnboardingState, resumeHref } from "@/lib/onboarding";
 
-const FALLBACK_TIMEZONES = [
-  "UTC",
-  "Europe/London",
+// A short, curated list. Fondas targets Spain and Europe, so the full ~400
+// IANA list (via Intl.supportedValuesOf) is overwhelming and unnecessary.
+// Note Spain spans two zones: Europe/Madrid (mainland) and Atlantic/Canary.
+const TIMEZONES = [
   "Europe/Madrid",
+  "Atlantic/Canary",
+  "Europe/Lisbon",
+  "Europe/London",
+  "Europe/Paris",
   "Europe/Berlin",
+  "Europe/Rome",
+  "Europe/Amsterdam",
+  "Europe/Zurich",
+  "Europe/Athens",
   "America/New_York",
   "America/Los_Angeles",
-  "Asia/Tokyo",
-  "Australia/Sydney",
+  "UTC",
 ];
 
 function getTimezones(): string[] {
-  const intl = Intl as {
-    supportedValuesOf?: (key: "timeZone") => string[];
-  };
-  const values = intl.supportedValuesOf?.("timeZone");
-  return values && values.length > 0 ? values : FALLBACK_TIMEZONES;
+  return TIMEZONES;
 }
 
 /**

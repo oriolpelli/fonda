@@ -50,7 +50,7 @@ async function fetchSheetRows(csvUrl: string): Promise<Record<string, string>[]>
     const res = await fetch(csvUrl, { redirect: "follow", signal: controller.signal });
     if (!res.ok) {
       throw new Error(
-        "Could not read the sheet (" + res.status + "). Make sure it is shared as “anyone with the link”, or published to the web."
+        "Could not read the sheet (" + res.status + "). Make sure it is a Google Sheet shared as “anyone with the link”, or published to the web. If you uploaded an Excel (.xlsx) file, open it in Google Sheets first and use File → Save as Google Sheets."
       );
     }
     const text = await res.text();
