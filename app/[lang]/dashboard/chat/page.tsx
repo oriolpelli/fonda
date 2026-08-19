@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
-import { ComingSoon } from "@/components/dashboard/coming-soon";
+import { ChatSurface } from "@/components/dashboard/chat/chat-surface";
+import { createClient } from "@/lib/supabase/server";
 
-// Status, label and blurb all live in lib/roadmap.ts. One-off questions are
-// already answered by the floating "Ask your hotel" widget; this page is the
-// full-width conversation, and isn't built yet.
+// The full "Ask your hotel" conversation (FONDA_SANA_REDESIGN.md §8.5). The
+// docked bar on every other dashboard page is the shortcut into it; this is the
+// surface itself, so the bar hides here.
 
 export async function generateMetadata({
   params,
@@ -21,6 +22,14 @@ export default async function ChatPage({
 }: {
   params: Promise<{ lang: string }>;
 }) {
-  const { dict } = await loadDictionary((await params).lang);
-  return <ComingSoon featureKey="chat" dict={dict} />;
+  await loadDictionary((await params).lang);
+
+  // Only the first letter is ever rendered — it's the avatar on the user's own
+  // turns. The address itself never reaches the markup.
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return <ChatSurface userEmail={user?.email ?? ""} />;
 }

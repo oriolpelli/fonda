@@ -1,244 +1,152 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Loader2, MessageSquareText, Send, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowUp, Sparkles, X } from "lucide-react";
 
+import { ChatComposer } from "@/components/dashboard/chat/chat-composer";
+import { ChatThread } from "@/components/dashboard/chat/chat-thread";
+import { useHotelChat } from "@/components/dashboard/chat/use-hotel-chat";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
-import { LocaleLink } from "@/components/i18n/locale-link";
 import { Button } from "@/components/ui/button";
-import { t } from "@/lib/i18n/format";
-import { cn } from "@/lib/utils";
+import { stripLocale } from "@/lib/i18n/navigation";
 
-const DRAFT_SENTINEL = "__FONDA_DRAFT__";
+/** The full surface this bar is a shortcut to. */
+const CHAT_ROUTE = "/dashboard/chat";
 
-interface ChatMessage {
-  role: "user" | "assistant";
-  content: string;
-  draftId?: string | null;
-}
-
-export function AskYourHotel() {
+/**
+ * "Ask your hotel", docked at the foot of the dashboard content column
+ * (FONDA_SANA_REDESIGN.md §8.5, option 1).
+ *
+ * This replaces the circular floating FAB — the single most "AI chatbot"
+ * element in the old design. What's here instead reads as what it is: a
+ * composer, the width of the content, sticky at the bottom of the column
+ * rather than pinned to the corner of the viewport. Clicking it opens the
+ * conversation in place; the full page at `/dashboard/chat` is the same
+ * conversation with room to breathe.
+ *
+ * A disclosure, not a modal: the panel doesn't cover the page, so there is no
+ * scrim and no focus trap. Escape closes it and hands focus back to the bar,
+ * and closing drops the transcript — history is kept for the open session only.
+ */
+export function AskYourHotel({ userEmail }: { userEmail: string }) {
   const { dict } = useDictionary();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
-  const [streaming, setStreaming] = useState(false);
-  const endRef = useRef<HTMLDivElement>(null);
+  const { messages, streaming, send, reset } = useHotelChat();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const wasOpen = useRef(false);
 
-  const SUGGESTIONS = [
-    dict.askYourHotel.suggestion1,
-    dict.askYourHotel.suggestion2,
-    dict.askYourHotel.suggestion3,
-    dict.askYourHotel.suggestion4,
-    dict.askYourHotel.suggestion5,
-  ];
+  const close = useCallback(() => {
+    setOpen(false);
+    reset();
+  }, [reset]);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  function close() {
-    setOpen(false);
-    // History is kept only for the open session.
-    setMessages([]);
-    setInput("");
-  }
-
-  async function send(text: string) {
-    const trimmed = text.trim();
-    if (!trimmed || streaming) return;
-
-    const history: ChatMessage[] = [
-      ...messages,
-      { role: "user", content: trimmed },
-    ];
-    setMessages([...history, { role: "assistant", content: "" }]);
-    setInput("");
-    setStreaming(true);
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: history.map((m) => ({ role: m.role, content: m.content })),
-        }),
-      });
-      if (!res.ok || !res.body) {
-        throw new Error(`Request failed (${res.status}).`);
+    if (!open) return;
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close();
       }
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let acc = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        acc += decoder.decode(value, { stream: true });
-
-        let content = acc;
-        let draftId: string | null = null;
-        const idx = acc.indexOf(DRAFT_SENTINEL);
-        if (idx !== -1) {
-          content = acc.slice(0, idx);
-          draftId = acc.slice(idx + DRAFT_SENTINEL.length) || null;
-        }
-        setMessages((prev) => {
-          const next = [...prev];
-          next[next.length - 1] = { role: "assistant", content, draftId };
-          return next;
-        });
-      }
-    } catch (err) {
-      setMessages((prev) => {
-        const next = [...prev];
-        next[next.length - 1] = {
-          role: "assistant",
-          content: t(dict.askYourHotel.errorPrefix, {
-            message: (err as Error).message,
-          }),
-        };
-        return next;
-      });
-    } finally {
-      setStreaming(false);
     }
-  }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, close]);
+
+  // Focus goes back to the bar when the panel closes — it is the control that
+  // was replaced, and after Escape there is nowhere else for focus to be.
+  useEffect(() => {
+    if (!open && wasOpen.current) triggerRef.current?.focus();
+    wasOpen.current = open;
+  }, [open]);
+
+  // On the chat page this bar would be a second entry point to the surface the
+  // reader is already looking at.
+  if (stripLocale(pathname) === CHAT_ROUTE) return null;
 
   return (
-    <>
-      {/* Floating trigger — bottom-right, hidden while the widget is open. */}
-      <button
-        onClick={() => setOpen(true)}
-        aria-label={dict.askYourHotel.label}
-        className={cn(
-          // z-30: above the page and the desktop rail (z-20), but below the
-          // mobile nav drawer and its scrim, which must be able to cover it.
-          "fixed bottom-6 right-6 z-30 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          open ? "pointer-events-none scale-90 opacity-0" : "opacity-100"
-        )}
-      >
-        <MessageSquareText className="size-6" />
-      </button>
-
-      {/* Chat widget card — slides up from the bottom-right. */}
-      <div
-        aria-hidden={!open}
-        className={cn(
-          // The mobile cap leaves the dashboard's top bar uncovered, so the
-          // menu is still reachable with the chat open.
-          "fixed bottom-6 right-6 z-30 flex h-[550px] max-h-[calc(100dvh-6rem)] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl transition-all duration-300 ease-out md:max-h-[calc(100dvh-3rem)]",
-          open
-            ? "translate-y-0 opacity-100"
-            : "pointer-events-none translate-y-4 opacity-0"
-        )}
-      >
-        <header className="flex items-center justify-between border-b border-border px-5 py-4">
-          <div className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-[var(--fonda-accent-light)] text-[var(--fonda-accent)]">
-              <MessageSquareText className="size-4" />
-            </span>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold leading-tight">
+    // `mt-auto` puts it at the foot of the column on short pages; sticky keeps
+    // it reachable on long ones, riding on a band of the page ground so the
+    // content scrolls cleanly underneath.
+    <div className="sticky bottom-0 z-10 mt-auto bg-[var(--fonda-bg)] pb-3 pt-6">
+      {open ? (
+        <section
+          aria-label={dict.askYourHotel.title}
+          className="rounded-[18px] bg-card shadow-card"
+        >
+          <header className="flex items-center justify-between gap-3 px-5 py-3">
+            <div className="flex min-w-0 flex-col">
+              <span className="text-[14px] font-medium leading-tight text-[var(--fonda-text)]">
                 {dict.askYourHotel.title}
               </span>
-              <span className="text-xs text-muted-foreground">
+              <span className="truncate text-[12px] text-[var(--fonda-text-3)]">
                 {dict.askYourHotel.subtitle}
               </span>
             </div>
-          </div>
-          <Button variant="ghost" size="icon" onClick={close}>
-            <X />
-          </Button>
-        </header>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={dict.askYourHotel.close}
+              onClick={close}
+              className="size-9 shrink-0 rounded-[10px]"
+            >
+              <X strokeWidth={1.5} />
+            </Button>
+          </header>
 
-        <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5">
-          {messages.length === 0 ? (
-            <p className="text-sm leading-relaxed text-muted-foreground">
+          <div className="h-px bg-[var(--fonda-border)]" />
+
+          {messages.length > 0 ? (
+            <div className="max-h-[42vh] overflow-y-auto px-5 py-5">
+              <ChatThread
+                messages={messages}
+                streaming={streaming}
+                userEmail={userEmail}
+                nested
+                onNavigate={close}
+              />
+            </div>
+          ) : (
+            <p className="max-w-[60ch] px-5 py-5 text-[14px] leading-relaxed text-[var(--fonda-text-2)]">
               {dict.askYourHotel.empty}
             </p>
-          ) : (
-            messages.map((m, i) => (
-              <div
-                key={i}
-                className={cn(
-                  "flex flex-col gap-2",
-                  m.role === "user" ? "items-end" : "items-start"
-                )}
-              >
-                <div
-                  className={cn(
-                    "max-w-[88%] whitespace-pre-line rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
-                    m.role === "user"
-                      ? "rounded-br-md bg-primary text-primary-foreground"
-                      : "rounded-bl-md bg-muted text-foreground"
-                  )}
-                >
-                  {m.content ||
-                    (m.role === "assistant" && streaming ? (
-                      <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                    ) : (
-                      ""
-                    ))}
-                </div>
-                {m.draftId ? (
-                  <LocaleLink
-                    href="/dashboard/communications"
-                    onClick={close}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-transparent bg-[var(--fonda-accent-light)] px-3 py-2 text-xs font-medium text-[var(--fonda-accent)] transition-colors hover:bg-[color-mix(in_srgb,var(--fonda-accent-light)_70%,var(--fonda-accent))]"
-                  >
-                    {dict.askYourHotel.draftCreated}
-                  </LocaleLink>
-                ) : null}
-              </div>
-            ))
           )}
-          <div ref={endRef} />
-        </div>
 
-        {messages.length === 0 ? (
-          <div className="flex flex-col gap-2.5 px-5 pb-3">
-            <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-              {dict.askYourHotel.tryAsking}
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {SUGGESTIONS.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => send(s)}
-                  className="rounded-full border border-border bg-background px-3 py-1.5 text-xs text-foreground/80 transition-colors hover:border-[var(--fonda-text-3)] hover:bg-accent hover:text-accent-foreground"
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
+          <div className="px-4 pb-4">
+            <ChatComposer
+              onSend={send}
+              streaming={streaming}
+              blank={messages.length === 0}
+              autoFocus
+            />
           </div>
-        ) : null}
-
-        <div className="flex items-end gap-2 border-t border-border bg-background p-4">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                send(input);
-              }
-            }}
-            rows={1}
-            placeholder={dict.askYourHotel.placeholder}
-            className="max-h-32 flex-1 resize-none rounded-[10px] border border-input bg-popover px-3.5 py-2.5 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-accent"
+        </section>
+      ) : (
+        // Input-looking, not button-looking: the affordance is "type here",
+        // which is also exactly what the panel opens into.
+        <button
+          ref={triggerRef}
+          type="button"
+          onClick={() => setOpen(true)}
+          className="flex w-full items-center gap-3 rounded-[14px] border border-[var(--fonda-border-2)] bg-card px-4 py-2.5 text-left shadow-card transition-colors duration-[180ms] hover:border-[var(--fonda-text-3)]"
+        >
+          <Sparkles
+            aria-hidden="true"
+            className="size-4 shrink-0 text-[var(--fonda-text-3)]"
+            strokeWidth={1.5}
           />
-          <Button
-            size="icon"
-            className="rounded-[10px]"
-            onClick={() => send(input)}
-            disabled={streaming || !input.trim()}
+          <span className="min-w-0 truncate text-[15px] text-[var(--fonda-text-3)]">
+            {dict.askYourHotel.dockedCta}
+          </span>
+          <span
+            aria-hidden="true"
+            className="ml-auto inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--fonda-ink)] text-[var(--fonda-text-inv)]"
           >
-            {streaming ? <Loader2 className="animate-spin" /> : <Send />}
-          </Button>
-        </div>
-      </div>
-    </>
+            <ArrowUp className="size-4" strokeWidth={2} />
+          </span>
+        </button>
+      )}
+    </div>
   );
 }

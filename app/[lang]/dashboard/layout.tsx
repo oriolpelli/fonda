@@ -143,9 +143,10 @@ export default async function DashboardLayout({
           on a phone. Zeroing the minimum lets the column match the viewport
           and leaves each scroll container to handle its own overflow. */}
       <div className="flex min-w-0 flex-1 flex-col pt-14 md:pl-16 md:pt-0">
-        {/* The extra bottom padding on mobile keeps the floating "Ask your
-            hotel" button from covering the last row of a list. */}
-        <main className="mx-auto w-full max-w-[1120px] flex-1 px-5 pb-24 pt-6 md:px-8 md:pb-10 md:pt-10">
+        {/* Column, not a plain block, so the docked "Ask your hotel" bar below
+            can take the remaining height with `mt-auto` and sit at the foot of
+            the column on short pages as well as long ones. */}
+        <main className="mx-auto flex w-full max-w-[1120px] flex-1 flex-col px-5 pb-6 pt-6 md:px-8 md:pb-8 md:pt-10">
           {/* No PMS means every page below is empty for a reason the page
               itself can't explain. Say so once, at the top, wherever they are. */}
           {!hotel?.pms_connected ? (
@@ -159,10 +160,12 @@ export default async function DashboardLayout({
             </div>
           ) : null}
           {children}
+          {/* "Ask your hotel", docked at the foot of the content column — the
+              floating circular FAB is gone (FONDA_SANA_REDESIGN.md §8.5). It
+              hides itself on /dashboard/chat, which is the full surface. */}
+          <AskYourHotel userEmail={user.email ?? ""} />
         </main>
       </div>
-      {/* Floating "Ask your hotel" chat widget (fixed, bottom-right). */}
-      <AskYourHotel />
     </div>
   );
 }

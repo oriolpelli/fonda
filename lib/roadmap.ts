@@ -51,9 +51,12 @@ export const ROADMAP = [
     blurb: (dict: Dictionary) => dict.roadmap.blurb.analytics,
   },
   {
+    // Live since the v3 chat work: /dashboard/chat is the full conversation
+    // surface, and the docked bar on every other page is a shortcut into it.
+    // The blurb below is kept for the row's shape; it no longer renders.
     key: "chat",
     route: "/dashboard/chat",
-    status: "coming-soon",
+    status: "live",
     inNav: true,
     label: (dict: Dictionary) => dict.sidebar.chat,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.chat,
