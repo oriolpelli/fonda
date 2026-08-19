@@ -1,6 +1,6 @@
 import "server-only";
 
-import { parseCsv, rowsToObjects } from "@/lib/csv";
+import { parseCsv } from "@/lib/csv";
 import { decryptSecret, encryptSecret } from "@/lib/encryption";
 import type {
   MewsReservation as PmsReservation,
@@ -9,7 +9,7 @@ import type {
   MewsSpacesResult as PmsSpacesResult,
 } from "@/lib/mews";
 import type { PmsClient } from "@/lib/pms";
-import { parseSheetRows, type ParsedSheet } from "@/lib/sheet-parse";
+import { matrixToRows, parseSheetRows, type ParsedSheet } from "@/lib/sheet-parse";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const FETCH_TIMEOUT_MS = 30000;
@@ -29,16 +29,16 @@ export function normalizeSheetCsvUrl(input: string): string | null {
   if (url.includes("/spreadsheets/d/")) {
     const id = url.split("/spreadsheets/d/")[1].split("/")[0].split("?")[0];
     if (!id) return null;
-    let gid = "0";
+    let gid = "";
     if (url.includes("gid=")) {
-      let digits = "";
       for (const ch of url.split("gid=")[1]) {
-        if (ch >= "0" && ch <= "9") digits += ch;
+        if (ch >= "0" && ch <= "9") gid += ch;
         else break;
       }
-      gid = digits || "0";
     }
-    return "https://docs.google.com/spreadsheets/d/" + id + "/export?format=csv&gid=" + gid;
+    const base = "https://docs.google.com/spreadsheets/d/" + id + "/export?format=csv";
+    // No tab in the link → export the first sheet (more robust than assuming gid 0).
+    return gid ? base + "&gid=" + gid : base;
   }
   return null;
 }
@@ -60,7 +60,7 @@ async function fetchSheetRows(csvUrl: string): Promise<Record<string, string>[]>
         "That link returned a sign-in page, not data. Share the sheet as “anyone with the link (Viewer)”, or use File → Share → Publish to web."
       );
     }
-    return rowsToObjects(parseCsv(text));
+    return matrixToRows(parseCsv(text));
   } finally {
     clearTimeout(timer);
   }

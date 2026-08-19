@@ -105,6 +105,43 @@ export function parseSheetDate(v: string): string | null {
   return isNaN(d.getTime()) ? null : d.toISOString();
 }
 
+/** Column-name hints used to find the header row when it is not row 1 (hotels
+ * often put a title or notes above it, and multi-tab exports vary). */
+const HEADER_HINTS = [
+  "arrival", "check-in", "checkin", "llegada", "entrada",
+  "departure", "check-out", "salida",
+  "booking", "ref", "reference", "localizador",
+  "first name", "last name", "nombre", "apellidos",
+  "room", "habitacion", "email", "correo",
+];
+
+/**
+ * Turn a raw CSV matrix into row objects, finding the header row rather than
+ * assuming it is the first line. Scans for the first row where at least two
+ * cells look like known columns; falls back to row 0 if nothing matches.
+ */
+export function matrixToRows(matrix: string[][]): Record<string, string>[] {
+  if (matrix.length === 0) return [];
+  let headerIdx = 0;
+  for (let r = 0; r < Math.min(matrix.length, 30); r++) {
+    const hits = matrix[r].filter((c) => {
+      const v = c.trim().toLowerCase();
+      return v.length > 0 && HEADER_HINTS.some((h) => v === h || v.includes(h));
+    }).length;
+    if (hits >= 2) { headerIdx = r; break; }
+  }
+  const headers = matrix[headerIdx].map((h) => h.trim().toLowerCase());
+  const out: Record<string, string>[] = [];
+  for (let r = headerIdx + 1; r < matrix.length; r++) {
+    const cells = matrix[r];
+    if (cells.every((c) => c.trim() === "")) continue;
+    const obj: Record<string, string> = {};
+    headers.forEach((h, i) => { obj[h] = (cells[i] ?? "").trim(); });
+    out.push(obj);
+  }
+  return out;
+}
+
 export interface ParsedSheet {
   reservations: PmsReservation[];
   customers: PmsCustomer[];
