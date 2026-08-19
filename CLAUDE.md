@@ -55,11 +55,12 @@ spec, v3 "Fonda × Sana". Read it before writing or changing any UI:
 
 @FONDA_SANA_REDESIGN.md
 
-The system in one line: one grotesque typeface (Geist + Geist Mono), a warm
-greige ground with white cards floating on top, colorless chrome (no navy in
-nav, active states, or chips), color reserved for content (gradient hero cards
-plus one accent inside data viz), soft-cornered controls (10px, no pills), a
-slim icon-only left rail, light only.
+The system in one line: one grotesque typeface (Geist + Geist Mono), a neutral
+light grey (`#EEEEEE`) page ground with white cards floating on top — warmth
+carried in the surfaces, borders and ink, not the page — colorless chrome (no
+navy in nav, active states, or chips), color reserved for content (gradient hero
+cards plus one accent inside data viz), soft-cornered controls (10px, no pills),
+a slim icon-only left rail, light only.
 
 @FONDA_DESIGN_IDENTITY.md is the previous system (v2 "Signal"). Keep it for
 background and history — it still explains the type scale, spacing rhythm, and
