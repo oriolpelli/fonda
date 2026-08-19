@@ -83,6 +83,26 @@
   --grad-cool: linear-gradient(150deg,#3fb4d0 0%,#2f72d4 58%,#243b98 100%);
   --grad-sand: linear-gradient(150deg,#e9dcc4 0%,#d9c6a6 100%);
 
+  /* Scrim laid OVER a gradient so white text clears AA (§3.3, §7.2).
+     FONDA_SANA_REDESIGN.md §7.2 suggests .12→.28; measured, that is not
+     enough — white on the warm gradient's lightest stop (#f3a63a) is 2.03:1
+     bare and only 2.62:1 under .12. These values are the ones that actually
+     pass, heaviest at the top where the amber is lightest:
+       #f3a63a @ .38 → 4.90:1 ·  #ee9560 @ .34 → 5.02:1 ·  #e0725c @ .30 → 6.2:1
+     Do not lighten them. The card reads as a deeper sunrise, which is also
+     closer to Sana's own gradient cards than the pale draft was. */
+  --grad-scrim: linear-gradient(180deg,rgb(0 0 0 / 0.38),rgb(0 0 0 / 0.30));
+
+  /* Row avatars for inbox/concierge lists (§7.3) — the ONE other place colour
+     appears. A fixed warm set, assigned by a stable hash of the guest's name so
+     the same guest keeps the same disc. Every hue clears 4.5:1 against white
+     initials (4.91–6.82:1); the row's own text stays neutral. */
+  --fonda-avatar-1: #b4552f;  /* terracotta — 4.91:1 */
+  --fonda-avatar-2: #a14a4a;  /* clay       — 5.84:1 */
+  --fonda-avatar-3: #8a6a1f;  /* ochre      — 5.05:1 */
+  --fonda-avatar-4: #5c6b3a;  /* olive      — 5.80:1 */
+  --fonda-avatar-5: #7a5230;  /* chestnut   — 6.82:1 */
+
   /* ── Elevation (§6) ─────────────────────────────────────────────────── */
   /* Top-level cards are borderless, so the page→card tonal step (#eeeeee →
      #ffffff, only 17 pts / 1.16:1) plus this shadow is ALL that separates a
@@ -214,6 +234,34 @@
   h1, h2, h3 {
     font-weight: 600;
     letter-spacing: -0.025em;
+  }
+}
+
+/* Gradient content surfaces (§7) — the two tiers of the colour layer.
+ *
+ * .gradient-hero   The warm sunrise, white text over the mandatory scrim. At
+ *                  most ONE per screen (§7.2): a page's first-run card OR its
+ *                  header hero, never both. Everything around it stays grey
+ *                  and white.
+ * .gradient-panel  The quiet sand tier, with the near-black ink ramp on top and
+ *                  no scrim. White text can never work on sand — 1.35:1 at its
+ *                  lightest stop, and a scrim heavy enough to fix that stops
+ *                  being sand — whereas --fonda-text on it is 12.8:1 and
+ *                  --fonda-text-2 is 4.60:1 at the darkest stop. So: sand
+ *                  carries dark text, and --fonda-text-3 is NOT allowed on it
+ *                  (3.33:1, fails). This tier is for surfaces that repeat
+ *                  across screens — the setup banner, empty states — where a
+ *                  hero would shout.
+ */
+@layer components {
+  .gradient-hero {
+    background-image: var(--grad-scrim), var(--grad-warm);
+    color: var(--fonda-text-inv);
+  }
+
+  .gradient-panel {
+    background-image: var(--grad-sand);
+    color: var(--fonda-text);
   }
 }
 

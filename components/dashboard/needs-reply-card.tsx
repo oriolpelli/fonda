@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { Dictionary } from "@/app/[lang]/dictionaries";
+import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { t } from "@/lib/i18n/format";
 import type { Locale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
@@ -62,20 +63,23 @@ export function NeedsReplyCard({
         <ul className="mt-4 flex flex-col divide-y divide-border border-t border-border">
           {emails.map((email) => {
             const note = urgencyNoteFor(email.urgency);
+            const sender =
+              email.guest_name || email.from_email || dict.emails.unknownSender;
             return (
               <li key={email.id}>
                 <Link
                   href={`${inboxHref}?email=${email.id}`}
                   className="flex items-start justify-between gap-4 px-6 py-4 transition-colors hover:bg-muted"
                 >
-                  <span className="flex min-w-0 flex-col gap-0.5">
-                    <span className="truncate text-sm font-medium text-foreground">
-                      {email.guest_name ||
-                        email.from_email ||
-                        dict.emails.unknownSender}
-                    </span>
-                    <span className="truncate text-sm text-muted-foreground">
-                      {email.subject || dict.emails.noSubject}
+                  <span className="flex min-w-0 items-start gap-3">
+                    <GuestAvatar name={sender} className="mt-0.5" />
+                    <span className="flex min-w-0 flex-col gap-0.5">
+                      <span className="truncate text-sm font-medium text-foreground">
+                        {sender}
+                      </span>
+                      <span className="truncate text-sm text-muted-foreground">
+                        {email.subject || dict.emails.noSubject}
+                      </span>
                     </span>
                   </span>
                   {note ? (

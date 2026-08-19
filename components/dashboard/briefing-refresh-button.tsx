@@ -7,7 +7,12 @@ import { Loader2, RefreshCw } from "lucide-react";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 
-export function BriefingRefreshButton() {
+/**
+ * `className` exists for one caller: the brief page mounts this inside the warm
+ * gradient hero, where the outline variant's dark border and ink label would be
+ * invisible. It passes the white-on-gradient overrides.
+ */
+export function BriefingRefreshButton({ className }: { className?: string }) {
   const router = useRouter();
   const { dict } = useDictionary();
   const [pending, setPending] = useState(false);
@@ -23,7 +28,13 @@ export function BriefingRefreshButton() {
   }
 
   return (
-    <Button onClick={refresh} disabled={pending} variant="outline" size="sm">
+    <Button
+      onClick={refresh}
+      disabled={pending}
+      variant="outline"
+      size="sm"
+      className={className}
+    >
       {pending ? <Loader2 className="animate-spin" /> : <RefreshCw />}
       {pending ? dict.briefing.refreshing : dict.briefing.refresh}
     </Button>

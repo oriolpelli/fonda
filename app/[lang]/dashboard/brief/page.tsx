@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { BriefHero } from "@/components/dashboard/brief-hero";
 import { BriefingArticle } from "@/components/dashboard/briefing-article";
 import { BriefingGenerating } from "@/components/dashboard/briefing-generating";
 import { BriefingRefreshButton } from "@/components/dashboard/briefing-refresh-button";
@@ -101,18 +102,18 @@ export default async function BriefingPage({
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
-            {dict.briefing.title}
-          </h1>
-          <p className="text-muted-foreground">
-            {hotel?.name ?? dict.briefing.fallbackHotel} ·{" "}
-            {formatLongDate(intlLocale[locale], tz, now)}
-          </p>
-        </div>
-        {briefing ? <BriefingRefreshButton /> : null}
-      </div>
+      {/* The page's one gradient (§7.2) — which is why the first-run cards
+          below render `tone="plain"`. */}
+      <BriefHero
+        eyebrow={formatLongDate(intlLocale[locale], tz, now)}
+        title={dict.briefing.title}
+        subtitle={hotel?.name ?? dict.briefing.fallbackHotel}
+        action={
+          briefing ? (
+            <BriefingRefreshButton className="border-[var(--fonda-text-inv)]/40 bg-transparent text-[var(--fonda-text-inv)] hover:border-[var(--fonda-text-inv)]" />
+          ) : null
+        }
+      />
 
       {/* Three ways to have no brief, and they need different answers. With no
           PMS there is nothing to write about, so asking Claude would produce a
@@ -135,6 +136,7 @@ export default async function BriefingPage({
         </>
       ) : !hotel?.pms_connected ? (
         <FirstRunState
+          tone="plain"
           title={dict.briefing.presyncTitle}
           body={dict.briefing.presyncBody}
           ctaLabel={dict.briefing.presyncCta}
@@ -142,6 +144,7 @@ export default async function BriefingPage({
         />
       ) : !hotel.last_synced_at ? (
         <FirstRunState
+          tone="plain"
           title={dict.briefing.syncingTitle}
           body={dict.briefing.syncingBody}
           ctaLabel={dict.briefing.syncingCta}

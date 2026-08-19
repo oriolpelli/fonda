@@ -14,6 +14,12 @@ import { ArrowRight } from "lucide-react";
  * It disappears the moment a PMS is connected — there is no dismiss, and no
  * "completed" flag to go stale, because the hotel row already answers the only
  * question that matters.
+ *
+ * v3: it takes the QUIET tier of the gradient layer — sand, dark ink, banner
+ * scale (FONDA_SANA_REDESIGN.md §7.1). Not the warm hero: this shows on every
+ * dashboard page at once, and a sunrise on every page would spend a screen's
+ * one hero (§7.2) before the page below it got a say. The navy tint and navy
+ * CTA it used to carry are gone — chrome is colorless in v3 (§3.2).
  */
 export function SetupBanner({
   href,
@@ -27,16 +33,18 @@ export function SetupBanner({
   cta: string;
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-[10px] border border-[var(--fonda-accent)]/25 bg-[var(--fonda-accent-light)] px-4 py-3">
+    <div className="gradient-panel flex flex-wrap items-center justify-between gap-3 rounded-[16px] px-5 py-4">
       <div className="flex min-w-0 flex-col gap-0.5">
-        <span className="text-sm font-medium text-foreground">{title}</span>
+        <span className="text-sm font-medium text-[var(--fonda-text)]">
+          {title}
+        </span>
         <span className="text-sm leading-relaxed text-[var(--fonda-text-2)]">
           {body}
         </span>
       </div>
       <Link
         href={href}
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-[8px] bg-[var(--fonda-accent)] px-3.5 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[var(--fonda-accent-hover)]"
+        className="inline-flex shrink-0 items-center gap-1.5 rounded-[8px] bg-[var(--fonda-ink)] px-3.5 py-2 text-[13px] font-medium text-[var(--fonda-text-inv)] transition-colors hover:bg-[var(--fonda-ink-hover)]"
       >
         {cta}
         <ArrowRight className="size-4" strokeWidth={1.5} />

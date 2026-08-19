@@ -11,6 +11,7 @@ import {
   sendReply,
 } from "@/app/[lang]/dashboard/communications/actions";
 import { EmptyState, type EmptyStateIcon } from "@/components/dashboard/empty-state";
+import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import { byDate, byUrgency, type Urgency } from "@/lib/email-urgency";
@@ -363,54 +364,61 @@ export function EmailInbox({
                 key={email.id}
                 onClick={() => openEmail(email.id)}
                 className={cn(
-                  "flex flex-col gap-1 px-4 py-3 text-left transition-colors hover:bg-muted",
+                  "flex items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-muted",
                   // The selected row only reads as selected next to a detail
                   // pane; on a phone the detail has replaced the list entirely.
                   isSelected && "lg:bg-accent"
                 )}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="truncate text-sm font-medium">
-                    {senderName(email)}
-                  </span>
-                  <span className="shrink-0 text-xs text-muted-foreground">
-                    {shortTime(email.created_at)}
-                  </span>
-                </div>
-                <span className="truncate text-sm text-muted-foreground">
-                  {email.subject || dict.emails.noSubject}
-                </span>
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex min-w-0 items-center gap-2">
-                    <span
-                      className={cn(
-                        "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
-                        badgeClass(email.classification)
-                      )}
-                    >
-                      {badgeLabel(email.classification)}
+                {/* The row's one spot of colour (§7.3); everything to its
+                    right stays neutral. */}
+                <GuestAvatar name={senderName(email)} className="mt-0.5" />
+                {/* min-w-0 so the long subject truncates instead of widening
+                    the whole 320px list track. */}
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="truncate text-sm font-medium">
+                      {senderName(email)}
                     </span>
-                    {email.status === "sent" ? (
-                      <span className="text-xs font-medium text-[var(--fonda-accent)]">
-                        {dict.emails.sent}
+                    <span className="shrink-0 text-xs text-muted-foreground">
+                      {shortTime(email.created_at)}
+                    </span>
+                  </div>
+                  <span className="truncate text-sm text-muted-foreground">
+                    {email.subject || dict.emails.noSubject}
+                  </span>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-2">
+                      <span
+                        className={cn(
+                          "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
+                          badgeClass(email.classification)
+                        )}
+                      >
+                        {badgeLabel(email.classification)}
                       </span>
-                    ) : email.status === "ignored" ? (
-                      <span className="text-xs text-muted-foreground">
-                        {dict.emails.ignored}
+                      {email.status === "sent" ? (
+                        <span className="text-xs font-medium text-[var(--fonda-accent)]">
+                          {dict.emails.sent}
+                        </span>
+                      ) : email.status === "ignored" ? (
+                        <span className="text-xs text-muted-foreground">
+                          {dict.emails.ignored}
+                        </span>
+                      ) : null}
+                    </div>
+                    {note ? (
+                      <span
+                        className={cn(
+                          "shrink-0 font-mono text-[11px] font-medium",
+                          NOTE_CLASS[email.urgency.kind] ??
+                            "text-[var(--fonda-text-3)]"
+                        )}
+                      >
+                        {note}
                       </span>
                     ) : null}
                   </div>
-                  {note ? (
-                    <span
-                      className={cn(
-                        "shrink-0 font-mono text-[11px] font-medium",
-                        NOTE_CLASS[email.urgency.kind] ??
-                          "text-[var(--fonda-text-3)]"
-                      )}
-                    >
-                      {note}
-                    </span>
-                  ) : null}
                 </div>
               </button>
             );

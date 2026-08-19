@@ -54,19 +54,36 @@ export function EmptyState({
     <div
       className={cn(
         "flex flex-col items-center justify-center gap-3 text-center",
-        compact ? "p-6" : "rounded-[16px] border border-border bg-muted px-6 py-14",
+        // Full size is a page's own "nothing here" surface, so it joins the
+        // gradient layer on the quiet sand tier (§7.3). Compact is an inline
+        // note inside someone else's card — a gradient there would be a
+        // gradient inside a gradient's neighbour, so it stays flat.
+        compact ? "p-6" : "gradient-panel rounded-[20px] px-6 py-14 shadow-card",
         className
       )}
     >
       <div
         className={cn(
-          "flex items-center justify-center rounded-full bg-[var(--fonda-inset)] text-[var(--fonda-text-3)]",
-          compact ? "size-8" : "size-10"
+          "flex items-center justify-center rounded-full",
+          compact
+            ? "size-8 bg-[var(--fonda-inset)] text-[var(--fonda-text-3)]"
+            : // A soft translucent white disc on the sand, per §7.2's
+              // "soft translucent white glyph".
+              "size-10 bg-[var(--fonda-white)]/45 text-[var(--fonda-text-2)]"
         )}
       >
         <Icon className={compact ? "size-4" : "size-5"} strokeWidth={1.5} />
       </div>
-      <p className="max-w-xs text-sm text-muted-foreground">{message}</p>
+      {/* --fonda-text-3 is not allowed on sand (3.33:1 at the darkest stop);
+          text-2 measures 4.60:1 there. */}
+      <p
+        className={cn(
+          "max-w-xs text-sm",
+          compact ? "text-muted-foreground" : "text-[var(--fonda-text-2)]"
+        )}
+      >
+        {message}
+      </p>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { ChevronLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { BriefHero } from "@/components/dashboard/brief-hero";
 import { BriefingArticle } from "@/components/dashboard/briefing-article";
 import { Button } from "@/components/ui/button";
 import type { BriefingContent } from "@/lib/briefing";
@@ -60,7 +61,7 @@ export default async function BriefingHistoryDetailPage({
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-3">
         <Button
           asChild
           variant="ghost"
@@ -72,12 +73,13 @@ export default async function BriefingHistoryDetailPage({
             {dict.briefing.backToToday}
           </Link>
         </Button>
-        <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
-          {hotel?.name ?? dict.briefing.fallbackHotel}
-        </h1>
-        <p className="text-muted-foreground">
-          {formatLongDate(intlLocale[locale], tz, new Date(row.generated_at))}
-        </p>
+        {/* Same sunrise as today's brief — a past brief is the same document,
+            read on a different morning. The page's one gradient. */}
+        <BriefHero
+          eyebrow={formatLongDate(intlLocale[locale], tz, new Date(row.generated_at))}
+          title={dict.briefing.title}
+          subtitle={hotel?.name ?? dict.briefing.fallbackHotel}
+        />
       </div>
 
       <BriefingArticle content={briefing} dict={dict} />
