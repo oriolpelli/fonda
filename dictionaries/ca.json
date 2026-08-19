@@ -314,7 +314,8 @@
     "chat": "Chat",
     "waitingOne": "{count} missatge pendent",
     "waitingOther": "{count} missatges pendents",
-    "menu": "Menú"
+    "menu": "Menú",
+    "account": "Compte"
   },
   "roadmap": {
     "badge": "Properament",

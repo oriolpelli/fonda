@@ -314,7 +314,8 @@
     "chat": "Chat",
     "waitingOne": "{count} message waiting",
     "waitingOther": "{count} messages waiting",
-    "menu": "Menu"
+    "menu": "Menu",
+    "account": "Account"
   },
   "roadmap": {
     "badge": "Coming soon",

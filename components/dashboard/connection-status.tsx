@@ -2,10 +2,13 @@ import { cn } from "@/lib/utils";
 
 export type ConnectionState = "green" | "amber" | "red";
 
-// One signal only: navy marks a live/healthy connection, muted marks stale,
-// destructive marks a broken connection. No off-palette traffic-light hues.
+// Chrome is colorless in v3 (FONDA_SANA_REDESIGN.md §3.2), and this dot now
+// lives in the rail's account menu — so the tell is DARKNESS, not hue, exactly
+// like the active nav state: solid near-black is live, muted is stale.
+// Destructive keeps its red, because a broken connection is a real error state.
+// No off-palette traffic-light hues, and no navy: that accent is content-only.
 const DOTS: Record<ConnectionState, string> = {
-  green: "bg-[var(--fonda-accent)]",
+  green: "bg-[var(--fonda-text)]",
   amber: "bg-[var(--fonda-text-3)]",
   red: "bg-destructive",
 };

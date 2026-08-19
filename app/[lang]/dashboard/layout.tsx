@@ -131,17 +131,18 @@ export default async function DashboardLayout({
         signOutLabel={dict.common.signOut}
         locale={locale}
         menuLabel={dict.sidebar.menu}
+        accountLabel={dict.sidebar.account}
         openLabel={dict.nav.openMenu}
         closeLabel={dict.nav.closeMenu}
       />
-      {/* pt-14 clears the fixed mobile top bar; pl-64 the desktop rail.
+      {/* pt-14 clears the fixed mobile top bar; pl-16 the desktop icon rail.
 
           min-w-0 is load-bearing: a flex item defaults to `min-width: auto`,
           so this column refused to shrink below the widest thing inside it —
           the dashboard's 14-night strip — and pushed the entire page sideways
           on a phone. Zeroing the minimum lets the column match the viewport
           and leaves each scroll container to handle its own overflow. */}
-      <div className="flex min-w-0 flex-1 flex-col pt-14 md:pl-64 md:pt-0">
+      <div className="flex min-w-0 flex-1 flex-col pt-14 md:pl-16 md:pt-0">
         {/* The extra bottom padding on mobile keeps the floating "Ask your
             hotel" button from covering the last row of a list. */}
         <main className="mx-auto w-full max-w-[1120px] flex-1 px-5 pb-24 pt-6 md:px-8 md:pb-10 md:pt-10">

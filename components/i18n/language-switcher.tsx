@@ -55,8 +55,11 @@ export function LanguageSwitcher({ className }: { className?: string }) {
             aria-pressed={active}
             className={cn(
               "rounded-[7px] px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.08em] transition-colors",
+              // Ink, not the navy accent: this sits in chrome (the dashboard
+              // account menu, the marketing mobile nav), and v3 keeps chrome
+              // colorless — the selected locale reads by darkness instead.
               active
-                ? "bg-[var(--fonda-accent)] text-white"
+                ? "bg-[var(--fonda-ink)] text-[var(--fonda-text-inv)]"
                 : "text-[var(--fonda-text-3)] hover:text-foreground"
             )}
           >
