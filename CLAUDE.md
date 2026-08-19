@@ -50,17 +50,25 @@ Dev Roadmap / Launch Plan / Pilot Outreach `.docx` files.
 # Design
 
 All visual and design decisions for Fonda — color, typography, spacing, radius,
-shadows, component styling, and page layout — MUST follow the Fonda design
-identity (v2 "Signal"). Read it before writing or changing any UI:
+shadows, component styling, and page layout — MUST follow the **current** design
+spec, v3 "Fonda × Sana". Read it before writing or changing any UI:
 
-@FONDA_DESIGN_IDENTITY.md
+@FONDA_SANA_REDESIGN.md
 
-The system in one line: one grotesque typeface (Geist + Geist Mono), a neutral
-near-white / near-black ground, a single cool navy signal color used sparingly,
-soft-cornered controls (10px), flat cards, light only.
+The system in one line: one grotesque typeface (Geist + Geist Mono), a warm
+greige ground with white cards floating on top, colorless chrome (no navy in
+nav, active states, or chips), color reserved for content (gradient hero cards
+plus one accent inside data viz), soft-cornered controls (10px, no pills), a
+slim icon-only left rail, light only.
 
-When the design identity conflicts with existing component styles, the design
-identity wins — update the component to match it.
+@FONDA_DESIGN_IDENTITY.md is the previous system (v2 "Signal"). Keep it for
+background and history — it still explains the type scale, spacing rhythm, and
+the one-accent discipline the v3 system inherits. But it is **not** the
+authority: where the two conflict, **FONDA_SANA_REDESIGN.md wins** for all
+app/product and marketing UI.
+
+When the design spec conflicts with existing component styles, the spec wins —
+update the component to match it.
 
 # Safety & boundaries
 
