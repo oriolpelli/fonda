@@ -2,13 +2,22 @@
 @import "tw-animate-css";
 
 /*
- * Fonda design tokens — v2.0 "Signal".
- * See FONDA_DESIGN_IDENTITY.md.
+ * Fonda design tokens — v3 "Fonda × Sana".
+ * See FONDA_SANA_REDESIGN.md (current spec; supersedes the white ground and
+ * chrome-accent decisions in FONDA_DESIGN_IDENTITY.md v2 "Signal").
+ * NOTE: the spec's "warm greige" ground (§3.1/§3.3, #edeae3) was corrected to
+ * neutral grey #eeeeee after sampling the reference video — see --fonda-bg.
  *
- * Direction: confident, neutral, boutique. Sana-inspired.
+ * Direction: calm, quiet, editorial. Sana-inspired.
  *   - One bold grotesque typeface (Geist) for everything; no serif.
- *   - Neutral near-white / near-black ground.
- *   - A single cool navy "signal" accent, used sparingly.
+ *   - A neutral light-grey page ground; white cards FLOAT lighter on top.
+ *     (v2 had this inverted — white page, grey cards — which is why cards
+ *     needed hairline borders to show up at all.)
+ *   - Chrome is COLORLESS: no navy in nav, active states, chips, or links.
+ *     Active = solid warm near-black on a greige inset, never a tint.
+ *   - Color is a CONTENT material: gradient hero/empty surfaces, plus the one
+ *     navy accent inside data viz (once per view).
+ *   - Soft-cornered controls (10px). No pills, except icon-only round buttons.
  *   - Light only. No dark mode.
  *
  * FONT SETUP (app/layout.tsx):
@@ -19,30 +28,69 @@
  *   The old Inter / Playfair imports can be removed.
  */
 :root {
-  /* Raw Fonda palette — Signal (default) */
-  --fonda-bg:           #ffffff;  /* Page background — clean neutral white */
-  --fonda-surface:      #f6f6f4;  /* Cards, panels, nested wells */
-  --fonda-inset:        #eeede9;  /* Pressed states, inner wells */
-  --fonda-white:        #ffffff;  /* Overlays, modals */
-  --fonda-border:       #e8e7e3;  /* Default hairline border */
-  --fonda-border-2:     #dcdbd6;  /* Stronger border (inputs, buttons) */
-  --fonda-text:         #0a0a0a;  /* Primary text — near-black */
-  --fonda-text-2:       #5b5b58;  /* Secondary text, descriptions */
-  /* Muted text, eyebrows, placeholders.
-     WAS #9c9c97 (the v2 "Signal" spec value) — that is 2.76:1 on white and
-     2.55:1 on --fonda-surface, which fails WCAG AA for normal text (4.5:1)
-     AND for large text (3:1). Eyebrows and footnotes are readable content,
-     not decoration, so the token itself is darkened rather than patched per
-     use. #6f6f6a is 5.05:1 on white and 4.67:1 on --fonda-surface, and stays
-     a visible step lighter than --fonda-text-2 (6.81:1).
-     FONDA_DESIGN_IDENTITY.md still documents the old value — update it. */
-  --fonda-text-3:       #6f6f6a;
-  --fonda-text-inv:     #ffffff;  /* Text on ink / accent */
-  --fonda-accent:       #1b3bb3;  /* Cool navy signal — primary action only */
-  --fonda-accent-hover: #152e8c;  /* Accent hover */
-  --fonda-accent-light: #eceffc;  /* Accent tint background */
-  --fonda-ink:          #0a0a0a;  /* Dark CTAs, dark sections, footers */
-  --fonda-ink-hover:    #1c1c1c;  /* Ink hover */
+  /* ── Ground & surfaces (v3) ─────────────────────────────────────────── */
+  /* GROUND CORRECTION (supersedes FONDA_SANA_REDESIGN.md §3.1/§3.3):
+     the spec specified a warm greige #edeae3, but the reference Sana video
+     samples at RGB 238/238/238 — a NEUTRAL light grey, no warmth at all.
+     #edeae3 runs 10 pts warm on the blue channel, which reads visibly sandy
+     and does not match the source. The "greige ground" premise is retired;
+     the ground is neutral grey. Cards still float white on top of it. */
+  --fonda-bg:           #eeeeee;  /* Page ground — neutral light grey (was #fff) */
+  --fonda-surface:      #ffffff;  /* Cards/panels — float LIGHTER than the page */
+  --fonda-surface-2:    #f6f3ee;  /* Nested wells, secondary panels, hover fills */
+  --fonda-inset:        #e4e0d7;  /* Pressed states, tracks, active-nav fill */
+  --fonda-white:        #ffffff;  /* Modals, canvas, popovers */
+
+  /* ── Borders — warm, barely-there (tone does the work now) ──────────── */
+  --fonda-border:       #e2ddd3;  /* Hairline — use sparingly, not as card outline */
+  --fonda-border-2:     #d4cec2;  /* Stronger (inputs, buttons) */
+
+  /* ── Text — warm near-black ramp ────────────────────────────────────── */
+  --fonda-text:         #1c1a16;  /* Primary — warm near-black (was #0a0a0a) */
+  --fonda-text-2:       #56534b;  /* Secondary / descriptions */
+  /* Muted text, eyebrows, placeholders. MUST clear WCAG AA on BOTH grounds.
+     FONDA_SANA_REDESIGN.md §3.3 specifies #7a766c and offers #736f65 as the
+     fallback "if it fails your checker" — but both fail on the page ground,
+     under the spec's greige AND under the corrected neutral grey:
+       #7a766c → 3.77:1 on #edeae3 · 3.90:1 on #eeeeee  ✗ normal text
+       #736f65 → 4.17:1 on #edeae3 · 4.32:1 on #eeeeee  ✗ normal text
+     §3.3's "~4.5:1 on greige" is really its ratio on WHITE; darkening the page
+     off white ate the headroom the v2 value had. Eyebrows and footnotes are
+     readable content, not decoration, so the token is darkened until it passes
+     on the PAGE, not just on cards. #6c685e is 4.79:1 on the corrected
+     #eeeeee ground and 5.56:1 on white, and stays a clear step lighter than
+     --fonda-text-2 (6.62:1). Never lighten this past #6c685e. */
+  --fonda-text-3:       #6c685e;
+  --fonda-text-inv:     #ffffff;  /* Text on ink / gradient */
+
+  /* ── Ink — dark CTAs, dark sections ─────────────────────────────────── */
+  --fonda-ink:          #1c1a16;  /* Primary CTA + full-bleed dark bands */
+  --fonda-ink-hover:    #302c25;  /* Ink hover */
+
+  /* ── The ONE content accent — never in chrome (§3.2, §10) ───────────── */
+  --fonda-accent:       #1b3bb3;  /* Data / live signal ONLY. Kept from v2. */
+  --fonda-accent-hover: #152e8c;
+  --fonda-accent-tint:  #e9ecf7;  /* Cool tint — data contexts + focus ring only */
+  /* DEPRECATED alias — v2's chrome tint. The generic --accent role no longer
+     points here (see the semantic mappings below), but 8 component call sites
+     still reference it directly (sidebar, ask-your-hotel, setup-banner, admin,
+     marketing). Aliased so nothing breaks before their phases land; delete it
+     once those are migrated (Phase 8 sweep). Do not use in new code. */
+  --fonda-accent-light: var(--fonda-accent-tint);
+
+  /* ── Gradient content surfaces (§7) — the only place color lives ────── */
+  --grad-warm: linear-gradient(145deg,#f3a63a 0%,#ee9560 52%,#e0725c 100%);
+  --grad-cool: linear-gradient(150deg,#3fb4d0 0%,#2f72d4 58%,#243b98 100%);
+  --grad-sand: linear-gradient(150deg,#e9dcc4 0%,#d9c6a6 100%);
+
+  /* ── Elevation (§6) ─────────────────────────────────────────────────── */
+  /* Top-level cards are borderless, so the page→card tonal step (#eeeeee →
+     #ffffff, only 17 pts / 1.16:1) plus this shadow is ALL that separates a
+     card from the ground. It is load-bearing, not decoration — don't remove it
+     from a borderless card. Tinted with the warm ink (28 26 22 = #1c1a16)
+     rather than neutral black so the shading matches the material. */
+  --fonda-shadow-card:       0 1px 2px rgb(28 26 22 / 0.04), 0 8px 24px rgb(28 26 22 / 0.04);
+  --fonda-shadow-card-hover: 0 1px 2px rgb(28 26 22 / 0.05), 0 12px 32px rgb(28 26 22 / 0.07);
 
   /* Radius scale — soft-cornered, not pill (Geist house style) */
   --radius: 0.625rem; /* 10px — buttons & inputs */
@@ -50,19 +98,23 @@
   /* shadcn semantic tokens mapped onto the Fonda palette */
   --background: var(--fonda-bg);
   --foreground: var(--fonda-text);
-  --card: var(--fonda-white);
+  --card: var(--fonda-surface);           /* white, floating on the grey page */
   --card-foreground: var(--fonda-text);
   --popover: var(--fonda-white);
   --popover-foreground: var(--fonda-text);
   --primary: var(--fonda-ink);            /* primary button = ink (dark) */
   --primary-foreground: var(--fonda-text-inv);
   --primary-hover: var(--fonda-ink-hover);
-  --secondary: var(--fonda-surface);
+  --secondary: var(--fonda-surface-2);
   --secondary-foreground: var(--fonda-text);
-  --muted: var(--fonda-surface);
+  --muted: var(--fonda-surface-2);
   --muted-foreground: var(--fonda-text-2);
-  --accent: var(--fonda-accent-light);
-  --accent-foreground: var(--fonda-accent);
+  /* Chrome must not resolve to a colored accent anymore (§3.1). The generic
+     shadcn --accent pair drives ghost-button hover, selected list rows, and
+     connect-card selected states — all chrome. Repointed to a warm neutral;
+     the real navy stays reachable only via an explicit --fonda-accent. */
+  --accent: var(--fonda-inset);
+  --accent-foreground: var(--fonda-text);
   --destructive: #c2403b;
   --destructive-foreground: var(--fonda-text-inv);
   --border: var(--fonda-border);
@@ -95,10 +147,15 @@
   --color-ink: var(--fonda-ink);
   --color-ink-hover: var(--fonda-ink-hover);
   --color-surface: var(--fonda-surface);
+  --color-surface-2: var(--fonda-surface-2);
   --color-inset: var(--fonda-inset);
   --color-border-2: var(--fonda-border-2);
   --color-accent-solid: var(--fonda-accent);
   --color-muted-3: var(--fonda-text-3);
+
+  /* Elevation — `shadow-card` / `shadow-card-hover` utilities (§6) */
+  --shadow-card: var(--fonda-shadow-card);
+  --shadow-card-hover: var(--fonda-shadow-card-hover);
 
   /* Type — one grotesque for everything. --font-serif intentionally maps to
      Geist too, so legacy `font-serif` headlines render in the new system
