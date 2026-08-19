@@ -10,6 +10,7 @@ import {
 } from "@/app/[lang]/newsletter/actions";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { localizedHref } from "@/lib/i18n/navigation";
 
 function SubscribeButton() {
@@ -54,7 +55,13 @@ export function NewsletterForm() {
 
       <form action={formAction} className="mt-5 flex flex-col gap-2.5 sm:flex-row">
         <input type="hidden" name="locale" value={locale} />
-        <input
+        {/* The Input primitive, not a hand-rolled field: this used to restate
+            the whole border/background/focus recipe inline, which meant it
+            silently drifted when the tokens moved (it was still filling the
+            field with --fonda-bg, now the grey page ground, and ringing with
+            the deprecated --fonda-accent-light). Only the marketing type size
+            is overridden. */}
+        <Input
           type="email"
           name="email"
           required
@@ -62,7 +69,7 @@ export function NewsletterForm() {
           aria-label={dict.footer.newsletterTitle}
           aria-describedby="newsletter-privacy"
           placeholder={dict.footer.newsletterPlaceholder}
-          className="h-11 w-full rounded-[10px] border border-[var(--fonda-border-2)] bg-[var(--fonda-bg)] px-3.5 text-[15px] text-foreground transition-colors duration-[180ms] placeholder:text-[var(--fonda-text-3)] focus:border-[var(--fonda-accent)] focus:outline-none focus:ring-[3px] focus:ring-[var(--fonda-accent-light)]"
+          className="text-[15px]"
         />
         <SubscribeButton />
       </form>

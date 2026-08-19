@@ -2,13 +2,33 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+function Card({
+  className,
+  nested = false,
+  ...props
+}: React.ComponentProps<"div"> & {
+  /**
+   * Set on a card rendered *inside* another card. Nested cards keep the
+   * hairline and drop the shadow; see the note below for why.
+   */
+  nested?: boolean;
+}) {
   return (
     <div
       data-slot="card"
       className={cn(
-        // Fonda v2: 16px radius, flat at rest (no shadow), white surface.
-        "rounded-[16px] border border-border bg-card text-card-foreground",
+        // Fonda v3 (§6): white surface floating on the grey page ground,
+        // 18px radius.
+        //
+        // Top-level cards are borderless — the page→card tonal step plus the
+        // resting whisper shadow does the separating. Nested cards can't use
+        // that trick: both they and their parent are white, so there is no
+        // tonal step to read, and stacking shadows inside a card looks muddy.
+        // They get a hairline and no shadow instead.
+        "rounded-[18px] bg-card text-card-foreground",
+        nested
+          ? "border border-border"
+          : "shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover",
         className
       )}
       {...props}

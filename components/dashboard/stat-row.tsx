@@ -23,7 +23,10 @@ export function StatRow({ stats }: { stats: Stat[] }) {
     // 2×2 all the way up to `lg`. At exactly `md` the desktop rail is already
     // taking 256px, which leaves each of four cells ~64px of text — narrow
     // enough that "OCCUPANCY TONIGHT" spills out of its cell.
-    <div className="grid grid-cols-2 overflow-hidden rounded-[16px] border border-border bg-card lg:grid-cols-4">
+    // v3 (§6): a top-level card — white, borderless, floating on the grey
+    // ground via the resting shadow. The 1px rules *between* cells stay: they
+    // are a true divider, which is the one job §6 still keeps hairlines for.
+    <div className="grid grid-cols-2 overflow-hidden rounded-[18px] bg-card shadow-card lg:grid-cols-4">
       {stats.map((stat, i) => (
         <div
           key={stat.key}
