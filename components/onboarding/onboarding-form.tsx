@@ -13,9 +13,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
+// Kept deliberately in step with components/ui/input.tsx — a <select> can't go
+// through the Input primitive, so the recipe is restated here and must move
+// with it. Note the focus ring is --fonda-accent-tint, NOT the generic
+// --accent: that role is a warm neutral in v3 (§3.1) and would ring the field
+// in a muddy halo instead of signalling focus.
 const selectClassName = cn(
-  "flex h-11 w-full rounded-[10px] border border-input bg-popover px-4 py-2.5 text-sm transition-colors",
-  "focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-accent",
+  "flex h-11 w-full rounded-[10px] border border-input bg-surface px-4 py-2.5 text-sm transition-colors duration-[180ms]",
+  "focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]",
   "disabled:cursor-not-allowed disabled:opacity-50"
 );
 

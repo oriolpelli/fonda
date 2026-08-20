@@ -24,10 +24,14 @@ export function BriefingPreviewWindow({
   return (
     <div
       className={cn(
+        // Keeps its hairline where the page's cards dropped theirs: this is a
+        // product shot in a window frame, not a card, and the frame is the
+        // point. Depth is tinted with the warm ink (28 26 22) rather than the
+        // old neutral rgba(10,10,10) so it matches the v3 material.
         "overflow-hidden border border-border bg-popover transition-[transform,box-shadow] duration-300 ease-out",
         isLarge
-          ? "rounded-[20px] shadow-[0_24px_60px_-24px_rgba(10,10,10,0.18)] hover:-translate-y-1 hover:shadow-[0_28px_70px_-20px_rgba(10,10,10,0.22)]"
-          : "rounded-[18px] shadow-[0_12px_48px_rgba(10,10,10,0.06)] hover:-translate-y-0.5 hover:shadow-[0_16px_56px_rgba(10,10,10,0.08)] lg:sticky lg:top-24",
+          ? "rounded-[20px] shadow-[0_24px_60px_-24px_rgb(28_26_22_/_0.18)] hover:-translate-y-1 hover:shadow-[0_28px_70px_-20px_rgb(28_26_22_/_0.22)]"
+          : "rounded-[18px] shadow-[0_12px_48px_rgb(28_26_22_/_0.06)] hover:-translate-y-0.5 hover:shadow-[0_16px_56px_rgb(28_26_22_/_0.08)] lg:sticky lg:top-24",
         className
       )}
     >

@@ -94,13 +94,17 @@ export function AuthForm({ mode, action, redirectTo }: AuthFormProps) {
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <SubmitButton label={isLogin ? dict.auth.signIn : dict.auth.createAccount} />
+          {/* The switch link is chrome, so it carries no accent (§3.2 — navy
+              is content-only in v3). It was navy-on-hover-underline; it is now
+              ink and underlined at rest, which keeps it obviously a link
+              without spending colour. */}
           <p className="text-sm text-muted-foreground">
             {isLogin ? (
               <>
                 {dict.auth.noAccount}{" "}
                 <LocaleLink
                   href="/signup"
-                  className="font-medium text-[var(--fonda-accent)] hover:underline"
+                  className="font-medium text-foreground underline underline-offset-4 hover:text-[var(--fonda-text-2)]"
                 >
                   {dict.auth.signUpLink}
                 </LocaleLink>
@@ -110,7 +114,7 @@ export function AuthForm({ mode, action, redirectTo }: AuthFormProps) {
                 {dict.auth.haveAccount}{" "}
                 <LocaleLink
                   href="/login"
-                  className="font-medium text-[var(--fonda-accent)] hover:underline"
+                  className="font-medium text-foreground underline underline-offset-4 hover:text-[var(--fonda-text-2)]"
                 >
                   {dict.auth.signInLink}
                 </LocaleLink>

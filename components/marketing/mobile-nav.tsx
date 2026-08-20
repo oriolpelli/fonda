@@ -140,8 +140,11 @@ export function MobileNav({
       <div
         id={panelId}
         hidden={!open}
+        // White, not --fonda-bg: the panel is a surface dropped over the page,
+        // and on the v3 ground a --fonda-bg panel would be the same grey as
+        // the page it covers, leaving only the scrim to say it was there.
         className={cn(
-          "fixed inset-x-0 top-16 border-b border-border bg-[var(--fonda-bg)] px-6 pb-7 pt-2",
+          "fixed inset-x-0 top-16 border-b border-border bg-[var(--fonda-surface)] px-6 pb-7 pt-2 shadow-card",
           !open && "hidden"
         )}
       >

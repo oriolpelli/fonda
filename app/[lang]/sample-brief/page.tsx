@@ -87,7 +87,11 @@ export default async function SampleBriefPage({
               {dict.sampleBrief.ctaHeadline}
             </h2>
             <div className="mt-7 flex justify-center">
-              <Button asChild size="lg" className="bg-white text-ink hover:bg-white/90">
+              <Button
+                asChild
+                size="lg"
+                className="bg-surface text-ink hover:bg-surface/90"
+              >
                 <a href="mailto:hello@fondas.app">hello@fondas.app</a>
               </Button>
             </div>

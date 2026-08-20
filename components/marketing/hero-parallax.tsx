@@ -109,27 +109,46 @@ export function HeroParallax({ children }: { children: ReactNode }) {
         </div>
       </div>
 
-      {/* Scrim: keeps the headline legible where it crosses the art. White,
-          matching --fonda-bg (the prototype's was warm, for its own ground).
-          Re-tuned when the art was centred and enlarged — §7 requires
-          re-checking this whenever the art moves or is resized. The type band
-          now sits over the middle of the painting rather than above it, so
-          coverage holds through ~76% (past the CTA row) instead of releasing
-          at 60%, and the art's detailed lower edge stays unwashed.
+      {/* Scrim: keeps the headline legible where it crosses the art.
 
-          These stops are deliberately stronger than the prototype's
-          (.94/0 · .74/34% · .10/60% · 0/78%). Two reasons: the prototype's
-          ground is warm #FCFAF5, not our white, so its alphas were never
-          portable; and at 70vw the villa and pool now sit directly behind the
-          subhead and CTAs, which the prototype's near-zero coverage below 60%
-          would leave on bare paint. Loosen these only with the type in front
-          of you. */}
+          IT IS THE PAGE GROUND, NOT WHITE (v3, §12). It was white while the
+          page was white, so it was invisible except as haze over the painting.
+          On the grey ground that same white would paint a pale wash across the
+          top of the hero and leave a visible horizontal seam at 88% where it
+          releases into the section below — the scrim would read as a band of a
+          different colour rather than as air. Mixing --fonda-bg down to
+          transparent instead keeps the hero the same tone as the page all the
+          way through, so only the art fades. color-mix rather than a second
+          hard-coded hex, so the stops follow the token if the ground moves
+          again.
+
+          THE ALPHAS ARE UNCHANGED from the tuned white version — only the hue
+          moved. They were set with the type in front of the art after it was
+          centred and enlarged (§7 requires re-checking this whenever the art
+          moves or is resized): coverage holds through ~76%, past the CTA row,
+          and releases by 88% so the art's detailed lower edge stays unwashed.
+          They are also deliberately stronger than the prototype's
+          (.94/0 · .74/34% · .10/60% · 0/78%), because at 70vw the villa and
+          pool sit directly behind the subhead and CTAs, which the prototype's
+          near-zero coverage below 60% would leave on bare paint.
+
+          Grey knocks the art back slightly harder than white did at the same
+          alpha — the ground is nearer the painting's mid-tones — so this is
+          the safe direction for legibility, not the risky one. Loosen these
+          only with the type in front of you. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 z-[2]"
         style={{
-          background:
-            "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.86) 26%, rgba(255,255,255,0.72) 46%, rgba(255,255,255,0.46) 62%, rgba(255,255,255,0.12) 76%, rgba(255,255,255,0) 88%)",
+          background: [
+            "linear-gradient(180deg,",
+            "color-mix(in srgb, var(--fonda-bg) 92%, transparent) 0%,",
+            "color-mix(in srgb, var(--fonda-bg) 86%, transparent) 26%,",
+            "color-mix(in srgb, var(--fonda-bg) 72%, transparent) 46%,",
+            "color-mix(in srgb, var(--fonda-bg) 46%, transparent) 62%,",
+            "color-mix(in srgb, var(--fonda-bg) 12%, transparent) 76%,",
+            "color-mix(in srgb, var(--fonda-bg) 0%, transparent) 88%)",
+          ].join(" "),
         }}
       />
 

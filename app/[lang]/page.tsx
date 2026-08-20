@@ -27,6 +27,7 @@ import {
   SITE_URL,
 } from "@/lib/seo";
 import { t } from "@/lib/i18n/format";
+import { cn } from "@/lib/utils";
 
 // Two lists, and the difference between them is the honesty of the section.
 //
@@ -50,12 +51,52 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 }
 
 // A small navy square — the Signal system's marker in place of bullets/emoji.
-function SquareMarker() {
+// On the one gradient tile (§7) navy would be both illegible on amber and a
+// second colour on a surface that already carries the page's only gradient, so
+// the marker goes white there.
+function SquareMarker({ onGradient = false }: { onGradient?: boolean }) {
   return (
     <span
-      className="block size-[7px] rounded-[2px] bg-[var(--fonda-accent)]"
+      className={cn(
+        "block size-[7px] rounded-[2px]",
+        onGradient ? "bg-[var(--fonda-text-inv)]" : "bg-[var(--fonda-accent)]"
+      )}
       aria-hidden
     />
+  );
+}
+
+// The glyph for the single gradient feature tile. §7.2 asks for "a soft
+// translucent white glyph" rather than art: the watercolour vignettes are
+// painted for a light ground — cream fills, brown outlines — and go muddy on
+// the sunrise gradient. Decorative; the tile's heading carries the meaning.
+function SunGlyph({ size = 88 }: { size?: number }) {
+  return (
+    <svg
+      viewBox="0 0 120 120"
+      width={size}
+      height={size}
+      className="block text-[var(--fonda-text-inv)]"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="60" cy="60" r="21" fill="currentColor" opacity="0.9" />
+      <g
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinecap="round"
+        opacity="0.5"
+      >
+        <path d="M60 16 v11" />
+        <path d="M60 93 v11" />
+        <path d="M16 60 h11" />
+        <path d="M93 60 h11" />
+        <path d="M29 29 l8 8" />
+        <path d="M83 83 l8 8" />
+        <path d="M91 29 l-8 8" />
+        <path d="M37 83 l-8 8" />
+      </g>
+    </svg>
   );
 }
 
@@ -392,7 +433,15 @@ export default async function Home({
                   {dict.hero.headlineLine2}
                 </span>
               </h1>
-              <p className="mx-auto mt-7 max-w-xl text-[20px] leading-[1.6] text-muted-foreground">
+              {/* Near-black, not muted — the ONE place on the page a lead
+                  paragraph isn't --fonda-text-2. It sits where the scrim has
+                  released to roughly half coverage and the villa and pool show
+                  through, and muted grey does not survive that: over the dark
+                  foliage it measures 3.72:1, under AA for 20px normal text,
+                  and only 4.65:1 over the pool. --fonda-text holds 8.3:1 and
+                  10.4:1 on those same two spots. Size and weight still
+                  separate it from the headline, so nothing flattens. */}
+              <p className="mx-auto mt-7 max-w-xl text-[20px] leading-[1.6] text-foreground">
                 {dict.hero.subhead}
               </p>
               <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -401,7 +450,22 @@ export default async function Home({
                     {dict.hero.ctaPrimary}
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg">
+                {/* Scoped override, not a variant change: `outline` is a
+                    transparent field with a hairline, which is right on the
+                    plain grounds it's used on everywhere else and disappears
+                    here, over the pool. Filling it makes it float instead.
+                    All three pieces are load-bearing over different parts of
+                    the painting — the white fill is a 1.56:1 step against the
+                    pool but nearly nothing against the villa's white wall,
+                    and the border is the reverse — so neither alone is
+                    enough, and the shadow is the one constant. Do not "clean
+                    this up" into the global outline variant. */}
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="bg-surface shadow-card hover:bg-surface hover:shadow-card-hover"
+                >
                   <Link href="#how">{dict.hero.ctaSecondary}</Link>
                 </Button>
               </div>
@@ -419,24 +483,30 @@ export default async function Home({
               <span className="mr-1 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
                 {dict.trust.worksWith}
               </span>
+              {/* Live: white chips floating on the grey ground. On the v3
+                  ground the fill is what separates them from the page, so the
+                  hairline they used to need is gone (§6, §9). */}
               {LIVE_INTEGRATIONS.map((name) => (
                 <span
                   key={name}
-                  className="rounded-full border border-border px-3.5 py-1 text-[13px] font-medium text-muted-foreground"
+                  className="rounded-full bg-[var(--fonda-surface)] px-3.5 py-1 text-[13px] font-medium text-[var(--fonda-text-2)]"
                 >
                   {name}
                 </span>
               ))}
-              {/* The "we'd build it for you" set: its own label, and a filled,
-                  borderless, lighter chip so it can't be mistaken for the live
-                  ones above. Same tokens — no new colour. */}
+              {/* The "we'd build it for you" set: its own label, and a chip
+                  that sits BACK rather than forward, so it can't be mistaken
+                  for the live ones above. The warm well tone with no shadow
+                  reads recessed against the white ones; before the ground
+                  flipped, both of these fills resolved to the same colour.
+                  Same tokens — no new colour. */}
               <span className="ml-1 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
                 {dict.trust.onRequest}
               </span>
               {[...ON_REQUEST_INTEGRATIONS, dict.trust.customPms].map((name) => (
                 <span
                   key={name}
-                  className="rounded-full bg-[var(--fonda-surface)] px-3.5 py-1 text-[13px] text-[var(--fonda-text-3)]"
+                  className="rounded-full bg-[var(--fonda-surface-2)] px-3.5 py-1 text-[13px] text-[var(--fonda-text-3)]"
                 >
                   {name}
                 </span>
@@ -473,7 +543,7 @@ export default async function Home({
               <Reveal
                 key={step.num}
                 index={i}
-                className="flex flex-col rounded-[16px] border border-border bg-card p-7"
+                className="flex flex-col rounded-[18px] bg-card p-7 shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
               >
                 <span className="font-mono text-[13px] font-medium tracking-[0.1em] text-[var(--fonda-accent)]">
                   {step.num}
@@ -506,25 +576,61 @@ export default async function Home({
               {FEATURES.map((feature, i) => {
                 const copy =
                   dict.features[feature.key as keyof typeof dict.features];
+                // THE page's one gradient surface (§7.2 caps it at one per
+                // screen — do not add a second anywhere on this page). It goes
+                // on the morning brief because that tile is literally a
+                // sunrise (§7.3), which is what --grad-warm paints; the other
+                // three stay white on the grey ground so the warmth reads as
+                // emphasis rather than decoration.
+                //
+                // Text on it is FULL white, never a translucent white: the
+                // gradient's lightest stop clears 4.5:1 for solid white by a
+                // hair (4.86:1 under the mandatory scrim, §3.3), and dropping
+                // even to 90% opacity puts it at 4.31:1 — under AA. Hierarchy
+                // inside the tile comes from weight and size only.
+                const featured = feature.key === "briefing";
                 return (
                   <Reveal
                     key={feature.key}
                     index={i}
-                    className="flex flex-col rounded-[16px] border border-border bg-card p-6"
+                    className={cn(
+                      "flex flex-col p-6",
+                      featured
+                        ? "gradient-hero rounded-[20px] shadow-card"
+                        : "rounded-[18px] bg-card shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
+                    )}
                   >
-                    <Vignette
-                      name={FEATURE_VIGNETTES[feature.key] ?? "olive"}
-                      size={88}
-                    />
+                    {featured ? (
+                      <SunGlyph size={88} />
+                    ) : (
+                      <Vignette
+                        name={FEATURE_VIGNETTES[feature.key] ?? "olive"}
+                        size={88}
+                      />
+                    )}
                     <div className="mt-5 flex items-start gap-3">
                       <span className="mt-[7px]">
-                        <SquareMarker />
+                        <SquareMarker onGradient={featured} />
                       </span>
                       <div>
-                        <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-foreground">
+                        <h3
+                          className={cn(
+                            "text-[18px] font-semibold tracking-[-0.01em]",
+                            featured
+                              ? "text-[var(--fonda-text-inv)]"
+                              : "text-foreground"
+                          )}
+                        >
                           {copy.name}
                         </h3>
-                        <p className="mt-1.5 text-[15px] leading-[1.55] text-muted-foreground">
+                        <p
+                          className={cn(
+                            "mt-1.5 text-[15px] leading-[1.55]",
+                            featured
+                              ? "text-[var(--fonda-text-inv)]"
+                              : "text-muted-foreground"
+                          )}
+                        >
                           {copy.description}
                         </p>
                       </div>
@@ -600,7 +706,12 @@ export default async function Home({
                 {dict.stats.lead}
               </p>
             </Reveal>
-            <div className="grid grid-cols-2 md:grid-cols-4">
+            {/* One white card holding four cells, not four loose cells on the
+                page: the internal hairlines only read as "one thought split
+                four ways" when something contains them, and on the grey ground
+                an uncontained grid just floats. Same treatment as the
+                dashboard's stat-row (§6). */}
+            <div className="grid grid-cols-2 overflow-hidden rounded-[18px] bg-card shadow-card md:grid-cols-4">
               {STATS.map((stat, i) => (
                 <Reveal
                   key={stat.value}
@@ -645,7 +756,7 @@ export default async function Home({
                 <Reveal
                   key={job.title}
                   index={i}
-                  className="rounded-[16px] border border-border bg-card p-6"
+                  className="rounded-[18px] bg-card p-6 shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
                 >
                   <SquareMarker />
                   <h3 className="mt-4 text-[16px] font-semibold tracking-[-0.01em] text-foreground">
@@ -681,9 +792,18 @@ export default async function Home({
                 <Reveal
                   key={column.title}
                   index={i}
-                  className={`rounded-[16px] border border-border p-7 ${
-                    column.isFondas ? "bg-card" : "bg-[var(--fonda-surface)]"
-                  }`}
+                  // The two columns are ranked by elevation, not by colour:
+                  // Fondas floats as a white card, by-hand sits back as a warm
+                  // well with a hairline and no shadow. Both used to be
+                  // "bg-card" and "--fonda-surface", which were different
+                  // greys in v2 but resolve to the SAME white in v3 — the
+                  // contrast the section is built on had quietly vanished.
+                  className={cn(
+                    "rounded-[18px] p-7",
+                    column.isFondas
+                      ? "bg-card shadow-card"
+                      : "border border-border bg-[var(--fonda-surface-2)]"
+                  )}
                 >
                   <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-foreground">
                     {column.title}
@@ -806,7 +926,7 @@ export default async function Home({
           className="scroll-mt-20 border-t border-border px-6 py-24 md:px-8"
         >
           <Reveal className="mx-auto max-w-[1120px]">
-            <div className="rounded-[28px] border border-border bg-[var(--fonda-surface)] px-6 py-16 text-center md:px-16">
+            <div className="rounded-[28px] bg-card px-6 py-16 text-center shadow-card md:px-16">
               <Eyebrow>{dict.pricing.eyebrow}</Eyebrow>
               <h2 className="mx-auto mt-5 max-w-[16ch] text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.03em] text-foreground">
                 {dict.pricing.headline}
@@ -856,7 +976,11 @@ export default async function Home({
               {dict.cta.subhead}
             </p>
             <div className="mt-9 flex justify-center">
-              <Button asChild size="lg" className="bg-white text-ink hover:bg-white/90">
+              <Button
+                asChild
+                size="lg"
+                className="bg-surface text-ink hover:bg-surface/90"
+              >
                 <Link href={localizedHref(locale, "/signup")}>{dict.cta.button}</Link>
               </Button>
             </div>
@@ -864,8 +988,10 @@ export default async function Home({
         </section>
       </main>
 
-      {/* Footer — flat and light per Signal: white ground, hairline rules
-          between bands, no dark mega-footer and no second accent. */}
+      {/* Footer — flat and light: it sits directly on the grey ground with
+          hairline rules between bands, no card, no dark mega-footer and no
+          second accent. The page's ink band is the CTA above it; two dark
+          slabs in a row would read as a wall. */}
       <footer className="border-t border-border">
         <div className="mx-auto w-full max-w-[1120px] px-6 md:px-8">
           {/* Brand + newsletter */}

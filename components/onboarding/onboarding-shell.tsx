@@ -47,13 +47,16 @@ export function OnboardingShell({
           total: ONBOARDING_TOTAL_STEPS,
         })}
       </p>
+      {/* Progress is chrome, so the filled segments are ink, not navy (§3.2,
+          §5.2: the active tell is darkness, never a saturated tint). Unfilled
+          stays the warm inset, so the pair still reads at a glance. */}
       <div className="mt-2 flex gap-1.5" aria-hidden>
         {Array.from({ length: ONBOARDING_TOTAL_STEPS }).map((_, i) => (
           <span
             key={i}
             className={cn(
               "h-1 flex-1 rounded-full transition-colors",
-              i < step ? "bg-[var(--fonda-accent)]" : "bg-[var(--fonda-inset)]"
+              i < step ? "bg-[var(--fonda-ink)]" : "bg-[var(--fonda-inset)]"
             )}
           />
         ))}

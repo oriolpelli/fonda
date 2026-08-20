@@ -115,7 +115,9 @@ export function FirstSyncStep({
   if (phase === "syncing") {
     return (
       <div className="flex flex-col items-center gap-4 py-8 text-center">
-        <Loader2 className="size-6 animate-spin text-[var(--fonda-accent)]" />
+        {/* Muted, not navy: a working state is chrome (§3.2), and §11 wants it
+            quiet rather than a saturated spinner competing with the copy. */}
+        <Loader2 className="size-6 animate-spin text-[var(--fonda-text-3)]" />
         <p className="text-sm font-medium text-foreground">
           {dict.onboarding.syncing}
         </p>
@@ -150,7 +152,10 @@ export function FirstSyncStep({
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-col gap-2 rounded-[10px] bg-[var(--fonda-surface)] px-4 py-3.5">
+      {/* --fonda-surface-2, not --fonda-surface: this well sits INSIDE the
+          onboarding card, and since the ground flipped "surface" is white —
+          the panel had gone invisible against the card behind it (§6). */}
+      <div className="flex flex-col gap-2 rounded-[10px] bg-[var(--fonda-surface-2)] px-4 py-3.5">
         <p className="text-sm font-medium leading-relaxed text-foreground">
           {reservations > 0
             ? plural(

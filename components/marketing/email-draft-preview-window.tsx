@@ -32,10 +32,14 @@ export function EmailDraftPreviewWindow({
   return (
     <div
       className={cn(
+        // Keeps its hairline where the page's cards dropped theirs: this is a
+        // product shot in a window frame, not a card, and the frame is the
+        // point. Depth is tinted with the warm ink (28 26 22) rather than the
+        // old neutral rgba(10,10,10) so it matches the v3 material.
         "overflow-hidden border border-border bg-popover transition-[transform,box-shadow] duration-300 ease-out",
         isLarge
-          ? "rounded-[20px] shadow-[0_24px_60px_-24px_rgba(10,10,10,0.18)] hover:-translate-y-1 hover:shadow-[0_28px_70px_-20px_rgba(10,10,10,0.22)]"
-          : "rounded-[18px] shadow-[0_12px_48px_rgba(10,10,10,0.06)] hover:-translate-y-0.5 hover:shadow-[0_16px_56px_rgba(10,10,10,0.08)] lg:sticky lg:top-24",
+          ? "rounded-[20px] shadow-[0_24px_60px_-24px_rgb(28_26_22_/_0.18)] hover:-translate-y-1 hover:shadow-[0_28px_70px_-20px_rgb(28_26_22_/_0.22)]"
+          : "rounded-[18px] shadow-[0_12px_48px_rgb(28_26_22_/_0.06)] hover:-translate-y-0.5 hover:shadow-[0_16px_56px_rgb(28_26_22_/_0.08)] lg:sticky lg:top-24",
         className
       )}
     >
@@ -68,8 +72,15 @@ export function EmailDraftPreviewWindow({
           <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
             {contextLine}
           </p>
-          <div className="mt-3 rounded-[12px] bg-[var(--fonda-surface)] p-4">
-            <span className="inline-flex items-center rounded-full bg-[var(--fonda-accent-light)] px-3 py-1 font-mono text-[11px] text-[var(--fonda-accent)]">
+          {/* The well is --fonda-surface-2, not --fonda-surface: since the
+              ground flipped, "surface" IS white, so this panel was white on
+              white and the draft had lost its container entirely. */}
+          <div className="mt-3 rounded-[12px] bg-[var(--fonda-surface-2)] p-4">
+            {/* Neutral chip, matching the source/result chips the real chat
+                now renders (§8.2). It was the pale-blue accent tint — the
+                deprecated --fonda-accent-light, and exactly the "reads SaaS"
+                micro-surface §2 calls out. */}
+            <span className="inline-flex items-center rounded-full border border-border bg-[var(--fonda-surface)] px-3 py-1 font-mono text-[11px] text-[var(--fonda-text-2)]">
               {draftLabel}
             </span>
             <p className="mt-3 text-[13px] leading-[1.6] text-foreground">
