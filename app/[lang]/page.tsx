@@ -51,9 +51,12 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 }
 
 // A small navy square — the Signal system's marker in place of bullets/emoji.
-// On the one gradient tile (§7) navy would be both illegible on amber and a
-// second colour on a surface that already carries the page's only gradient, so
-// the marker goes white there.
+//
+// `onGradient` flips it to white, for a marker sitting on a gradient surface
+// where navy would be both illegible on amber and a second colour on a surface
+// that already carries one. Nothing passes `true` today — the feature bento's
+// gradient tile was retired — but the page is the one place §12 still allows a
+// gradient, so the branch is kept for whatever claims that slot next.
 function SquareMarker({ onGradient = false }: { onGradient?: boolean }) {
   return (
     <span
@@ -99,40 +102,6 @@ function HeadlineWithBrand({ template }: { template: string }) {
     if (part) nodes.push(part);
   });
   return <>{nodes}</>;
-}
-
-// The glyph for the single gradient feature tile. §7.2 asks for "a soft
-// translucent white glyph" rather than art: the watercolour vignettes are
-// painted for a light ground — cream fills, brown outlines — and go muddy on
-// the sunrise gradient. Decorative; the tile's heading carries the meaning.
-function SunGlyph({ size = 88 }: { size?: number }) {
-  return (
-    <svg
-      viewBox="0 0 120 120"
-      width={size}
-      height={size}
-      className="block text-[var(--fonda-text-inv)]"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <circle cx="60" cy="60" r="21" fill="currentColor" opacity="0.9" />
-      <g
-        stroke="currentColor"
-        strokeWidth="5"
-        strokeLinecap="round"
-        opacity="0.5"
-      >
-        <path d="M60 16 v11" />
-        <path d="M60 93 v11" />
-        <path d="M16 60 h11" />
-        <path d="M93 60 h11" />
-        <path d="M29 29 l8 8" />
-        <path d="M83 83 l8 8" />
-        <path d="M91 29 l-8 8" />
-        <path d="M37 83 l-8 8" />
-      </g>
-    </svg>
-  );
 }
 
 // Which spot-vignette fronts each feature tile. The art is decorative — the
@@ -616,64 +585,37 @@ export default async function Home({
             </Reveal>
 
             <div className="mt-12 grid gap-4 sm:grid-cols-2">
+              {/* Four identical white cards floating on the grey ground. The
+                  morning-brief tile used to be a --grad-warm gradient hero —
+                  the page's only gradient — with a white sun glyph and white
+                  text. It was dropped: singling out one of four peer products
+                  read as emphasis the bento doesn't need, and the watercolour
+                  vignettes it displaced are the warm layer this section is
+                  built on. There is now NO gradient anywhere on this page, so
+                  §7.2's one-per-screen cap is spent on nothing — if you ever
+                  add one back, it is the only one the page may carry. */}
               {FEATURES.map((feature, i) => {
                 const copy =
                   dict.features[feature.key as keyof typeof dict.features];
-                // THE page's one gradient surface (§7.2 caps it at one per
-                // screen — do not add a second anywhere on this page). It goes
-                // on the morning brief because that tile is literally a
-                // sunrise (§7.3), which is what --grad-warm paints; the other
-                // three stay white on the grey ground so the warmth reads as
-                // emphasis rather than decoration.
-                //
-                // Text on it is FULL white, never a translucent white: the
-                // gradient's lightest stop clears 4.5:1 for solid white by a
-                // hair (4.86:1 under the mandatory scrim, §3.3), and dropping
-                // even to 90% opacity puts it at 4.31:1 — under AA. Hierarchy
-                // inside the tile comes from weight and size only.
-                const featured = feature.key === "briefing";
                 return (
                   <Reveal
                     key={feature.key}
                     index={i}
-                    className={cn(
-                      "flex flex-col p-6",
-                      featured
-                        ? "gradient-hero rounded-[20px] shadow-card"
-                        : "rounded-[18px] bg-card shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
-                    )}
+                    className="flex flex-col rounded-[18px] bg-card p-6 shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
                   >
-                    {featured ? (
-                      <SunGlyph size={88} />
-                    ) : (
-                      <Vignette
-                        name={FEATURE_VIGNETTES[feature.key] ?? "olive"}
-                        size={88}
-                      />
-                    )}
+                    <Vignette
+                      name={FEATURE_VIGNETTES[feature.key] ?? "olive"}
+                      size={88}
+                    />
                     <div className="mt-5 flex items-start gap-3">
                       <span className="mt-[7px]">
-                        <SquareMarker onGradient={featured} />
+                        <SquareMarker onGradient={false} />
                       </span>
                       <div>
-                        <h3
-                          className={cn(
-                            "text-[18px] font-semibold tracking-[-0.01em]",
-                            featured
-                              ? "text-[var(--fonda-text-inv)]"
-                              : "text-foreground"
-                          )}
-                        >
+                        <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-foreground">
                           {copy.name}
                         </h3>
-                        <p
-                          className={cn(
-                            "mt-1.5 text-[15px] leading-[1.55]",
-                            featured
-                              ? "text-[var(--fonda-text-inv)]"
-                              : "text-muted-foreground"
-                          )}
-                        >
+                        <p className="mt-1.5 text-[15px] leading-[1.55] text-muted-foreground">
                           {copy.description}
                         </p>
                       </div>
