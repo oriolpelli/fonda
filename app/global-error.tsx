@@ -4,6 +4,13 @@ import { useEffect } from "react";
 import * as Sentry from "@sentry/nextjs";
 
 // Catches errors in the root layout itself. Must render its own <html>/<body>.
+//
+// The one page in the app that can't use the design tokens: it replaces the root
+// layout, so globals.css may never have loaded and `var(--fonda-*)` would
+// resolve to nothing — leaving black-on-white system defaults. The hexes below
+// are therefore copied literally from FONDA_SANA_REDESIGN.md §3.1 (v3), not from
+// v2 "Signal": neutral grey ground, warm near-black ink. Keep them in step with
+// globals.css by hand; nothing enforces it.
 export default function GlobalError({
   error,
 }: {
@@ -23,8 +30,8 @@ export default function GlobalError({
           alignItems: "center",
           justifyContent: "center",
           margin: 0,
-          background: "#ffffff",
-          color: "#0a0a0a",
+          background: "#eeeeee", // --fonda-bg
+          color: "#1c1a16", // --fonda-text
         }}
       >
         <div style={{ textAlign: "center", padding: "2rem" }}>
@@ -37,7 +44,7 @@ export default function GlobalError({
           >
             Something went wrong
           </h1>
-          <p style={{ color: "#5b5b58" }}>
+          <p style={{ color: "#56534b" }}>
             Please refresh the page. If it keeps happening, contact support.
           </p>
         </div>

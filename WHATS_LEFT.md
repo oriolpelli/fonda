@@ -64,19 +64,19 @@ it. Everything below waits on this.
 - [x] **Decide the `90s` stat** — decided: **keep it.**
 - [x] **Deploy the redesign** — done. The commits were pushed to `main`, which auto-deploys on
   Vercel. Redesign + newsletter + B9 + B10 are live.
-- [ ] **Confirm the deploy + eyeball `/en`, `/es`, `/ca` on the LIVE site** — check Vercel →
-  Deployments shows the latest as Ready, then load all three locales: hero, illustration,
-  comparison, footer, mobile menu, pricing.
+- [x] **Confirm the deploy + eyeball `/en`, `/es`, `/ca` on the LIVE site** — done, looks good.
+  (Since then, the coming-soon sidebar treatment, the broadened "Works with" section, and the
+  Signal brief-email redesign have also been committed and deployed.)
 
 ---
 
 ## §2 · Before you can demo (blocks a GM demo)
 
-- [ ] **Tidy the sidebar.** Hide Analytics and Chat from the nav until they're real, or give
-  each a clean "coming soon" state — so nothing a GM clicks lands on a blank page.
-- [ ] **Redesign the morning-brief email** to match Signal (Geist + the Signal palette,
-  literal hex is fine here). It's in your demo and in the GM's inbox daily. *Cosmetic —
-  do it if time allows before demos, but don't let it block a same-day demo.*
+- [x] **Tidy the sidebar** — done. Analytics/Chat carry a quiet gray "Coming soon" pill,
+  driven by one reusable `lib/roadmap.ts` config; Concierge stays out of the nav by design.
+- [x] **Redesign the morning-brief email** to Signal — done and deployed. *One check still
+  yours: send yourself a real brief and open it on your phone — email only tells the truth in
+  a real Gmail/Outlook client.*
 - [ ] **Backfill `RELIABILITY.md`.** Today's check passes (PASS, 1/1 hotels, 7,045 bookings /
   5,659 guests, brief emailed 05:00, mailbox reachable) — but the daily table has five blank
   rows. Fill 28 Jul–1 Aug honestly. Four real logged mornings is the "you can depend on it"
@@ -117,6 +117,28 @@ it. Everything below waits on this.
 - [ ] Reduced-motion visual check on the parallax hero (the code gate exists; watch it with the OS setting on).
 - [ ] Hero final QA — headline holds one line on desktop, villa ~70vw, navy line legible over the pool.
 - [ ] OG image spot-check — paste a link into Slack/X and confirm the card renders in Geist in all three locales.
+- [ ] **Bring the emails + OG card onto the v3 palette — needs real email-client testing.**
+  The app and marketing site moved to v3 "Fonda × Sana" (neutral `#EEEEEE` ground, warm
+  near-black ink, no navy in chrome). Three files were deliberately **left on the v2
+  "Signal" ramp** in the Phase 8 sweep, because they render outside the app's CSS context
+  and can't be verified by a green build:
+  - `app/api/cron/briefing/route.ts` — the morning brief. Still white-card-on-`#F6F6F4`,
+    `#0A0A0A` ink, and a navy `#1B3BB3` date eyebrow. Its palette comments still point at
+    `FONDA_DESIGN_IDENTITY.md` §2, and the `CARD`/`GROUND` comments have the tokens
+    backwards (v3 swapped which one is white).
+  - `lib/newsletter.ts` — confirmation email + the unsubscribe footer, same v2 ramp.
+  - `app/[lang]/opengraph-image.tsx` — Satori has no `globals.css`; white ground, `#0A0A0A`
+    type, and a navy mark square that matches no other Fonda mark (the product rail's is a
+    solid ink square).
+
+  These are the last v2 surfaces in the product. **Do not migrate them by swapping in
+  `var(--fonda-*)`** — email clients don't evaluate CSS custom properties and Satori can't
+  either, so that breaks them silently while the build stays green. Every value must stay
+  literal hex, copied by hand from `FONDA_SANA_REDESIGN.md` §3.1. Gate the change on a real
+  send to Gmail + Outlook (mobile and desktop) and an OG spot-check in Slack/X — pair it
+  with the OG item above and the "send yourself a real brief" check in §2.
+  `app/global-error.tsx` had the same constraint and *is* on v3 as of the sweep, with every
+  value hard-coded inline — use it as the reference for how to do this.
 
 ---
 

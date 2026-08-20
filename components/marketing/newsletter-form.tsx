@@ -59,7 +59,7 @@ export function NewsletterForm() {
             the whole border/background/focus recipe inline, which meant it
             silently drifted when the tokens moved (it was still filling the
             field with --fonda-bg, now the grey page ground, and ringing with
-            the deprecated --fonda-accent-light). Only the marketing type size
+            --fonda-accent-light, since deleted). Only the marketing type size
             is overridden. */}
         <Input
           type="email"

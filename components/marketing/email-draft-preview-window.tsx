@@ -77,9 +77,9 @@ export function EmailDraftPreviewWindow({
               white and the draft had lost its container entirely. */}
           <div className="mt-3 rounded-[12px] bg-[var(--fonda-surface-2)] p-4">
             {/* Neutral chip, matching the source/result chips the real chat
-                now renders (§8.2). It was the pale-blue accent tint — the
-                deprecated --fonda-accent-light, and exactly the "reads SaaS"
-                micro-surface §2 calls out. */}
+                now renders (§8.2). It was the pale-blue accent tint — v2's
+                --fonda-accent-light, since deleted, and exactly the "reads
+                SaaS" micro-surface §2 calls out. */}
             <span className="inline-flex items-center rounded-full border border-border bg-[var(--fonda-surface)] px-3 py-1 font-mono text-[11px] text-[var(--fonda-text-2)]">
               {draftLabel}
             </span>

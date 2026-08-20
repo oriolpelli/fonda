@@ -243,9 +243,15 @@ measured, not estimated, on the shipped `--fonda-bg` (`#EEEEEE`) **and** on
   `#EEEEEE` — both fail normal text. (The draft's "~4.5:1 on greige" was really
   the ratio on *white*.) The shipped `#6C685E` is the first value on that warm
   hue clearing 4.5:1 on both grounds. **Never lighten past `#6C685E`.**
-- ⚠️ `--destructive` `#C2403B` is **4.42:1** on `#EEEEEE` — marginally under AA
-  for normal text (it passed at 5.13:1 when the page was white). Unresolved;
-  darken it or restrict it to large text/icon use.
+- ✅ `--destructive` — **resolved in the Phase 8 sweep.** The draft value
+  `#C2403B` was 4.42:1 on `#EEEEEE`, marginally under AA for normal text (it
+  passed at 5.13:1 while the page was white). It carries real error copy at
+  12–14px directly on the ground, so it was darkened rather than restricted to
+  large text. The shipped value is **`#BC3E39`** — the same red scaled toward
+  black, holding hue (2.22° → 2.29°) and saturation (0.696):
+  **4.66:1 on `#EEEEEE`**, **5.40:1 on `#FFFFFF`**, and 5.40:1 for white text
+  *on* it (contrast is symmetric), so a destructive button fill still clears AA.
+  Never lighten past `#BC3E39`.
 - Any text on a **gradient** surface must be white and pass 4.5:1 against the
   *lightest* stop of that gradient (§7) — engineer a subtle scrim if needed.
   ⚠️ Both current gradients fail white text at their lightest stop

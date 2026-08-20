@@ -59,8 +59,12 @@ export default async function OnboardingDonePage({
       <ul className="flex flex-col gap-3.5">
         {nextUp.map((item) => (
           <li key={item} className="flex items-start gap-3">
+            {/* Ink, not navy. v2 set list markers in the accent; v3 reserves
+                it for data (§3.2), and onboarding is product chrome — the same
+                call components/onboarding/onboarding-shell.tsx makes for the
+                progress segments. */}
             <span
-              className="mt-[7px] block size-[7px] shrink-0 rounded-[2px] bg-[var(--fonda-accent)]"
+              className="mt-[7px] block size-[7px] shrink-0 rounded-[2px] bg-[var(--fonda-ink)]"
               aria-hidden
             />
             <span className="text-sm leading-[1.5] text-foreground">{item}</span>
@@ -116,7 +120,7 @@ export default async function OnboardingDonePage({
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a
           href="/connect/gmail"
-          className="mt-1 self-start text-sm font-medium text-[var(--fonda-accent)] underline-offset-4 hover:underline"
+          className="mt-1 self-start text-sm font-medium text-foreground underline-offset-4 hover:underline"
         >
           {dict.onboarding.gmailCta}
         </a>

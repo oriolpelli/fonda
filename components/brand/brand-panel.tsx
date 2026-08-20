@@ -31,8 +31,12 @@ export function BrandPanel({
         <ul className="mt-8 flex flex-col gap-4">
           {lines.map((line) => (
             <li key={line} className="flex items-start gap-3">
+              {/* A translucent white marker, not the navy one v2 used: the
+                  accent is content-only in v3 (§3.2), and on this ink panel
+                  navy was barely visible anyway (~2.0:1 against #1C1A16).
+                  Matched to the copy beside it so the pair reads as one. */}
               <span
-                className="mt-[9px] block size-[7px] shrink-0 rounded-[2px] bg-[var(--fonda-accent)]"
+                className="mt-[9px] block size-[7px] shrink-0 rounded-[2px] bg-[color-mix(in_srgb,white_72%,transparent)]"
                 aria-hidden
               />
               <span className="text-[15px] leading-[1.5] text-[color-mix(in_srgb,white_72%,transparent)]">

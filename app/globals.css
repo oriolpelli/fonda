@@ -71,12 +71,12 @@
   --fonda-accent:       #1b3bb3;  /* Data / live signal ONLY. Kept from v2. */
   --fonda-accent-hover: #152e8c;
   --fonda-accent-tint:  #e9ecf7;  /* Cool tint — data contexts + focus ring only */
-  /* DEPRECATED alias — v2's chrome tint. The generic --accent role no longer
-     points here (see the semantic mappings below), but 8 component call sites
-     still reference it directly (sidebar, ask-your-hotel, setup-banner, admin,
-     marketing). Aliased so nothing breaks before their phases land; delete it
-     once those are migrated (Phase 8 sweep). Do not use in new code. */
-  --fonda-accent-light: var(--fonda-accent-tint);
+  /* v2's --fonda-accent-light (#eceffc, the chrome tint) is GONE as of the
+     Phase 8 sweep — the 8 call sites that outlived the token migration are all
+     migrated, so the alias that carried them has been deleted rather than left
+     as a tempting shortcut. If you need a pale fill in chrome, the answer is
+     --fonda-surface-2 or --fonda-inset; --fonda-accent-tint is for data
+     contexts and the input focus ring only. */
 
   /* ── Gradient content surfaces (§7) — the only place color lives ────── */
   --grad-warm: linear-gradient(145deg,#f3a63a 0%,#ee9560 52%,#e0725c 100%);
@@ -135,7 +135,20 @@
      the real navy stays reachable only via an explicit --fonda-accent. */
   --accent: var(--fonda-inset);
   --accent-foreground: var(--fonda-text);
-  --destructive: #c2403b;
+  /* The error red. Darkened from v2's #c2403b in the Phase 8 sweep, closing the
+     last AA gap FONDA_SANA_REDESIGN.md §3.3 left open: #c2403b was 5.13:1 while
+     the page was white, but only 4.42:1 once the ground moved to #eeeeee — under
+     AA for normal text, and this token carries real error copy at 12–14px
+     (components/dashboard/email-inbox.tsx's action alert and
+     sync-now-button.tsx's status line both render straight onto the ground).
+     Darkened by scaling toward black, which holds the hue (2.22° → 2.29°) and
+     saturation (0.696) — it is the same red, 6 RGB points down. Measured:
+       #bc3e39 → 4.66:1 on #eeeeee · 5.40:1 on #ffffff
+     5.40:1 is also the ratio for white text ON this fill (contrast is
+     symmetric), so --destructive-foreground on a destructive button still
+     clears AA. #c03f3a would technically pass at 4.51:1; this leaves margin.
+     Never lighten past #bc3e39. */
+  --destructive: #bc3e39;
   --destructive-foreground: var(--fonda-text-inv);
   --border: var(--fonda-border);
   --input: var(--fonda-border-2);
@@ -267,7 +280,7 @@
 
 ::selection {
   background: var(--fonda-accent);
-  color: #fff;
+  color: var(--fonda-text-inv);
 }
 
 /* Respect prefers-reduced-motion system-wide: collapse transition/animation

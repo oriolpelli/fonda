@@ -15,8 +15,11 @@ export default function DashboardLoading() {
         <Skeleton className="h-9 w-36 rounded-[8px]" />
       </div>
 
-      {/* Stat row */}
-      <div className="grid grid-cols-2 overflow-hidden rounded-[16px] border border-border lg:grid-cols-4">
+      {/* Stat row. Shaped like the real cards (§6): white, floating on the grey
+          ground on the resting shadow, no outer hairline. A bordered
+          transparent box was the v2 shape and would land the page on a
+          different silhouette than the one the data arrives into. */}
+      <div className="grid grid-cols-2 overflow-hidden rounded-[18px] bg-card shadow-card lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="px-4 py-5 md:px-6 md:py-7">
             <Skeleton className="h-9 w-20" />
@@ -26,7 +29,7 @@ export default function DashboardLoading() {
       </div>
 
       {/* The next 14 nights */}
-      <div className="rounded-[16px] border border-border p-6">
+      <div className="rounded-[18px] bg-card p-6 shadow-card">
         <Skeleton className="h-3 w-36" />
         {/* overflow-x-auto, like the real strip — without it the 14 columns
             push the whole page sideways on a phone while it loads. */}
@@ -44,7 +47,7 @@ export default function DashboardLoading() {
       {/* Needs a reply · Do this first */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {Array.from({ length: 2 }).map((_, card) => (
-          <div key={card} className="rounded-[16px] border border-border p-6">
+          <div key={card} className="rounded-[18px] bg-card p-6 shadow-card">
             <Skeleton className="h-3 w-32" />
             <div className="mt-6 flex flex-col gap-4">
               {Array.from({ length: 3 }).map((_, row) => (

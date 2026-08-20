@@ -18,7 +18,7 @@ export default function CheckinsLoading() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="rounded-[16px] border border-border p-6">
+          <div key={i} className="rounded-[18px] bg-card p-6 shadow-card">
             <Skeleton className="h-4 w-1/2" />
             <Skeleton className="mt-4 h-20 w-full" />
             <div className="mt-4 flex gap-2">
