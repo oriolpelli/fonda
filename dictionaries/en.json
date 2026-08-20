@@ -26,8 +26,8 @@
     "locationBody": "Based in Barcelona. Happy to visit hotels in the area."
   },
   "meta": {
-    "title": "Fondas — Hotel operations, on autopilot",
-    "description": "Fondas is the AI front office for hotels: guest email drafted for your review, a morning brief before the desk opens, check-in times chased automatically, and plain-language answers about your hotel — on top of the PMS you already run."
+    "title": "Fondas — The AI manager for hotels",
+    "description": "Fondas is the AI manager for hotels: it prices your rooms against the competition, drives upgrades and extras, drafts guest email for your review, and briefs you each morning — on top of the PMS you already run."
   },
   "common": {
     "signOut": "Sign out",
@@ -52,10 +52,10 @@
     "closeMenu": "Close menu"
   },
   "hero": {
-    "badge": "AI software for hotels · Private beta",
-    "headlineLine1": "The admin runs itself.",
-    "headlineLine2": "You run the hotel.",
-    "subhead": "The AI front office for hotels — it drafts your guest email, chases arrivals, and briefs you each morning, on top of the PMS you already run.",
+    "badge": "The AI manager for hotels · Private beta",
+    "headlineLine1": "You run the hotel.",
+    "headlineLine2": "{brand} runs the rest.",
+    "subhead": "An AI manager for your hotel — it prices your rooms against the competition, drives upgrades and extras, sends guests offers tailored to their stay, and briefs you each morning. On top of the PMS you already run.",
     "ctaPrimary": "Get early access",
     "ctaSecondary": "See how it works →"
   },
@@ -166,11 +166,11 @@
     "button": "Get started →"
   },
   "footer": {
-    "rights": "© {year} Fondas. Hotel operations, on autopilot.",
+    "rights": "© {year} Fondas. The AI manager for hotels.",
     "privacy": "Privacy",
     "terms": "Terms",
     "sampleBrief": "See a sample brief",
-    "valueProp": "The AI front office for independent hotels.",
+    "valueProp": "The AI manager for independent hotels.",
     "productTitle": "Product",
     "companyTitle": "Company",
     "resourcesTitle": "Resources",
@@ -234,7 +234,7 @@
     "loginTitle": "Welcome back",
     "signupTitle": "Create your account",
     "loginDesc": "Sign in to your Fondas dashboard.",
-    "signupDesc": "Start running your hotel on autopilot.",
+    "signupDesc": "Your hotel's manager, working overnight.",
     "email": "Email",
     "password": "Password",
     "emailPlaceholder": "gm@hotel.com",

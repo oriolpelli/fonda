@@ -66,6 +66,41 @@ function SquareMarker({ onGradient = false }: { onGradient?: boolean }) {
   );
 }
 
+// Renders a headline string that carries a `{brand}` placeholder, substituting
+// a styled span for the token.
+//
+// Why a placeholder and not the literal word in the dictionary: the brand has
+// to render as the WORDMARK — near-black caps against the accent-blue rest of
+// the line — and t() can only substitute strings, not elements. Splitting on
+// the token keeps the whole sentence, and the brand's position within it, in
+// the dictionary where a translator can move it. There is no per-language
+// branching here: it happens to lead line 2 in all three languages today, and
+// this would still work if it didn't.
+//
+// The caps come from CSS `uppercase`, never from literal capitals in the
+// dictionary, so the accessible name stays "Fondas" — some screen readers
+// spell out all-caps text letter by letter. (components/brand/wordmark.tsx
+// does hardcode "FONDAS"; this deliberately doesn't copy that part of it.)
+// Everything else matches the wordmark exactly, minus its text-xl — the size
+// has to come from the h1's clamp.
+function HeadlineWithBrand({ template }: { template: string }) {
+  const nodes: React.ReactNode[] = [];
+  template.split("{brand}").forEach((part, i) => {
+    if (i > 0) {
+      nodes.push(
+        <span
+          key={i}
+          className="font-sans font-semibold uppercase tracking-[-0.03em] text-foreground"
+        >
+          {COMPANY.brand}
+        </span>
+      );
+    }
+    if (part) nodes.push(part);
+  });
+  return <>{nodes}</>;
+}
+
 // The glyph for the single gradient feature tile. §7.2 asks for "a soft
 // translucent white glyph" rather than art: the watercolour vignettes are
 // painted for a light ground — cream fills, brown outlines — and go muddy on
@@ -410,7 +445,15 @@ export default async function Home({
             gated on prefers-reduced-motion inside it. */}
         <section className="relative">
           <HeroParallax>
-            <Reveal className="mx-auto max-w-[1120px] text-center">
+            {/* 1200px, not the page's 1120px grid: the headline is the only
+                child that uses the full measure — the eyebrow and the CTA row
+                are centred, and the subhead caps itself at max-w-xl — so
+                widening this wrapper moves nothing but the h1. It has to be
+                raised in lockstep with the h1's own max-w-[1200px] below,
+                because a max-width on a child is inert once it exceeds the
+                parent's width; capping the h1 alone would have done nothing.
+                Every other section on the page keeps max-w-[1120px]. */}
+            <Reveal className="mx-auto max-w-[1200px] text-center">
               <Eyebrow>
                 <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden>
                   <circle cx="3" cy="3" r="3" fill="var(--fonda-accent)" />
@@ -425,12 +468,12 @@ export default async function Home({
                   that wraps of its own accord destroys it. Below md the lines
                   wrap normally and step down in size, so nothing overflows on
                   a phone. Sizes are the prototype's. */}
-              <h1 className="mt-6 text-[clamp(2.2rem,8vw,3rem)] font-semibold leading-[1.02] tracking-[-0.035em] md:text-[clamp(2.4rem,6vw,5rem)]">
+              <h1 className="mx-auto mt-6 max-w-[1200px] text-[clamp(2.2rem,8vw,3rem)] font-semibold leading-[1.02] tracking-[-0.035em] md:text-[clamp(2.4rem,6vw,5rem)]">
                 <span className="block text-foreground md:whitespace-nowrap">
                   {dict.hero.headlineLine1}
                 </span>
                 <span className="block text-[var(--fonda-accent)] md:whitespace-nowrap">
-                  {dict.hero.headlineLine2}
+                  <HeadlineWithBrand template={dict.hero.headlineLine2} />
                 </span>
               </h1>
               {/* Near-black, not muted — the ONE place on the page a lead

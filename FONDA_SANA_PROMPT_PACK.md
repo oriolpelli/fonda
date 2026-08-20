@@ -442,9 +442,9 @@ hero.headlineLine1
   CA: Tu portes l'hotel.
 
 hero.headlineLine2
-  EN: Fonda runs the rest.
-  ES: Fonda se encarga del resto.
-  CA: Fonda s'encarrega de la resta.
+  EN: Fondas runs the rest.
+  ES: Fondas se encarga del resto.
+  CA: Fondas s'encarrega de la resta.
 
 hero.subhead
   EN: An AI manager for your hotel — it prices your rooms against the competition, drives upgrades and extras, sends guests offers tailored to their stay, and briefs you each morning. On top of the PMS you already run.

@@ -26,8 +26,8 @@
     "locationBody": "En Barcelona. Encantados de acercarnos a hoteles de la zona."
   },
   "meta": {
-    "title": "Fondas — Operaciones hoteleras, en piloto automático",
-    "description": "Fondas es la recepción con IA para hoteles: correos de huéspedes con la respuesta ya redactada para que la revises, un resumen matinal antes de que abra la recepción, horas de llegada reclamadas automáticamente y respuestas sobre tu hotel en lenguaje natural, sobre el PMS que ya usas."
+    "title": "Fondas — El director con IA para hoteles",
+    "description": "Fondas es el director con IA para hoteles: ajusta tus tarifas según la competencia, impulsa mejoras y extras, redacta el correo de tus huéspedes para que lo revises y te prepara un resumen cada mañana, sobre el PMS que ya usas."
   },
   "common": {
     "signOut": "Cerrar sesión",
@@ -52,10 +52,10 @@
     "closeMenu": "Cerrar menú"
   },
   "hero": {
-    "badge": "Software con IA para hoteles · Beta privada",
-    "headlineLine1": "La gestión se hace sola.",
-    "headlineLine2": "Tú llevas el hotel.",
-    "subhead": "La recepción con IA para hoteles: redacta el correo de tus huéspedes, reclama las llegadas y te prepara un resumen cada mañana, sobre el PMS que ya usas.",
+    "badge": "El director con IA para hoteles · Beta privada",
+    "headlineLine1": "Tú llevas el hotel.",
+    "headlineLine2": "{brand} se encarga del resto.",
+    "subhead": "Un director con IA para tu hotel: ajusta tus tarifas según la competencia, impulsa mejoras y extras, envía a cada huésped ofertas a su medida y te prepara un resumen cada mañana. Sobre el PMS que ya usas.",
     "ctaPrimary": "Solicitar acceso anticipado",
     "ctaSecondary": "Cómo funciona →"
   },
@@ -166,11 +166,11 @@
     "button": "Empezar →"
   },
   "footer": {
-    "rights": "© {year} Fondas. Operaciones hoteleras, en piloto automático.",
+    "rights": "© {year} Fondas. El director con IA para hoteles.",
     "privacy": "Privacidad",
     "terms": "Términos",
     "sampleBrief": "Ver un resumen de ejemplo",
-    "valueProp": "La recepción con IA para hoteles independientes.",
+    "valueProp": "El director con IA para hoteles independientes.",
     "productTitle": "Producto",
     "companyTitle": "Empresa",
     "resourcesTitle": "Recursos",
@@ -234,7 +234,7 @@
     "loginTitle": "Bienvenido de nuevo",
     "signupTitle": "Crea tu cuenta",
     "loginDesc": "Inicia sesión en tu panel de Fondas.",
-    "signupDesc": "Empieza a gestionar tu hotel en piloto automático.",
+    "signupDesc": "El director de tu hotel, trabajando cada noche.",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "emailPlaceholder": "director@hotel.com",
