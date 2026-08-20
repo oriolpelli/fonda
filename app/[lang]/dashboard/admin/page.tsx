@@ -109,8 +109,10 @@ export default async function AdminPage({
               <span
                 className={cn(
                   "ml-2 text-sm font-normal",
+                  // Connected is the quiet, expected state — grey, not navy
+                  // (§10). Only the failure keeps a colour.
                   hotel?.pms_connected
-                    ? "text-[var(--fonda-accent)]"
+                    ? "text-[var(--fonda-text-2)]"
                     : "text-destructive"
                 )}
               >
@@ -176,8 +178,10 @@ export default async function AdminPage({
                       <span
                         className={cn(
                           "inline-flex rounded-full px-2 py-0.5 text-xs font-medium",
+                          // The accent-tinted chip is retired from chrome (§9);
+                          // a successful sync is neutral, a failed one is not.
                           log.status === "success"
-                            ? "bg-[var(--fonda-accent-light)] text-[var(--fonda-accent)]"
+                            ? "bg-[var(--fonda-inset)] text-[var(--fonda-text)]"
                             : "bg-destructive/10 text-destructive"
                         )}
                       >

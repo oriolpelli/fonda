@@ -9,6 +9,16 @@ import { cn } from "@/lib/utils";
  * colour only for something genuinely live, and "tonight" is the most live
  * thing on this page.
  *
+ * v3 (§10): that column is now the ONE accented element in the entire product.
+ * Everything else here is neutral grey, and everywhere else — the to-do dots,
+ * the inbox's "Arrives today", the admin chips — has been decoloured to match.
+ * If you are about to add a second accent to this page, don't: use weight or
+ * darkness, the way today's `%` and day number do.
+ *
+ * Colour is never the only tell. Today is also the only column whose `%` is
+ * semibold near-black and whose day number is `font-medium text-foreground`, so
+ * the strip still reads with hue removed (WCAG 1.4.1).
+ *
  * The average-rate row is a deliberate placeholder. Fondas does not cache rate
  * plans yet (an August task), and a plausible-looking but invented ADR is the
  * fastest way to lose a GM's trust — they know their own numbers. So the row
@@ -47,7 +57,9 @@ export function OccupancyStrip({
       id="occupancy"
       // scroll-mt-20 on mobile so the to-do list's "#occupancy" jump doesn't
       // park this section underneath the fixed 56px top bar.
-      className="scroll-mt-20 rounded-[16px] border border-border bg-card p-6 md:scroll-mt-8"
+      // v3 (§6): white card floating on the grey ground — borderless, 18px, the
+      // resting whisper shadow doing the separating, same as the stat row above.
+      className="scroll-mt-20 rounded-[18px] bg-card p-6 shadow-card md:scroll-mt-8"
     >
       <h2 className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
         {dict.home.outlookTitle}
@@ -71,8 +83,11 @@ export function OccupancyStrip({
               <span
                 className={cn(
                   "font-mono text-[11px] tabular-nums",
+                  // §10 allows the accent as a marker OR a number colour, once
+                  // per view — the bar below is already spending it, so today's
+                  // reading stands out by weight and darkness instead.
                   isToday
-                    ? "font-medium text-[var(--fonda-accent)]"
+                    ? "font-semibold text-[var(--fonda-text)]"
                     : soft
                       ? "text-[var(--fonda-text-3)]"
                       : "text-[var(--fonda-text-2)]"
@@ -90,6 +105,9 @@ export function OccupancyStrip({
                 <div
                   className={cn(
                     "w-full rounded-[4px]",
+                    // ── THE one accent in the product (§10). ──────────────
+                    // 6.86:1 against the inset track; the neutral bars are
+                    // 4.22:1. Both clear the 3:1 floor for meaningful graphics.
                     isToday
                       ? "bg-[var(--fonda-accent)]"
                       : "bg-[var(--fonda-text-3)]"
@@ -121,8 +139,10 @@ export function OccupancyStrip({
         })}
       </div>
 
-      {/* Where ADR will live once the rate cache exists. */}
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-2 rounded-[10px] bg-[var(--fonda-surface)] px-4 py-3">
+      {/* Where ADR will live once the rate cache exists. `--fonda-surface` was
+          grey in v2 and is white in v3, which left this well invisible inside a
+          white card — it takes the nested-well token now (§6). */}
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-2 rounded-[10px] bg-[var(--fonda-surface-2)] px-4 py-3">
         <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
           {dict.home.outlookRates}
         </span>

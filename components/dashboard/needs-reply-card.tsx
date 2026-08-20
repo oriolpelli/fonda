@@ -21,11 +21,13 @@ import { cn } from "@/lib/utils";
  * A server component — every row is a link, nothing here is interactive.
  */
 
-// Quiet by default. A complaint is the one red note; an arrival happening today
-// is the one navy note. Same palette as the inbox, deliberately.
+// Quiet by default. A complaint stays the one red note — that is a semantic
+// status colour, not the accent. "Arrives today" used to be navy; in v3 the
+// accent is content-only (§10), so it leads by darkness instead. Same palette as
+// the inbox, deliberately.
 const NOTE_CLASS: Record<string, string> = {
   complaint: "text-destructive",
-  arrives_today: "text-[var(--fonda-accent)]",
+  arrives_today: "text-[var(--fonda-text)]",
 };
 
 export function NeedsReplyCard({
@@ -40,7 +42,7 @@ export function NeedsReplyCard({
   const inboxHref = localizedHref(locale, "/dashboard/communications");
 
   return (
-    <section className="flex flex-col rounded-[16px] border border-border bg-card">
+    <section className="flex flex-col rounded-[18px] bg-card shadow-card">
       <div className="flex items-center justify-between gap-3 px-6 pt-6">
         <h2 className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
           {dict.home.needsReply}

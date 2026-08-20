@@ -82,7 +82,7 @@ export function SheetConnectionForm({
             <a
               href="/fondas-sheet-template.csv"
               download
-              className="text-xs font-medium text-[var(--fonda-accent)] underline-offset-4 hover:underline"
+              className="text-xs font-medium text-[var(--fonda-text)] underline underline-offset-4 hover:text-[var(--fonda-text-2)]"
             >
               {dict.settings.sheetTemplate}
             </a>
@@ -93,7 +93,7 @@ export function SheetConnectionForm({
             </p>
           ) : null}
           {state && "ok" in state ? (
-            <p className="text-sm font-medium text-[var(--fonda-accent)]">
+            <p className="text-sm font-medium text-[var(--fonda-text)]">
               {state.message}
             </p>
           ) : null}

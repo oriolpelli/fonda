@@ -65,7 +65,7 @@ export function GmNameForm({ gmName }: GmNameFormProps) {
             </p>
           ) : null}
           {state && "ok" in state ? (
-            <p className="text-sm font-medium text-[var(--fonda-accent)]">
+            <p className="text-sm font-medium text-[var(--fonda-text)]">
               {dict.settings.settingsSaved}
             </p>
           ) : null}

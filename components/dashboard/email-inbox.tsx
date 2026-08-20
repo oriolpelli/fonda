@@ -87,12 +87,13 @@ function badgeClass(classification: string | null): string {
   return BADGE_CLASS[classification] ?? NEUTRAL;
 }
 
-// Urgency notes stay quiet by default. A complaint is the one red note; an
-// arrival happening today is the one navy note — the design identity allows the
-// signal colour only for something genuinely live.
+// Urgency notes stay quiet by default. A complaint is the one red note — a
+// semantic status colour, not the accent. "Arrives today" was navy in v2; v3
+// keeps the accent out of chrome entirely (§10), so it leads by darkness. Kept
+// in step with components/dashboard/needs-reply-card.tsx.
 const NOTE_CLASS: Record<string, string> = {
   complaint: "text-destructive",
-  arrives_today: "text-[var(--fonda-accent)]",
+  arrives_today: "text-[var(--fonda-text)]",
   arrives_soon: "text-[var(--fonda-text-3)]",
   waiting: "text-[var(--fonda-text-3)]",
 };
@@ -398,7 +399,9 @@ export function EmailInbox({
                         {badgeLabel(email.classification)}
                       </span>
                       {email.status === "sent" ? (
-                        <span className="text-xs font-medium text-[var(--fonda-accent)]">
+                        // Handled is a finished state, not a live one — quiet
+                        // grey, never the accent (§10).
+                        <span className="text-xs font-medium text-[var(--fonda-text-3)]">
                           {dict.emails.sent}
                         </span>
                       ) : email.status === "ignored" ? (
@@ -474,7 +477,7 @@ export function EmailInbox({
               </div>
 
               {selected.status === "sent" ? (
-                <p className="text-sm font-medium text-[var(--fonda-accent)]">
+                <p className="text-sm font-medium text-[var(--fonda-text-2)]">
                   {selected.sent_at
                     ? t(dict.emails.replySentAt, {
                         time: shortTime(selected.sent_at),
@@ -498,7 +501,7 @@ export function EmailInbox({
                     ref={draftRef}
                     defaultValue={selected.draft_reply ?? ""}
                     rows={10}
-                    className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-accent"
+                    className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]"
                     placeholder={dict.emails.replyPlaceholder}
                   />
                   <div className="flex flex-wrap gap-2">

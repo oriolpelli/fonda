@@ -93,7 +93,7 @@ export function MewsConnectionForm({
             </p>
           ) : null}
           {state && "ok" in state ? (
-            <p className="text-sm font-medium text-[var(--fonda-accent)]">
+            <p className="text-sm font-medium text-[var(--fonda-text)]">
               {state.message}
             </p>
           ) : null}

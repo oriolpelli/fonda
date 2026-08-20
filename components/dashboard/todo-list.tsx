@@ -82,7 +82,7 @@ export function TodoList({
   items: TodoItem[];
 }) {
   return (
-    <section className="flex flex-col rounded-[16px] border border-border bg-card">
+    <section className="flex flex-col rounded-[18px] bg-card shadow-card">
       <h2 className="px-6 pt-6 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
         {dict.home.todoTitle}
       </h2>
@@ -103,8 +103,11 @@ export function TodoList({
                   aria-hidden
                   className={cn(
                     "mt-[7px] size-[7px] shrink-0 rounded-[2px]",
+                    // Ink, not navy (§10): chrome is colourless in v3, and the
+                    // page's one accent belongs to the occupancy strip. The
+                    // primary item still leads by darkness.
                     item.primary
-                      ? "bg-[var(--fonda-accent)]"
+                      ? "bg-[var(--fonda-text)]"
                       : "bg-[var(--fonda-text-3)]"
                   )}
                 />

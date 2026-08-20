@@ -69,7 +69,7 @@ function ChaserItem({
           ref={draftRef}
           defaultValue={chaser.draftContent ?? ""}
           rows={5}
-          className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-accent"
+          className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]"
           placeholder={dict.checkin.chasePlaceholder}
         />
       </CardContent>

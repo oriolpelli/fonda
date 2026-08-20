@@ -74,7 +74,7 @@ export function HotelDetailsForm({
             </p>
           ) : null}
           {state && "ok" in state ? (
-            <p className="text-sm font-medium text-[var(--fonda-accent)]">
+            <p className="text-sm font-medium text-[var(--fonda-text)]">
               {dict.common.saved}
             </p>
           ) : null}
