@@ -55,3 +55,6 @@ Fondas_Outreach_Tracker.xlsx
 
 # Holding pen for docs pending deletion — never meant to be tracked.
 _to_delete/
+
+# Local Claude Code tool config (per-machine settings, not project source).
+.claude/
