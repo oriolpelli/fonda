@@ -1,17 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { COMPANY } from "@/app/[lang]/(legal)/company";
+import { COMPANY, PRICE_CURRENCY } from "@/app/[lang]/(legal)/company";
 import { getDictionary, loadDictionary } from "@/app/[lang]/dictionaries";
-import { Wordmark } from "@/components/brand/wordmark";
-import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { BriefingPreviewWindow } from "@/components/marketing/briefing-preview-window";
 import { EmailDraftPreviewWindow } from "@/components/marketing/email-draft-preview-window";
 import { HeroParallax } from "@/components/marketing/hero-parallax";
 import { JsonLd } from "@/components/marketing/json-ld";
-import { MobileNav } from "@/components/marketing/mobile-nav";
-import { NewsletterForm } from "@/components/marketing/newsletter-form";
 import { Reveal } from "@/components/marketing/reveal";
+import { SiteFooter } from "@/components/marketing/site-footer";
+import { SiteHeader } from "@/components/marketing/site-header";
 import {
   Vignette,
   type VignetteName,
@@ -189,45 +187,6 @@ export default async function Home({
   // Footer navigation. Every link points somewhere real today. `href: null`
   // still renders as a ° placeholder (kept for future use) — but nothing uses
   // it right now, so no dead links ship.
-  const FOOTER_COLUMNS: {
-    title: string;
-    links: { label: string; href: string | null }[];
-  }[] = [
-    {
-      title: dict.footer.productTitle,
-      links: [
-        { label: dict.nav.features, href: "#features" },
-        { label: dict.nav.howItWorks, href: "#how" },
-        { label: dict.footer.pricing, href: "#pricing" },
-        { label: dict.footer.integrations, href: "#works-with" },
-      ],
-    },
-    {
-      title: dict.footer.companyTitle,
-      links: [
-        { label: dict.footer.contact, href: localizedHref(locale, "/contact") },
-      ],
-    },
-    {
-      title: dict.footer.resourcesTitle,
-      links: [
-        {
-          label: dict.footer.sampleBrief,
-          href: localizedHref(locale, "/sample-brief"),
-        },
-        { label: dict.nav.faq, href: "#faq" },
-      ],
-    },
-    {
-      title: dict.footer.legalTitle,
-      links: [
-        { label: dict.footer.privacy, href: localizedHref(locale, "/privacy") },
-        { label: dict.footer.terms, href: localizedHref(locale, "/terms") },
-        { label: dict.footer.cookies, href: localizedHref(locale, "/privacy") },
-      ],
-    },
-  ];
-
   // Comparison — the same five jobs, by hand and with Fondas. Row i of each
   // column is the counterpart of row i, but they're rendered as two
   // independent lists rather than a shared table grid: es/ca run longer than
@@ -319,7 +278,7 @@ export default async function Home({
         offers: {
           "@type": "Offer",
           price: COMPANY.priceMonthly,
-          priceCurrency: "EUR",
+          priceCurrency: PRICE_CURRENCY,
           description: dict.pricing.priceUnit,
           url: absoluteUrl(locale, "/#pricing"),
         },
@@ -343,69 +302,7 @@ export default async function Home({
     <div className="flex min-h-screen flex-col">
       <JsonLd data={jsonLd} />
 
-      {/* Nav */}
-      <header className="sticky top-0 z-50 border-b border-border bg-[var(--fonda-bg)]/82 backdrop-blur">
-        <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-6 md:px-8">
-          <Wordmark href={localizedHref(locale, "/")} />
-          <nav className="flex items-center gap-3 sm:gap-6">
-            <Link
-              href="#how"
-              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground md:inline"
-            >
-              {dict.nav.howItWorks}
-            </Link>
-            <Link
-              href="#features"
-              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground md:inline"
-            >
-              {dict.nav.features}
-            </Link>
-            <Link
-              href="#faq"
-              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground md:inline"
-            >
-              {dict.nav.faq}
-            </Link>
-            <Link
-              href={localizedHref(locale, "/login")}
-              className="hidden text-sm text-muted-foreground transition-colors duration-[180ms] hover:text-foreground md:inline"
-            >
-              {dict.nav.signIn}
-            </Link>
-            <LanguageSwitcher className="hidden md:inline-flex" />
-            {/* Visible at every breakpoint. Below sm the bar is wordmark +
-                CTA + hamburger in ~312px, which the full label overflows in
-                es (and leaves ~6px in ca), so the short label runs there. */}
-            <Button asChild variant="ink" size="sm">
-              <Link href={localizedHref(locale, "/signup")}>
-                <span className="sm:hidden">
-                  {dict.nav.getEarlyAccessShort}
-                </span>
-                <span className="hidden sm:inline">
-                  {dict.nav.getEarlyAccess}
-                </span>
-              </Link>
-            </Button>
-
-            {/* Below md the links above have nowhere to go — they live here. */}
-            <MobileNav
-              links={[
-                { href: "#how", label: dict.nav.howItWorks },
-                { href: "#features", label: dict.nav.features },
-                { href: "#faq", label: dict.nav.faq },
-                {
-                  href: localizedHref(locale, "/login"),
-                  label: dict.nav.signIn,
-                },
-              ]}
-              ctaHref={localizedHref(locale, "/signup")}
-              ctaLabel={dict.nav.getEarlyAccess}
-              openLabel={dict.nav.openMenu}
-              closeLabel={dict.nav.closeMenu}
-            />
-          </nav>
-        </div>
-      </header>
+      <SiteHeader locale={locale} dict={dict} isHome />
 
       <main className="flex-1">
         {/* Hero — La Casa sits behind the type and drifts on scroll.
@@ -902,10 +799,9 @@ export default async function Home({
         </section>
 
         {/* Pricing — the flat per-property price, stated. The figure is navy
-            to match the same number in the ROI stat row above; keep the two in
-            sync with COMPANY.price and Stripe. The button is a real contact
-            (mailto), not /signup — this band sells the price, it isn't the
-            sign-up path. */}
+            to match the same number in the ROI stat row above; both derive from
+            PRICE_MONTHLY_EUR in company.ts. The button goes to /contact, not
+            /signup — this band sells the price, it isn't the sign-up path. */}
         <section
           id="pricing"
           className="scroll-mt-20 border-t border-border px-6 py-24 md:px-8"
@@ -929,13 +825,14 @@ export default async function Home({
               </p>
               <div className="mt-9 flex justify-center">
                 <Button asChild variant="ink" size="lg">
-                  <a href={`mailto:${COMPANY.contactEmail}`}>
+                  <Link href={localizedHref(locale, "/contact")}>
                     {dict.pricing.button}
-                  </a>
+                  </Link>
                 </Button>
               </div>
-              {/* Show the address: a mailto that opens a mail client unannounced
-                  is a small hostile surprise. */}
+              {/* The address stays visible next to the button: /contact is a
+                  page, not a mail client, but plenty of people would rather
+                  just write than click through to be told where to write. */}
               <p className="mt-4 text-[14px] text-muted-foreground">
                 {COMPANY.contactEmail}
               </p>
@@ -973,80 +870,7 @@ export default async function Home({
         </section>
       </main>
 
-      {/* Footer — flat and light: it sits directly on the grey ground with
-          hairline rules between bands, no card, no dark mega-footer and no
-          second accent. The page's ink band is the CTA above it; two dark
-          slabs in a row would read as a wall. */}
-      <footer className="border-t border-border">
-        <div className="mx-auto w-full max-w-[1120px] px-6 md:px-8">
-          {/* Brand + newsletter */}
-          <div className="grid gap-12 py-16 lg:grid-cols-[5fr_7fr] lg:gap-16">
-            <div>
-              {/* A quiet sign-off in the hero's hand — decorative, one per page. */}
-              <Vignette name="olive" size={84} />
-              <Wordmark
-                href={localizedHref(locale, "/")}
-                className="mt-3 block text-[clamp(2.75rem,7vw,4.5rem)] leading-none tracking-[-0.04em]"
-              />
-              <p className="mt-5 max-w-[34ch] text-[16px] leading-[1.6] text-muted-foreground">
-                {dict.footer.valueProp}
-              </p>
-            </div>
-
-            {/* Newsletter — real: server action, double opt-in, privacy line
-                at the point of collection. See app/[lang]/newsletter/. */}
-            <NewsletterForm />
-          </div>
-
-          {/* Link columns */}
-          <div className="grid gap-10 border-t border-border py-14 sm:grid-cols-2 lg:grid-cols-4">
-            {FOOTER_COLUMNS.map((column) => (
-              <div key={column.title}>
-                <h3 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-                  {column.title}
-                </h3>
-                <ul className="mt-5 flex flex-col gap-3">
-                  {column.links.map((link) => (
-                    <li key={link.label}>
-                      {link.href ? (
-                        <Link
-                          href={link.href}
-                          className="text-[15px] text-muted-foreground transition-colors duration-[180ms] hover:text-foreground"
-                        >
-                          {link.label}
-                        </Link>
-                      ) : (
-                        <a
-                          href="#"
-                          className="text-[15px] text-[var(--fonda-text-3)] transition-colors duration-[180ms] hover:text-foreground"
-                        >
-                          {link.label}
-                          <span
-                            aria-hidden="true"
-                            className="ml-0.5 align-super text-[10px]"
-                          >
-                            °
-                          </span>
-                        </a>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom bar */}
-          <div className="flex flex-col gap-4 border-t border-border py-8 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-col gap-1">
-              <span className="text-sm text-muted-foreground">
-                {t(dict.footer.rights, { year: new Date().getFullYear() })}
-              </span>
-            </div>
-            <LanguageSwitcher />
-          </div>
-        </div>
-      </footer>
+      <SiteFooter locale={locale} dict={dict} isHome />
     </div>
   );
 }

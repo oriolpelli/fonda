@@ -15,11 +15,12 @@
     "backHome": "Tornar a fondas.app"
   },
   "contact": {
-    "metaTitle": "Contacte — Fondas",
+    "metaTitle": "Contacte",
     "heading": "Parlem-ne",
     "intro": "Estem construint Fondas per a hotels independents i boutique, i responem el nostre propi correu. La manera més ràpida de contactar-nos és escriure — solem respondre en un dia.",
     "emailHeading": "Correu",
     "emailHint": "Dubtes, pilots, el que calgui.",
+    "emailAction": "Escriu-nos",
     "pilotHeading": "Mira-ho al teu hotel",
     "pilotBody": "Explica'ns la teva propietat i quin PMS fas servir, i organitzem una demo de 20 minuts — sense compromís.",
     "locationHeading": "On som",
@@ -177,12 +178,7 @@
     "legalTitle": "Legal",
     "pricing": "Preus",
     "integrations": "Integracions",
-    "about": "Qui som",
-    "careers": "Feina",
     "contact": "Contacte",
-    "press": "Premsa",
-    "helpCentre": "Centre d'ajuda",
-    "changelog": "Novetats",
     "cookies": "Galetes",
     "security": "Seguretat",
     "newsletterTitle": "Notes de producte, un cop al mes.",
@@ -193,8 +189,7 @@
     "newsletterSent": "Revisa el teu correu: t'hem enviat un enllaç per confirmar. No hi estaràs subscrit fins que ho facis.",
     "newsletterInvalid": "Això no sembla una adreça de correu.",
     "newsletterError": "Alguna cosa ha fallat per la nostra banda. Torna-ho a provar d'aquí a un moment.",
-    "newsletterPrivacy": "Un correu al mes, pots donar-te de baixa quan vulguis. Només fem servir la teva adreça per a aquestes notes —",
-    "placeholderNote": "° Enllaç provisional — encara no és actiu."
+    "newsletterPrivacy": "Un correu al mes, pots donar-te de baixa quan vulguis. Només fem servir la teva adreça per a aquestes notes —"
   },
   "newsletterEmail": {
     "unsubscribeNote": "Reps això perquè et vas subscriure a les novetats de Fondas a fondas.app.",
@@ -252,6 +247,8 @@
     "roomsPlaceholder": "80",
     "timezone": "Zona horària",
     "timezoneHint": "S'utilitza per al teu resum matinal i per saber què vol dir «avui» en cada dada que et mostra Fondas.",
+    "language": "Idioma",
+    "languageHint": "El que Fondas farà servir amb tu. L'hem deduït del teu navegador; canvia'l si no és correcte. El pots actualitzar quan vulguis a Configuració.",
     "settingUp": "Configurant…",
     "continue": "Continua",
     "stepLabel": "Pas {current} de {total}",
@@ -395,7 +392,8 @@
     "presyncCta": "Connecta el teu PMS",
     "syncingTitle": "La teva primera sincronització no ha acabat",
     "syncingBody": "El teu PMS està connectat i Fondas està llegint les teves reserves. El teu primer resum s'escriurà quan acabi.",
-    "syncingCta": "Mira la sincronització"
+    "syncingCta": "Mira la sincronització",
+    "languageAccountHint": "Només l'idioma en què s'escriu el teu resum. L'idioma del compte, a Configuració, controla la interfície."
   },
   "emails": {
     "title": "Correus",
@@ -548,6 +546,10 @@
     "languageEn": "Anglès",
     "languageEs": "Espanyol",
     "languageCa": "Català",
+    "accountLanguageTitle": "Idioma del compte",
+    "accountLanguageDesc": "L'idioma que Fondas fa servir amb tu a tot el producte.",
+    "accountLanguage": "Idioma del compte",
+    "accountLanguageHint": "Canvia la interfície a tot arreu i l'idioma amb què entres en iniciar sessió. L'idioma en què s'escriu el teu resum matinal es configura a part, a la pàgina Resum matinal.",
     "settingsSaved": "Configuració desada.",
     "profileTitle": "Perfil i to de l'hotel",
     "profileDesc": "Detalls sobre el teu hotel i la seva veu — la IA els fa servir per escriure resums, correus i respostes del xat que sonin com tu.",

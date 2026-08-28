@@ -15,11 +15,12 @@
     "backHome": "Volver a fondas.app"
   },
   "contact": {
-    "metaTitle": "Contacto — Fondas",
+    "metaTitle": "Contacto",
     "heading": "Hablemos",
     "intro": "Estamos construyendo Fondas para hoteles independientes y boutique, y respondemos nuestro propio correo. La forma más rápida de contactarnos es escribir — solemos responder en un día.",
     "emailHeading": "Correo",
     "emailHint": "Dudas, pilotos, lo que necesites.",
+    "emailAction": "Escríbenos",
     "pilotHeading": "Míralo en tu hotel",
     "pilotBody": "Cuéntanos tu propiedad y qué PMS usas, y organizamos una demo de 20 minutos — sin compromiso.",
     "locationHeading": "Dónde estamos",
@@ -177,12 +178,7 @@
     "legalTitle": "Legal",
     "pricing": "Precios",
     "integrations": "Integraciones",
-    "about": "Quiénes somos",
-    "careers": "Empleo",
     "contact": "Contacto",
-    "press": "Prensa",
-    "helpCentre": "Centro de ayuda",
-    "changelog": "Novedades",
     "cookies": "Cookies",
     "security": "Seguridad",
     "newsletterTitle": "Notas de producto, una vez al mes.",
@@ -193,8 +189,7 @@
     "newsletterSent": "Revisa tu correo: te hemos enviado un enlace para confirmar. No estarás suscrito hasta que lo hagas.",
     "newsletterInvalid": "Esto no parece una dirección de correo.",
     "newsletterError": "Algo ha fallado por nuestra parte. Inténtalo de nuevo en un momento.",
-    "newsletterPrivacy": "Un correo al mes, puedes darte de baja cuando quieras. Solo usamos tu dirección para estas notas —",
-    "placeholderNote": "° Enlace provisional — todavía no está activo."
+    "newsletterPrivacy": "Un correo al mes, puedes darte de baja cuando quieras. Solo usamos tu dirección para estas notas —"
   },
   "newsletterEmail": {
     "unsubscribeNote": "Recibes esto porque te suscribiste a las novedades de Fondas en fondas.app.",
@@ -252,6 +247,8 @@
     "roomsPlaceholder": "80",
     "timezone": "Zona horaria",
     "timezoneHint": "Se usa para tu resumen matinal y para saber qué significa «hoy» en cada dato que te muestra Fondas.",
+    "language": "Idioma",
+    "languageHint": "El que Fondas usará contigo. Lo hemos deducido de tu navegador; cámbialo si no es correcto. Puedes actualizarlo cuando quieras en Ajustes.",
     "settingUp": "Configurando…",
     "continue": "Continuar",
     "stepLabel": "Paso {current} de {total}",
@@ -395,7 +392,8 @@
     "presyncCta": "Conectar tu PMS",
     "syncingTitle": "Tu primera sincronización no ha terminado",
     "syncingBody": "Tu PMS está conectado y Fondas está leyendo tus reservas. Tu primer resumen se escribirá en cuanto termine.",
-    "syncingCta": "Ver la sincronización"
+    "syncingCta": "Ver la sincronización",
+    "languageAccountHint": "Solo el idioma en que se escribe tu resumen. El idioma de la cuenta, en Ajustes, controla la interfaz."
   },
   "emails": {
     "title": "Correos",
@@ -548,6 +546,10 @@
     "languageEn": "Inglés",
     "languageEs": "Español",
     "languageCa": "Catalán",
+    "accountLanguageTitle": "Idioma de la cuenta",
+    "accountLanguageDesc": "El idioma en el que Fondas se dirige a ti en todo el producto.",
+    "accountLanguage": "Idioma de la cuenta",
+    "accountLanguageHint": "Cambia la interfaz en todas partes y el idioma con el que entras al iniciar sesión. El idioma en el que se escribe tu resumen matinal se configura aparte, en la página Resumen matinal.",
     "settingsSaved": "Ajustes guardados.",
     "profileTitle": "Perfil y tono del hotel",
     "profileDesc": "Detalles sobre tu hotel y su voz — la IA los usa para escribir resúmenes, correos y respuestas del chat que suenen como tú.",

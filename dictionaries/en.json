@@ -15,11 +15,12 @@
     "backHome": "Back to fondas.app"
   },
   "contact": {
-    "metaTitle": "Contact — Fondas",
+    "metaTitle": "Contact",
     "heading": "Get in touch",
     "intro": "We're building Fondas for independent and boutique hotels, and we answer our own email. The fastest way to reach us is to write — we usually reply within a day.",
     "emailHeading": "Email",
     "emailHint": "General questions, pilots, anything at all.",
+    "emailAction": "Write to us",
     "pilotHeading": "See it on your hotel",
     "pilotBody": "Tell us your property and which PMS you use, and we'll set up a 20-minute walkthrough — no commitment.",
     "locationHeading": "Where we are",
@@ -177,12 +178,7 @@
     "legalTitle": "Legal",
     "pricing": "Pricing",
     "integrations": "Integrations",
-    "about": "About",
-    "careers": "Careers",
     "contact": "Contact",
-    "press": "Press",
-    "helpCentre": "Help centre",
-    "changelog": "Changelog",
     "cookies": "Cookies",
     "security": "Security",
     "newsletterTitle": "Product notes, once a month.",
@@ -193,8 +189,7 @@
     "newsletterSent": "Check your inbox — we've sent you a link to confirm. You're not subscribed until you do.",
     "newsletterInvalid": "That doesn't look like an email address.",
     "newsletterError": "Something went wrong at our end. Please try again in a moment.",
-    "newsletterPrivacy": "One email a month, unsubscribe any time. We only use your address for these notes —",
-    "placeholderNote": "° Placeholder link — not live yet."
+    "newsletterPrivacy": "One email a month, unsubscribe any time. We only use your address for these notes —"
   },
   "newsletterEmail": {
     "unsubscribeNote": "You're receiving this because you signed up for Fondas product notes at fondas.app.",
@@ -252,6 +247,8 @@
     "roomsPlaceholder": "80",
     "timezone": "Timezone",
     "timezoneHint": "Used for your morning brief, and for what “today” means in every number Fondas shows you.",
+    "language": "Language",
+    "languageHint": "What Fondas will use with you. We've guessed from your browser — change it if that's not right. You can update it any time in Settings.",
     "settingUp": "Setting up…",
     "continue": "Continue",
     "stepLabel": "Step {current} of {total}",
@@ -395,7 +392,8 @@
     "presyncCta": "Connect your PMS",
     "syncingTitle": "Your first sync hasn't finished",
     "syncingBody": "Your PMS is connected and Fondas is reading your bookings. Your first brief is written as soon as that's done.",
-    "syncingCta": "Check the sync"
+    "syncingCta": "Check the sync",
+    "languageAccountHint": "Only the language your brief is written in. Your account language, set in Settings, controls the interface."
   },
   "emails": {
     "title": "Emails",
@@ -548,6 +546,10 @@
     "languageEn": "English",
     "languageEs": "Spanish",
     "languageCa": "Catalan",
+    "accountLanguageTitle": "Account language",
+    "accountLanguageDesc": "The language Fondas uses for you across the whole product.",
+    "accountLanguage": "Account language",
+    "accountLanguageHint": "Changes the interface everywhere and the language you land in after signing in. The language your morning brief is written in is set separately, on the Morning Brief page.",
     "settingsSaved": "Settings saved.",
     "profileTitle": "Hotel profile & tone",
     "profileDesc": "Details about your hotel and its voice — the AI uses this to write briefings, emails, and chat answers that sound like you.",

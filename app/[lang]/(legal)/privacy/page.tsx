@@ -27,7 +27,15 @@ export async function generateMetadata({
 // ⚠️ Reviewed starting point — not legal advice. Have a qualified lawyer check
 // this and fill in the placeholders in ../company.ts before launch.
 
-type Section = { heading: string; paragraphs: string[]; bullets?: string[] };
+// `id` is a deep-link target, not decoration: the site footer's "Security" and
+// "Cookies" links point at /privacy#security and /privacy#cookies. Rewording a
+// heading is safe; renaming or dropping an id breaks those links.
+type Section = {
+  heading: string;
+  id?: string;
+  paragraphs: string[];
+  bullets?: string[];
+};
 
 const SECTIONS: Section[] = [
   {
@@ -89,6 +97,7 @@ const SECTIONS: Section[] = [
       "Google (Gmail API) — where a hotel connects its inbox.",
       "Resend — outbound email delivery (e.g. briefing emails).",
       "Sentry — error monitoring (configured not to send guest personal data).",
+      "PostHog — product analytics (aggregate usage events keyed to the hotel account; no guest personal data, no cookies — see 'Product analytics' below).",
       "The hotel's chosen PMS (MEWS or Apaleo) and mailbox provider, which remain independent controllers of the data in their own systems.",
     ],
   },
@@ -106,6 +115,7 @@ const SECTIONS: Section[] = [
   },
   {
     heading: "Security",
+    id: "security",
     paragraphs: [
       "We apply technical and organisational measures appropriate to the risk, including encryption of connection tokens at rest, strict per-hotel access controls enforced at the database level (row-level security), least-privilege service access, and error monitoring. No system is perfectly secure, but we work to protect your data and to notify affected parties of any breach as required by law.",
     ],
@@ -117,9 +127,32 @@ const SECTIONS: Section[] = [
     ],
   },
   {
-    heading: "Cookies",
+    // ⚠️ FOR LEGAL REVIEW — added with the product-analytics work (B12/B16).
+    // The claims below are enforced in code, not just asserted here:
+    //   • Events are sent from the server only, via `posthog-node`. There is
+    //     no browser SDK, so nothing is stored on the visitor's device and no
+    //     identifier follows a person between sessions. This is what keeps
+    //     the Cookies section's "strictly necessary only" statement true.
+    //   • Every event is keyed to a hotel's uuid, never to a person.
+    //   • Event properties are restricted by the type system to enumerated
+    //     values, numbers and booleans — there is no field that can carry a
+    //     name, an address, a subject line or message text. See the
+    //     catalogue in `lib/analytics.ts` and the note on `draft_edit_events`
+    //     in migration 0019.
+    // If any of those change, this section must change with them.
+    heading: "Product analytics",
+    id: "analytics",
     paragraphs: [
-      "Fondas uses only the cookies strictly necessary to keep you signed in and to keep the service secure. We do not use advertising cookies. If we add analytics in future, we will update this policy and request consent where required.",
+      "We measure how the product is used so we can improve it — for example, how often a drafted reply is sent as written. This measurement is deliberately narrow: it records events against the hotel account, such as 'a briefing was generated' or 'a draft was sent with minor edits', together with counts and timings.",
+      "It never includes personal data about guests or staff. No guest name, email address, subject line, or message content is collected, and nothing we record can be traced back to an individual guest or booking. What we hold is aggregate: totals and rates per hotel, not a record of anyone's correspondence.",
+      "This analytics processing happens entirely on our servers using PostHog as a processor. It sets no cookies and stores nothing on your device, so it does not track you across sessions or across other websites.",
+    ],
+  },
+  {
+    heading: "Cookies",
+    id: "cookies",
+    paragraphs: [
+      "Fondas uses only the cookies strictly necessary to keep you signed in and to keep the service secure. We do not use advertising cookies, and our product analytics (see above) are server-side and cookieless, so they place nothing on your device. If we ever add analytics or other technologies that do use cookies, we will update this policy and request consent where required.",
     ],
   },
   {
@@ -152,7 +185,11 @@ export default async function PrivacyPage({
       </div>
 
       {SECTIONS.map((s) => (
-        <section key={s.heading} className="flex flex-col gap-2">
+        <section
+          key={s.heading}
+          id={s.id}
+          className="flex flex-col gap-2 scroll-mt-24"
+        >
           <h2 className="text-lg font-semibold">{s.heading}</h2>
           {s.paragraphs.map((p, i) => (
             <p key={i} className="text-muted-foreground">

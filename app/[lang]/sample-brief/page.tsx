@@ -17,7 +17,8 @@ export async function generateMetadata({
 }) {
   const { locale, dict } = await loadDictionary((await params).lang);
   return {
-    title: `${dict.sampleBrief.title} — Fondas`,
+    // Bare page name: the [lang] layout's title template appends " · Fondas".
+    title: dict.sampleBrief.title,
     description: dict.sampleBrief.disclaimer,
     alternates: {
       canonical: absoluteUrl(locale, "/sample-brief"),
