@@ -5,7 +5,16 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database";
 
-export type BriefDeliveryState = { ok: true } | { error: string } | undefined;
+/**
+ * On success the action echoes back what was persisted. The form re-seeds its
+ * controlled inputs from this rather than from its server props, so the value
+ * on screen is the value in the database — with no dependency on when the
+ * re-rendered RSC payload happens to arrive.
+ */
+export type BriefDeliveryState =
+  | { ok: true; saved: { recipients: string[]; sendHour: number; language: string } }
+  | { error: string }
+  | undefined;
 
 const LANGUAGES = ["en", "es", "ca"] as const;
 const MAX_RECIPIENTS = 3;
@@ -111,7 +120,10 @@ export async function updateBriefDeliverySettings(
     return { error: `Couldn't save settings: ${error.message}` };
   }
 
-  revalidatePath("/dashboard/brief");
-  revalidatePath("/dashboard");
-  return { ok: true };
+  // Route paths, not URL paths — the locale is a dynamic `[lang]` segment, so
+  // "/dashboard/brief" matches no route and silently revalidates nothing.
+  // (Same form the communications action uses.)
+  revalidatePath("/[lang]/dashboard/brief", "page");
+  revalidatePath("/[lang]/dashboard", "layout");
+  return { ok: true, saved: { recipients, sendHour, language } };
 }

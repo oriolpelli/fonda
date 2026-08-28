@@ -1,9 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { LOCALE_COOKIE } from "@/lib/i18n/get-locale";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -25,6 +27,11 @@ export async function provisionHotel(
   const hotelName = String(formData.get("hotelName") ?? "").trim();
   const roomsRaw = String(formData.get("roomsCount") ?? "").trim();
   const timezone = String(formData.get("timezone") ?? "").trim();
+
+  // `locale` is now a real answer from the form's Language field, not just the
+  // UI locale echoed back in a hidden input. It becomes the account's default
+  // language AND seeds briefing_language (provision_hotel writes both), and it
+  // decides which locale the rest of the wizard runs in.
   const localeValue = String(formData.get("locale") ?? "");
   const locale = isLocale(localeValue) ? localeValue : defaultLocale;
 
@@ -55,11 +62,21 @@ export async function provisionHotel(
     p_rooms_count: roomsCount,
     p_timezone: timezone,
     p_pms_type: INITIAL_PMS_TYPE,
+    p_locale: locale,
   });
 
   if (error) {
     return { error: `Couldn't set up your hotel: ${error.message}` };
   }
+
+  // Keep the interface in the language they just chose, on this device and on
+  // the next request that arrives without a `/[lang]` prefix.
+  const cookieStore = await cookies();
+  cookieStore.set(LOCALE_COOKIE, locale, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+  });
 
   revalidatePath("/", "layout");
   // On to step 2 rather than the dashboard: a hotel with no PMS has nothing to

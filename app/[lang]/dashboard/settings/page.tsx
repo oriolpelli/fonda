@@ -3,6 +3,7 @@ import { CheckCircle2, Circle } from "lucide-react";
 
 import { disconnectMews } from "@/app/[lang]/dashboard/settings/actions";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { AccountLanguageForm } from "@/components/dashboard/account-language-form";
 import { ApaleoConnectionCard } from "@/components/dashboard/apaleo-connection-card";
 import { apaleoStatusMessage } from "@/lib/apaleo-status";
 import { GmailConnectionCard } from "@/components/dashboard/gmail-connection-card";
@@ -49,7 +50,7 @@ export default async function SettingsPage({
   const { data: settings } = await supabase
     .from("hotel_settings")
     .select(
-      "gm_name, star_rating, property_type, check_in_time, check_out_time, policies, positioning_vibe, target_guest, local_recommendations, preferred_greeting, signoff_name, languages_spoken, tripadvisor_url, review_highlights, review_summary, parking_transport, wifi_info, breakfast_info, room_types, upsells"
+      "gm_name, default_locale, star_rating, property_type, check_in_time, check_out_time, policies, positioning_vibe, target_guest, local_recommendations, preferred_greeting, signoff_name, languages_spoken, tripadvisor_url, review_highlights, review_summary, parking_transport, wifi_info, breakfast_info, room_types, upsells"
     )
     .maybeSingle();
 
@@ -110,6 +111,11 @@ export default async function SettingsPage({
         name={hotel?.name ?? ""}
         roomsCount={hotel?.rooms_count ?? 1}
       />
+
+      {/* Sits with hotel details rather than beside the connectors: both
+          answer "what is this account", before anything about integrations
+          or generated content. */}
+      <AccountLanguageForm defaultLocale={settings?.default_locale ?? "en"} />
 
       <div
         className={cn(

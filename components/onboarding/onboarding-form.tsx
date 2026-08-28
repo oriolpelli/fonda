@@ -11,6 +11,7 @@ import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { locales, localeNames } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 
 // Kept deliberately in step with components/ui/input.tsx — a <select> can't go
@@ -51,6 +52,8 @@ export function OnboardingForm({ timezones }: { timezones: string[] }) {
 
   const [hotelName, setHotelName] = useState("");
   const [rooms, setRooms] = useState("");
+  // Seeded from the UI locale, which the proxy resolved from the browser.
+  const [language, setLanguage] = useState<string>(locale);
 
   // Gate the submit on a named property and a room count in range, rather than
   // letting the server bounce it back with an error they could have avoided.
@@ -74,8 +77,6 @@ export function OnboardingForm({ timezones }: { timezones: string[] }) {
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      <input type="hidden" name="locale" value={locale} />
-
       <div className="flex flex-col gap-2">
         <Label htmlFor="hotelName">{dict.onboarding.hotelName}</Label>
         <Input
@@ -118,6 +119,34 @@ export function OnboardingForm({ timezones }: { timezones: string[] }) {
         </select>
         <p className="text-xs text-[var(--fonda-text-3)]">
           {dict.onboarding.timezoneHint}
+        </p>
+      </div>
+
+      {/*
+        Asked here rather than left implicit. It was previously a hidden field
+        echoing the UI locale, which meant the account language was whatever
+        the browser happened to negotiate and could only be corrected later in
+        Settings. Seeded from the current UI locale — which the proxy already
+        derived from Accept-Language — so the browser's guess is the default,
+        not the verdict.
+      */}
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="locale">{dict.onboarding.language}</Label>
+        <select
+          id="locale"
+          name="locale"
+          className={selectClassName}
+          value={language}
+          onChange={(event) => setLanguage(event.target.value)}
+        >
+          {locales.map((code) => (
+            <option key={code} value={code}>
+              {localeNames[code]}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-[var(--fonda-text-3)]">
+          {dict.onboarding.languageHint}
         </p>
       </div>
 

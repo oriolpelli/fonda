@@ -550,6 +550,82 @@ alter table public.newsletter_subscribers enable row level security;
 
 
 -- ############################################################################
+-- 0020 — account-wide default language
+-- ############################################################################
+
+alter table public.hotel_settings
+  add column if not exists default_locale text not null default 'en';
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'hotel_settings_default_locale_check'
+      and conrelid = 'public.hotel_settings'::regclass
+  ) then
+    alter table public.hotel_settings
+      add constraint hotel_settings_default_locale_check
+      check (default_locale in ('en', 'es', 'ca'));
+  end if;
+end $$;
+
+comment on column public.hotel_settings.default_locale is
+  'The account''s preferred UI language (en/es/ca). Seeds the interface locale '
+  'at login and seeds briefing_language when a hotel is provisioned. Distinct '
+  'from briefing_language, which is the language generated content is written '
+  'in and remains an independent override.';
+
+-- provision_hotel gains the locale. DROP + CREATE because the signature
+-- changes; p_locale has a DEFAULT so six-argument callers still resolve here.
+drop function if exists public.provision_hotel(uuid, text, text, integer, text, text);
+
+create or replace function public.provision_hotel(
+  p_user_id     uuid,
+  p_email       text,
+  p_hotel_name  text,
+  p_rooms_count integer,
+  p_timezone    text,
+  p_pms_type    text,
+  p_locale      text default 'en'
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_hotel_id uuid;
+  v_locale   text;
+begin
+  v_locale := case when p_locale in ('en', 'es', 'ca') then p_locale else 'en' end;
+
+  if exists (select 1 from public.users where id = p_user_id) then
+    raise exception 'User % is already provisioned', p_user_id
+      using errcode = 'unique_violation';
+  end if;
+
+  insert into public.hotels (name, rooms_count, timezone, pms_type)
+  values (p_hotel_name, p_rooms_count, p_timezone, p_pms_type)
+  returning id into v_hotel_id;
+
+  insert into public.users (id, hotel_id, email, role)
+  values (p_user_id, v_hotel_id, p_email, 'owner');
+
+  insert into public.hotel_settings (hotel_id, default_locale, briefing_language)
+  values (v_hotel_id, v_locale, v_locale);
+
+  return v_hotel_id;
+end;
+$$;
+
+revoke all on function
+  public.provision_hotel(uuid, text, text, integer, text, text, text)
+  from public, anon, authenticated;
+grant execute on function
+  public.provision_hotel(uuid, text, text, integer, text, text, text)
+  to service_role;
+
+-- ############################################################################
 -- reload PostgREST schema cache so RPCs resolve immediately
 -- ############################################################################
 

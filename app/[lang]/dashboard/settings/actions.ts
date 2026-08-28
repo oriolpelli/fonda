@@ -2,7 +2,12 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
+import { isLocale } from "@/lib/i18n/config";
+import { LOCALE_COOKIE } from "@/lib/i18n/get-locale";
+import { localizedHref } from "@/lib/i18n/navigation";
 import {
   MewsApiError,
   storeMewsCredentials,
@@ -96,6 +101,60 @@ export async function updateGmName(
   revalidatePath("/dashboard/settings");
   revalidatePath("/dashboard");
   return { ok: true };
+}
+
+export type AccountLanguageState = { error: string } | undefined;
+
+/**
+ * Sets the account's default language.
+ *
+ * On success this redirects instead of returning `{ ok: true }`: the whole
+ * point of the setting is which language the product speaks, so the honest
+ * confirmation is the page coming back in that language. The locale cookie is
+ * rewritten too, because it is what `getLocale` consults first on any later
+ * request that arrives without a `/[lang]` prefix (see lib/i18n/get-locale.ts).
+ *
+ * Note this deliberately does NOT touch `briefing_language`. The account
+ * language seeds that column for new hotels only; once a hotel exists, the
+ * language its briefs are written in is an independent choice made on the
+ * Morning Brief panel.
+ */
+export async function updateAccountLanguage(
+  _prevState: AccountLanguageState,
+  formData: FormData
+): Promise<AccountLanguageState> {
+  const value = String(formData.get("defaultLocale") ?? "").trim();
+  if (!isLocale(value)) {
+    return { error: "Choose a language." };
+  }
+
+  let hotelId: string;
+  try {
+    hotelId = await requireHotelId();
+  } catch (err) {
+    return { error: (err as Error).message };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("hotel_settings")
+    .update({ default_locale: value })
+    .eq("hotel_id", hotelId);
+  if (error) {
+    return { error: `Couldn't save settings: ${error.message}` };
+  }
+
+  const cookieStore = await cookies();
+  cookieStore.set(LOCALE_COOKIE, value, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+  });
+
+  // Route paths — the locale is a dynamic `[lang]` segment, so a URL path like
+  // "/dashboard/settings" matches no route and revalidates nothing.
+  revalidatePath("/[lang]/dashboard", "layout");
+  redirect(localizedHref(value, "/dashboard/settings"));
 }
 
 export type HotelProfileState = { ok: true } | { error: string } | undefined;
