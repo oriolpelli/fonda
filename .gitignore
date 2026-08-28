@@ -49,3 +49,9 @@ next-env.d.ts
 
 # Design working screenshots (regenerable, not referenced)
 design/_*
+
+# Outreach tracker — holds prospect contact details, and this repo is public.
+Fondas_Outreach_Tracker.xlsx
+
+# Holding pen for docs pending deletion — never meant to be tracked.
+_to_delete/
