@@ -35,17 +35,18 @@ _Free pilots need only reliability and a clean, real demo. Nothing here should b
 |---|---|---|---|---|
 | 1 | Mobile pass | The GM reads the brief on a phone at 6:45am — that moment *is* the pitch. | S | 🟢 verified on a real phone (27 Aug) |
 | 2 | PMS connect inside onboarding | A new hotel must reach a real preview brief in one sitting, or they drop before value. | S | 🟢 verified with a fresh signup (27 Aug) |
-| 3 | Website punch-list | 9 dead footer links + unset per-env `SITE_URL`. Provisional content on a live site kills credibility. | S | 🔴 open |
+| 3 | Website punch-list | 9 dead footer links + unset per-env `SITE_URL`. Provisional content on a live site kills credibility. | S | 🟢 code done & deployed 28 Aug; only the optional Vercel Preview `SITE_URL` env var left |
 | 4 | `hello@fondas.app` can't receive mail | It's the contact on the site; a bounce to a prospect is an own-goal. | XS | 🔴 open |
-| 5 | Apaleo end-to-end unverified | 468-line client exists; no real Apaleo hotel proven through sync → brief. Don't demo blind. | S | 🔴 open |
-| 6 | Draft-acceptance measurement | THE PMF metric. Code shipped (B12+B16); not capturing until activated. | M | 🟠 built; needs migration 0019 + `POSTHOG_KEY` + a data check |
-| 7 | Data-honesty language | Say "stored encrypted, EU-hosted, deleted on offboarding" everywhere. | XS | 🟠 decided; propagation unverified |
+| 5 | Apaleo end-to-end unverified | 468-line client exists; no real Apaleo hotel proven through sync → brief. Don't demo blind. | S | 🟠 OAuth ✅; 422 fix coded (date-time format) — pending deploy + live re-sync to confirm |
+| 6 | Draft-acceptance measurement | THE PMF metric — live and verified (events flowing, PII-clean: person = hotel UUID). | M | 🟢 live & verified 28 Aug |
+| 7 | Data-honesty language | Say "stored encrypted, EU-hosted, deleted on offboarding" everywhere. | XS | 🟢 done, deployed & verified 28 Aug (EU region confirmed: Ireland) |
 | ⊕ 8 | Reliability log backfill + 5 green mornings | Four real logged mornings is the "you can depend on it" story — the single most important non-feature you sell (VC audit #5). | XS | 🔴 5 blank rows |
 | ⊕ 9 | Spanish-brief deliverability check | An English brief in spam, or in Spanish only for you, kills a Spanish pilot. Verify end-to-end. | XS | 🟢 verified (27 Aug) |
 | ⊕ 10 | Brief email still on the v2 palette | The one thing a GM sees *every morning*, and it's in your demo. Cosmetic but visible. | S | 🟠 partial — see note |
-| ⊕ N1 | Language control — save bug + account-wide setting + onboarding capture | Spanish-first is the whole pitch; a stuck language toggle looks broken in a demo, and there's no discoverable place to set the account's language. | S | 🟠 built (save-bug fix + account language + onboarding); needs migration 0020 + deploy |
+| ⊕ N1 | Language control — save bug + account-wide setting + onboarding capture | Spanish-first is the whole pitch; a stuck language toggle looks broken in a demo, and there's no discoverable place to set the account's language. | S | 🟢 done, deployed & verified 28 Aug |
 | ⊕ N2 | Close the ETA-from-reply loop (finish B11) | Check-in chasing sends the nudge but nothing parses the reply, so guest-stated ETAs never populate. Droppable for pilots (PMS can supply ETAs). | S | 🔴 open — decide priority |
 | ⊕ N3 | "Email me this brief now" button | The dashboard Refresh only updates the on-screen brief; there's no way to re-send the email on demand — useful for demos, onboarding, and your daily checks. | S | 🔴 open — optional |
+| ⊕ N4 | Can't disconnect / switch a hotel's data source | Once a hotel is on one source (mews/apaleo/**sheet** test source), Settings locks to it — no disconnect for "sheet", no way to switch to a PMS. Matters for fixing a wrong/broken connection during a live pilot onboarding. | S | 🟠 built (in working tree — new `pms-disconnect-card`); pending push/deploy + a quick test |
 
 ### How to address each — Gate 1
 
@@ -70,11 +71,37 @@ Task — clear the website punch-list.
    read from one source (or cross-reference them) so they can't drift.
 ```
 
+**Status (28 Aug): ✅ code done & deployed** (commit `edebc13`). Verified in the tree: no `href="#"` dead links remain; a real `/[lang]/contact` page exists; and every price (marketing stats, pricing section, legal terms) now reads from `COMPANY.priceMonthly` / `company.ts`, so it can't drift. **Only leftover — optional, non-code:** set `NEXT_PUBLIC_SITE_URL` (= `https://fondas.app`) on Vercel **Preview** so preview builds don't emit production URLs in their SEO tags. Production is unaffected (it falls back correctly), and previews aren't public, so this is hygiene, not a blocker.
+
 **4 · `hello@fondas.app` inbox.** The domain can *send* (Resend verified) but has no inbox to *receive*. Free forwarding to your iCloud is ~10 minutes — the only blocker is knowing where `fondas.app`'s DNS is managed (Cloudflare / Vercel / registrar), because the MX/forwarding record goes there. Do `privacy@fondas.app` at the same time.
 
 _Founder/ops task — no Claude Code prompt. Decide the DNS host, add forwarding, send a test from an outside address, confirm it lands. (Tell me the DNS host and I can walk you through the exact records.)_
 
 **5 · Apaleo end-to-end.** The library is code-complete (OAuth, credential storage, reservation fetch) but no real Apaleo property has ever gone sync → brief. Run one through the full chain and read the result. Until it passes, keep Apaleo in the ICP but don't demo on it and don't open Apaleo Community / Agent Hub outreach.
+
+**How to test it — corrected (28 Aug):** Apaleo uses OAuth (a "Connect Apaleo" button), not a paste-in key. (1) Free sandbox with sample data: sign up at `identity.apaleo.com/account/register-dev-account`, launch a sandbox property. (2) Register Fondas as a **store app** (authorization-code) at **Apps → My store apps → Add a new store app** — NOT "Connected apps / custom app," which is client-credentials-only and returns `unauthorized_client`. The store app's Client ID contains `-AC-` (Authorization Code); the custom one is `-SP-`. Set **Redirect URI** `https://fondas.app/connect/apaleo/callback` (exact — a blank/mismatched redirect also gives `unauthorized_client`), **Scopes** `reservations.read` + `setup.read` (the plain `rateplans.read` no longer exists — it's split into variants). (3) In Vercel (Prod + Preview) set `APALEO_CLIENT_ID`, `APALEO_CLIENT_SECRET`, and `APALEO_SCOPES=offline_access reservations.read setup.read` (this override drops the retired `rateplans.read` from the request), then redeploy. (4) Connect from `fondas.app` → log into sandbox → approve → sync → brief.
+
+**Progress (28 Aug):** ✅ OAuth connection now works end-to-end (after switching from the custom/client-credentials app to a store/authorization-code app and registering the redirect URI). 🔴 **Sync bug found — the never-run Apaleo path fails:** `GET /booking/v1/reservations` returns `422`. In `lib/apaleo.ts`, `getReservations()` requests `dateFilter=Stay` + date `from`/`to` without scoping to a property, and `apaleoFetch` discards the error body so Apaleo's exact message is hidden. **Fix (Claude Code):**
+
+```
+Task — fix the Apaleo reservations sync (422) and make Apaleo errors debuggable.
+Context: connecting Apaleo now works (OAuth OK), but the first sync fails with
+"Apaleo request to /booking/v1/reservations failed with status 422." In lib/apaleo.ts,
+getReservations() calls /booking/v1/reservations with { dateFilter: "Stay", from, to }
+(dates YYYY-MM-DD) via apaleoFetch/getAll.
+1. apaleoFetch discards the error body — on a non-2xx it throws with only the status. Read
+   the response body (res.text(), parse JSON if present) and include Apaleo's validation
+   message in the thrown ApaleoApiError and Sentry context. This reveals what Apaleo rejects.
+2. Fix the reservations query. The 422 is almost certainly because the list isn't scoped to
+   a property and/or the window is too wide for an unscoped query. Fetch the account's
+   properties (GET /inventory/v1/properties, covered by setup.read) and pass propertyIds to
+   /booking/v1/reservations. One property → use it; several → iterate. Keep dateFilter=Stay
+   with date from/to. If Apaleo names a maximum interval, chunk the window and merge.
+Adjust to whatever the surfaced 422 body says. Don't touch the MEWS path. Run npm run lint.
+```
+Then commit → push → redeploy → reconnect/re-sync. If it still 422s, the now-visible error message names the exact remaining fix.
+
+**Fix applied (28 Aug, Claude Code):** the real cause was **date format, not property scoping** — Apaleo's `GET /booking/v1/reservations` wants `from`/`to` as UTC date-**time** (`2026-08-14T00:00:00Z`), and Fondas sent plain `YYYY-MM-DD`. Also fixed: Apaleo error bodies now surfaced (readable messages + Sentry context), a `204 No Content` empty-page crash, and rate-plans/inventory being pulled unscoped across all properties (inflated occupancy on multi-property accounts). Property scoping added too (correct, though not the cause). Verified with stubbed-fetch tests; MEWS untouched; lint/tsc/build pass. No migration or env change. **Remaining: deploy, then reconnect Apaleo (Settings → disconnect → connect) to re-run the sync, and confirm a brief generates → then #5 is 🟢.**
 
 _Founder-run verification. If a stage breaks, paste:_
 
@@ -108,7 +135,7 @@ Task — ship draft-acceptance measurement (B12 + B16).
 Confirm no event payload contains an email address or guest name.
 ```
 
-**Status (28 Aug): ✅ code shipped, richer than asked — not yet capturing.** Claude Code delivered posthog-node (server-only, no-op when `POSTHOG_KEY` is unset), all eight events with PII made *structurally* impossible (every property is a UUID/enum/number/bool — no property typed as bare `string` — proven by `npm run analytics-pii-audit` and backed by a runtime tripwire that drops any widened event), normalised-Levenshtein edit buckets computed at send time, and a per-hotel-RLS rollup (`draft_edit_events`, migration 0019) with no guest identifier and no join path back to email data. The privacy policy gained a "Product analytics" section + PostHog sub-processor entry, flagged `⚠️ FOR LEGAL REVIEW`. **Four founder actions before it captures anything:** (0) **commit + push + deploy the code** — as of 28 Aug the entire analytics implementation (and ~60 other files) is sitting **uncommitted in the working tree**, so it is *not on the live site*; nothing can fire until it's committed, pushed to `main`, and Vercel redeploys; (1) apply `supabase/APPLY_0019.sql` in the Supabase SQL Editor (safe to run twice); (2) add `POSTHOG_KEY` + `POSTHOG_HOST` to `.env.example` and set them in Vercel prod + preview — until `POSTHOG_KEY` is set every call is a silent no-op _(done 28 Aug — both set on Production + Preview)_; (3) verify — trigger the dev hotel, confirm `chat_query`/`draft_*` events appear in PostHog, and run `npm run analytics-pii-audit`. Then flip this to 🟢.
+**Status (28 Aug): ✅ code shipped, richer than asked — not yet capturing.** Claude Code delivered posthog-node (server-only, no-op when `POSTHOG_KEY` is unset), all eight events with PII made *structurally* impossible (every property is a UUID/enum/number/bool — no property typed as bare `string` — proven by `npm run analytics-pii-audit` and backed by a runtime tripwire that drops any widened event), normalised-Levenshtein edit buckets computed at send time, and a per-hotel-RLS rollup (`draft_edit_events`, migration 0019) with no guest identifier and no join path back to email data. The privacy policy gained a "Product analytics" section + PostHog sub-processor entry, flagged `⚠️ FOR LEGAL REVIEW`. **✅ Activated & verified 28 Aug.** (0) code committed + deployed (`db7a8f0` → `b78e438`); (1) `POSTHOG_KEY` + `POSTHOG_HOST` set in Vercel; (2) `APPLY_0019.sql` applied in Supabase; (3) verified — a `chat_query` event arrived in PostHog Activity via `posthog-node`, with `PERSON` = a hotel UUID (no guest name/email), confirming the privacy design live. **Note on the metric itself:** `chat_query` proves the pipe; the acceptance-rate number is built from `draft_sent` / `draft_edited_before_send`, which fire only when drafted replies are actually sent (needs Gmail connected — see the 7-day expiry under #14). So the number accrues with real inbox use; the infrastructure is complete.
 
 > **⚠️ Workflow note (found 28 Aug):** Claude Code edits files but does **not** deploy them — work only goes live once it's committed, pushed to `main`, and Vercel auto-deploys. A git check found ~60 uncommitted files (analytics, the N1 language fix, a contact page, privacy/`company.ts` edits, doc consolidation). **Several items this doc tracks as "in progress/done" are built but not yet live.** Commit + push after each Claude Code session, or the work is both un-deployed and at risk of loss.
 
@@ -127,6 +154,8 @@ EU-hosted on Supabase, used only to generate briefings, deleted on offboarding.
 3. Report every location changed so I can mirror it in the pilot agreement and
    one-pager (those live outside the repo).
 ```
+
+**Status (28 Aug): ✅ done & deployed** (commit `b10cca5`, pushed + live). Finding: no false "we discard it" claim was ever in the product — that line was in the already-deleted `PILOT_OUTREACH.md`. The real fix was honesty-by-omission in three spots, all now upfront that guest/reservation data is stored (encrypted, isolated, deleted on exit): the "Where does your data live?" FAQ (`faq.a5`), the Mews/Apaleo/Gmail connector descriptions, and the privacy policy's Security section — across en/es/ca. **"EU-hosted" verified ✅ (28 Aug):** Supabase region confirmed as **West EU (Ireland)**, so the claim is true — safe to carry into the pilot agreement, DPA and one-pager. _(Aside: `GTM_STRATEGY.docx` is current — its "discard" mention is the §1.4 passage refuting the old claim, not a live claim.)_
 
 **⊕ 8 · Reliability log + 5 green mornings.** `RELIABILITY.md` has five blank rows; today's check passes but the story you sell is *consecutive unattended* mornings. Backfill honestly, then run `npx tsx scripts/reliability-check.ts` each morning until you have 5+ consecutive green days. Cheapest possible counter to the VC "no tests" question.
 
@@ -191,7 +220,7 @@ by default.
    locale, account language, and briefing_language now relate so I can confirm the model.
 ```
 
-**Status (28 Aug): ✅ both built, building clean — pending migration + deploy.** Prompt A found the real cause of the save bug (React 19 resets an uncontrolled `<select>` after a server action, snapping it back to English) and fixed it with a controlled + `startTransition` pattern. Prompt B added the **Account language** setting (Settings + onboarding), migration **0020** (`hotel_settings.default_locale`). The model: one seed (account language) feeds two consumers — at **onboarding** it sets both `default_locale` and `briefing_language`; at **login** it sets the landing locale; **changing it in Settings** switches the UI only and deliberately leaves `briefing_language` alone (English UI + Spanish guest drafts is a real case). **Two founder actions before it's live:** (1) run `supabase/APPLY_0020.sql` in the Supabase SQL Editor **before** the code deploys — the new code calls `provision_hotel` with a locale the DB doesn't accept until then, so onboarding breaks if code lands first; (2) commit + push + deploy (part of the same un-deployed tree as #6). Then verify the save sticks with no refresh and a fresh signup asks for language.
+**Status (28 Aug): ✅ both built, building clean — pending migration + deploy.** Prompt A found the real cause of the save bug (React 19 resets an uncontrolled `<select>` after a server action, snapping it back to English) and fixed it with a controlled + `startTransition` pattern. Prompt B added the **Account language** setting (Settings + onboarding), migration **0020** (`hotel_settings.default_locale`). The model: one seed (account language) feeds two consumers — at **onboarding** it sets both `default_locale` and `briefing_language`; at **login** it sets the landing locale; **changing it in Settings** switches the UI only and deliberately leaves `briefing_language` alone (English UI + Spanish guest drafts is a real case). **✅ Done, deployed & verified 28 Aug.** Both checks pass: the language save now sticks with no refresh (Prompt A fix confirmed), and a fresh signup asks for language. Save-bug fix + account-wide language setting + onboarding capture all live.
 
 **⊕ N2 · Close the ETA-from-reply loop.** _Surfaced by the #6 work, 28 Aug._ The analytics wiring revealed `eta_captured` will read zero because `recordArrivalTime()` has no callers: the chaser emails the guest, but nothing reads the reply to extract the arrival time — so the guest-reply half of the check-in-chasing surface (one of the four core surfaces) is unfinished. **Droppable for pilots** — ETAs can also arrive from the PMS (`arrival_time_source='pms'`), so the Check-ins page and brief still populate where the PMS has the data, and a demo seeds ETAs anyway. Track it; decide priority against real pilot behaviour. If you want it:
 
@@ -222,6 +251,25 @@ Today /api/briefing regenerates the brief on screen but never emails it; the cro
    this manual action), shows a "Sent to <recipients>" confirmation, and fires the
    existing brief_email_sent analytics event with trigger:"manual".
 3. GM-facing and simple; es/ca strings; run npm run lint.
+```
+
+**⊕ N4 · Can't disconnect / switch a hotel's data source.** _Surfaced 28 Aug while testing Apaleo._ Fondas has three sources — `mews`, `apaleo`, and `sheet` (a Google-Sheets-as-fake-PMS connector for testing without a real PMS). `disconnectMews`/`disconnectApaleo` exist but there's no `disconnectSheet`, and Settings only renders the *currently connected* source's card — so a hotel on `sheet` is locked there with no way to switch to a PMS. Small, worth building; **not a hard pilot blocker** (real hotels pick their PMS once at onboarding) but real insurance for fixing a wrong/broken connection during a live pilot onboarding. Workaround for testing: create a fresh test hotel and connect the new source in onboarding.
+
+```
+Task — let a hotel disconnect its data source and switch to a different one (Settings).
+Today pms_type is "mews" | "apaleo" | "sheet"; disconnectMews and disconnectApaleo exist
+but there's no disconnectSheet, and Settings only renders the currently-connected source's
+card — so a hotel on "sheet" can't disconnect or switch to a real PMS.
+1. Add a disconnectSheet() server action mirroring disconnectMews/disconnectApaleo: clear
+   sheet_url_encrypted, reset pms_type/pms_connected, same RLS/auth pattern.
+2. In Settings, always offer a "Disconnect" control for whatever source is connected
+   (mews/apaleo/sheet). After disconnecting, show the full connector chooser (MEWS form,
+   Apaleo connect, Sheet form) so the user can pick a different source — don't hard-lock to
+   the current pms_type.
+3. Make the switch safe: on disconnect, stop syncing the old source; recommend clearing
+   previously-synced reservations so old sheet rows don't mix with new PMS data — tell me
+   what you chose.
+4. Server-side only (no client writes), es/ca strings, run npm run lint.
 ```
 
 **Gate 1 exit:** every item 🟢, the full demo run twice (laptop, then phone), and nothing fake or broken anywhere a GM can click.
@@ -462,7 +510,7 @@ Run npm run lint.
 
 | Gate | Genuinely un-built (🔴) | Built, needs your verification (🟠) | Cheapest high-value move |
 |---|---|---|---|
-| **1 · Before pilots** | Website punch-list, `hello@` inbox (in setup), Apaleo E2E, reliability log, language control (N1), ETA loop (N2, optional) | draft-acceptance (built — apply migration 0019 + env, then check), data-honesty copy, brief email palette _(mobile pass, PMS-in-onboarding, Spanish-brief ✅ verified 27 Aug)_ | Activate #6 (migration + `POSTHOG_KEY`); ship the N1 language-save bug fix before demos |
+| **1 · Before pilots** | _(no code items left)_ — founder tasks only: Apaleo E2E (#5, in progress), `hello@` inbox (in setup), reliability log (#8), ETA loop (N2, optional) | brief email palette _(mobile, onboarding, Spanish-brief, #6 analytics, #3 website, #7 data-honesty + EU-region, N1 language ✅ done 27–28 Aug)_ | **All before-pilot code is shipped.** Remaining is your run-throughs: Apaleo sandbox test, `hello@` test, reliability log |
 | **2 · Before charging** | Stripe, rate-limiting/caps, entity+DPA, Google verification, unsubscribe flow | `company.ts` details | Write the one-page pilot agreement now; book the lawyer the week pilot #2 lands |
 | **3 · Before scaling** | Outlook, group digest, autonomy, upsell drafting, tests/CI, WhatsApp, 3rd PMS, revenue signal, repeat-guest, schema fix | — | Hold the line; pull Outlook forward only if pilots keep asking |
 
