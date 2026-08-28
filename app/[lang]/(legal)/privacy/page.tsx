@@ -118,6 +118,14 @@ const SECTIONS: Section[] = [
     id: "security",
     paragraphs: [
       "We apply technical and organisational measures appropriate to the risk, including encryption of connection tokens at rest, strict per-hotel access controls enforced at the database level (row-level security), least-privilege service access, and error monitoring. No system is perfectly secure, but we work to protect your data and to notify affected parties of any breach as required by law.",
+      // ⚠️ States plainly that we DO store hotel and guest data. Fondas reads
+      // reservations, guest profiles and mailbox contents and keeps them (see
+      // the `reservations`, `customers` and `emails` tables) — the briefs and
+      // drafts are built from stored rows, not from data held in memory for
+      // the length of a request. Any outward claim that we "use and discard"
+      // guest data is false and must not be reintroduced here, in the FAQ, in
+      // the pilot agreement, or in sales material. See GTM_STRATEGY.md §1.4.
+      "We do store the hotel data we process: reservations, guest profiles, and the mailbox contents needed to draft replies are held in our database, hosted in the European Union and encrypted at rest. We keep them because the briefings, drafts, and answers the service produces are generated from them. They are used for no other purpose, and they are deleted when a hotel closes its account, as described under Retention.",
     ],
   },
   {
