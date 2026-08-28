@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "reliability-check": "tsx --conditions=react-server scripts/reliability-check.ts",
+    "analytics-pii-audit": "tsx --conditions=react-server scripts/analytics-pii-audit.ts",
     "seed-test-guests": "tsx scripts/seed-test-guests.ts"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^1.20.0",
     "next": "16.2.9",
+    "posthog-node": "^5.51.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "resend": "^6.14.0",

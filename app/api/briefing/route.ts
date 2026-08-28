@@ -33,7 +33,8 @@ export async function POST() {
   }
 
   try {
-    const content = await generateBriefing(profile.hotel_id);
+    // Reached from the dashboard, so this is a GM asking for a brief now.
+    const content = await generateBriefing(profile.hotel_id, "manual");
     return NextResponse.json({ content });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 502 });

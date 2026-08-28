@@ -2,9 +2,13 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { track } from "@/lib/analytics";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Json } from "@/types/database";
+
+/** Where a briefing run came from. */
+export type BriefingTrigger = "cron" | "manual";
 
 /**
  * Morning briefing generator.
@@ -157,7 +161,9 @@ const LANGUAGES: Record<string, string> = {
 // ---------------------------------------------------------------------------
 
 export async function generateBriefing(
-  hotelId: string
+  hotelId: string,
+  /** Where the run came from — the scheduled send, or a GM pressing refresh. */
+  trigger: BriefingTrigger = "cron"
 ): Promise<BriefingContent> {
   const admin = createAdminClient();
 
@@ -333,6 +339,9 @@ export async function generateBriefing(
   if (saveError) {
     throw new Error(`Failed to save briefing: ${saveError.message}`);
   }
+
+  // After the save, so the event means "a brief exists", not "we tried".
+  track(hotelId, "brief_generated", { trigger });
 
   return content;
 }

@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { track } from "@/lib/analytics";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { EmailStatus } from "@/types";
@@ -332,7 +333,12 @@ export async function processEmail(
     throw new Error(`Failed to save processed email: ${updateError.message}`);
   }
 
-  return { classification, status, drafted: !NO_DRAFT.has(classification) };
+  const drafted = !NO_DRAFT.has(classification);
+  // The classification is an enum from EMAIL_CLASSIFICATIONS, never text from
+  // the guest's message.
+  track(hotelId, "draft_generated", { classification, drafted });
+
+  return { classification, status, drafted };
 }
 
 export interface ProcessBatchResult {

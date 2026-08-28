@@ -4,6 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { flushAnalytics } from "@/lib/analytics";
 import { processNewEmails } from "@/lib/email-processor";
 import { ingestRecentEmails } from "@/lib/gmail";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -93,6 +94,9 @@ export async function GET() {
       outcomes.push({ hotelId: hotel.id, error: message });
     }
   }
+
+  // Drain before the runtime freezes this function.
+  await flushAnalytics();
 
   return NextResponse.json({ hotels: outcomes.length, outcomes });
 }

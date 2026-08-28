@@ -2,7 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 
+import { track } from "@/lib/analytics";
 import { runCheckinChaser } from "@/lib/checkin-chaser";
+import { recordDraftSend } from "@/lib/draft-acceptance";
 import { getGmailClientForHotel, type GmailClient } from "@/lib/gmail";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -76,10 +78,12 @@ export async function sendChaser(
   const hotelId = await requireHotelId();
   const admin = createAdminClient();
 
+  // `draft_content` is what Fondas wrote, `content` what the GM is sending —
+  // comparable only here, before the row is marked sent.
   const [{ data: chaser }, { data: hotel }] = await Promise.all([
     admin
       .from("checkin_chasers")
-      .select("id, guest_email")
+      .select("id, guest_email, draft_content")
       .eq("id", chaserId)
       .eq("hotel_id", hotelId)
       .single(),
@@ -98,6 +102,14 @@ export async function sendChaser(
   } catch (err) {
     return { error: (err as Error).message };
   }
+
+  const bucket = await recordDraftSend({
+    hotelId,
+    surface: "checkin_chaser",
+    drafted: chaser.draft_content,
+    sent: content,
+  });
+  track(hotelId, "chaser_sent", { edit_bucket: bucket, bulk: false });
 
   revalidatePath("/dashboard/checkins");
   return {};
@@ -135,6 +147,16 @@ export async function approveAllChasers(): Promise<{ sent: number; error?: strin
     try {
       await sendOne(admin, gmail, hotel?.name ?? "our hotel", chaser);
       sent++;
+      // Sent verbatim — no editor in the bulk path. See the same note in the
+      // communications action for why these are flagged rather than merged.
+      const bucket = await recordDraftSend({
+        hotelId,
+        surface: "checkin_chaser",
+        drafted: chaser.draft_content,
+        sent: chaser.draft_content,
+        bulk: true,
+      });
+      track(hotelId, "chaser_sent", { edit_bucket: bucket, bulk: true });
     } catch {
       // Leave failures pending for manual handling.
     }

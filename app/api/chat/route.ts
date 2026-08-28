@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 
+import { flushAnalytics, track } from "@/lib/analytics";
 import { buildHotelContext } from "@/lib/hotel-context";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -88,6 +89,7 @@ export async function POST(request: Request) {
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       let assistantText = "";
+      let producedDraft = false;
       try {
         const claude = client.messages.stream({
           model: CHAT_MODEL,
@@ -121,6 +123,7 @@ export async function POST(request: Request) {
             .select("id")
             .single();
           if (draft) {
+            producedDraft = true;
             controller.enqueue(
               encoder.encode(`${DRAFT_SENTINEL}${draft.id}`)
             );
@@ -131,6 +134,15 @@ export async function POST(request: Request) {
           encoder.encode(`\n\n[Error: ${(err as Error).message}]`)
         );
       } finally {
+        // Length, turn count and whether it produced a draft — never the
+        // question or the answer. Both can quote guest data verbatim.
+        track(hotelId, "chat_query", {
+          chars: lastUser?.content.length ?? 0,
+          turns: messages.length,
+          produced_draft: producedDraft,
+        });
+        await flushAnalytics();
+
         // Log the turn (pseudonymised context → reduced PII).
         if (lastUser || assistantText) {
           await admin.from("chat_logs").insert(

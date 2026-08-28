@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
+import { flushAnalytics, track } from "@/lib/analytics";
 import { generateBriefing, type BriefingContent } from "@/lib/briefing";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -311,6 +312,11 @@ export async function GET() {
       if (process.env.RESEND_API_KEY && recipients.length > 0) {
         await sendBriefingEmail(recipients, hotel.name, dateLabel, content);
         emailed = true;
+        // Count only — the recipients are hotel staff addresses, and no
+        // address may leave the server (see lib/analytics.ts).
+        track(hotel.id, "brief_email_sent", {
+          recipient_count: recipients.length,
+        });
 
         // Mark the briefing we just generated as delivered.
         const { data: row } = await admin
@@ -350,6 +356,10 @@ export async function GET() {
       outcomes.push({ hotelId: hotel.id, status: "error", error: message });
     }
   }
+
+  // The runtime can freeze this function the moment we return, so drain the
+  // queue before it does.
+  await flushAnalytics();
 
   return NextResponse.json({
     checkedAt: now.toISOString(),

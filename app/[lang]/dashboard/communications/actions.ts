@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
+import { track } from "@/lib/analytics";
+import { recordDraftSend } from "@/lib/draft-acceptance";
 import { getGmailClientForHotel, type GmailClient } from "@/lib/gmail";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -85,9 +87,12 @@ export async function sendReply(
   const hotelId = await requireHotelId();
   const admin = createAdminClient();
 
+  // `draft_reply` is what Fondas wrote; `content` is what the GM is sending.
+  // The two are only comparable here, before the row is overwritten — this is
+  // the single moment the acceptance metric can be measured.
   const { data: email } = await admin
     .from("emails")
-    .select("id, from_email, subject, external_id")
+    .select("id, from_email, subject, external_id, draft_reply")
     .eq("id", emailId)
     .eq("hotel_id", hotelId)
     .single();
@@ -101,6 +106,16 @@ export async function sendReply(
   } catch (err) {
     return { error: (err as Error).message };
   }
+
+  // After the send succeeded: we measure replies that reached a guest, not
+  // ones we attempted.
+  const bucket = await recordDraftSend({
+    hotelId,
+    surface: "email_reply",
+    drafted: email.draft_reply,
+    sent: content,
+  });
+  track(hotelId, "draft_sent", { edit_bucket: bucket, bulk: false });
 
   revalidateInbox();
   return {};
@@ -159,6 +174,18 @@ export async function approveAllStandard(): Promise<{
     try {
       await sendOne(admin, gmail, email);
       sent++;
+      // Bulk approval sends the draft verbatim — there is no editor in this
+      // path — so the bucket is always "none". Flagged `bulk` so the rollup
+      // can separate "the GM read this and approved it" from "the GM approved
+      // a batch"; counting them the same would flatter the acceptance rate.
+      const bucket = await recordDraftSend({
+        hotelId,
+        surface: "email_reply",
+        drafted: email.draft_reply,
+        sent: email.draft_reply,
+        bulk: true,
+      });
+      track(hotelId, "draft_sent", { edit_bucket: bucket, bulk: true });
     } catch {
       // Skip failures; they remain pending for manual handling.
     }

@@ -148,6 +148,15 @@ Set these in **Vercel → Project → Settings → Environment Variables** (and 
 | `APALEO_CLIENT_ID` / `APALEO_CLIENT_SECRET` | optional | apaleo.dev |
 | `APALEO_REDIRECT_URI` / `APALEO_SCOPES` | optional | defaults are fine |
 | `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` | optional | Sentry |
+| `POSTHOG_KEY` | optional | PostHog project API key — **server-side only, no `NEXT_PUBLIC_` prefix**. Leave unset to disable analytics entirely (every `track()` becomes a no-op). |
+| `POSTHOG_HOST` | optional | defaults to `https://eu.i.posthog.com`. Use the EU host unless you have a reason not to — the events describe EU hotels. |
+
+> **Do not add `posthog-js` or a `NEXT_PUBLIC_POSTHOG_*` variable.** Analytics
+> are deliberately server-side and cookieless, which is what keeps the privacy
+> policy's "strictly necessary cookies only" statement true. A browser SDK
+> would set cookies and require a consent banner. See `lib/analytics.ts` and
+> the "Product analytics" section of the privacy policy; `npm run
+> analytics-pii-audit` is the check that no guest data reaches PostHog.
 
 ---
 

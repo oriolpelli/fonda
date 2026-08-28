@@ -482,6 +482,44 @@ export type Database = {
         };
         Relationships: [];
       };
+      draft_edit_events: {
+        Row: {
+          id: string;
+          hotel_id: string;
+          surface: string;
+          edit_bucket: string;
+          similarity_pct: number;
+          bulk: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          hotel_id: string;
+          surface: string;
+          edit_bucket: string;
+          similarity_pct: number;
+          bulk?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          hotel_id?: string;
+          surface?: string;
+          edit_bucket?: string;
+          similarity_pct?: number;
+          bulk?: boolean;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "draft_edit_events_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       chat_logs: {
         Row: {
           id: string;
@@ -520,6 +558,7 @@ export type Database = {
           hotel_id: string;
           briefing_time: string;
           briefing_language: string;
+          default_locale: string;
           gm_name: string | null;
           arrival_instructions: string | null;
           tone_guidelines: string | null;
@@ -550,6 +589,7 @@ export type Database = {
           hotel_id: string;
           briefing_time?: string;
           briefing_language?: string;
+          default_locale?: string;
           gm_name?: string | null;
           arrival_instructions?: string | null;
           tone_guidelines?: string | null;
@@ -580,6 +620,7 @@ export type Database = {
           hotel_id?: string;
           briefing_time?: string;
           briefing_language?: string;
+          default_locale?: string;
           gm_name?: string | null;
           arrival_instructions?: string | null;
           tone_guidelines?: string | null;
@@ -634,8 +675,47 @@ export type Database = {
           p_rooms_count: number;
           p_timezone: string;
           p_pms_type: string;
+          /** en/es/ca. Optional in SQL (defaults to 'en'); see migration 0020. */
+          p_locale?: string;
         };
         Returns: string;
+      };
+      draft_acceptance_summary: {
+        Args: {
+          p_hotel_id: string;
+          p_from: string;
+          p_to: string;
+        };
+        // Postgres `bigint` and `numeric` arrive as strings over PostgREST;
+        // lib/draft-acceptance.ts is what coerces them to numbers.
+        Returns: {
+          total: number;
+          accepted: number;
+          none_count: number;
+          minor_count: number;
+          major_count: number;
+          bulk_count: number;
+          considered_total: number;
+          considered_accepted: number;
+          acceptance_rate: number | null;
+          considered_acceptance_rate: number | null;
+        }[];
+      };
+      draft_acceptance_rolling: {
+        Args: {
+          p_hotel_id: string;
+          p_from: string;
+          p_to: string;
+          p_window_days?: number;
+        };
+        Returns: {
+          day: string;
+          day_total: number;
+          day_accepted: number;
+          window_total: number;
+          window_accepted: number;
+          acceptance_rate: number | null;
+        }[];
       };
     };
     Enums: {

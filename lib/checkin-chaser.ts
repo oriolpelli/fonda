@@ -2,9 +2,13 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { track } from "@/lib/analytics";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { TablesInsert } from "@/types/database";
+
+/** How an arrival time reached us. */
+export type EtaSource = "email_reply" | "manual";
 
 /**
  * Check-in time chaser. Generates personalised follow-up email drafts for
@@ -205,11 +209,21 @@ export async function runCheckinChaser(hotelId: string): Promise<number> {
   return rows.length;
 }
 
-/** Marks an `arrival_time` so a reservation stops being chased. Used by replies. */
+/**
+ * Marks an `arrival_time` so a reservation stops being chased.
+ *
+ * ⚠️ This is the **only** place an ETA is captured, and it currently has no
+ * callers: the chaser sends the email, but nothing yet parses the guest's
+ * reply to extract the time. So `eta_captured` is wired and correct, and will
+ * read zero until that reply-parsing lands. Instrumenting the real capture
+ * point rather than inventing one keeps the funnel honest — the gap between
+ * `chaser_sent` and `eta_captured` is a true measure of an unfinished loop.
+ */
 export async function recordArrivalTime(
   hotelId: string,
   reservationMewsId: string,
-  arrivalTime: string
+  arrivalTime: string,
+  source: EtaSource = "email_reply"
 ): Promise<void> {
   const admin = createAdminClient();
   await admin
@@ -217,4 +231,8 @@ export async function recordArrivalTime(
     .update({ arrival_time: arrivalTime })
     .eq("hotel_id", hotelId)
     .eq("mews_id", reservationMewsId);
+
+  // The reservation id and the time itself stay out of the event — how often
+  // the loop closes is the signal; which guest arrives at 9pm is not ours.
+  track(hotelId, "eta_captured", { source });
 }
