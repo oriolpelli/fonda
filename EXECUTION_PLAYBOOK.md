@@ -1,5 +1,8 @@
 # Fonda — Claude Code Execution Playbook
 
+> **Strategy note (26 Aug 2026):** the market/positioning/outreach docs this playbook references (MARKET_STRATEGY, PILOT_OUTREACH, LAUNCH_PLAN, GO_TO_MARKET, COMPETITOR_LANDSCAPE) have been consolidated into **`GTM_STRATEGY.md`** — read that for anything GTM. This file stays as the build-task tracker.
+
+
 _8 July 2026 · Companion to `ROADMAP.md` (v2). Every build task from the July roadmap, in order, with a ready-to-paste Claude Code prompt, its dependencies, and its acceptance check. Founder-only tasks (no code) are marked 🧑 and listed as checklists._
 
 **How to use this file**

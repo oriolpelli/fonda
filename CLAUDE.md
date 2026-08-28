@@ -9,8 +9,10 @@ design-token comments and `FONDA_DESIGN_IDENTITY.md` refers to that system, not
 the product, and should be left as-is.
 
 Situational docs live in the repo root — read them when a task calls for them, not by default:
-RUNBOOK.md (ops/runbook), LAUNCH_PLAN.md, PILOT_OUTREACH.md, STAGE0.md, and the
-Dev Roadmap / Launch Plan / Pilot Outreach `.docx` files.
+GTM_STRATEGY.md (the single source of truth for market, positioning, pricing, pilot
+outreach, and the raise — supersedes the old GO_TO_MARKET / MARKET_STRATEGY /
+PILOT_OUTREACH / LAUNCH_PLAN / COMPETITOR_LANDSCAPE docs), EXECUTION_PLAYBOOK.md
+(build-task prompts), RUNBOOK.md (ops/runbook), STAGE0.md, and the Dev Roadmap `.docx` file.
 
 # Commands
 
