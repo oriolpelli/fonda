@@ -43,7 +43,7 @@ _Free pilots need only reliability and a clean, real demo. Nothing here should b
 | ⊕ 8 | Reliability log backfill + 5 green mornings | Four real logged mornings is the "you can depend on it" story — the single most important non-feature you sell (VC audit #5). | XS | 🔴 5 blank rows |
 | ⊕ 9 | Spanish-brief deliverability check | An English brief in spam, or in Spanish only for you, kills a Spanish pilot. Verify end-to-end. | XS | 🟢 verified (27 Aug) |
 | ⊕ 10 | Brief email still on the v2 palette | The one thing a GM sees *every morning*, and it's in your demo. Cosmetic but visible. | S | 🟠 partial — see note |
-| ⊕ N1 | Language control — save bug + account-wide setting + onboarding capture | Spanish-first is the whole pitch; a stuck language toggle looks broken in a demo, and there's no discoverable place to set the account's language. | S | 🔴 open |
+| ⊕ N1 | Language control — save bug + account-wide setting + onboarding capture | Spanish-first is the whole pitch; a stuck language toggle looks broken in a demo, and there's no discoverable place to set the account's language. | S | 🟠 built (save-bug fix + account language + onboarding); needs migration 0020 + deploy |
 | ⊕ N2 | Close the ETA-from-reply loop (finish B11) | Check-in chasing sends the nudge but nothing parses the reply, so guest-stated ETAs never populate. Droppable for pilots (PMS can supply ETAs). | S | 🔴 open — decide priority |
 | ⊕ N3 | "Email me this brief now" button | The dashboard Refresh only updates the on-screen brief; there's no way to re-send the email on demand — useful for demos, onboarding, and your daily checks. | S | 🔴 open — optional |
 
@@ -190,6 +190,8 @@ by default.
 5. All new UI strings in en/es/ca. Run npm run lint. In your summary, explain how UI
    locale, account language, and briefing_language now relate so I can confirm the model.
 ```
+
+**Status (28 Aug): ✅ both built, building clean — pending migration + deploy.** Prompt A found the real cause of the save bug (React 19 resets an uncontrolled `<select>` after a server action, snapping it back to English) and fixed it with a controlled + `startTransition` pattern. Prompt B added the **Account language** setting (Settings + onboarding), migration **0020** (`hotel_settings.default_locale`). The model: one seed (account language) feeds two consumers — at **onboarding** it sets both `default_locale` and `briefing_language`; at **login** it sets the landing locale; **changing it in Settings** switches the UI only and deliberately leaves `briefing_language` alone (English UI + Spanish guest drafts is a real case). **Two founder actions before it's live:** (1) run `supabase/APPLY_0020.sql` in the Supabase SQL Editor **before** the code deploys — the new code calls `provision_hotel` with a locale the DB doesn't accept until then, so onboarding breaks if code lands first; (2) commit + push + deploy (part of the same un-deployed tree as #6). Then verify the save sticks with no refresh and a fresh signup asks for language.
 
 **⊕ N2 · Close the ETA-from-reply loop.** _Surfaced by the #6 work, 28 Aug._ The analytics wiring revealed `eta_captured` will read zero because `recordArrivalTime()` has no callers: the chaser emails the guest, but nothing reads the reply to extract the arrival time — so the guest-reply half of the check-in-chasing surface (one of the four core surfaces) is unfinished. **Droppable for pilots** — ETAs can also arrive from the PMS (`arrival_time_source='pms'`), so the Check-ins page and brief still populate where the PMS has the data, and a demo seeds ETAs anyway. Track it; decide priority against real pilot behaviour. If you want it:
 
@@ -441,14 +443,15 @@ Task B18 — repeat-guest personalization.
 3. No new surface; enrich existing drafting + briefing.
 ```
 
-**⊕ 26 · `schema.sql` rebuild risk.** Production is fine, but `schema.sql` is missing migration 0011, so a from-scratch rebuild would silently lack the hotel profile. Bites the first day you spin up a second environment — a scaling moment.
+**⊕ 26 · `schema.sql` rebuild risk.** Production is fine, but `schema.sql` (the "blueprint" meant to rebuild the whole database from empty) has drifted — as of 28 Aug it's missing migrations **0011, 0015, 0017, 0018, 0019 and 0020**, so a from-scratch rebuild would silently produce a broken database. `verify_schema.sql` lists exactly which. Bites the first day you spin up a second environment — a scaling moment.
 
 ```
-Task — fix the from-scratch rebuild risk. Add migration 0011 (the 18-column
-hotel profile) to supabase/schema.sql so a rebuild from scratch includes it;
-verify schema.sql + verify_schema.sql match the live database. Correct the stale
+Task — catch up supabase/schema.sql so it can rebuild a current database from
+scratch. Run verify_schema.sql to list what's missing, then fold migrations 0011,
+0015, 0017, 0018, 0019 and 0020 into schema.sql in order, matching the live database
+exactly (blueprint file only — do NOT change production). Also correct the stale
 "migration 0016 is NOT applied" note in LAUNCH_PUNCHLIST.md — it IS applied.
-No production change (columns already live).
+Run npm run lint.
 ```
 
 **Gate 3 exit:** these are the raise's use-of-funds, not solo-founder tasks. Ship them against pilot evidence and pre-seed money — with Outlook the only candidate to pull forward, and tests + the schema fix the two worth doing sooner because they're cheap insurance.
