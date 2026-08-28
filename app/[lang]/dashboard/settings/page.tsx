@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { CheckCircle2, Circle } from "lucide-react";
 
-import { disconnectMews } from "@/app/[lang]/dashboard/settings/actions";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { AccountLanguageForm } from "@/components/dashboard/account-language-form";
 import { ApaleoConnectionCard } from "@/components/dashboard/apaleo-connection-card";
@@ -12,13 +11,24 @@ import { GmNameForm } from "@/components/dashboard/gm-name-form";
 import { HotelDetailsForm } from "@/components/dashboard/hotel-details-form";
 import { HotelProfileForm } from "@/components/dashboard/hotel-profile-form";
 import { MewsConnectionForm } from "@/components/dashboard/mews-connection-form";
+import { PmsDisconnectCard } from "@/components/dashboard/pms-disconnect-card";
 import { SheetConnectionForm } from "@/components/dashboard/sheet-connection-form";
 import { TripAdvisorForm } from "@/components/dashboard/tripadvisor-form";
-import { Button } from "@/components/ui/button";
 import { t } from "@/lib/i18n/format";
+import type { PmsType } from "@/lib/pms";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import type { RoomType, Upsell } from "@/types";
+
+/**
+ * The connected source, as a narrowed `PmsType`. Only meaningful while
+ * something is connected: a disconnect clears `pms_type`, so the chooser below
+ * isn't locked to the source just dropped. MEWS is the fallback for the
+ * (unexpected) connected-but-untyped row.
+ */
+function toPmsType(value: string | null | undefined): PmsType {
+  return value === "apaleo" || value === "sheet" ? value : "mews";
+}
 
 export async function generateMetadata({
   params,
@@ -55,8 +65,7 @@ export default async function SettingsPage({
     .maybeSingle();
 
   const connected = hotel?.pms_connected ?? false;
-  // Default unconfigured hotels to the MEWS form.
-  const pmsType = hotel?.pms_type ?? "mews";
+  const pmsType = toPmsType(hotel?.pms_type);
   const apaleoBanner = apaleoStatusMessage(apaleo);
   const gmailBanner = gmailStatusMessage(gmail);
   const gmailConnected = gmail === "connected";
@@ -132,27 +141,40 @@ export default async function SettingsPage({
         )}
         <span className="font-medium">
           {connected
-            ? t(dict.settings.connectedTo, { pms: pmsType.toUpperCase() })
+            ? t(dict.settings.connectedTo, {
+                pms: dict.settings.pmsNames[pmsType],
+              })
             : dict.settings.notConnected}
         </span>
       </div>
 
-      {pmsType === "apaleo" ? (
-        <ApaleoConnectionCard connected={connected} />
-      ) : pmsType === "sheet" ? (
-        <SheetConnectionForm connected={connected} />
-      ) : (
+      {connected ? (
         <>
-          <MewsConnectionForm connected={connected} />
-          {connected ? (
-            <form action={disconnectMews}>
-              <Button type="submit" variant="outline">
-                {dict.settings.disconnectMews}
-              </Button>
-            </form>
+          {pmsType === "apaleo" ? (
+            <ApaleoConnectionCard connected showDisconnect={false} />
+          ) : pmsType === "sheet" ? (
+            <SheetConnectionForm connected />
           ) : (
-            <SheetConnectionForm connected={false} />
+            <MewsConnectionForm connected />
           )}
+          <PmsDisconnectCard pmsType={pmsType} />
+        </>
+      ) : (
+        /* Nothing connected — offer every connector, not just the one this
+           hotel happened to use last, so switching source is a disconnect
+           followed by a free choice. */
+        <>
+          <div className="flex flex-col gap-1">
+            <h2 className="text-lg font-semibold tracking-[-0.01em] text-foreground">
+              {dict.settings.chooseSourceTitle}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {dict.settings.chooseSourceDesc}
+            </p>
+          </div>
+          <MewsConnectionForm connected={false} />
+          <ApaleoConnectionCard connected={false} />
+          <SheetConnectionForm connected={false} />
         </>
       )}
 

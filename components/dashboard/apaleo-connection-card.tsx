@@ -15,6 +15,7 @@ import {
 export function ApaleoConnectionCard({
   connected,
   fromOnboarding = false,
+  showDisconnect = true,
 }: {
   connected: boolean;
   /**
@@ -22,6 +23,12 @@ export function ApaleoConnectionCard({
    * Settings, so connecting mid-onboarding doesn't drop you out of it.
    */
   fromOnboarding?: boolean;
+  /**
+   * Settings renders its own source-agnostic disconnect (PmsDisconnectCard,
+   * which also offers to clear the synced rows), so it turns this one off
+   * rather than showing two buttons that do subtly different things.
+   */
+  showDisconnect?: boolean;
 }) {
   const { dict } = useDictionary();
   const authorizeHref = fromOnboarding
@@ -50,7 +57,7 @@ export function ApaleoConnectionCard({
               : dict.settings.connectApaleo}
           </a>
         </Button>
-        {connected ? (
+        {connected && showDisconnect ? (
           <form action={disconnectApaleo}>
             <Button type="submit" variant="outline">
               {dict.common.disconnect}

@@ -512,7 +512,17 @@
     "fallbackHotel": "el teu hotel",
     "notConnected": "Sense connexió",
     "connectedTo": "Connectat a {pms}",
-    "disconnectMews": "Desconnecta MEWS",
+    "pmsNames": {
+      "mews": "MEWS",
+      "apaleo": "Apaleo",
+      "sheet": "Full de Google"
+    },
+    "chooseSourceTitle": "Connecta una font de dades",
+    "chooseSourceDesc": "Tria d'on llegeix Fondas les teves reserves. Ho pots canviar més endavant.",
+    "disconnectTitle": "Font de dades",
+    "disconnectDesc": "Fondas sincronitza les reserves des de {pms}. Desconnecta per deixar de sincronitzar i connectar una altra font.",
+    "clearSyncedData": "Elimina també les reserves i els hostes sincronitzats des de {pms}",
+    "clearSyncedDataHint": "Recomanat quan canvies de font. Aquestes files conserven els identificadors de la font anterior, així que cap font nova no les sobreescriu: si les deixes, les reserves antigues es barrejaran amb els teus resums, check-ins i xat. La font que connectis després sincronitzarà les seves pròpies dades des de zero. Desmarca-ho només si penses reconnectar la mateixa font.",
     "gmailConnected": "Connectat a {email}. Hem trobat {count} correus dels últims 7 dies — es prepararan esborranys per a la teva revisió.",
     "gmailFallbackInbox": "la teva safata d'entrada",
     "hotelDetailsTitle": "Dades de l'hotel",

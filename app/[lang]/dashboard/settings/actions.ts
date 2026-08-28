@@ -13,11 +13,12 @@ import {
   storeMewsCredentials,
   verifyMewsCredentials,
 } from "@/lib/mews";
+import type { PmsType } from "@/lib/pms";
 import { loadSheet, normalizeSheetCsvUrl, storeSheetSource } from "@/lib/sheet";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { RoomType, Upsell } from "@/types";
-import type { Json } from "@/types/database";
+import type { Json, TablesUpdate } from "@/types/database";
 
 export type ConnectState =
   | { ok: true; message: string }
@@ -412,26 +413,126 @@ export async function connectMews(
   return { ok: true, message: "MEWS connected. Your tokens are stored encrypted." };
 }
 
-export async function disconnectMews(): Promise<void> {
+/** The credential columns a disconnect clears, per source. */
+const PMS_CREDENTIAL_COLUMNS: Record<PmsType, TablesUpdate<"hotels">> = {
+  mews: {
+    mews_client_token_encrypted: null,
+    mews_access_token_encrypted: null,
+  },
+  apaleo: { apaleo_refresh_token_encrypted: null },
+  sheet: { sheet_url_encrypted: null },
+};
+
+/**
+ * Deletes the reservation/guest cache the hotel synced from the source it is
+ * disconnecting.
+ *
+ * `reservations` and `customers` are keyed by the *source's own* booking ids
+ * (`mews_id`), so a different source never overwrites them on its next sync —
+ * a sheet's rows would sit alongside the new PMS's forever, and every surface
+ * that reads the cache (briefs, occupancy, check-in chasing, chat) would count
+ * both. Clearing is therefore the recommended path when switching, and the
+ * Settings control ticks the box by default; a hotel reconnecting the *same*
+ * source (rotated MEWS tokens, a re-shared sheet) can untick it and keep the
+ * cache until the next sync refreshes it.
+ *
+ * `emails` are deliberately left alone: they come from Gmail, a separate
+ * connection, and their `reservation_mews_id` link simply stops resolving —
+ * which every reader already treats as "no matched booking" (lib/stay-phase.ts).
+ */
+async function clearSyncedPmsData(hotelId: string): Promise<void> {
+  const admin = createAdminClient();
+
+  const { error: reservationsError } = await admin
+    .from("reservations")
+    .delete()
+    .eq("hotel_id", hotelId);
+  if (reservationsError) {
+    throw new Error(
+      `Failed to clear synced reservations: ${reservationsError.message}`
+    );
+  }
+
+  const { error: customersError } = await admin
+    .from("customers")
+    .delete()
+    .eq("hotel_id", hotelId);
+  if (customersError) {
+    throw new Error(`Failed to clear synced guests: ${customersError.message}`);
+  }
+
+  // Pending chasers are drafts *about* those reservations, so sending one after
+  // a switch would email a guest about a booking the new source has never heard
+  // of. Sent and skipped rows stay — they are history, not pending work.
+  const { error: chasersError } = await admin
+    .from("checkin_chasers")
+    .delete()
+    .eq("hotel_id", hotelId)
+    .eq("status", "pending");
+  if (chasersError) {
+    throw new Error(
+      `Failed to clear pending check-in chasers: ${chasersError.message}`
+    );
+  }
+}
+
+/**
+ * Disconnects `source` and leaves the hotel free to connect a different one.
+ *
+ * All three disconnects reset `pms_type` as well as `pms_connected`: a hotel
+ * that disconnects is choosing a source again, and a lingering `pms_type` would
+ * both hard-lock Settings to the old connector and keep `getPmsClientForHotel`
+ * dispatching at it. With both cleared the scheduled sync skips the hotel (it
+ * selects on `pms_connected`) and a manual "Sync now" fails closed rather than
+ * reading a source the hotel just disconnected.
+ *
+ * `formData` comes from the Settings disconnect form; `clearSyncedData` on it
+ * asks for the cached rows to go too (see `clearSyncedPmsData`).
+ */
+async function disconnectPms(
+  source: PmsType,
+  formData?: FormData
+): Promise<void> {
   const hotelId = await requireHotelId();
+  const clearData = formData?.get("clearSyncedData") === "on";
 
   const admin = createAdminClient();
-  // Keep pms_type so the UI still shows the right connector; just clear the
-  // tokens and mark disconnected.
   const { error } = await admin
     .from("hotels")
     .update({
-      mews_client_token_encrypted: null,
-      mews_access_token_encrypted: null,
+      ...PMS_CREDENTIAL_COLUMNS[source],
+      pms_type: null,
       pms_connected: false,
+      // Only meaningful alongside the purge: "synced 5 minutes ago" with no
+      // rows left is what makes the dashboard claim data it no longer has.
+      ...(clearData ? { last_synced_at: null } : {}),
     })
     .eq("id", hotelId);
   if (error) {
-    throw new Error(`Failed to disconnect MEWS: ${error.message}`);
+    throw new Error(`Failed to disconnect ${source}: ${error.message}`);
+  }
+
+  if (clearData) {
+    await clearSyncedPmsData(hotelId);
   }
 
   revalidatePath("/dashboard/settings");
   revalidatePath("/dashboard");
+  // Disconnecting puts the setup wizard back on "connect a PMS", the same way
+  // connecting moves it forward.
+  revalidatePath("/onboarding", "layout");
+}
+
+export async function disconnectMews(formData?: FormData): Promise<void> {
+  await disconnectPms("mews", formData);
+}
+
+export async function disconnectApaleo(formData?: FormData): Promise<void> {
+  await disconnectPms("apaleo", formData);
+}
+
+export async function disconnectSheet(formData?: FormData): Promise<void> {
+  await disconnectPms("sheet", formData);
 }
 
 export async function disconnectGmail(): Promise<void> {
@@ -451,26 +552,6 @@ export async function disconnectGmail(): Promise<void> {
 
   revalidatePath("/dashboard/settings");
 }
-
-export async function disconnectApaleo(): Promise<void> {
-  const hotelId = await requireHotelId();
-
-  const admin = createAdminClient();
-  const { error } = await admin
-    .from("hotels")
-    .update({
-      apaleo_refresh_token_encrypted: null,
-      pms_connected: false,
-    })
-    .eq("id", hotelId);
-  if (error) {
-    throw new Error(`Failed to disconnect Apaleo: ${error.message}`);
-  }
-
-  revalidatePath("/dashboard/settings");
-  revalidatePath("/dashboard");
-}
-
 
 export async function connectSheet(
   _prevState: ConnectState,

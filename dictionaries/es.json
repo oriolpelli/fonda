@@ -512,7 +512,17 @@
     "fallbackHotel": "tu hotel",
     "notConnected": "Sin conexión",
     "connectedTo": "Conectado a {pms}",
-    "disconnectMews": "Desconectar MEWS",
+    "pmsNames": {
+      "mews": "MEWS",
+      "apaleo": "Apaleo",
+      "sheet": "Hoja de Google"
+    },
+    "chooseSourceTitle": "Conecta una fuente de datos",
+    "chooseSourceDesc": "Elige de dónde lee Fondas tus reservas. Puedes cambiarlo más adelante.",
+    "disconnectTitle": "Fuente de datos",
+    "disconnectDesc": "Fondas sincroniza las reservas desde {pms}. Desconecta para dejar de sincronizar y conectar otra fuente.",
+    "clearSyncedData": "Eliminar también las reservas y los huéspedes sincronizados desde {pms}",
+    "clearSyncedDataHint": "Recomendado al cambiar de fuente. Estas filas conservan los identificadores de la fuente anterior, así que una nueva nunca las sobrescribe: si las dejas, las reservas antiguas se mezclarán con tus resúmenes, check-ins y chat. La fuente que conectes después sincronizará sus propios datos desde cero. Desmárcalo solo si vas a reconectar la misma fuente.",
     "gmailConnected": "Conectado a {email}. Encontramos {count} correos de los últimos 7 días — se prepararán borradores para tu revisión.",
     "gmailFallbackInbox": "tu bandeja de entrada",
     "hotelDetailsTitle": "Datos del hotel",

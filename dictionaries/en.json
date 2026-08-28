@@ -512,7 +512,17 @@
     "fallbackHotel": "your hotel",
     "notConnected": "Not connected",
     "connectedTo": "Connected to {pms}",
-    "disconnectMews": "Disconnect MEWS",
+    "pmsNames": {
+      "mews": "MEWS",
+      "apaleo": "Apaleo",
+      "sheet": "Google Sheet"
+    },
+    "chooseSourceTitle": "Connect a data source",
+    "chooseSourceDesc": "Choose where Fondas reads your reservations from. You can change it later.",
+    "disconnectTitle": "Data source",
+    "disconnectDesc": "Fondas is syncing reservations from {pms}. Disconnect to stop syncing and connect a different source.",
+    "clearSyncedData": "Also delete the reservations and guests synced from {pms}",
+    "clearSyncedDataHint": "Recommended when switching source. These rows carry the old source's booking ids, so a new source never overwrites them — leave them and old bookings mix into your briefs, check-ins and chat. Whatever you connect next syncs its own data from scratch. Untick only if you plan to reconnect the same source.",
     "gmailConnected": "Connected to {email}. We found {count} emails from the last 7 days — drafts will be prepared for your review.",
     "gmailFallbackInbox": "your inbox",
     "hotelDetailsTitle": "Hotel details",
