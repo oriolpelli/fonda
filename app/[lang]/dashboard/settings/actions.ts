@@ -155,7 +155,7 @@ export async function updateAccountLanguage(
   // Route paths — the locale is a dynamic `[lang]` segment, so a URL path like
   // "/dashboard/settings" matches no route and revalidates nothing.
   revalidatePath("/[lang]/dashboard", "layout");
-  redirect(localizedHref(value, "/dashboard/settings"));
+  redirect(localizedHref(value, "/dashboard/settings/account"));
 }
 
 export type HotelProfileState = { ok: true } | { error: string } | undefined;

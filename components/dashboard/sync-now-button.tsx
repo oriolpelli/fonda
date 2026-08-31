@@ -38,7 +38,7 @@ export function SyncNowButton({
       if (!res.ok) {
         setStatus({
           state: "error",
-          message: data.error ?? t(dict.admin.syncFailed, { status: res.status }),
+          message: data.error ?? t(dict.sync.syncFailed, { status: res.status }),
         });
         return;
       }
@@ -63,7 +63,7 @@ export function SyncNowButton({
         ) : (
           <RefreshCw />
         )}
-        {isSyncing ? dict.admin.syncing : dict.admin.syncNow}
+        {isSyncing ? dict.sync.syncing : dict.sync.syncNow}
       </Button>
       <p
         aria-live="polite"
@@ -75,7 +75,7 @@ export function SyncNowButton({
         )}
       >
         {status.state === "done"
-          ? t(dict.admin.syncDone, {
+          ? t(dict.sync.syncDone, {
               reservations: status.reservations,
               customers: status.customers,
             })

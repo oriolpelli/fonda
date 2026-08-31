@@ -37,7 +37,7 @@ _Free pilots need only reliability and a clean, real demo. Nothing here should b
 | 2 | PMS connect inside onboarding | A new hotel must reach a real preview brief in one sitting, or they drop before value. | S | 🟢 verified with a fresh signup (27 Aug) |
 | 3 | Website punch-list | 9 dead footer links + unset per-env `SITE_URL`. Provisional content on a live site kills credibility. | S | 🟢 code done & deployed 28 Aug; only the optional Vercel Preview `SITE_URL` env var left |
 | 4 | `hello@fondas.app` can't receive mail | It's the contact on the site; a bounce to a prospect is an own-goal. | XS | 🔴 open |
-| 5 | Apaleo end-to-end unverified | 468-line client exists; no real Apaleo hotel proven through sync → brief. Don't demo blind. | S | 🟠 OAuth ✅; 422 fix coded (date-time format) — pending deploy + live re-sync to confirm |
+| 5 | Apaleo end-to-end unverified | 468-line client exists; no real Apaleo hotel proven through sync → brief. Don't demo blind. | S | 🟢 proven 28 Aug — OAuth + sync + reservations visible in Fondas |
 | 6 | Draft-acceptance measurement | THE PMF metric — live and verified (events flowing, PII-clean: person = hotel UUID). | M | 🟢 live & verified 28 Aug |
 | 7 | Data-honesty language | Say "stored encrypted, EU-hosted, deleted on offboarding" everywhere. | XS | 🟢 done, deployed & verified 28 Aug (EU region confirmed: Ireland) |
 | ⊕ 8 | Reliability log backfill + 5 green mornings | Four real logged mornings is the "you can depend on it" story — the single most important non-feature you sell (VC audit #5). | XS | 🔴 5 blank rows |
@@ -47,6 +47,9 @@ _Free pilots need only reliability and a clean, real demo. Nothing here should b
 | ⊕ N2 | Close the ETA-from-reply loop (finish B11) | Check-in chasing sends the nudge but nothing parses the reply, so guest-stated ETAs never populate. Droppable for pilots (PMS can supply ETAs). | S | 🔴 open — decide priority |
 | ⊕ N3 | "Email me this brief now" button | The dashboard Refresh only updates the on-screen brief; there's no way to re-send the email on demand — useful for demos, onboarding, and your daily checks. | S | 🔴 open — optional |
 | ⊕ N4 | Can't disconnect / switch a hotel's data source | Once a hotel is on one source (mews/apaleo/**sheet** test source), Settings locks to it — no disconnect for "sheet", no way to switch to a PMS. Matters for fixing a wrong/broken connection during a live pilot onboarding. | S | 🟠 built (in working tree — new `pms-disconnect-card`); pending push/deploy + a quick test |
+| ⊕ N5 | "Sync now" — already built, just mislocated | A working `SyncNowButton` (→ `/api/sync/pms`) already exists on a separate **Admin** page; it just isn't in Settings where you'd look. So: reuse it, don't rebuild. | S | 🟢 done 31 Aug — now in Settings → Connections (folded in via N7) |
+| ⊕ N7 | Settings flat (~7 sections) + separate Admin menu | Opening Settings dumps every option at once; sync/status live on a separate Admin nav item. Group Settings into click-in categories and fold Admin into it. | M | 🟢 code done 31 Aug — pending deploy + a click-through of every form |
+| ⊕ N6 | Apaleo multi-property accounts merge into one hotel | An Apaleo account with several properties has all of them merged into one Fondas hotel (counts/occupancy blend). Fine for single-property pilots; matters for the 1–3-property owners in the ICP. | M | 🔴 open — deferred |
 
 ### How to address each — Gate 1
 
@@ -101,7 +104,7 @@ Adjust to whatever the surfaced 422 body says. Don't touch the MEWS path. Run np
 ```
 Then commit → push → redeploy → reconnect/re-sync. If it still 422s, the now-visible error message names the exact remaining fix.
 
-**Fix applied (28 Aug, Claude Code):** the real cause was **date format, not property scoping** — Apaleo's `GET /booking/v1/reservations` wants `from`/`to` as UTC date-**time** (`2026-08-14T00:00:00Z`), and Fondas sent plain `YYYY-MM-DD`. Also fixed: Apaleo error bodies now surfaced (readable messages + Sentry context), a `204 No Content` empty-page crash, and rate-plans/inventory being pulled unscoped across all properties (inflated occupancy on multi-property accounts). Property scoping added too (correct, though not the cause). Verified with stubbed-fetch tests; MEWS untouched; lint/tsc/build pass. No migration or env change. **Remaining: deploy, then reconnect Apaleo (Settings → disconnect → connect) to re-run the sync, and confirm a brief generates → then #5 is 🟢.**
+**Fix applied (28 Aug, Claude Code):** the real cause was **date format, not property scoping** — Apaleo's `GET /booking/v1/reservations` wants `from`/`to` as UTC date-**time** (`2026-08-14T00:00:00Z`), and Fondas sent plain `YYYY-MM-DD`. Also fixed: Apaleo error bodies now surfaced (readable messages + Sentry context), a `204 No Content` empty-page crash, and rate-plans/inventory being pulled unscoped across all properties (inflated occupancy on multi-property accounts). Property scoping added too (correct, though not the cause). Verified with stubbed-fetch tests; MEWS untouched; lint/tsc/build pass. No migration or env change. **✅ Proven end-to-end 28 Aug:** after deploy, a forced sync pulled the sandbox reservations and they appear in Fondas — the Apaleo integration is confirmed working. (Surfaced two side-gaps along the way: the sync had to be forced manually — N5; and the sandbox's demo data is future-dated across 5 hotels — N6.)
 
 _Founder-run verification. If a stage breaks, paste:_
 
@@ -271,6 +274,68 @@ card — so a hotel on "sheet" can't disconnect or switch to a real PMS.
    what you chose.
 4. Server-side only (no client writes), es/ca strings, run npm run lint.
 ```
+
+**⊕ N5 · No "Sync now" after connecting a PMS via Settings.** _Surfaced 28 Aug testing Apaleo._ `POST /api/sync` runs only from the onboarding first-sync step or the scheduled cron (`GET /api/sync`). Connecting a PMS from Settings stores the credentials but triggers no sync, so the hotel stays empty until the cron fires — and the brief "Refresh" button calls `/api/briefing` (rebuild only), not `/api/sync`. This is why a freshly Settings-connected Apaleo hotel showed no data. Small, high-utility (saves re-onboarding to force a sync; also needed after a re-connect). If you want it:
+
+```
+Task — add a "Sync now" button so a PMS sync can be triggered from the dashboard/Settings.
+Today POST /api/sync runs only in onboarding (components/onboarding/first-sync-step.tsx) and
+the cron; connecting a PMS from Settings pulls nothing until the cron fires.
+1. Add a "Sync now" action/button (Settings → Integrations, and/or the dashboard pre-sync
+   empty state) that POSTs /api/sync for the current hotel, shows progress + a result
+   ("synced N reservations"), and surfaces errors in the product voice.
+2. Reuse the existing /api/sync route and window (today ±14 days); no new sync logic.
+3. Disable/spinner while running; es/ca strings; run npm run lint.
+```
+
+**⊕ N7 · Settings IA (grouped sub-menus) + fold in the Admin page (covers N5).** _Surfaced 28 Aug._ `app/[lang]/dashboard/settings/page.tsx` is one long flat page (~7 sections), and sync/status live on a **separate Admin nav item** (`app/[lang]/dashboard/admin/page.tsx`) that already has a working `SyncNowButton` (→ `/api/sync/pms`). Group Settings into click-in categories and move Admin's contents in — reuse the existing button, don't rebuild:
+
+```
+Task — reorganize Settings into grouped sections and fold the Admin page into it.
+Context: a working "Sync now" already exists — components/dashboard/sync-now-button.tsx
+(POSTs /api/sync/pms) — on the separate Admin page (app/[lang]/dashboard/admin/page.tsx),
+which also shows PMS sync status, last-synced time, reservation/guest counts, and a
+recent-sync-runs list. The Admin nav item is a separate top-level entry in
+components/dashboard/sidebar.tsx. Goal: no separate Admin menu — its contents live inside a
+reorganized Settings, reusing the existing components (don't rebuild the sync button).
+PART A — Reorganize Settings. The settings page is one long flat page (~7 sections). Group it
+so opening Settings shows a short menu of categories the user clicks into (in-page sub-nav/tabs
+OR nested routes under /dashboard/settings, whichever is cleaner). Placement/navigation only —
+don't change any form's behavior or data model. Preserve all functionality, RLS/auth, es/ca
+strings; add strings for the group nav. Groups (adjust edge cases sensibly):
+  1. "Connections" — PMS/data-source connect (connected-status + Mews/Apaleo/Sheet chooser +
+     PmsDisconnectCard) + the existing SyncNowButton + PMS sync status/last-synced + the
+     recent-sync-runs list (moved from Admin) + Gmail (GmailConnectionCard).
+  2. "Hotel information" — HotelDetailsForm, HotelProfileForm (room types, tone, upsells),
+     TripAdvisorForm.
+  3. "Account" — AccountLanguageForm, GmNameForm, and other account-level settings.
+PART B — Remove the Admin menu. Relocate everything from the admin page into the Connections
+group (reuse SyncNowButton with endpoint="/api/sync/pms"). Remove the separate Admin item from
+the sidebar. Keep /dashboard/admin as a redirect to the Connections settings section so old
+links don't 404. Preserve any access control the Admin page had. Delete the unused admin page
+after relocating its content.
+Run npm run lint.
+```
+Moderate change — after deploy, test every form still saves, PMS connect/disconnect works, and Sync Now works from its new home.
+
+**Built (31 Aug, Claude Code).** Settings is now a menu of three groups on nested routes:
+`/dashboard/settings` lists the categories and nothing else, with the forms one click in at
+`settings/connections`, `settings/hotel` and `settings/account`. Groups are defined once in
+`lib/settings-groups.ts` (key = route segment); `components/dashboard/settings-nav.tsx` is the
+shared back-link + title + sub-nav header. No form behaviour or data model changed — the
+components were regrouped, not rewritten. The Admin page is gone: its sync view (SyncNowButton
+→ `/api/sync/pms`, the PMS/reservations/guests cards, last-synced, recent sync runs, latest
+reservations) now sits at the foot of Connections behind the **same owner-only gate**, which
+hides the section rather than the route since the connectors above it were never owner-only.
+`/dashboard/admin` remains as a redirect so old links don't 404, and the Admin item is out of
+the sidebar. Dictionary `admin` → `sync` in all three locales (en/es/ca key parity verified);
+`settings.groups.*` added for the group nav. One fix beyond the move: the rail's active state
+was an exact path match, so Settings would have gone dark once you clicked into a group — it
+now also matches sub-paths (`/dashboard` excluded, since every route sits under it). lint, tsc
+and build all pass. **Remaining: deploy, then click through every form, PMS connect/disconnect,
+and Sync Now in its new home → then N5 and N7 are fully 🟢.**
+
+**⊕ N6 · Apaleo multi-property accounts merge into one hotel.** _Surfaced 28 Aug — Apaleo dev accounts ship 5 demo hotels._ Fondas is one-hotel-to-one-PMS; the Apaleo client now fetches all `propertyIds` and merges their reservations into the single connected hotel, so a multi-property account blends counts/occupancy. Correct and harmless for single-property pilots (a real GM's account is usually one property), but for the 1–3-property owners in the ICP (the Group tier), Apaleo onboarding should let the user pick which property (or properties) map to the hotel. Deferred until a multi-property Apaleo prospect is real; noted so it isn't rediscovered as a bug.
 
 **Gate 1 exit:** every item 🟢, the full demo run twice (laptop, then phone), and nothing fake or broken anywhere a GM can click.
 
@@ -510,7 +575,7 @@ Run npm run lint.
 
 | Gate | Genuinely un-built (🔴) | Built, needs your verification (🟠) | Cheapest high-value move |
 |---|---|---|---|
-| **1 · Before pilots** | _(no code items left)_ — founder tasks only: Apaleo E2E (#5, in progress), `hello@` inbox (in setup), reliability log (#8), ETA loop (N2, optional) | brief email palette _(mobile, onboarding, Spanish-brief, #6 analytics, #3 website, #7 data-honesty + EU-region, N1 language ✅ done 27–28 Aug)_ | **All before-pilot code is shipped.** Remaining is your run-throughs: Apaleo sandbox test, `hello@` test, reliability log |
+| **1 · Before pilots** | `hello@` inbox (in setup), reliability log (#8); optional polish: N2 ETA loop, N3 brief-now, #10 palette | brief email palette _(mobile, onboarding, Spanish-brief, #6 analytics, #3 website, #7 data-honesty + EU-region, N1 language, **#5 Apaleo E2E** ✅ done 27–28 Aug, **N5/N7 Settings IA + sync** ✅ done 31 Aug)_ | **Down to two founder tasks: the `hello@` test email and the reliability-log backfill.** |
 | **2 · Before charging** | Stripe, rate-limiting/caps, entity+DPA, Google verification, unsubscribe flow | `company.ts` details | Write the one-page pilot agreement now; book the lawyer the week pilot #2 lands |
 | **3 · Before scaling** | Outlook, group digest, autonomy, upsell drafting, tests/CI, WhatsApp, 3rd PMS, revenue signal, repeat-guest, schema fix | — | Hold the line; pull Outlook forward only if pilots keep asking |
 

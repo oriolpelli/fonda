@@ -35,7 +35,7 @@ export default async function DashboardLayout({
   // A signed-up user without a hotel hasn't onboarded yet.
   const { data: profile } = await supabase
     .from("users")
-    .select("hotel_id, role")
+    .select("hotel_id")
     .eq("id", user.id)
     .maybeSingle();
   if (!profile) {
@@ -52,7 +52,6 @@ export default async function DashboardLayout({
     hotel?.pms_connected ?? false,
     hotel?.last_synced_at ?? null
   );
-  const isOwner = profile.role === "owner";
 
   // Unhandled message count for the inbox badge. Fails soft to zero, so a bad
   // inbox query can never blank the whole dashboard.
@@ -105,20 +104,11 @@ export default async function DashboardLayout({
     href: localizedHref(locale, "/dashboard/settings"),
   };
 
-  const adminItem: NavItem | null = isOwner
-    ? {
-        key: "admin",
-        label: dict.dashboardNav.admin,
-        href: localizedHref(locale, "/dashboard/admin"),
-      }
-    : null;
-
   return (
     <div className="flex min-h-screen">
       <Sidebar
         navItems={navItems}
         settingsItem={settingsItem}
-        adminItem={adminItem}
         dashboardHref={localizedHref(locale, "/dashboard")}
         connectionState={connectionState}
         connectionLabels={{

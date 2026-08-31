@@ -298,7 +298,6 @@
     "briefing": "Briefing",
     "emails": "Emails",
     "checkin": "Check-in",
-    "admin": "Admin",
     "settings": "Settings"
   },
   "sidebar": {
@@ -510,6 +509,23 @@
     "title": "Settings",
     "desc": "Connect {hotel}'s property management system so Fondas can sync reservations and guests.",
     "fallbackHotel": "your hotel",
+    "groups": {
+      "navLabel": "Settings sections",
+      "indexDesc": "Manage how {hotel} is connected, described and signed off.",
+      "back": "All settings",
+      "connections": {
+        "label": "Connections",
+        "desc": "Your data source, PMS sync and Gmail."
+      },
+      "hotel": {
+        "label": "Hotel information",
+        "desc": "Details, profile, tone, room types and reviews."
+      },
+      "account": {
+        "label": "Account",
+        "desc": "Your language and the name briefings are signed with."
+      }
+    },
     "notConnected": "Not connected",
     "connectedTo": "Connected to {pms}",
     "pmsNames": {
@@ -641,9 +657,9 @@
     "no_hotel": "No hotel associated with this user.",
     "error": "Couldn't complete the Gmail connection."
   },
-  "admin": {
-    "title": "Admin · Sync",
-    "desc": "Raw view of the last PMS sync for {hotel}.",
+  "sync": {
+    "title": "PMS sync",
+    "desc": "The latest sync of {hotel}'s data source.",
     "syncNow": "Sync now",
     "syncing": "Syncing…",
     "syncDone": "Synced {reservations} reservations, {customers} guests.",

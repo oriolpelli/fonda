@@ -298,7 +298,6 @@
     "briefing": "Resum",
     "emails": "Correus",
     "checkin": "Check-in",
-    "admin": "Admin",
     "settings": "Configuració"
   },
   "sidebar": {
@@ -510,6 +509,23 @@
     "title": "Configuració",
     "desc": "Connecta el sistema de gestió de {hotel} perquè Fondas pugui sincronitzar reserves i hostes.",
     "fallbackHotel": "el teu hotel",
+    "groups": {
+      "navLabel": "Seccions de configuració",
+      "indexDesc": "Gestiona com està connectat, descrit i signat {hotel}.",
+      "back": "Tota la configuració",
+      "connections": {
+        "label": "Connexions",
+        "desc": "La teva font de dades, la sincronització del PMS i Gmail."
+      },
+      "hotel": {
+        "label": "Informació de l'hotel",
+        "desc": "Dades, perfil, to, tipus d'habitació i ressenyes."
+      },
+      "account": {
+        "label": "Compte",
+        "desc": "El teu idioma i el nom amb què se signen els resums."
+      }
+    },
     "notConnected": "Sense connexió",
     "connectedTo": "Connectat a {pms}",
     "pmsNames": {
@@ -641,9 +657,9 @@
     "no_hotel": "No hi ha cap hotel associat a aquest usuari.",
     "error": "No s'ha pogut completar la connexió amb Gmail."
   },
-  "admin": {
-    "title": "Admin · Sincronització",
-    "desc": "Vista en brut de l'última sincronització del PMS de {hotel}.",
+  "sync": {
+    "title": "Sincronització del PMS",
+    "desc": "L'última sincronització de la font de dades de {hotel}.",
     "syncNow": "Sincronitza ara",
     "syncing": "Sincronitzant…",
     "syncDone": "Sincronitzades {reservations} reserves, {customers} hostes.",

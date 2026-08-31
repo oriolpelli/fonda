@@ -298,7 +298,6 @@
     "briefing": "Resumen",
     "emails": "Correos",
     "checkin": "Check-in",
-    "admin": "Admin",
     "settings": "Ajustes"
   },
   "sidebar": {
@@ -510,6 +509,23 @@
     "title": "Ajustes",
     "desc": "Conecta el sistema de gestión de {hotel} para que Fondas pueda sincronizar reservas y huéspedes.",
     "fallbackHotel": "tu hotel",
+    "groups": {
+      "navLabel": "Secciones de ajustes",
+      "indexDesc": "Gestiona cómo está conectado, descrito y firmado {hotel}.",
+      "back": "Todos los ajustes",
+      "connections": {
+        "label": "Conexiones",
+        "desc": "Tu fuente de datos, la sincronización del PMS y Gmail."
+      },
+      "hotel": {
+        "label": "Información del hotel",
+        "desc": "Datos, perfil, tono, tipos de habitación y reseñas."
+      },
+      "account": {
+        "label": "Cuenta",
+        "desc": "Tu idioma y el nombre con el que se firman los resúmenes."
+      }
+    },
     "notConnected": "Sin conexión",
     "connectedTo": "Conectado a {pms}",
     "pmsNames": {
@@ -641,9 +657,9 @@
     "no_hotel": "No hay ningún hotel asociado a este usuario.",
     "error": "No se pudo completar la conexión con Gmail."
   },
-  "admin": {
-    "title": "Admin · Sincronización",
-    "desc": "Vista en bruto de la última sincronización del PMS de {hotel}.",
+  "sync": {
+    "title": "Sincronización del PMS",
+    "desc": "La última sincronización de la fuente de datos de {hotel}.",
     "syncNow": "Sincronizar ahora",
     "syncing": "Sincronizando…",
     "syncDone": "Sincronizadas {reservations} reservas, {customers} huéspedes.",

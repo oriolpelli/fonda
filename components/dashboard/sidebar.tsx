@@ -13,7 +13,6 @@ import {
   MessageSquare,
   Send,
   Settings,
-  Shield,
   Sunrise,
   X,
   type LucideIcon,
@@ -70,9 +69,6 @@ export interface NavItem {
 // Icons live here in the Client Component and are looked up by key. They must
 // NOT be passed as props from the Server layout — component functions can't
 // cross the server/client boundary (doing so throws at render).
-//
-// `admin` gets its own glyph rather than sharing the settings gear: labels used
-// to tell the two apart, and the rail no longer shows any.
 const ICONS: Record<string, LucideIcon> = {
   dashboard: LayoutDashboard,
   brief: Sunrise,
@@ -82,7 +78,6 @@ const ICONS: Record<string, LucideIcon> = {
   analytics: BarChart3,
   chat: MessageSquare,
   settings: Settings,
-  admin: Shield,
 };
 
 /** Shared shell for every control in the rail — 40px hit target, soft corners. */
@@ -417,7 +412,6 @@ function DrawerLink({
 interface SidebarProps {
   navItems: NavItem[];
   settingsItem: NavItem;
-  adminItem: NavItem | null;
   dashboardHref: string;
   connectionState: ConnectionState;
   connectionLabels: Record<ConnectionState, string>;
@@ -442,7 +436,6 @@ interface SidebarProps {
 function DrawerContent({
   navItems,
   settingsItem,
-  adminItem,
   dashboardHref,
   connectionState,
   connectionLabels,
@@ -457,7 +450,6 @@ function DrawerContent({
   SidebarProps,
   | "navItems"
   | "settingsItem"
-  | "adminItem"
   | "dashboardHref"
   | "connectionState"
   | "connectionLabels"
@@ -497,13 +489,6 @@ function DrawerContent({
           active={isActive(settingsItem.href)}
           onNavigate={onNavigate}
         />
-        {adminItem ? (
-          <DrawerLink
-            item={adminItem}
-            active={isActive(adminItem.href)}
-            onNavigate={onNavigate}
-          />
-        ) : null}
       </div>
 
       <div className="flex flex-col gap-3 border-t border-border px-5 py-4">
@@ -551,7 +536,6 @@ function DrawerContent({
 export function Sidebar({
   navItems,
   settingsItem,
-  adminItem,
   dashboardHref,
   connectionState,
   connectionLabels,
@@ -577,7 +561,15 @@ export function Sidebar({
   const panelRef = useRef<HTMLElement>(null);
 
   const isActive = useCallback(
-    (href: string) => current === stripLocale(href),
+    (href: string) => {
+      const target = stripLocale(href);
+      if (current === target) return true;
+      // A section stays lit inside its own sub-pages — Settings is a menu of
+      // groups now, so an exact match would go dark the moment you clicked
+      // into one. "/dashboard" is the exception: every route sits below it, so
+      // it only ever matches itself.
+      return target !== "/dashboard" && current.startsWith(`${target}/`);
+    },
     [current]
   );
 
@@ -684,9 +676,6 @@ export function Sidebar({
 
         <div className="mt-auto flex flex-col items-center gap-1 pt-4">
           <RailLink item={settingsItem} active={isActive(settingsItem.href)} />
-          {adminItem ? (
-            <RailLink item={adminItem} active={isActive(adminItem.href)} />
-          ) : null}
           <AccountMenu
             accountLabel={accountLabel}
             connectionState={connectionState}
@@ -746,7 +735,6 @@ export function Sidebar({
         <DrawerContent
           navItems={navItems}
           settingsItem={settingsItem}
-          adminItem={adminItem}
           dashboardHref={dashboardHref}
           connectionState={connectionState}
           connectionLabels={connectionLabels}

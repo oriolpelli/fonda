@@ -1,34 +1,29 @@
 import type { Metadata } from "next";
-import { CheckCircle2, Circle } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import {
+  Building2,
+  ChevronRight,
+  Plug,
+  UserRound,
+  type LucideIcon,
+} from "lucide-react";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
-import { AccountLanguageForm } from "@/components/dashboard/account-language-form";
-import { ApaleoConnectionCard } from "@/components/dashboard/apaleo-connection-card";
-import { apaleoStatusMessage } from "@/lib/apaleo-status";
-import { GmailConnectionCard } from "@/components/dashboard/gmail-connection-card";
-import { gmailStatusMessage } from "@/lib/gmail-status";
-import { GmNameForm } from "@/components/dashboard/gm-name-form";
-import { HotelDetailsForm } from "@/components/dashboard/hotel-details-form";
-import { HotelProfileForm } from "@/components/dashboard/hotel-profile-form";
-import { MewsConnectionForm } from "@/components/dashboard/mews-connection-form";
-import { PmsDisconnectCard } from "@/components/dashboard/pms-disconnect-card";
-import { SheetConnectionForm } from "@/components/dashboard/sheet-connection-form";
-import { TripAdvisorForm } from "@/components/dashboard/tripadvisor-form";
 import { t } from "@/lib/i18n/format";
-import type { PmsType } from "@/lib/pms";
+import {
+  settingsGroupHref,
+  settingsGroups,
+  type SettingsGroupKey,
+} from "@/lib/settings-groups";
 import { createClient } from "@/lib/supabase/server";
-import { cn } from "@/lib/utils";
-import type { RoomType, Upsell } from "@/types";
 
-/**
- * The connected source, as a narrowed `PmsType`. Only meaningful while
- * something is connected: a disconnect clears `pms_type`, so the chooser below
- * isn't locked to the source just dropped. MEWS is the fallback for the
- * (unexpected) connected-but-untyped row.
- */
-function toPmsType(value: string | null | undefined): PmsType {
-  return value === "apaleo" || value === "sheet" ? value : "mews";
-}
+/** Menu icons. Keys match `SETTINGS_GROUPS` — add a group, add an icon. */
+const GROUP_ICONS: Record<SettingsGroupKey, LucideIcon> = {
+  connections: Plug,
+  hotel: Building2,
+  account: UserRound,
+};
 
 export async function generateMetadata({
   params,
@@ -39,6 +34,11 @@ export async function generateMetadata({
   return { title: dict.settings.title };
 }
 
+/**
+ * Settings is a menu of three groups, not one long page — opening it shows what
+ * the categories are and nothing else. The forms live one click in, under
+ * settings/{connections,hotel,account}.
+ */
 export default async function SettingsPage({
   params,
   searchParams,
@@ -46,29 +46,25 @@ export default async function SettingsPage({
   params: Promise<{ lang: string }>;
   searchParams: Promise<{ apaleo?: string; gmail?: string; ingested?: string }>;
 }) {
-  const { dict } = await loadDictionary((await params).lang);
-  const supabase = await createClient();
+  const { locale, dict } = await loadDictionary((await params).lang);
   const { apaleo, gmail, ingested } = await searchParams;
 
-  // Select explicit columns — the encrypted token columns are revoked from the
-  // client role (migration 0002), so `select('*')` would error here.
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("id, name, rooms_count, pms_type, pms_connected, gmail_email")
-    .single();
+  // The OAuth callbacks land on /dashboard/settings with a status query. The
+  // connectors — and so the banner that reports on them — now live in the
+  // Connections group, so carry the query the last hop rather than dropping a
+  // "connected!" message on a page that no longer shows the connection.
+  if (apaleo || gmail) {
+    const query = new URLSearchParams();
+    if (apaleo) query.set("apaleo", apaleo);
+    if (gmail) query.set("gmail", gmail);
+    if (ingested) query.set("ingested", ingested);
+    redirect(`${settingsGroupHref(locale, "connections")}?${query}`);
+  }
 
-  const { data: settings } = await supabase
-    .from("hotel_settings")
-    .select(
-      "gm_name, default_locale, star_rating, property_type, check_in_time, check_out_time, policies, positioning_vibe, target_guest, local_recommendations, preferred_greeting, signoff_name, languages_spoken, tripadvisor_url, review_highlights, review_summary, parking_transport, wifi_info, breakfast_info, room_types, upsells"
-    )
-    .maybeSingle();
+  const supabase = await createClient();
+  const { data: hotel } = await supabase.from("hotels").select("name").single();
 
-  const connected = hotel?.pms_connected ?? false;
-  const pmsType = toPmsType(hotel?.pms_type);
-  const apaleoBanner = apaleoStatusMessage(apaleo);
-  const gmailBanner = gmailStatusMessage(gmail);
-  const gmailConnected = gmail === "connected";
+  const groups = settingsGroups(locale, dict);
 
   return (
     <div className="flex max-w-2xl flex-col gap-8">
@@ -77,135 +73,47 @@ export default async function SettingsPage({
           {dict.settings.title}
         </h1>
         <p className="text-muted-foreground">
-          {t(dict.settings.desc, {
+          {t(dict.settings.groups.indexDesc, {
             hotel: hotel?.name ?? dict.settings.fallbackHotel,
           })}
         </p>
       </div>
 
-      {apaleoBanner ? (
-        <div
-          role="status"
-          className={cn(
-            "rounded-lg border px-4 py-3 text-sm font-medium",
-            apaleoBanner.tone === "success"
-              ? "border-primary/30 bg-accent text-accent-foreground"
-              : "border-destructive/30 bg-destructive/5 text-destructive"
-          )}
-        >
-          {dict.apaleoStatus[apaleoBanner.key]}
-        </div>
-      ) : null}
-
-      {gmailConnected ? (
-        <div
-          role="status"
-          className="rounded-lg border border-primary/30 bg-accent px-4 py-3 text-sm font-medium text-accent-foreground"
-        >
-          {t(dict.settings.gmailConnected, {
-            email: hotel?.gmail_email ?? dict.settings.gmailFallbackInbox,
-            count: ingested ?? "0",
-          })}
-        </div>
-      ) : gmailBanner ? (
-        <div
-          role="status"
-          className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm font-medium text-destructive"
-        >
-          {dict.gmailStatus[gmailBanner.key]}
-        </div>
-      ) : null}
-
-      <HotelDetailsForm
-        name={hotel?.name ?? ""}
-        roomsCount={hotel?.rooms_count ?? 1}
-      />
-
-      {/* Sits with hotel details rather than beside the connectors: both
-          answer "what is this account", before anything about integrations
-          or generated content. */}
-      <AccountLanguageForm defaultLocale={settings?.default_locale ?? "en"} />
-
-      <div
-        className={cn(
-          "flex items-center gap-2 rounded-lg border px-4 py-3 text-sm",
-          connected
-            ? "border-primary/30 bg-accent text-accent-foreground"
-            : "border-border bg-muted text-muted-foreground"
-        )}
+      <nav
+        aria-label={dict.settings.groups.navLabel}
+        className="flex flex-col gap-3"
       >
-        {connected ? (
-          <CheckCircle2 className="size-4 text-primary" />
-        ) : (
-          <Circle className="size-4" />
-        )}
-        <span className="font-medium">
-          {connected
-            ? t(dict.settings.connectedTo, {
-                pms: dict.settings.pmsNames[pmsType],
-              })
-            : dict.settings.notConnected}
-        </span>
-      </div>
-
-      {connected ? (
-        <>
-          {pmsType === "apaleo" ? (
-            <ApaleoConnectionCard connected showDisconnect={false} />
-          ) : pmsType === "sheet" ? (
-            <SheetConnectionForm connected />
-          ) : (
-            <MewsConnectionForm connected />
-          )}
-          <PmsDisconnectCard pmsType={pmsType} />
-        </>
-      ) : (
-        /* Nothing connected — offer every connector, not just the one this
-           hotel happened to use last, so switching source is a disconnect
-           followed by a free choice. */
-        <>
-          <div className="flex flex-col gap-1">
-            <h2 className="text-lg font-semibold tracking-[-0.01em] text-foreground">
-              {dict.settings.chooseSourceTitle}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {dict.settings.chooseSourceDesc}
-            </p>
-          </div>
-          <MewsConnectionForm connected={false} />
-          <ApaleoConnectionCard connected={false} />
-          <SheetConnectionForm connected={false} />
-        </>
-      )}
-
-      <GmailConnectionCard email={hotel?.gmail_email ?? null} />
-
-      <GmNameForm gmName={settings?.gm_name ?? ""} />
-
-      <HotelProfileForm
-        starRating={settings?.star_rating ?? null}
-        propertyType={settings?.property_type ?? ""}
-        checkInTime={(settings?.check_in_time ?? "").slice(0, 5)}
-        checkOutTime={(settings?.check_out_time ?? "").slice(0, 5)}
-        policies={settings?.policies ?? ""}
-        positioningVibe={settings?.positioning_vibe ?? ""}
-        targetGuest={settings?.target_guest ?? ""}
-        localRecommendations={settings?.local_recommendations ?? ""}
-        preferredGreeting={settings?.preferred_greeting ?? ""}
-        signoffName={settings?.signoff_name ?? ""}
-        languagesSpoken={settings?.languages_spoken ?? ""}
-        parkingTransport={settings?.parking_transport ?? ""}
-        wifiInfo={settings?.wifi_info ?? ""}
-        breakfastInfo={settings?.breakfast_info ?? ""}
-        roomTypes={(settings?.room_types as RoomType[] | null) ?? []}
-        upsells={(settings?.upsells as Upsell[] | null) ?? []}
-      />
-
-      <TripAdvisorForm
-        tripadvisorUrl={settings?.tripadvisor_url ?? ""}
-        reviewHighlights={settings?.review_highlights ?? ""}
-        reviewSummary={settings?.review_summary ?? null}
-      />
+        {groups.map((group) => {
+          const Icon = GROUP_ICONS[group.key];
+          return (
+            <Link
+              key={group.key}
+              href={group.href}
+              className="group flex items-center gap-4 rounded-[18px] bg-card p-5 shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
+            >
+              <span
+                aria-hidden="true"
+                className="inline-flex size-10 shrink-0 items-center justify-center rounded-[10px] bg-[var(--fonda-inset)] text-foreground"
+              >
+                <Icon className="size-5" strokeWidth={1.5} />
+              </span>
+              <span className="flex min-w-0 flex-col gap-0.5">
+                <span className="font-semibold tracking-[-0.01em] text-foreground">
+                  {group.label}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {group.desc}
+                </span>
+              </span>
+              <ChevronRight
+                aria-hidden="true"
+                strokeWidth={1.5}
+                className="ml-auto size-[18px] shrink-0 text-[var(--fonda-text-3)] transition-colors duration-[180ms] group-hover:text-foreground"
+              />
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }
