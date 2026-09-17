@@ -9,7 +9,7 @@ import { Sidebar, type NavItem } from "@/components/dashboard/sidebar";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { plural } from "@/lib/i18n/format";
 import { loadInboxBadge } from "@/lib/inbox";
-import { roadmapNavFeatures } from "@/lib/roadmap";
+import { roadmapFeature, type RoadmapKey } from "@/lib/roadmap";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardLayout({
@@ -57,6 +57,29 @@ export default async function DashboardLayout({
   // inbox query can never blank the whole dashboard.
   const inboxBadge = await loadInboxBadge();
 
+  // Everything that isn't built yet takes its label, blurb and "Coming soon"
+  // status from lib/roadmap.ts, so all three languages stay in step. The
+  // *placement* is here, though: the rail is a two-level tree now
+  // (NAV_REORG_SPEC.md §3), and a flat list can't say which section owns what.
+  const soon = (
+    key: RoadmapKey,
+    label?: string,
+    sectionKey?: string
+  ): NavItem => {
+    const feature = roadmapFeature(key);
+    return {
+      key,
+      // A section's own row is its "Dashboard" sub-page: the roadmap label is
+      // the section name (right for the page heading), so the submenu passes
+      // "Dashboard" in instead.
+      label: label ?? feature.label(dict),
+      href: localizedHref(locale, feature.route),
+      comingSoon: feature.status === "coming-soon",
+      comingSoonLabel: dict.roadmap.badge,
+      ...(sectionKey ? { sectionKey } : {}),
+    };
+  };
+
   const navItems: NavItem[] = [
     {
       key: "dashboard",
@@ -64,38 +87,102 @@ export default async function DashboardLayout({
       href: localizedHref(locale, "/dashboard"),
     },
     {
-      key: "brief",
-      label: dict.sidebar.brief,
-      href: localizedHref(locale, "/dashboard/brief"),
+      // The four live surfaces keep their Phase 1 URLs (§4) — only their place
+      // in the nav moves — so each carries `sectionKey` for active-state
+      // grouping; the section path alone can't tell you you're inside it.
+      key: "front-desk",
+      label: dict.sidebar.frontDesk,
+      href: localizedHref(locale, "/dashboard/front-desk"),
+      children: [
+        soon("front-desk", dict.sidebar.dashboard, "front-desk"),
+        soon("front-desk-info", undefined, "front-desk"),
+        {
+          key: "brief",
+          label: dict.sidebar.brief,
+          href: localizedHref(locale, "/dashboard/brief"),
+          sectionKey: "front-desk",
+        },
+        {
+          key: "checkins",
+          label: dict.sidebar.checkins,
+          href: localizedHref(locale, "/dashboard/checkins"),
+          sectionKey: "front-desk",
+        },
+        {
+          key: "communications",
+          label: dict.sidebar.communications,
+          href: localizedHref(locale, "/dashboard/communications"),
+          sectionKey: "front-desk",
+          badge: {
+            count: inboxBadge.count,
+            alert: inboxBadge.alert,
+            srLabel: plural(
+              inboxBadge.count,
+              dict.sidebar.waitingOne,
+              dict.sidebar.waitingOther
+            ),
+          },
+        },
+        soon("concierge", undefined, "front-desk"),
+        soon("reputation", undefined, "front-desk"),
+      ],
     },
     {
-      key: "checkins",
-      label: dict.sidebar.checkins,
-      href: localizedHref(locale, "/dashboard/checkins"),
-    },
-    {
-      key: "communications",
-      label: dict.sidebar.communications,
-      href: localizedHref(locale, "/dashboard/communications"),
-      badge: {
-        count: inboxBadge.count,
-        alert: inboxBadge.alert,
-        srLabel: plural(
-          inboxBadge.count,
-          dict.sidebar.waitingOne,
-          dict.sidebar.waitingOther
-        ),
-      },
-    },
-    // Everything that isn't built yet — order, labels and the "Coming soon"
-    // badge all come from lib/roadmap.ts. Add a feature there, not here.
-    ...roadmapNavFeatures().map((feature) => ({
-      key: feature.key,
-      label: feature.label(dict),
-      href: localizedHref(locale, feature.route),
-      comingSoon: feature.status === "coming-soon",
+      key: "revenue",
+      label: dict.sidebar.revenue,
+      href: localizedHref(locale, "/dashboard/revenue"),
+      comingSoon: true,
       comingSoonLabel: dict.roadmap.badge,
-    })),
+      children: [
+        soon("revenue", dict.sidebar.dashboard, "revenue"),
+        soon("revenue-management", undefined, "revenue"),
+        soon("demand-forecasting", undefined, "revenue"),
+        soon("ota-parity", undefined, "revenue"),
+        soon("upsell-ai", undefined, "revenue"),
+        soon("room-upgrade-ai", undefined, "revenue"),
+      ],
+    },
+    // A section-level coming-soon page with nothing under it: clicking it just
+    // navigates, no submenu panel (§2).
+    soon("sales-marketing"),
+    {
+      key: "operations",
+      label: dict.sidebar.operations,
+      href: localizedHref(locale, "/dashboard/operations"),
+      comingSoon: true,
+      comingSoonLabel: dict.roadmap.badge,
+      children: [
+        soon("operations", dict.sidebar.dashboard, "operations"),
+        soon("staff", undefined, "operations"),
+        soon("housekeeping", undefined, "operations"),
+        soon("fnb", undefined, "operations"),
+        soon("procurement", undefined, "operations"),
+      ],
+    },
+    {
+      key: "finance",
+      label: dict.sidebar.finance,
+      href: localizedHref(locale, "/dashboard/finance"),
+      comingSoon: true,
+      comingSoonLabel: dict.roadmap.badge,
+      children: [
+        soon("finance", dict.sidebar.dashboard, "finance"),
+        soon("finance-reporting", undefined, "finance"),
+        soon("chargeback", undefined, "finance"),
+      ],
+    },
+    {
+      key: "oversight",
+      label: dict.sidebar.oversight,
+      href: localizedHref(locale, "/dashboard/oversight"),
+      comingSoon: true,
+      comingSoonLabel: dict.roadmap.badge,
+      children: [
+        soon("oversight", dict.sidebar.dashboard, "oversight"),
+        soon("ai-management", undefined, "oversight"),
+        soon("team-activity", undefined, "oversight"),
+      ],
+    },
   ];
 
   const settingsItem: NavItem = {

@@ -1,12 +1,11 @@
-import Link from "next/link";
-
 import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { BriefSummaryCard } from "@/components/dashboard/brief-summary-card";
 import { FirstRunState } from "@/components/dashboard/first-run-state";
 import { NeedsReplyCard } from "@/components/dashboard/needs-reply-card";
 import { OccupancyStrip } from "@/components/dashboard/occupancy-strip";
 import { StatRow, type Stat } from "@/components/dashboard/stat-row";
 import { TodoList } from "@/components/dashboard/todo-list";
-import { Button } from "@/components/ui/button";
+import { loadTodaysBriefing } from "@/lib/briefing-latest";
 import { loadDashboardSnapshot } from "@/lib/dashboard-snapshot";
 import { byUrgency } from "@/lib/email-urgency";
 import { intlLocale } from "@/lib/i18n/config";
@@ -53,19 +52,17 @@ export default async function DashboardPage({
     month: "long",
   }).format(new Date());
 
+  // No "read the brief" button here: the Morning Brief summary card below is
+  // itself a link to the brief, and two controls to the same page stacked one
+  // above the other is noise. `home.readBrief` is now unreferenced but kept in
+  // the dictionaries — it costs nothing and it is the string to reach for if a
+  // header action ever comes back.
   const header = (
-    <div className="flex flex-wrap items-start justify-between gap-4">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
-          {t(dict.home.goodMorning, { name: greeting })}
-        </h1>
-        <p className="text-muted-foreground">{todayLabel}</p>
-      </div>
-      <Button asChild variant="outline" size="sm">
-        <Link href={localizedHref(locale, "/dashboard/brief")}>
-          {dict.home.readBrief}
-        </Link>
-      </Button>
+    <div className="flex flex-col gap-1">
+      <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
+        {t(dict.home.goodMorning, { name: greeting })}
+      </h1>
+      <p className="text-muted-foreground">{todayLabel}</p>
     </div>
   );
 
@@ -116,6 +113,11 @@ export default async function DashboardPage({
     .filter((email) => email.urgency.kind !== "handled")
     .sort(byUrgency);
 
+  // Today's brief, for the teaser card. Read after the early return above, so a
+  // hotel with no PMS never pays for the query. Same loader the Morning Brief
+  // page uses — the card cannot claim a brief that page would deny.
+  const todaysBrief = await loadTodaysBriefing(snapshot.timezone);
+
   const todos = buildTodoList({
     emails: unanswered,
     vipArrivalsWithoutNote: snapshot.vipArrivalsWithoutNote,
@@ -128,6 +130,16 @@ export default async function DashboardPage({
   return (
     <div className="flex flex-col gap-8">
       {header}
+
+      {/* The day in one line, above the numbers that explain it. A teaser, not
+          a second brief — the whole card opens Front Desk › Morning Brief. */}
+      <BriefSummaryCard
+        dict={dict}
+        locale={locale}
+        summary={todaysBrief?.content.summary ?? null}
+        arrivals={snapshot.hasSyncedData ? snapshot.checkinsToday : null}
+        waiting={unanswered.length}
+      />
 
       <div className="flex flex-col gap-3">
         <StatRow stats={stats} />

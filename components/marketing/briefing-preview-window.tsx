@@ -8,6 +8,15 @@ interface BriefingPreviewWindowProps {
   /** "default" — the smaller feature-list side panel. "lg" — the hero's
    * primary product visual: bigger radius, softer depth shadow, not sticky. */
   size?: "default" | "lg";
+  /**
+   * "full" — the window as a self-contained product shot (the showcase band).
+   * "hero" — the composition piece under the hero copy: the page's own card
+   * treatment rather than the window's depth shadow, and deliberately inert
+   * (no hover lift, never sticky) because it sits still while the watercolour
+   * parallaxes behind it. Its lower portion is clipped by the hero section,
+   * which owns the overflow — see the mount in `app/[lang]/page.tsx`.
+   */
+  variant?: "hero" | "full";
   className?: string;
 }
 
@@ -17,9 +26,11 @@ export function BriefingPreviewWindow({
   greeting,
   rows,
   size = "default",
+  variant = "full",
   className,
 }: BriefingPreviewWindowProps) {
   const isLarge = size === "lg";
+  const isHero = variant === "hero";
 
   return (
     <div
@@ -28,10 +39,19 @@ export function BriefingPreviewWindow({
         // product shot in a window frame, not a card, and the frame is the
         // point. Depth is tinted with the warm ink (28 26 22) rather than the
         // old neutral rgba(10,10,10) so it matches the v3 material.
-        "overflow-hidden border border-border bg-popover transition-[transform,box-shadow] duration-300 ease-out",
-        isLarge
-          ? "rounded-[20px] shadow-[0_24px_60px_-24px_rgb(28_26_22_/_0.18)] hover:-translate-y-1 hover:shadow-[0_28px_70px_-20px_rgb(28_26_22_/_0.22)]"
-          : "rounded-[18px] shadow-[0_12px_48px_rgb(28_26_22_/_0.06)] hover:-translate-y-0.5 hover:shadow-[0_16px_56px_rgb(28_26_22_/_0.08)] lg:sticky lg:top-24",
+        "overflow-hidden border border-border",
+        // The hero copy is the thing that moves; this must not. No transition,
+        // no hover, no sticky — and the page's own card treatment (§6) rather
+        // than the window's depth shadow, so it reads as part of the page
+        // rather than as a second floating object over the painting.
+        isHero
+          ? "mx-auto w-full max-w-[1120px] rounded-[18px] bg-card shadow-card"
+          : cn(
+              "bg-popover transition-[transform,box-shadow] duration-300 ease-out",
+              isLarge
+                ? "rounded-[20px] shadow-[0_24px_60px_-24px_rgb(28_26_22_/_0.18)] hover:-translate-y-1 hover:shadow-[0_28px_70px_-20px_rgb(28_26_22_/_0.22)]"
+                : "rounded-[18px] shadow-[0_12px_48px_rgb(28_26_22_/_0.06)] hover:-translate-y-0.5 hover:shadow-[0_16px_56px_rgb(28_26_22_/_0.08)] lg:sticky lg:top-24"
+            ),
         className
       )}
     >

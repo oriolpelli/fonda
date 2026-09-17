@@ -2,7 +2,7 @@
 
 # Fondas — Hotel AI SaaS
 
-Fondas is a SaaS product for hotels. See @README.md for the full overview.
+Fondas is a SaaS product for hotels. See `README.md` for the full overview.
 The product name is **Fondas** everywhere customer-facing (wordmark, emails,
 legal pages). The design system is separately named **Signal** — "Fonda" in
 design-token comments and `FONDA_DESIGN_IDENTITY.md` refers to that system, not
@@ -53,9 +53,11 @@ PILOT_OUTREACH / LAUNCH_PLAN / COMPETITOR_LANDSCAPE docs), EXECUTION_PLAYBOOK.md
 
 All visual and design decisions for Fonda — color, typography, spacing, radius,
 shadows, component styling, and page layout — MUST follow the **current** design
-spec, v3 "Fonda × Sana". Read it before writing or changing any UI:
+spec, v3 "Fonda × Sana", which lives in `FONDA_SANA_REDESIGN.md`.
 
-@FONDA_SANA_REDESIGN.md
+YOU MUST read `FONDA_SANA_REDESIGN.md` before writing or changing any UI —
+components, pages, or styles. It is deliberately not auto-loaded into every
+session, so open it with the Read tool at the start of a UI task.
 
 The system in one line: one grotesque typeface (Geist + Geist Mono), a neutral
 light grey (`#EEEEEE`) page ground with white cards floating on top — warmth
@@ -64,7 +66,7 @@ navy in nav, active states, or chips), color reserved for content (gradient hero
 cards plus one accent inside data viz), soft-cornered controls (10px, no pills),
 a slim icon-only left rail, light only.
 
-@FONDA_DESIGN_IDENTITY.md is the previous system (v2 "Signal"). Keep it for
+`FONDA_DESIGN_IDENTITY.md` is the previous system (v2 "Signal"). Keep it for
 background and history — it still explains the type scale, spacing rhythm, and
 the one-accent discipline the v3 system inherits. But it is **not** the
 authority: where the two conflict, **FONDA_SANA_REDESIGN.md wins** for all

@@ -2,13 +2,15 @@ import Link from "next/link";
 
 import { absoluteUrl, languageAlternates } from "@/lib/seo";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
-import { SAMPLE_BRIEF } from "@/app/[lang]/sample-brief/content";
+import { getSampleBrief } from "@/app/[lang]/sample-brief/content";
 import { Wordmark } from "@/components/brand/wordmark";
 import { BriefingArticle } from "@/components/dashboard/briefing-article";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { SampleBriefRequestForm } from "@/components/marketing/sample-brief-request-form";
 import { Button } from "@/components/ui/button";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { t } from "@/lib/i18n/format";
+import { sampleHotelVars } from "@/lib/sample-hotel";
 
 export async function generateMetadata({
   params,
@@ -33,7 +35,7 @@ export default async function SampleBriefPage({
   params: Promise<{ lang: string }>;
 }) {
   const { locale, dict } = await loadDictionary((await params).lang);
-  const sample = SAMPLE_BRIEF[locale];
+  const sample = getSampleBrief(locale);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -61,7 +63,9 @@ export default async function SampleBriefPage({
             <h1 className="mt-2 text-3xl font-semibold tracking-[-0.025em] text-foreground">
               {dict.sampleBrief.title}
             </h1>
-            <p className="text-muted-foreground">{dict.sampleBrief.hotelLine}</p>
+            <p className="text-muted-foreground">
+              {t(dict.sampleBrief.hotelLine, sampleHotelVars(locale))}
+            </p>
             <p className="mt-1 text-[12px] text-[var(--fonda-text-3)]">
               {dict.sampleBrief.disclaimer}
             </p>
@@ -81,21 +85,16 @@ export default async function SampleBriefPage({
           </section>
         </div>
 
-        {/* CTA band (hidden in print) */}
+        {/* The ask, AFTER the proof and hidden in print.
+        
+            This replaced an ink band whose only action was a mailto. The brief
+            above is deliberately not gated — it is the artefact that does the
+            convincing, and a form in front of it would trade that away — so
+            this sits underneath and asks for the one thing a mailto could not
+            reliably capture: which hotel is asking. */}
         <section className="px-6 pb-24 print:hidden">
-          <div className="mx-auto max-w-3xl rounded-[28px] bg-ink px-6 py-14 text-center md:px-16">
-            <h2 className="mx-auto max-w-lg text-[clamp(1.6rem,3vw,2.4rem)] font-semibold leading-[1.05] tracking-[-0.028em] text-[var(--fonda-text-inv)]">
-              {dict.sampleBrief.ctaHeadline}
-            </h2>
-            <div className="mt-7 flex justify-center">
-              <Button
-                asChild
-                size="lg"
-                className="bg-surface text-ink hover:bg-surface/90"
-              >
-                <a href="mailto:hello@fondas.app">hello@fondas.app</a>
-              </Button>
-            </div>
+          <div className="mx-auto max-w-3xl">
+            <SampleBriefRequestForm />
           </div>
         </section>
       </main>

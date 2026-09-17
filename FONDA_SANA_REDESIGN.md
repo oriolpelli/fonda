@@ -285,6 +285,26 @@ Keep the `h1,h2,h3 { font-weight:600; letter-spacing:-0.025em }` base rule.
 This is the structural centerpiece. Rewrite `components/dashboard/sidebar.tsx`
 and adjust the padding in `app/[lang]/dashboard/layout.tsx`.
 
+> **Amendment (applied 2026-08-31 — the rail is two-level).** `NAV_REORG_SPEC.md`
+> §2 supersedes this section on **structure**, not on material. The rail is still
+> the slim 64px monochrome column described below, but it now carries **eight
+> sections** rather than a flat list of pages, and a section that owns sub-pages
+> opens a **docked submenu panel**: a ~220px labelled column against the rail's
+> right edge listing that section's children, white on the grey ground like any
+> other floating surface. Nothing about the look changes — same tokens, same 10px
+> radius, same active-by-darkness tell with no hue anywhere in the chrome, same
+> ink flyout labels on the icons, and the panel's rows reuse the drawer's
+> monochrome states and its quiet mono "Coming soon" chip. What changes is
+> behaviour: a section with children **does not navigate** — hover previews the
+> panel, click pins it, Esc or an outside click dismisses it, and the section's
+> own page is reached through its "Dashboard" child — while a direct link
+> (Dashboard) and a childless coming-soon section (Sales & Marketing) still just
+> navigate, exactly as §5.2 describes. A section stays lit for anything inside
+> it, including the four live Front Desk pages that keep their old top-level
+> URLs. On mobile the drawer becomes an accordion of the same groups; §5.1's
+> "mobile unchanged in behavior" holds otherwise. Read §§5.1–5.5 for the rail's
+> material and `NAV_REORG_SPEC.md` §2 for its shape.
+
 ### 5.1 Shape & anatomy
 
 - **Fixed, full-height, ~64px wide** (`w-16`) on `md+`. Background

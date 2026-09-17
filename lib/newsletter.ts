@@ -68,8 +68,25 @@ export function confirmUrl(locale: Locale, token: string): string {
  * opt-in, and the honest one for somebody whose address was typed in by
  * someone else.
  */
-export function confirmEmailHtml(dict: Dictionary, url: string): string {
-  const t = dict.newsletterEmail;
+export interface ConfirmEmailCopy {
+  heading: string;
+  body: string;
+  button: string;
+}
+
+export function confirmEmailHtml(
+  dict: Dictionary,
+  url: string,
+  /**
+   * Which confirmation this is. Defaults to the newsletter's wording; the
+   * sample-brief request passes its own, because telling somebody who asked for
+   * a brief about their hotel to "confirm your subscription" is the kind of
+   * small wrongness that makes a product feel automated. The ignore/footer
+   * lines are shared deliberately — they say the same true thing either way.
+   */
+  copy?: ConfirmEmailCopy
+): string {
+  const t = { ...dict.newsletterEmail, ...copy };
   return `<!doctype html>
 <html><body style="margin:0;padding:0;background:#ffffff;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;">

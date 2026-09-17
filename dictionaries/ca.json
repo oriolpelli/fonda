@@ -17,7 +17,7 @@
   "contact": {
     "metaTitle": "Contacte",
     "heading": "Parlem-ne",
-    "intro": "Estem construint Fondas per a hotels independents i boutique, i responem el nostre propi correu. La manera més ràpida de contactar-nos és escriure — solem respondre en un dia.",
+    "intro": "Estem construint Fondas amb hotels de totes les mides, i responem el nostre propi correu. La manera més ràpida de contactar-nos és escriure — solem respondre en un dia.",
     "emailHeading": "Correu",
     "emailHint": "Dubtes, pilots, el que calgui.",
     "emailAction": "Escriu-nos",
@@ -27,8 +27,8 @@
     "locationBody": "A Barcelona. Encantats d'acostar-nos a hotels de la zona."
   },
   "meta": {
-    "title": "Fondas — El director amb IA per a hotels",
-    "description": "Fondas és el director amb IA per a hotels: ajusta les teves tarifes segons la competència, impulsa millores i extres, redacta el correu dels teus hostes perquè el revisis i et prepara un resum cada matí, sobre el PMS que ja fas servir."
+    "title": "Fondas — La IA que porta l'operativa del teu hotel",
+    "description": "Fondas es connecta al teu PMS i al correu de l'hotel i et deixa el dia preparat: el resum escrit abans que obris, les respostes als teus hostes redactades perquè les revisis i les hores d'arribada ja confirmades. Sobre el PMS que ja fas servir, sense migrar res."
   },
   "common": {
     "signOut": "Tancar la sessió",
@@ -53,33 +53,39 @@
     "closeMenu": "Tanca el menú"
   },
   "hero": {
-    "badge": "El director amb IA per a hotels · Beta privada",
-    "headlineLine1": "Tu portes l'hotel.",
-    "headlineLine2": "{brand} s'encarrega de la resta.",
-    "subhead": "Un director amb IA per al teu hotel: ajusta les teves tarifes segons la competència, impulsa millores i extres, envia a cada hoste ofertes a la seva mida i et prepara un resum cada matí. Sobre el PMS que ja fas servir.",
-    "ctaPrimary": "Demana accés anticipat",
-    "ctaSecondary": "Com funciona →"
+    "badge": "Juga amb avantatge",
+    "headlineLine1": "La IA que porta l'operativa,",
+    "headlineLine2": "i tu, els hostes.",
+    "subhead": "{brand} es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Res no surt sense el teu vistiplau.",
+    "ctaPrimary": "Demanar accés",
+    "ctaSecondary": "Veure un resum real →"
   },
   "emailPreview": {
     "windowTitle": "Fondas · Safata d'entrada",
     "receivedLabel": "Correu d'hoste · ahir a la nit 23:12",
-    "fromName": "Laura Bianchi · laura.b@…",
-    "subject": "Arribada tard divendres i pàrquing",
-    "message": "Hola! El nostre vol aterra divendres a les 21:40, és possible fer el check-in tan tard? I hi ha pàrquing a prop de l'hotel? Gràcies, Laura",
-    "contextLine": "Reserva localitzada · dv. 26 – dg. 28 · Doble Superior",
+    "fromName": "{vidal} · elena.vidal@…",
+    "subject": "Es pot pujar a la terrassa amb ascensor?",
+    "message": "Bona nit: arribem dimarts i el meu pare camina amb bastó. Es pot pujar amb ascensor a la terrassa de l'esmorzar o hi ha escalons a dalt? Gràcies, Elena",
+    "contextLine": "Reserva localitzada",
+    "pmsSource": "Apaleo · sincronitzat 23:15",
+    "guestLabel": "Hoste",
+    "guestValue": "{vidal}",
+    "roomLabel": "Tipus d'habitació",
+    "roomValue": "Suite Jardí",
+    "datesLabel": "Dates",
+    "datesValue": "dt. 23 – ds. 27 juny · 4 nits",
+    "statusLabel": "Estat",
+    "statusValue": "Confirmada",
     "draftLabel": "Resposta redactada — revisa i envia",
-    "draftBody": "Bona nit, Laura: cap problema amb les 21:40, la recepció està atesa fins a mitjanit i tindrem les seves claus preparades. Per al cotxe, treballem amb el pàrquing del carrer del Pi, a dos minuts (24 € la nit). Li reservo una plaça per divendres?"
+    "draftBody": "Bona nit, Elena: sí, l'ascensor arriba a la terrassa i a dalt no hi ha escalons; l'esmorzar se serveix allà des de les 7:30. La Suite Jardí és, a més, a la planta del pati, així que no hi ha ni un escaló fins a recepció. Ho tindrem tot a punt per dimarts. Una salutació, {hotel}"
   },
   "trust": {
     "worksWith": "Compatible amb",
     "onRequest": "Sota petició",
     "customPms": "PMS a mida",
     "adaptNote": "Avui funciona amb MEWS, Apaleo i Gmail, a més d'integracions amb Outlook i PMS a mida que desenvolupem sota petició. Un altre sistema? Ens adaptem a gairebé qualsevol PMS o safata d'entrada.",
-    "onboardingNote": "Estem incorporant els nostres primers hotels."
-  },
-  "featuresSection": {
-    "eyebrow": "Què fa Fondas",
-    "headline": "Quatre feines. Un matí tranquil."
+    "onboardingNote": "Estem incorporant els nostres primers hotels.",
+    "connectLine": "MEWS, Apaleo i Gmail, connectats avui. En fas servir un altre? El connectem durant l'alta."
   },
   "features": {
     "briefing": {
@@ -101,14 +107,20 @@
   },
   "briefingPreview": {
     "windowTitle": "Fondas · Resum matinal",
-    "dateLine": "Dimarts, 24 de juny · 6:32",
-    "greeting": "Bon dia. Així està el teu hotel avui.",
-    "row1strong": "12 arribades avui.",
-    "row1rest": " 3 no han indicat l'hora d'arribada — seguiment automàtic.",
-    "row2strong": "4 correus nous d'OTA durant la nit.",
-    "row2rest": " Els esborranys estan a punt per a la teva revisió.",
-    "row3strong": "Ocupació aquesta nit: 87%.",
-    "row3rest": " Potser convé revisar les tarifes del cap de setmana."
+    "dateLine": "{date} · 6:30",
+    "greeting": "Bon dia. Així està avui l'{hotel}.",
+    "row1strong": "{arrivals} arribades avui.",
+    "row1rest": " La {bofill} torna per tercera vegada — la 204 ja està bloquejada per a ella, al costat tranquil del pati.",
+    "row2strong": "Falten tres hores d'arribada.",
+    "row2rest": " La {ortega}, en {lund} i el grup {ashworth} van rebre l'avís ahir a la nit. {lund} aterra a les 23:40 des de Copenhaguen; la recepció de nit té la seva clau a punt.",
+    "row3strong": "{departures} sortides, totes abans de migdia.",
+    "row3rest": " La família {aguirre} deixa la Suite Jardí després de vuit nits, així que pisos ja té marcat el repàs a fons abans de les arribades de les 16:00.",
+    "row4strong": "Quatre correus d'hostes durant la nit.",
+    "row4rest": " Un et necessita: l'{vidal}, que arriba dimarts, pregunta si es pot pujar a la terrassa amb ascensor. La resposta està redactada i espera el teu vistiplau.",
+    "row5strong": "Ocupació aquesta nit: {occupancy}%.",
+    "row5rest": " {occupied} de {rooms} habitacions, i el cap de setmana ja està complet.",
+    "row6strong": "Una cosa per decidir.",
+    "row6rest": " {softDate}: {softRooms} de {rooms} — fluix per a finals de juny. Val la pena mirar la tarifa entre setmana abans que s'ompli el cap de setmana."
   },
   "stats": {
     "headline": "Els teus primers 90 minuts, de tornada.",
@@ -119,9 +131,9 @@
     "briefTop": "El resum matinal arriba",
     "briefValue": "6:30",
     "briefLabel": "abans que obri la recepció",
-    "priceTop": "Un preu únic",
-    "priceValue": "{price} €",
-    "priceLabel": "per hotel al mes, tot inclòs",
+    "priceTop": "Res a migrar",
+    "priceValue": "0",
+    "priceLabel": "sistemes per canviar, ni res per reaprendre",
     "setupTop": "Es configura un cop",
     "setupValue": "1×",
     "setupLabel": "connecta el teu PMS i el correu, i a punt"
@@ -151,27 +163,23 @@
     "fondasTitle": "Amb Fondas",
     "manual1": "Fulls de càlcul i regles al correu",
     "manual2": "Respostes escrites a mitjanit",
-    "manual3": "Hores d'arribada reclamades a mà",
-    "manual4": "Arribades que s'escapen",
-    "manual5": "Sense una foto del matí",
+    "manual3": "Arribades que s'escapen",
     "fondas1": "Respostes sobre dades en viu, només preguntant",
     "fondas2": "Cada resposta redactada perquè la revisis",
-    "fondas3": "Hores d'arribada reclamades automàticament",
-    "fondas4": "Les arribades tard apareixen al resum, no a la porta",
-    "fondas5": "Un resum matinal abans que obri la recepció"
+    "fondas3": "Les arribades tard apareixen al resum, no a la porta"
   },
   "cta": {
-    "eyebrow": "Uneix-te a la beta",
-    "headline": "A punt per recuperar els teus matins?",
-    "subhead": "Gratis per als primers 20 hotels. Sense targeta. Funciona el mateix dia.",
+    "eyebrow": "Quan vulguis",
+    "headline": "Mira-ho funcionant amb les teves pròpies dades.",
+    "subhead": "Vint minuts, el teu hotel, sense migrar res. Gratis per als tres primers hotels.",
     "button": "Comença →"
   },
   "footer": {
-    "rights": "© {year} Fondas. El director amb IA per a hotels.",
+    "rights": "© {year} Fondas. Juga amb avantatge.",
     "privacy": "Privadesa",
     "terms": "Termes",
     "sampleBrief": "Veure un resum d'exemple",
-    "valueProp": "El director amb IA per a hotels independents.",
+    "valueProp": "La IA que porta l'operativa del teu hotel.",
     "productTitle": "Producte",
     "companyTitle": "Empresa",
     "resourcesTitle": "Recursos",
@@ -220,16 +228,33 @@
   },
   "sampleBrief": {
     "title": "Resum matinal",
-    "hotelLine": "Hotel Miravent · Barcelona · 42 habitacions",
+    "hotelLine": "{hotel} · {city} · {rooms} habitacions",
     "disclaimer": "Un hotel fictici: tots els noms i xifres d'aquesta pàgina són inventats.",
     "overnightTitle": "Què ha fet Fondas aquesta nit",
-    "ctaHeadline": "El vols per al teu hotel demà al matí?"
+    "requestHeadline": "Vols el resum de demà per al teu hotel?",
+    "requestLead": "Te'l preparo jo i te l'envio al matí. Sense connectar res.",
+    "requestHotelLabel": "Nom de l'hotel",
+    "requestHotelPlaceholder": "El teu hotel",
+    "requestNameLabel": "Nom",
+    "requestNamePlaceholder": "El teu nom",
+    "requestEmailLabel": "Correu",
+    "requestEmailPlaceholder": "tu@elteuhotel.com",
+    "requestButton": "Envia'm el resum de demà",
+    "requestSending": "Enviant…",
+    "requestSent": "Mira la teva safata — t'hem enviat un enllaç per confirmar. Quan l'obris, et preparo el resum.",
+    "requestInvalid": "Afegeix el nom del teu hotel i un correu vàlid.",
+    "requestError": "Alguna cosa ha fallat per la nostra banda. Torna-ho a provar en un moment.",
+    "requestPrivacy": "Només fem servir aquestes dades per preparar-te el resum i respondre't —",
+    "requestEmailSubject": "Confirma el teu resum de Fondas",
+    "requestEmailHeading": "Un clic i m'hi poso.",
+    "requestEmailBody": "Has demanat un resum matinal per al teu hotel. Confirma-ho aquí sota i te'l preparo i te l'envio al matí.",
+    "requestEmailButton": "Confirmar la meva sol·licitud"
   },
   "auth": {
     "loginTitle": "Benvingut de nou",
     "signupTitle": "Crea el teu compte",
     "loginDesc": "Inicia la sessió al teu tauler de Fondas.",
-    "signupDesc": "El director del teu hotel, treballant cada nit.",
+    "signupDesc": "Connecta el teu PMS i el correu de l'hotel. Demà al matí ja estarà fet.",
     "email": "Correu electrònic",
     "password": "Contrasenya",
     "emailPlaceholder": "director@hotel.com",
@@ -308,6 +333,27 @@
     "communications": "Comunicacions",
     "analytics": "Analítica",
     "chat": "Chat",
+    "frontDesk": "Recepció",
+    "frontDeskInfo": "Informació de recepció",
+    "reputation": "Anàlisi de reputació",
+    "revenue": "Ingressos",
+    "revenueManagement": "Revenue management",
+    "demandForecasting": "Previsió de demanda",
+    "otaParity": "Paritat OTA",
+    "upsellAi": "Upselling amb IA",
+    "roomUpgradeAi": "Upgrades amb IA",
+    "salesMarketing": "Vendes i màrqueting",
+    "operations": "Operacions",
+    "staff": "Personal",
+    "housekeeping": "Pisos i manteniment",
+    "fnb": "F&B",
+    "procurement": "Compres i subministraments",
+    "finance": "Finances",
+    "financeReporting": "Informes i auditoria",
+    "chargeback": "Chargeback",
+    "oversight": "Supervisió",
+    "aiManagement": "Gestió de la IA",
+    "teamActivity": "Activitat de l'equip",
     "waitingOne": "{count} missatge pendent",
     "waitingOther": "{count} missatges pendents",
     "menu": "Menú",
@@ -318,7 +364,28 @@
     "blurb": {
       "analytics": "L'ocupació, els ingressos i els temps de resposta mes a mes, per veure les tendències que hi ha darrere de cada resum matinal.",
       "chat": "Una pàgina sencera per preguntar el que vulguis sobre el teu hotel, amb tota la conversa desada. El botó del cantó ja respon preguntes soltes.",
-      "concierge": "Missatgeria per a hostes ja allotjats, inclòs WhatsApp. Fins llavors, tots els correus d'hostes són a Comunicacions, on es destaquen els que arriben aviat."
+      "concierge": "Missatgeria per a hostes ja allotjats, inclòs WhatsApp. Fins llavors, tots els correus d'hostes són a Comunicacions, on es destaquen els que arriben aviat.",
+      "frontDesk": "Tota la recepció d'un cop d'ull: arribades, missatges pendents i tot el que necessita una persona, en una sola vista.",
+      "frontDeskInfo": "Dades de la casa, polítiques i notes de torn en un sol lloc, perquè a recepció tothom respongui igual.",
+      "reputation": "Les ressenyes de Booking, Google i TripAdvisor llegides i agrupades per temes, per veure què mou la teva nota.",
+      "revenue": "Tarifa, ocupació i pickup en un sol lloc: els números darrere de cada decisió de preu.",
+      "revenueManagement": "Una tarifa recomanada per a cada dia, a partir del teu ritme de reserves, el teu comp set i el calendari.",
+      "demandForecasting": "Cap a on va la demanda per data, per fixar preus per davant en comptes d'anar-hi al darrere.",
+      "otaParity": "Tots els canals vigilats per desviacions de tarifa i disponibilitat, amb els desquadraments assenyalats el mateix dia.",
+      "upsellAi": "L'oferta adequada a l'hoste adequat abans d'arribar: check-in d'hora, millors vistes, una taula reservada.",
+      "roomUpgradeAi": "Les millors habitacions buides convertides en upgrades de pagament automàticament, al preu que cada hoste pagarà.",
+      "salesMarketing": "Campanyes de venda directa, segments d'hostes i despesa per canal, des del mateix lloc on portes l'hotel.",
+      "operations": "L'operativa del dia en una pantalla: qui entra, què està obert i què bloqueja un relleu net.",
+      "staff": "Quadrants, torns i cobertura, amb els buits a la vista abans que siguin un matí sense gent.",
+      "housekeeping": "Estat de les habitacions i parts de treball en temps real, perquè recepció sàpiga sempre què es pot vendre.",
+      "fnb": "Coberts, estoc i rendiment de cada punt de venda al costat del negoci d'habitacions que els alimenta.",
+      "procurement": "Comandes, proveïdors i nivells mínims controlats, per reposar abans de quedar-te sense, no després.",
+      "finance": "Ingressos, cost i caixa en una vista: el compte de resultats de l'hotel sense full de càlcul.",
+      "financeReporting": "Informes de tancament de nit i de final de mes generats i quadrats, a punt per a la teva gestoria.",
+      "chargeback": "Disputes detectades aviat i preparades amb les proves per barallar-les, per guanyar-ne més.",
+      "oversight": "La vista del propietari sobre cada hotel i cada part de Fondas, en un sol lloc.",
+      "aiManagement": "Veure i dirigir el que la IA de Fondas fa per tu: el que ha redactat, enviat i decidit.",
+      "teamActivity": "Què porta ara mateix cada lloc —recepció, back office— i quanta feina els treu Fondas."
     }
   },
   "communications": {
@@ -337,6 +404,11 @@
   "home": {
     "goodMorning": "Bon dia, {name}",
     "readBrief": "Llegir el resum d'avui →",
+    "briefEmpty": "El resum d'avui encara no està a punt: obre'l per veure què falta.",
+    "briefArrivalsOne": "{count} arribada avui",
+    "briefArrivalsOther": "{count} arribades avui",
+    "briefWaitingOne": "{count} missatge pendent",
+    "briefWaitingOther": "{count} missatges pendents",
     "occupancyToday": "Ocupació aquesta nit",
     "freeRooms": "Habitacions lliures",
     "checkinsToday": "Entrades",
@@ -717,12 +789,15 @@
   "showcase": {
     "eyebrow": "El resum matinal",
     "headline": "Tot l'hotel, en una sola pantalla.",
-    "lead": "Arribades, correu de la nit, l'ocupació d'aquesta nit i l'única cosa que necessita una decisió — resumit en llenguatge clar abans del teu primer cafè."
+    "lead": "Arribades, correu de la nit, l'ocupació d'aquesta nit i l'única cosa que necessita una decisió — resumit en llenguatge clar abans del teu primer cafè.",
+    "gateLine": "Aquest és el resum d'un hotel de {rooms} habitacions.",
+    "gateCta": "Vols el de demà per al teu? →"
   },
   "emailShowcase": {
     "eyebrow": "La safata",
     "headline": "El correu d'hostes, redactat abans de despertar-te.",
-    "lead": "Cada missatge arriba classificat i respost amb la veu del teu hotel, vinculat a la reserva. Tu revises, ajustes i envies — res no surt sense tu."
+    "lead": "Cada missatge arriba classificat i respost amb la veu del teu hotel, vinculat a la reserva. Tu revises, ajustes i envies — res no surt sense tu.",
+    "approvalLine": "Res no s'envia sense el teu vistiplau."
   },
   "faq": {
     "eyebrow": "Preguntes",
@@ -743,19 +818,19 @@
     "q6": "Es fan servir les dades dels hostes per entrenar models d'IA?",
     "a6": "No. La informació dels teus hostes es fa servir només per generar els resums, esborranys i respostes del teu hotel — mai per entrenar models compartits.",
     "q7": "Quant costa Fondas?",
-    "a7": "Un preu únic per allotjament i mes — tot inclòs, sense tarifes per usuari. Escriu-nos i t'ajudem a començar."
+    "a7": "Un preu únic per allotjament i mes — tot inclòs, sense tarifes per usuari. Fondas està en beta privada: incorporem uns quants hotels cada vegada. Escriu-nos i t'ajudem a començar."
   },
   "pricing": {
     "eyebrow": "Preu",
     "headline": "Un preu únic per allotjament.",
-    "price": "{price} €",
+    "price": "Un preu",
     "priceUnit": "per allotjament i mes — tot inclòs",
-    "lead": "Sense tarifes per usuari, sense cobrament per correu, sense nivells sorpresa. Tot el que fa Fondas va inclòs, a un únic preu per allotjament.",
-    "note": "Gratis per als primers 20 hotels durant la beta privada.",
+    "lead": "Sense tarifes per usuari, sense cobrament per correu, sense nivells sorpresa. Tot el que fa {brand} va inclòs, a un únic preu per allotjament. Escriu-nos i t'ho diem.",
+    "note": "Gratis per als tres primers hotels del pilot.",
     "button": "Parla amb nosaltres"
   },
   "authAside": {
-    "headline": "Operativa de l'hotel, en pilot automàtic.",
+    "headline": "L'operativa de l'hotel, feta.",
     "line1": "Correu d'hostes, redactat durant la nit.",
     "line2": "Hores d'arribada, reclamades automàticament.",
     "line3": "Un resum matinal abans d'obrir recepció."

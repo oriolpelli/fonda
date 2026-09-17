@@ -440,9 +440,10 @@ export type Database = {
           },
         ];
       };
-      // Marketing newsletter list (migration 0016). No hotel_id: these rows
-      // belong to members of the public, not to a hotel, so RLS denies every
-      // client and only the service_role key reaches them.
+      // Marketing newsletter list (migration 0016, extended by 0021). No
+      // hotel_id: these rows belong to members of the public, not to a hotel,
+      // so RLS denies every client and only the service_role key reaches them.
+      // `source` separates footer newsletter signups from sample-brief leads.
       newsletter_subscribers: {
         Row: {
           id: string;
@@ -455,6 +456,10 @@ export type Database = {
           confirmed_at: string | null;
           unsubscribed_at: string | null;
           created_at: string;
+          source: string;
+          hotel_name: string | null;
+          first_name: string | null;
+          sample_requested_at: string | null;
         };
         Insert: {
           id?: string;
@@ -467,6 +472,10 @@ export type Database = {
           confirmed_at?: string | null;
           unsubscribed_at?: string | null;
           created_at?: string;
+          source?: string;
+          hotel_name?: string | null;
+          first_name?: string | null;
+          sample_requested_at?: string | null;
         };
         Update: {
           id?: string;
@@ -479,6 +488,10 @@ export type Database = {
           confirmed_at?: string | null;
           unsubscribed_at?: string | null;
           created_at?: string;
+          source?: string;
+          hotel_name?: string | null;
+          first_name?: string | null;
+          sample_requested_at?: string | null;
         };
         Relationships: [];
       };

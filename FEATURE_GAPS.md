@@ -36,7 +36,7 @@ _Free pilots need only reliability and a clean, real demo. Nothing here should b
 | 1 | Mobile pass | The GM reads the brief on a phone at 6:45am — that moment *is* the pitch. | S | 🟢 verified on a real phone (27 Aug) |
 | 2 | PMS connect inside onboarding | A new hotel must reach a real preview brief in one sitting, or they drop before value. | S | 🟢 verified with a fresh signup (27 Aug) |
 | 3 | Website punch-list | 9 dead footer links + unset per-env `SITE_URL`. Provisional content on a live site kills credibility. | S | 🟢 code done & deployed 28 Aug; only the optional Vercel Preview `SITE_URL` env var left |
-| 4 | `hello@fondas.app` can't receive mail | It's the contact on the site; a bounce to a prospect is an own-goal. | XS | 🔴 open |
+| 4 | `hello@fondas.app` can't receive mail | It's the contact on the site; a bounce to a prospect is an own-goal. | XS | 🟢 verified 28 Aug — forwards to fondasai1@gmail.com, test email landed |
 | 5 | Apaleo end-to-end unverified | 468-line client exists; no real Apaleo hotel proven through sync → brief. Don't demo blind. | S | 🟢 proven 28 Aug — OAuth + sync + reservations visible in Fondas |
 | 6 | Draft-acceptance measurement | THE PMF metric — live and verified (events flowing, PII-clean: person = hotel UUID). | M | 🟢 live & verified 28 Aug |
 | 7 | Data-honesty language | Say "stored encrypted, EU-hosted, deleted on offboarding" everywhere. | XS | 🟢 done, deployed & verified 28 Aug (EU region confirmed: Ireland) |
@@ -47,8 +47,8 @@ _Free pilots need only reliability and a clean, real demo. Nothing here should b
 | ⊕ N2 | Close the ETA-from-reply loop (finish B11) | Check-in chasing sends the nudge but nothing parses the reply, so guest-stated ETAs never populate. Droppable for pilots (PMS can supply ETAs). | S | 🔴 open — decide priority |
 | ⊕ N3 | "Email me this brief now" button | The dashboard Refresh only updates the on-screen brief; there's no way to re-send the email on demand — useful for demos, onboarding, and your daily checks. | S | 🔴 open — optional |
 | ⊕ N4 | Can't disconnect / switch a hotel's data source | Once a hotel is on one source (mews/apaleo/**sheet** test source), Settings locks to it — no disconnect for "sheet", no way to switch to a PMS. Matters for fixing a wrong/broken connection during a live pilot onboarding. | S | 🟠 built (in working tree — new `pms-disconnect-card`); pending push/deploy + a quick test |
-| ⊕ N5 | "Sync now" — already built, just mislocated | A working `SyncNowButton` (→ `/api/sync/pms`) already exists on a separate **Admin** page; it just isn't in Settings where you'd look. So: reuse it, don't rebuild. | S | 🟢 done 31 Aug — now in Settings → Connections (folded in via N7) |
-| ⊕ N7 | Settings flat (~7 sections) + separate Admin menu | Opening Settings dumps every option at once; sync/status live on a separate Admin nav item. Group Settings into click-in categories and fold Admin into it. | M | 🟢 code done 31 Aug — pending deploy + a click-through of every form |
+| ⊕ N5 | "Sync now" — already built, just mislocated | A working `SyncNowButton` (→ `/api/sync/pms`) already exists on a separate **Admin** page; it just isn't in Settings where you'd look. So: reuse it, don't rebuild. | S | 🟢 exists (Admin page) — being folded into Settings via N7 |
+| ⊕ N7 | Settings flat (~7 sections) + separate Admin menu | Opening Settings dumps every option at once; sync/status live on a separate Admin nav item. Group Settings into click-in categories and fold Admin into it. | M | 🔴 open |
 | ⊕ N6 | Apaleo multi-property accounts merge into one hotel | An Apaleo account with several properties has all of them merged into one Fondas hotel (counts/occupancy blend). Fine for single-property pilots; matters for the 1–3-property owners in the ICP. | M | 🔴 open — deferred |
 
 ### How to address each — Gate 1
@@ -318,23 +318,6 @@ Run npm run lint.
 ```
 Moderate change — after deploy, test every form still saves, PMS connect/disconnect works, and Sync Now works from its new home.
 
-**Built (31 Aug, Claude Code).** Settings is now a menu of three groups on nested routes:
-`/dashboard/settings` lists the categories and nothing else, with the forms one click in at
-`settings/connections`, `settings/hotel` and `settings/account`. Groups are defined once in
-`lib/settings-groups.ts` (key = route segment); `components/dashboard/settings-nav.tsx` is the
-shared back-link + title + sub-nav header. No form behaviour or data model changed — the
-components were regrouped, not rewritten. The Admin page is gone: its sync view (SyncNowButton
-→ `/api/sync/pms`, the PMS/reservations/guests cards, last-synced, recent sync runs, latest
-reservations) now sits at the foot of Connections behind the **same owner-only gate**, which
-hides the section rather than the route since the connectors above it were never owner-only.
-`/dashboard/admin` remains as a redirect so old links don't 404, and the Admin item is out of
-the sidebar. Dictionary `admin` → `sync` in all three locales (en/es/ca key parity verified);
-`settings.groups.*` added for the group nav. One fix beyond the move: the rail's active state
-was an exact path match, so Settings would have gone dark once you clicked into a group — it
-now also matches sub-paths (`/dashboard` excluded, since every route sits under it). lint, tsc
-and build all pass. **Remaining: deploy, then click through every form, PMS connect/disconnect,
-and Sync Now in its new home → then N5 and N7 are fully 🟢.**
-
 **⊕ N6 · Apaleo multi-property accounts merge into one hotel.** _Surfaced 28 Aug — Apaleo dev accounts ship 5 demo hotels._ Fondas is one-hotel-to-one-PMS; the Apaleo client now fetches all `propertyIds` and merges their reservations into the single connected hotel, so a multi-property account blends counts/occupancy. Correct and harmless for single-property pilots (a real GM's account is usually one property), but for the 1–3-property owners in the ICP (the Group tier), Apaleo onboarding should let the user pick which property (or properties) map to the hotel. Deferred until a multi-property Apaleo prospect is real; noted so it isn't rediscovered as a bug.
 
 **Gate 1 exit:** every item 🟢, the full demo run twice (laptop, then phone), and nothing fake or broken anywhere a GM can click.
@@ -575,7 +558,7 @@ Run npm run lint.
 
 | Gate | Genuinely un-built (🔴) | Built, needs your verification (🟠) | Cheapest high-value move |
 |---|---|---|---|
-| **1 · Before pilots** | `hello@` inbox (in setup), reliability log (#8); optional polish: N2 ETA loop, N3 brief-now, #10 palette | brief email palette _(mobile, onboarding, Spanish-brief, #6 analytics, #3 website, #7 data-honesty + EU-region, N1 language, **#5 Apaleo E2E** ✅ done 27–28 Aug, **N5/N7 Settings IA + sync** ✅ done 31 Aug)_ | **Down to two founder tasks: the `hello@` test email and the reliability-log backfill.** |
+| **1 · Before pilots** | reliability log (#8, calendar-bound — runs in background); optional polish: N7 Settings reorg (deploying), N2 ETA loop, N3 brief-now, #10 palette | _(all pilot-blockers cleared)_ mobile, onboarding, Spanish-brief, #6 analytics, #3 website, #7 data-honesty + EU-region, N1 language, **#5 Apaleo E2E**, **#4 `hello@` inbox** ✅ | **Last true pre-outreach blocker (`hello@`) cleared → clear to start go-to-market.** Reliability log accrues in parallel. |
 | **2 · Before charging** | Stripe, rate-limiting/caps, entity+DPA, Google verification, unsubscribe flow | `company.ts` details | Write the one-page pilot agreement now; book the lawyer the week pilot #2 lands |
 | **3 · Before scaling** | Outlook, group digest, autonomy, upsell drafting, tests/CI, WhatsApp, 3rd PMS, revenue signal, repeat-guest, schema fix | — | Hold the line; pull Outlook forward only if pilots keep asking |
 

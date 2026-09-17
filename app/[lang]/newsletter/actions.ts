@@ -9,6 +9,7 @@ import {
   RESEND_COOLDOWN_MS,
   confirmEmailHtml,
   confirmUrl,
+  type ConfirmEmailCopy,
   generateConfirmToken,
   hashConfirmToken,
   hashUnsubscribeToken,
@@ -44,15 +45,17 @@ function localeFrom(formData: FormData): Locale {
 async function sendConfirmEmail(
   to: string,
   locale: Locale,
-  token: string
+  token: string,
+  /** Omitted for the newsletter; supplied by the sample-brief request. */
+  override?: { subject: string; copy: ConfirmEmailCopy }
 ): Promise<void> {
   const dict = await getDictionary(locale);
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
     from: process.env.RESEND_FROM ?? "Fondas <onboarding@resend.dev>",
     to,
-    subject: dict.newsletterEmail.subject,
-    html: confirmEmailHtml(dict, confirmUrl(locale, token)),
+    subject: override?.subject ?? dict.newsletterEmail.subject,
+    html: confirmEmailHtml(dict, confirmUrl(locale, token), override?.copy),
   });
   if (error) throw new Error(`Resend: ${error.message}`);
 }
@@ -236,6 +239,130 @@ export async function unsubscribeFromNewsletter(
   } catch (error) {
     console.error(
       "[newsletter] unsubscribe failed:",
+      error instanceof Error ? error.message : error
+    );
+    return { status: "error" };
+  }
+}
+
+
+/**
+ * The ask underneath the sample brief: "want tomorrow's for your hotel?"
+ *
+ * Deliberately NOT a gate. The sample brief above this form is fully readable
+ * without submitting anything, because a static sample behind a form converts
+ * badly and that sample is the thing that proves the product. This is the ask
+ * that follows the proof, not the toll that precedes it.
+ *
+ * It rides the newsletter pipeline — same table, same double opt-in, same
+ * token and cooldown rules, same provider — and is told apart from a newsletter
+ * signup by `source`. It returns SubscribeState for the same reason sign-up
+ * does: a public form must not become an oracle for who is already on the list,
+ * so "already subscribed" is answered exactly like "just added".
+ */
+export async function requestSampleBrief(
+  _prevState: SubscribeState,
+  formData: FormData
+): Promise<SubscribeState> {
+  const locale = localeFrom(formData);
+  const email = normalizeEmail(String(formData.get("email") ?? ""));
+  const hotelName = String(formData.get("hotel") ?? "").trim();
+  const firstName = String(formData.get("firstName") ?? "").trim();
+
+  // The hotel is what makes this a lead rather than an address, so it is the
+  // one extra field the server insists on. Lengths are capped because this is
+  // an unauthenticated public form and the values are free text.
+  if (!email) return { status: "invalid" };
+  if (!hotelName || hotelName.length > 120) return { status: "invalid" };
+  if (firstName.length > 120) return { status: "invalid" };
+
+  const admin = createAdminClient();
+  const now = new Date().toISOString();
+
+  // Recorded on every path below, including the ones that send no mail, so a
+  // lead is never lost just because the address was already known to us.
+  const lead = {
+    source: "sample_brief" as const,
+    hotel_name: hotelName,
+    first_name: firstName || null,
+    sample_requested_at: now,
+  };
+
+  try {
+    const { data: existing, error: lookupError } = await admin
+      .from("newsletter_subscribers")
+      .select("id, status, confirm_sent_at")
+      .eq("email", email)
+      .maybeSingle();
+    if (lookupError) throw lookupError;
+
+    // Already confirmed: we hold consent, so capture the hotel and stop. No
+    // second confirmation email — they have nothing left to confirm.
+    if (existing?.status === "subscribed") {
+      const { error } = await admin
+        .from("newsletter_subscribers")
+        .update(lead)
+        .eq("id", existing.id);
+      if (error) throw error;
+      return { status: "sent" };
+    }
+
+    // Pending and mailed recently: record the lead, swallow the send. This is
+    // what stops the form being used to flood a stranger's inbox.
+    if (
+      existing?.confirm_sent_at &&
+      Date.now() - new Date(existing.confirm_sent_at).getTime() <
+        RESEND_COOLDOWN_MS
+    ) {
+      const { error } = await admin
+        .from("newsletter_subscribers")
+        .update(lead)
+        .eq("id", existing.id);
+      if (error) throw error;
+      return { status: "sent" };
+    }
+
+    const { token, hash } = generateConfirmToken();
+    const row = {
+      email,
+      locale,
+      status: "pending" as const,
+      confirm_token_hash: hash,
+      confirm_sent_at: null,
+      confirmed_at: null,
+      unsubscribed_at: null,
+      ...lead,
+    };
+
+    const { error: writeError } = existing
+      ? await admin
+          .from("newsletter_subscribers")
+          .update(row)
+          .eq("id", existing.id)
+      : await admin.from("newsletter_subscribers").insert(row);
+    if (writeError) throw writeError;
+
+    const dict = await getDictionary(locale);
+    await sendConfirmEmail(email, locale, token, {
+      subject: dict.sampleBrief.requestEmailSubject,
+      copy: {
+        heading: dict.sampleBrief.requestEmailHeading,
+        body: dict.sampleBrief.requestEmailBody,
+        button: dict.sampleBrief.requestEmailButton,
+      },
+    });
+
+    await admin
+      .from("newsletter_subscribers")
+      .update({ confirm_sent_at: new Date().toISOString() })
+      .eq("email", email);
+
+    return { status: "sent" };
+  } catch (error) {
+    // Never log the address, the name or the hotel — all three are PII and
+    // this is a public, unauthenticated form.
+    console.error(
+      "[sample-brief] request failed:",
       error instanceof Error ? error.message : error
     );
     return { status: "error" };

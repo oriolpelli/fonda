@@ -60,6 +60,37 @@ Defined as CSS custom properties in `:root` (see `globals.css`). Never hard-code
 --fonda-ink-hover:    #1C1C1C
 ```
 
+> **v3 amendment — `--fonda-surface-2` is also a band ground (Phase D-fix).**
+> The palette above is v2's. Under v3 (`FONDA_SANA_REDESIGN.md` §3.1, which
+> wins) the ground inverted — the page is neutral grey `#EEEEEE` and cards are
+> white — and a third surface was added: `--fonda-surface-2` `#F6F3EE`, warm
+> off-white, originally scoped to "nested wells, secondary panels, hover
+> fills".
+>
+> **That scope is now wider: it is also the marketing page's light band
+> ground**, alternating with `--fonda-bg` every two bands. The reason is
+> structural, not stylistic. `--fonda-surface` resolves to `#FFFFFF`, the same
+> white as `--card` and as the product-shot windows, so a "surface" band put a
+> white window on a white ground — a **1.000:1** tonal step, i.e. none at all,
+> leaving v3 §6's "cards float lighter than the page" nothing to float
+> against. Against `#F6F3EE` the step is **1.107:1**, and every text token
+> still clears WCAG AA on it (worst case `--fonda-text-3` at **5.02:1**, above
+> the 4.5:1 floor for normal text).
+>
+> Two rules follow, and they are the cost of the wider scope:
+> - **A nested well must not be `--fonda-surface-2` on a `--fonda-surface-2`
+>   band** — it would vanish for exactly the reason the white band did. Put
+>   wells that sit on a light band inside a white card first, or step them
+>   down to `--fonda-inset`. Verified clean at Phase D-fix: every
+>   `--fonda-surface-2` element on the marketing pages sits on `#EEEEEE` or on
+>   white inside a window.
+> - `--fonda-surface` stays the token for **cards and panels**, never for a
+>   band. If a band looks like it wants white, what it actually wants is for
+>   the thing on top of it to be white.
+>
+> See `SITE_REDESIGN_V3.md` §4 "Band rhythm" — this is load-bearing and is not
+> to be reverted.
+
 **Usage rules**
 - Background is `#FFFFFF`. Use `--fonda-surface` for nested panels/wells.
 - `--fonda-ink` (near-black) is the **primary CTA** color and the color of full-bleed dark sections (CTA band, footer).

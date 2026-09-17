@@ -4,16 +4,39 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import {
+  Activity,
   BarChart3,
+  BedDouble,
+  Bell,
+  Bot,
+  ChevronDown,
   ConciergeBell,
+  CreditCard,
   DoorOpen,
+  Dot,
+  Eye,
+  FileText,
+  Info,
   LayoutDashboard,
+  LineChart,
   LogOut,
+  Megaphone,
   Menu,
   MessageSquare,
+  Package,
+  Scale,
   Send,
   Settings,
+  Sparkles,
+  SprayCan,
+  Star,
   Sunrise,
+  TrendingUp,
+  UserCog,
+  Users,
+  Utensils,
+  Wallet,
+  Wrench,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -64,21 +87,87 @@ export interface NavItem {
   comingSoon?: boolean;
   /** Localized "Coming soon", supplied by the server layout. */
   comingSoonLabel?: string;
+  /**
+   * The sub-pages this item owns (NAV_REORG_SPEC.md §3). A section with
+   * children does not navigate: its icon opens the submenu panel, and its own
+   * page is reached through its "Dashboard" child. `badge`, `comingSoon` and
+   * `comingSoonLabel` all work at either level — a section can be unbuilt, and
+   * so can a child.
+   */
+  children?: NavItem[];
+  /**
+   * Which section a child belongs to, when its route can't say so — the four
+   * live Front Desk pages still sit at their Phase 1 URLs (`/dashboard/brief`
+   * and friends), so `startsWith` against the section path won't find them.
+   * Lets active-state grouping light the section while you're inside it.
+   */
+  sectionKey?: string;
 }
 
 // Icons live here in the Client Component and are looked up by key. They must
 // NOT be passed as props from the Server layout — component functions can't
 // cross the server/client boundary (doing so throws at render).
 const ICONS: Record<string, LucideIcon> = {
+  // Top-level sections — what the rail draws.
   dashboard: LayoutDashboard,
+  "front-desk": ConciergeBell,
+  revenue: TrendingUp,
+  "sales-marketing": Megaphone,
+  operations: Wrench,
+  finance: Wallet,
+  oversight: Eye,
+  settings: Settings,
+
+  // Children — what the submenu panel and the drawer's accordion draw
+  // (NAV_REORG_SPEC.md §9.6). Those small row icons are most of the
+  // Customer.io craft the panel is copying, so every sub-page has one.
+  //
+  // A section's own "Dashboard" child shares the section's key, so it can't be
+  // listed here — `panelIconKey()` below special-cases it to LayoutDashboard.
+  "front-desk-info": Info,
   brief: Sunrise,
   checkins: DoorOpen,
-  concierge: ConciergeBell,
   communications: Send,
+  concierge: Bell,
+  reputation: Star,
+  "revenue-management": LineChart,
+  "demand-forecasting": Activity,
+  "ota-parity": Scale,
+  "upsell-ai": Sparkles,
+  "room-upgrade-ai": BedDouble,
+  staff: Users,
+  housekeeping: SprayCan,
+  fnb: Utensils,
+  procurement: Package,
+  "finance-reporting": FileText,
+  chargeback: CreditCard,
+  "ai-management": Bot,
+  "team-activity": UserCog,
+
+  // Out of the tree, kept for their routes.
   analytics: BarChart3,
   chat: MessageSquare,
-  settings: Settings,
 };
+
+/**
+ * The ICONS key a child row should draw.
+ *
+ * A section's "Dashboard" sub-page carries the *section's* key (that row is the
+ * section's own page), so a plain lookup would hand it the section's glyph —
+ * Front Desk › Dashboard would show a concierge bell. The tell is that such a
+ * row names itself as its own section: `sectionKey === key`. Everything else
+ * looks itself up.
+ *
+ * Returns a key, not a component, for two reasons: it keeps this file's rule
+ * that icons are resolved by string (see the ICONS comment above), and a
+ * function that *returns a component* trips `react-hooks/static-components` at
+ * the call site, which can only see that a component came out of a call.
+ */
+function panelIconKey(item: NavItem): string {
+  return item.sectionKey && item.sectionKey === item.key
+    ? "dashboard"
+    : item.key;
+}
 
 /** Shared shell for every control in the rail — 40px hit target, soft corners. */
 const RAIL_ITEM =
@@ -155,6 +244,176 @@ function CountBadge({ badge, active }: { badge: NavBadge; active: boolean }) {
   );
 }
 
+/**
+ * The corner marker for an unbuilt section on the rail (NAV_REORG_SPEC.md
+ * §9.6): a small muted sparkle, the same glyph the panel's coming-soon rows
+ * carry, so the marker reads the same rail-and-panel.
+ *
+ * Not a dimmed icon: `--fonda-text-3` at reduced opacity falls under the 3:1
+ * minimum for non-text contrast. Decorative here — the "Coming soon" wording is
+ * already folded into the item's accessible name by `visibleLabel`.
+ *
+ * Nudged in a notch from the 5px dot this replaces (`right-1.5 top-1.5`), since
+ * the glyph is wider and would otherwise sit on the section icon's shoulder.
+ */
+function SoonMarker() {
+  return (
+    <Sparkles
+      aria-hidden="true"
+      strokeWidth={1.5}
+      className="absolute right-1 top-1 size-3 text-[var(--fonda-text-3)]"
+    />
+  );
+}
+
+/**
+ * The quiet mono "Coming soon" chip carried by labelled rows — the drawer, the
+ * submenu panel, and a drawer group's header.
+ */
+function SoonChip({
+  label,
+  active,
+  className,
+}: {
+  label: string;
+  active: boolean;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "shrink-0 rounded-full border border-[var(--fonda-border-2)] px-1.5 py-0.5 font-mono text-[10px] font-normal leading-[1.5] tracking-[0.04em] transition-colors",
+        // On the --fonda-inset fill, text-3 is only 4.22:1 — under AA — so the
+        // hover and active states step up to text-2 (5.83:1 there).
+        active
+          ? "text-[var(--fonda-text-2)]"
+          : "text-[var(--fonda-text-3)] group-hover:text-[var(--fonda-text-2)]",
+        className
+      )}
+    >
+      {label}
+    </span>
+  );
+}
+
+/** The count chip on a labelled row (the icon rail uses `CountBadge`). */
+function RowBadge({
+  badge,
+  className,
+}: {
+  badge: NavBadge;
+  className?: string;
+}) {
+  return (
+    <span
+      aria-label={badge.srLabel}
+      className={cn(
+        "shrink-0 rounded-full px-2 py-0.5 font-mono text-[11px] font-medium tabular-nums",
+        badge.alert
+          ? "bg-[var(--fonda-ink)] text-[var(--fonda-text-inv)]"
+          : "bg-[var(--fonda-inset)] text-[var(--fonda-text)]",
+        className
+      )}
+    >
+      {badge.count}
+    </span>
+  );
+}
+
+/**
+ * Monochrome states for a labelled row, shared by the drawer and the submenu
+ * panel. Same tell as the rail: the active row is darker and heavier, never a
+ * different hue.
+ */
+function rowStateClass(active: boolean, soon: boolean) {
+  return active
+    // font-medium, not semibold: the inset fill carries the active state on its
+    // own (§9.3 — Customer.io's active row isn't bold).
+    ? "bg-[var(--fonda-inset)] font-medium text-foreground"
+    : soon
+      ? "text-[var(--fonda-text-3)] hover:bg-[var(--fonda-surface-2)] hover:text-[var(--fonda-text-2)]"
+      : "text-[var(--fonda-text-2)] hover:bg-[var(--fonda-surface-2)] hover:text-foreground";
+}
+
+/**
+ * One child row inside a section — the submenu panel on desktop, the expanded
+ * accordion group on mobile: a small thin icon, the label, and a trailing
+ * marker (NAV_REORG_SPEC.md §9.6).
+ *
+ * `marker` picks how "not built yet" reads. The panel is 220px, so it gets the
+ * small sparkle glyph; the drawer has the width for words and keeps the mono
+ * chip. Never both.
+ */
+function PanelLink({
+  item,
+  active,
+  onNavigate,
+  marker = "glyph",
+  className,
+}: {
+  item: NavItem;
+  active: boolean;
+  /** Closes the panel/drawer, including for a tap on the current page. */
+  onNavigate?: () => void;
+  marker?: "glyph" | "chip";
+  className?: string;
+}) {
+  const soon = item.comingSoon === true;
+  // Neutral bullet if a sub-page has no icon of its own.
+  const Icon = ICONS[panelIconKey(item)] ?? Dot;
+  return (
+    <Link
+      href={item.href}
+      onClick={onNavigate}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "group flex items-center gap-2.5 rounded-[10px] px-2.5 py-[9px] text-[13px] font-medium transition-colors",
+        rowStateClass(active, soon),
+        className
+      )}
+    >
+      {/* A step quieter than the label at rest, then it comes up with the row —
+          `text-inherit` hands it back to whatever state class is in force. */}
+      <Icon
+        aria-hidden="true"
+        strokeWidth={1.5}
+        className={cn(
+          "size-[18px] shrink-0 transition-colors",
+          !active && "text-[var(--fonda-text-3)] group-hover:text-inherit"
+        )}
+      />
+      <span className="min-w-0 truncate">{item.label}</span>
+      {soon && item.comingSoonLabel ? (
+        marker === "chip" ? (
+          <SoonChip
+            label={item.comingSoonLabel}
+            active={active}
+            className="ml-auto"
+          />
+        ) : (
+          // `role="img"` on the wrapper, not the svg: it keeps the accessible
+          // name on one element and gives the native tooltip somewhere to hang.
+          <span
+            role="img"
+            title={item.comingSoonLabel}
+            aria-label={item.comingSoonLabel}
+            className="ml-auto inline-flex shrink-0 items-center text-[var(--fonda-text-3)]"
+          >
+            <Sparkles
+              aria-hidden="true"
+              strokeWidth={1.5}
+              className="size-[14px]"
+            />
+          </span>
+        )
+      ) : null}
+      {item.badge && item.badge.count > 0 ? (
+        <RowBadge badge={item.badge} className="ml-auto" />
+      ) : null}
+    </Link>
+  );
+}
+
 /** One icon-only rail item. Desktop rail only — the drawer uses `DrawerLink`. */
 function RailLink({ item, active }: { item: NavItem; active: boolean }) {
   const Icon = ICONS[item.key] ?? Settings;
@@ -173,18 +432,178 @@ function RailLink({ item, active }: { item: NavItem; active: boolean }) {
       className={cn(RAIL_ITEM, railStateClass(active))}
     >
       <Icon className="size-5" strokeWidth={1.5} />
-      {item.comingSoon ? (
-        // Unbuilt items are marked with a dot, not by dimming the icon:
-        // --fonda-text-3 at reduced opacity falls under the 3:1 minimum for
-        // non-text contrast. The wording lives in the hover label instead.
-        <span
-          aria-hidden="true"
-          className="absolute right-1.5 top-1.5 size-[5px] rounded-full bg-[var(--fonda-text-3)]"
-        />
-      ) : null}
+      {item.comingSoon ? <SoonMarker /> : null}
       {badge ? <CountBadge badge={badge} active={active} /> : null}
       <FlyoutLabel label={label} />
     </Link>
+  );
+}
+
+/**
+ * The count a section shows while its panel is shut.
+ *
+ * Nesting Communications under Front Desk would otherwise hide the "messages
+ * waiting" count behind a click, which is the one number the rail exists to
+ * put in front of you. Surfaced only when exactly one child is carrying a
+ * count: two would have to be summed, and there is no honest screen-reader
+ * wording for a sum that the server didn't pluralize.
+ */
+function sectionBadge(item: NavItem): NavBadge | null {
+  const counted = (item.children ?? []).filter(
+    (child) => child.badge && child.badge.count > 0
+  );
+  return counted.length === 1 ? (counted[0].badge ?? null) : null;
+}
+
+/**
+ * A rail icon that owns a submenu panel (NAV_REORG_SPEC.md §2): a ~220px
+ * labelled column docked immediately right of the rail, listing this section's
+ * sub-pages.
+ *
+ * The trigger is a button, not a link — the section itself has no page of its
+ * own to go to; `/dashboard/revenue` and friends are reached through the
+ * "Dashboard" child inside the panel.
+ *
+ * A disclosure, not an ARIA `menu` — same reasoning as `AccountMenu` below:
+ * `aria-expanded` + `aria-controls`, the panel always in the DOM (just
+ * `hidden`) so `aria-controls` never dangles, Escape returns focus to the
+ * trigger, an outside pointer dismisses it.
+ *
+ * Hover previews, click pins (§2). The wrapper spans the rail's full width so
+ * the pointer can cross the gap between icon and panel without leaving it —
+ * and the panel is a DOM descendant, so moving onto it never fires
+ * `mouseleave` even though it sits outside the wrapper geometrically.
+ */
+function RailSection({
+  item,
+  active,
+  open,
+  onHover,
+  onLeave,
+  onToggle,
+  onClose,
+  isActive,
+}: {
+  item: NavItem;
+  /** Lit for the whole time the route is anywhere inside this section. */
+  active: boolean;
+  open: boolean;
+  onHover: (key: string) => void;
+  onLeave: (key: string) => void;
+  onToggle: (key: string) => void;
+  onClose: () => void;
+  isActive: (href: string) => boolean;
+}) {
+  const Icon = ICONS[item.key] ?? Settings;
+  const label = visibleLabel(item);
+  const badge = sectionBadge(item);
+  const panelId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+
+  // An aria-label replaces the control's contents as its accessible name, so
+  // the count has to be folded in — otherwise it goes unannounced.
+  const accessibleName = badge ? `${label}, ${badge.srLabel}` : label;
+
+  /** Collapse and hand focus back to the trigger. */
+  const dismiss = useCallback(() => {
+    onClose();
+    triggerRef.current?.focus();
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        dismiss();
+      }
+    }
+
+    function onPointerDown(event: PointerEvent) {
+      const target = event.target as Node | null;
+      if (!target) return;
+      // The trigger is excluded deliberately: it runs its own toggle on click,
+      // and closing here first would let that click reopen the panel.
+      if (triggerRef.current?.contains(target)) return;
+      if (panelRef.current?.contains(target)) return;
+      // Not `dismiss()`: focus belongs wherever the user just clicked.
+      onClose();
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [open, dismiss, onClose]);
+
+  return (
+    <div
+      className="relative flex w-full justify-center"
+      onMouseEnter={() => onHover(item.key)}
+      onMouseLeave={() => onLeave(item.key)}
+    >
+      <button
+        ref={triggerRef}
+        type="button"
+        aria-label={accessibleName}
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => onToggle(item.key)}
+        // Focus ring comes from the shared :focus-visible rule in globals.css.
+        className={cn(RAIL_ITEM, railStateClass(active || open))}
+      >
+        <Icon className="size-5" strokeWidth={1.5} />
+        {item.comingSoon ? <SoonMarker /> : null}
+        {badge ? <CountBadge badge={badge} active={active || open} /> : null}
+        {/* Suppressed while open — the panel already names the section, and
+            the pill would sit on top of it. */}
+        {open ? null : <FlyoutLabel label={label} />}
+      </button>
+
+      {/* Part of the ground, not a card on it (§9.1): the same `--fonda-bg` as
+          the rail, no shadow, one hairline on the right edge — rail and panel
+          read as one continuous nav zone rather than a popover that floated in.
+
+          Always mounted so it can animate (§9.4). `inert` when closed is what
+          keeps it honest: out of the tab order and out of the a11y tree, the
+          same discipline the mobile drawer uses, so `aria-controls` still
+          points at real markup. `pointer-events-none` stops the invisible
+          column swallowing clicks meant for the page underneath.
+
+          `prefers-reduced-motion` collapses the transition through the global
+          rule in globals.css. */}
+      <nav
+        ref={panelRef}
+        id={panelId}
+        inert={!open}
+        aria-hidden={!open}
+        aria-label={item.label}
+        className={cn(
+          "fixed inset-y-0 left-16 z-30 flex w-[220px] flex-col gap-1 overflow-y-auto border-r border-[var(--fonda-border)] bg-[var(--fonda-bg)] px-3 py-4 transition-[opacity,transform] duration-150 ease-out",
+          open
+            ? "translate-x-0 opacity-100"
+            : "pointer-events-none -translate-x-1 opacity-0"
+        )}
+      >
+        <p className="px-3 pb-2 pt-1 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+          {item.label}
+        </p>
+        {(item.children ?? []).map((child) => (
+          <PanelLink
+            key={child.key}
+            item={child}
+            active={isActive(child.href)}
+            // Following a link to the page you are already on can't change the
+            // pathname, so close here too.
+            onNavigate={onClose}
+          />
+        ))}
+      </nav>
+    </div>
   );
 }
 
@@ -369,43 +788,111 @@ function DrawerLink({
       aria-current={active ? "page" : undefined}
       className={cn(
         "group flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
-        active
-          ? "bg-[var(--fonda-inset)] font-semibold text-foreground"
-          : soon
-            ? "text-[var(--fonda-text-3)] hover:bg-[var(--fonda-surface-2)] hover:text-[var(--fonda-text-2)]"
-            : "text-[var(--fonda-text-2)] hover:bg-[var(--fonda-surface-2)] hover:text-foreground"
+        rowStateClass(active, soon)
       )}
     >
       <Icon className="size-[18px] shrink-0" strokeWidth={1.5} />
       <span className="min-w-0 truncate">{item.label}</span>
       {soon && item.comingSoonLabel ? (
-        <span
-          className={cn(
-            "ml-auto shrink-0 rounded-full border border-[var(--fonda-border-2)] px-1.5 py-0.5 font-mono text-[10px] font-normal leading-[1.5] tracking-[0.04em] transition-colors",
-            // On the --fonda-inset fill, text-3 is only 4.22:1 — under AA — so
-            // the hover and active states step up to text-2 (5.83:1 there).
-            active
-              ? "text-[var(--fonda-text-2)]"
-              : "text-[var(--fonda-text-3)] group-hover:text-[var(--fonda-text-2)]"
-          )}
-        >
-          {item.comingSoonLabel}
-        </span>
+        <SoonChip
+          label={item.comingSoonLabel}
+          active={active}
+          className="ml-auto"
+        />
       ) : null}
       {item.badge && item.badge.count > 0 ? (
-        <span
-          aria-label={item.badge.srLabel}
-          className={cn(
-            "ml-auto rounded-full px-2 py-0.5 font-mono text-[11px] font-medium tabular-nums",
-            item.badge.alert
-              ? "bg-[var(--fonda-ink)] text-[var(--fonda-text-inv)]"
-              : "bg-[var(--fonda-inset)] text-[var(--fonda-text)]"
-          )}
-        >
-          {item.badge.count}
-        </span>
+        <RowBadge badge={item.badge} className="ml-auto" />
       ) : null}
     </Link>
+  );
+}
+
+/**
+ * A section in the mobile drawer: a header row that expands to reveal its
+ * children, indented under a hairline (NAV_REORG_SPEC.md §2).
+ *
+ * The header doesn't navigate, matching the rail — the section's own page is
+ * the "Dashboard" child. An active section's header goes dark and semibold but
+ * takes no inset fill: the fill is reserved for the one row you're actually
+ * on, so the group and the page don't both claim to be current.
+ */
+function DrawerGroup({
+  item,
+  active,
+  expanded,
+  onToggle,
+  isActive,
+  onNavigate,
+}: {
+  item: NavItem;
+  active: boolean;
+  expanded: boolean;
+  onToggle: () => void;
+  isActive: (href: string) => boolean;
+  onNavigate: () => void;
+}) {
+  const Icon = ICONS[item.key] ?? Settings;
+  const soon = item.comingSoon === true;
+  const listId = useId();
+
+  return (
+    <div>
+      <button
+        type="button"
+        aria-expanded={expanded}
+        aria-controls={listId}
+        onClick={onToggle}
+        className={cn(
+          "group flex w-full items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
+          active
+            ? "font-semibold text-foreground hover:bg-[var(--fonda-surface-2)]"
+            : soon
+              ? "text-[var(--fonda-text-3)] hover:bg-[var(--fonda-surface-2)] hover:text-[var(--fonda-text-2)]"
+              : "text-[var(--fonda-text-2)] hover:bg-[var(--fonda-surface-2)] hover:text-foreground"
+        )}
+      >
+        <Icon className="size-[18px] shrink-0" strokeWidth={1.5} />
+        <span className="min-w-0 truncate">{item.label}</span>
+        <span className="ml-auto flex shrink-0 items-center gap-1.5">
+          {soon && item.comingSoonLabel ? (
+            <SoonChip label={item.comingSoonLabel} active={active} />
+          ) : null}
+          <ChevronDown
+            aria-hidden="true"
+            className={cn(
+              "size-4 transition-transform duration-[180ms]",
+              expanded && "rotate-180"
+            )}
+            strokeWidth={1.5}
+          />
+        </span>
+      </button>
+
+      <div
+        id={listId}
+        hidden={!expanded}
+        className={cn(
+          "ml-[26px] mt-1 flex-col gap-1 border-l border-[var(--fonda-border)] pl-2",
+          expanded ? "flex" : "hidden"
+        )}
+      >
+        {(item.children ?? []).map((child) => (
+          <PanelLink
+            key={child.key}
+            item={child}
+            active={isActive(child.href)}
+            onNavigate={onNavigate}
+            // The drawer has the width for words, so it keeps the mono chip
+            // where the 220px panel takes the glyph (§9.6).
+            marker="chip"
+            // Taller than the desktop panel's rows: a thumb needs the height,
+            // and this matches the rhythm of `DrawerLink` above it. The text
+            // stays a step smaller than the header, so the hierarchy holds.
+            className="py-2.5"
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -445,6 +932,7 @@ function DrawerContent({
   locale,
   menuLabel,
   isActive,
+  isSectionActive,
   onNavigate,
 }: Pick<
   SidebarProps,
@@ -460,8 +948,17 @@ function DrawerContent({
   | "menuLabel"
 > & {
   isActive: (href: string) => boolean;
+  isSectionActive: (item: NavItem) => boolean;
   onNavigate: () => void;
 }) {
+  // Only the groups the user has *touched* are tracked; everything else
+  // follows the route, so reopening the drawer somewhere else lands with the
+  // right group already open. An explicit toggle then sticks across routes,
+  // which is what someone who collapsed a group meant.
+  const [toggled, setToggled] = useState<Record<string, boolean>>({});
+  const isExpanded = (item: NavItem) =>
+    toggled[item.key] ?? isSectionActive(item);
+
   return (
     <>
       <div className="flex flex-col gap-3 px-5 py-6">
@@ -473,14 +970,31 @@ function DrawerContent({
         aria-label={menuLabel}
         className="flex flex-1 flex-col gap-1 overflow-y-auto px-3"
       >
-        {navItems.map((item) => (
-          <DrawerLink
-            key={item.key}
-            item={item}
-            active={isActive(item.href)}
-            onNavigate={onNavigate}
-          />
-        ))}
+        {navItems.map((item) =>
+          item.children?.length ? (
+            <DrawerGroup
+              key={item.key}
+              item={item}
+              active={isSectionActive(item)}
+              expanded={isExpanded(item)}
+              onToggle={() =>
+                setToggled((prev) => ({
+                  ...prev,
+                  [item.key]: !isExpanded(item),
+                }))
+              }
+              isActive={isActive}
+              onNavigate={onNavigate}
+            />
+          ) : (
+            <DrawerLink
+              key={item.key}
+              item={item}
+              active={isActive(item.href)}
+              onNavigate={onNavigate}
+            />
+          )
+        )}
       </nav>
 
       <div className="flex flex-col gap-1 border-t border-border px-3 py-3">
@@ -521,6 +1035,12 @@ function DrawerContent({
  * everything the old 256px rail stacked below the nav — connection status,
  * language, email, sign-out — now lives in the account popover at the bottom.
  *
+ * The nav is two levels (NAV_REORG_SPEC.md §2, which supersedes the redesign
+ * doc's single-level rail): a section that owns children opens a docked 220px
+ * submenu panel instead of navigating, and the drawer renders those sections
+ * as accordion groups. Everything else about the rail is unchanged — same
+ * tokens, same 10px radius, same active-by-darkness tell, same flyout labels.
+ *
  * The drawer is a modal, and behaves like one:
  * - `role="dialog"` + `aria-modal`, with Tab cycling inside the panel;
  * - Escape and the scrim both dismiss it and hand focus back to the trigger;
@@ -560,6 +1080,49 @@ export function Sidebar({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
 
+  // Which section's submenu panel is showing, and whether a click pinned it or
+  // a hover is only previewing it. `route` applies the same open-for-one-route
+  // trick the drawer uses: any navigation closes the panel for free.
+  const [section, setSection] = useState<{
+    key: string;
+    pinned: boolean;
+    route: string;
+  } | null>(null);
+  const openSection = section?.route === pathname ? section.key : null;
+
+  /** Hover preview. A pinned panel wins — hovering elsewhere won't steal it. */
+  const hoverSection = useCallback(
+    (key: string) => {
+      setSection((prev) =>
+        prev?.pinned && prev.route === pathname
+          ? prev
+          : { key, pinned: false, route: pathname }
+      );
+    },
+    [pathname]
+  );
+
+  /** Leaving the icon (and its panel) drops a preview, never a pinned panel. */
+  const unhoverSection = useCallback((key: string) => {
+    setSection((prev) =>
+      prev && !prev.pinned && prev.key === key ? null : prev
+    );
+  }, []);
+
+  /** Click pins; clicking the pinned section again closes it. */
+  const toggleSection = useCallback(
+    (key: string) => {
+      setSection((prev) =>
+        prev?.key === key && prev.pinned && prev.route === pathname
+          ? null
+          : { key, pinned: true, route: pathname }
+      );
+    },
+    [pathname]
+  );
+
+  const closeSection = useCallback(() => setSection(null), []);
+
   const isActive = useCallback(
     (href: string) => {
       const target = stripLocale(href);
@@ -572,6 +1135,27 @@ export function Sidebar({
     },
     [current]
   );
+
+  // The child row whose page we're on, searched across every section so a child
+  // can *declare* its owner rather than have it inferred from the URL.
+  const activeChild = navItems
+    .flatMap((item) => item.children ?? [])
+    .find((child) => isActive(child.href));
+
+  /**
+   * A section is lit for its own page, for any child's page, or for a deeper
+   * route under either.
+   *
+   * The `sectionKey` clause is what keeps Front Desk lit on the Morning Brief:
+   * the four live children still sit at their Phase 1 URLs (/dashboard/brief,
+   * /dashboard/checkins, /dashboard/communications, /dashboard/concierge),
+   * none of which a prefix test against /dashboard/front-desk will ever match.
+   */
+  const isSectionActive = (item: NavItem) => {
+    if (isActive(item.href)) return true;
+    if (activeChild?.sectionKey === item.key) return true;
+    return (item.children ?? []).some((child) => isActive(child.href));
+  };
 
   /** Collapse and hand focus back to the trigger. */
   const dismiss = useCallback(() => {
@@ -661,17 +1245,37 @@ export function Sidebar({
             fed from lib/roadmap.ts, so if you are adding rows there and this
             stack starts running long, the fix is a scroll container with the
             flyout portalled out of it — not silently re-adding overflow here. */}
+        {/* `w-full` so a section's hover wrapper spans the rail's whole 64px:
+            the pointer then crosses from the icon to the docked panel without
+            ever leaving the element that opened it, and the preview doesn't
+            flicker shut in the gap. Items stay centred via `items-center`. */}
         <nav
           aria-label={menuLabel}
-          className="mt-4 flex flex-col items-center gap-1"
+          className="mt-4 flex w-full flex-col items-center gap-1"
         >
-          {navItems.map((item) => (
-            <RailLink
-              key={item.key}
-              item={item}
-              active={isActive(item.href)}
-            />
-          ))}
+          {navItems.map((item) =>
+            item.children?.length ? (
+              <RailSection
+                key={item.key}
+                item={item}
+                active={isSectionActive(item)}
+                open={openSection === item.key}
+                onHover={hoverSection}
+                onLeave={unhoverSection}
+                onToggle={toggleSection}
+                onClose={closeSection}
+                isActive={isActive}
+              />
+            ) : (
+              // A direct link (Dashboard) or a childless coming-soon section
+              // (Sales & Marketing): clicking just navigates, no panel.
+              <RailLink
+                key={item.key}
+                item={item}
+                active={isActive(item.href)}
+              />
+            )
+          )}
         </nav>
 
         <div className="mt-auto flex flex-col items-center gap-1 pt-4">
@@ -744,6 +1348,7 @@ export function Sidebar({
           locale={locale}
           menuLabel={menuLabel}
           isActive={isActive}
+          isSectionActive={isSectionActive}
           onNavigate={() => setOpenFor(null)}
         />
       </aside>

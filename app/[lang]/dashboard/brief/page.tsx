@@ -9,7 +9,7 @@ import { BriefingRefreshButton } from "@/components/dashboard/briefing-refresh-b
 import { BriefDeliverySettingsForm } from "@/components/dashboard/brief-delivery-settings-form";
 import { FirstRunState } from "@/components/dashboard/first-run-state";
 import { Button } from "@/components/ui/button";
-import type { BriefingContent } from "@/lib/briefing";
+import { loadTodaysBriefing } from "@/lib/briefing-latest";
 import { intlLocale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -21,15 +21,6 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { dict } = await loadDictionary((await params).lang);
   return { title: dict.briefing.title };
-}
-
-function localDate(tz: string, d: Date): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: tz,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(d);
 }
 
 function formatLongDate(intl: string, tz: string, d: Date): string {
@@ -72,19 +63,9 @@ export default async function BriefingPage({
     .select("brief_recipients, brief_send_hour, briefing_language")
     .maybeSingle();
 
-  const { data: latest } = await supabase
-    .from("briefings")
-    .select("content_json, generated_at")
-    .not("content_json->>summary", "is", null)
-    .order("generated_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  const hasTodayBriefing =
-    latest && localDate(tz, new Date(latest.generated_at)) === localDate(tz, now);
-  const briefing = hasTodayBriefing
-    ? (latest!.content_json as unknown as BriefingContent)
-    : null;
+  // Shared with the dashboard's summary card (lib/briefing-latest.ts), so the
+  // teaser and this page can never disagree about whether a brief exists.
+  const briefing = (await loadTodaysBriefing(tz))?.content ?? null;
 
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const { data: history } = await supabase
