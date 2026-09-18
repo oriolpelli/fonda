@@ -120,12 +120,18 @@ export function SiteFooter({
               <h3 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
                 {column.title}
               </h3>
-              <ul className="mt-5 flex flex-col gap-3">
+              {/* Two different lists, one markup. On a pointer (md up) it is
+                  the 15px column the design asks for: 19px links, 12px apart.
+                  On a phone each link becomes a full-width 43px block with the
+                  gap folded into its padding — same rhythm on screen, a thumb
+                  target instead of a 19px line. The trade is ~170px of footer
+                  height at 360px, on a page that is 18,000px tall. */}
+              <ul className="mt-5 flex flex-col gap-0 md:gap-3">
                 {column.links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-[15px] text-muted-foreground transition-colors duration-[180ms] hover:text-foreground"
+                      className="block py-3 text-[15px] text-muted-foreground transition-colors duration-[180ms] hover:text-foreground md:py-0"
                     >
                       {link.label}
                     </Link>

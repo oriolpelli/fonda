@@ -784,7 +784,17 @@ export default async function Home({
           className="scroll-mt-20 border-t border-border px-6 py-24 md:px-8"
         >
           <div className="mx-auto max-w-[1120px]">
-            <div className="grid gap-x-12 gap-y-14 lg:grid-cols-[5fr_7fr] lg:items-start">
+            {/* The split is held back to 1100px rather than lg's 1024. In the
+                76px between them the timeline column is 444px, and three of
+                the seven rows need 474 — so the chip wrapped under the title
+                and those rows stood 30px taller than the rest, breaking the
+                rhythm of seven equal rows. Above 1100 the column is 488px and
+                nothing wraps, so the two-column layout is untouched where it
+                works; below it the band simply stays in the single-column
+                state it already uses from md up. The chip strings are not the
+                thing to cut — "Cada 15 min" and "Cada 5 min" are the two rows
+                that prove Fondas never stops. */}
+            <div className="grid gap-x-12 gap-y-14 min-[1100px]:grid-cols-[5fr_7fr] min-[1100px]:items-start">
               {/* Left: text only. Otel puts a photograph of an unmade bed
                   here; decided against — the only honest source would be our
                   own brand photography, and stock would cheapen the one band
@@ -1197,9 +1207,14 @@ export default async function Home({
                     showcase.gateCta — underlined in the border colour, ink on
                     hover. No accent: §4 keeps navy for content, not chrome. */}
                 <p className="mt-8">
+                  {/* `py-3 -my-3` is a tap target that costs no layout: the
+                      link is the band's own CTA on its own line, not a link
+                      inside a sentence like the gate line, so it is held to
+                      44px — 21px of text plus 24px of padding, with the
+                      margin giving the height straight back. */}
                   <Link
                     href={localizedHref(locale, "/trust")}
-                    className="text-[16px] font-medium text-foreground underline decoration-border underline-offset-4 transition-colors duration-[180ms] hover:decoration-foreground"
+                    className="inline-block py-3 -my-3 text-[16px] font-medium text-foreground underline decoration-border underline-offset-4 transition-colors duration-[180ms] hover:decoration-foreground"
                   >
                     {dict.security.cta}
                   </Link>

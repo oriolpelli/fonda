@@ -54,8 +54,20 @@ export function SiteHeader({
           <LanguageSwitcher className="hidden md:inline-flex" />
           {/* Visible at every breakpoint. Below sm the bar is wordmark +
               CTA + hamburger in ~312px, which the full label overflows in
-              es (and leaves ~6px in ca), so the short label runs there. */}
-          <Button asChild variant="ink" size="sm">
+              es (and leaves ~6px in ca), so the short label runs there.
+
+              The `after:` strip is a tap target, not decoration: `sm` is h-9,
+              so the button paints 36px tall and Phase J's floor is 44. The
+              strip grows the hit area vertically inside the 64px bar without
+              touching the chrome — the alternative was a visibly chunkier
+              button in a header this page has already tuned. Vertical only;
+              the button is 76px wide at its narrowest, so width is fine. */}
+          <Button
+            asChild
+            variant="ink"
+            size="sm"
+            className="relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
+          >
             <Link href={localizedHref(locale, "/signup")}>
               <span className="sm:hidden">{dict.nav.getEarlyAccessShort}</span>
               <span className="hidden sm:inline">{dict.nav.getEarlyAccess}</span>

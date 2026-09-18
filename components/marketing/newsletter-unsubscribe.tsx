@@ -16,7 +16,7 @@ function UnsubscribeButton() {
   const { pending } = useFormStatus();
   const { dict } = useDictionary();
   return (
-    <Button type="submit" variant="ink" disabled={pending}>
+    <Button type="submit" variant="ink" size="lg" disabled={pending}>
       {pending
         ? dict.newsletterUnsubscribe.working
         : dict.newsletterUnsubscribe.button}
@@ -78,7 +78,10 @@ export function NewsletterUnsubscribe({ token }: { token: string }) {
       <p className="mt-8 border-t border-border pt-5 text-[14px]">
         <Link
           href={localizedHref(locale, "/")}
-          className="text-muted-foreground underline underline-offset-2 hover:text-foreground"
+          // The one link on the page, on its own line under a rule — a
+          // control, not a link inside a sentence, so it gets a 44px target.
+          // The negative margin hands the padding straight back to the layout.
+          className="inline-block py-[13px] -my-[13px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
         >
           {t.backHome}
         </Link>

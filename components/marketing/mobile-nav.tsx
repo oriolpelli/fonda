@@ -101,7 +101,12 @@ export function MobileNav({
         aria-label={open ? closeLabel : openLabel}
         onClick={() => (open ? dismiss() : setOpen(true))}
         // Focus ring comes from the shared :focus-visible rule in globals.css.
-        className="inline-flex size-9 items-center justify-center rounded-[10px] border border-[var(--fonda-border-2)] text-foreground transition-colors duration-[180ms] hover:border-[var(--fonda-text-3)]"
+        //
+        // size-9 paints a 36px box, which pairs it with the CTA beside it;
+        // the `after:` square grows the TARGET to 44x44 without changing what
+        // is drawn. It spills 4px each side into the 12px gap to the CTA and
+        // into the bar's 24px right gutter, so it overlaps nothing.
+        className="relative inline-flex size-9 items-center justify-center rounded-[10px] border border-[var(--fonda-border-2)] text-foreground transition-colors duration-[180ms] hover:border-[var(--fonda-text-3)] after:absolute after:left-1/2 after:top-1/2 after:size-11 after:-translate-x-1/2 after:-translate-y-1/2 after:content-['']"
       >
         <svg
           width="18"
@@ -161,13 +166,17 @@ export function MobileNav({
           ))}
         </div>
 
-        <div className="mt-6 flex items-center justify-between gap-4">
-          <LanguageSwitcher />
-          <Button asChild variant="ink" size="sm">
+        {/* Stacked, not a justify-between row. The CTA was `sm` (36px tall)
+            and sat in 2px of slack beside the switcher at 360px; it is the
+            primary action of a panel that exists only for thumbs, so it takes
+            the full width at `lg` (48px) and the switcher drops below it. */}
+        <div className="mt-6 flex flex-col gap-5">
+          <Button asChild variant="ink" size="lg" className="w-full">
             <Link href={ctaHref} onClick={() => setOpen(false)}>
               {ctaLabel}
             </Link>
           </Button>
+          <LanguageSwitcher className="self-start" />
         </div>
       </div>
     </div>

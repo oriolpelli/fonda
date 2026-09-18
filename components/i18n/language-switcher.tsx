@@ -54,7 +54,17 @@ export function LanguageSwitcher({ className }: { className?: string }) {
             onClick={() => switchTo(l)}
             aria-pressed={active}
             className={cn(
-              "rounded-[7px] px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.08em] transition-colors",
+              "relative rounded-[7px] px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.08em] transition-colors",
+              // The visible pill stays 31x25 — three 44x44 segments would be a
+              // 140px-wide control for three two-letter labels, and it has to
+              // fit beside the CTA in a 312px drawer row. The TARGET is grown
+              // instead: an invisible 44px-tall strip centred on the pill, so
+              // a thumb gets its full height while the chrome is unchanged.
+              // Vertical only — the segments sit 2px apart, so widening would
+              // make them overlap each other, which is worse than small. Every
+              // container it lives in (h-16 headers, gap-3/gap-4 stacks) has
+              // the 9px of slack above and below that this needs.
+              "after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']",
               // Ink, not the navy accent: this sits in chrome (the dashboard
               // account menu, the marketing mobile nav), and v3 keeps chrome
               // colorless — the selected locale reads by darkness instead.

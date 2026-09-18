@@ -45,9 +45,22 @@ export default async function SampleBriefPage({
           <Wordmark href={localizedHref(locale, "/")} />
           <nav className="flex items-center gap-3 sm:gap-6">
             <LanguageSwitcher className="hidden min-[360px]:inline-flex" />
-            <Button asChild variant="ink" size="sm">
+            {/* Short label below sm, exactly as SiteHeader does it. This bar
+                has no hamburger to fall back on, so the switcher stays at
+                360px — wordmark + switcher + the full es label ("Solicitar
+                acceso anticipado", 193px) needs 445px and overflowed the
+                viewport by 51px. The short label brings it to 328px. */}
+            <Button
+              asChild
+              variant="ink"
+              size="sm"
+              className="relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
+            >
               <Link href={localizedHref(locale, "/signup")}>
-                {dict.nav.getEarlyAccess}
+                <span className="sm:hidden">{dict.nav.getEarlyAccessShort}</span>
+                <span className="hidden sm:inline">
+                  {dict.nav.getEarlyAccess}
+                </span>
               </Link>
             </Button>
           </nav>
@@ -103,16 +116,18 @@ export default async function SampleBriefPage({
       <footer className="border-t border-border print:hidden">
         <div className="mx-auto flex w-full max-w-[1120px] flex-wrap items-center justify-between gap-3 px-6 py-8 text-sm text-muted-foreground md:px-8">
           <span>{t(dict.footer.rights, { year: new Date().getFullYear() })}</span>
-          <nav className="flex gap-4">
+          {/* -my-3 on the row gives back the height the links' padding adds,
+              so the bar keeps its py-8 and the two links get 45px targets. */}
+          <nav className="-my-3 flex gap-4">
             <Link
               href={localizedHref(locale, "/privacy")}
-              className="transition-colors duration-[180ms] hover:text-foreground"
+              className="inline-flex min-h-11 items-center transition-colors duration-[180ms] hover:text-foreground"
             >
               {dict.footer.privacy}
             </Link>
             <Link
               href={localizedHref(locale, "/terms")}
-              className="transition-colors duration-[180ms] hover:text-foreground"
+              className="inline-flex min-h-11 items-center transition-colors duration-[180ms] hover:text-foreground"
             >
               {dict.footer.terms}
             </Link>

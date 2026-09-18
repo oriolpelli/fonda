@@ -26,9 +26,11 @@ export default async function LegalLayout({
           <Wordmark href={localizedHref(locale, "/")} />
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
+            {/* min-h-11 is a tap target: the link's own box is 20px tall and
+                the bar is 64px, so the box grows and nothing moves. */}
             <Link
               href={localizedHref(locale, "/")}
-              className="text-sm text-muted-foreground hover:text-foreground"
+              className="inline-flex min-h-11 items-center text-sm text-muted-foreground hover:text-foreground"
             >
               {dict.legal.home}
             </Link>

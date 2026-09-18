@@ -82,7 +82,10 @@ export default async function LocaleLayout({
               hidden until focused, then a normal ink chip in the top-left. */}
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[10px] focus:bg-ink focus:px-4 focus:py-2.5 focus:text-[14px] focus:font-medium focus:text-[var(--fonda-text-inv)]"
+            // py-3, not py-2.5: at 2.5 the focused chip measured 41px tall,
+            // under the 44px tap target Phase J certifies. It is a real
+            // control once it is focused, so it is held to the same floor.
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[10px] focus:bg-ink focus:px-4 focus:py-3 focus:text-[14px] focus:font-medium focus:text-[var(--fonda-text-inv)]"
           >
             {dict.common.skipToContent}
           </a>

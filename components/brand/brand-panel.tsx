@@ -46,7 +46,15 @@ export function BrandPanel({
           ))}
         </ul>
       </div>
-      <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[color-mix(in_srgb,white_45%,transparent)]">
+      {/* 50%, not the 45% this shipped with: at 45% the badge resolves to
+          rgb(130,129,127) on #1C1A16 and measures 4.46:1, which misses AA for
+          11px text by 0.04. 46% is the first passing step (4.59) and is too
+          close to the line to be worth defending; 50% measures 5.24:1 and is
+          still plainly the quietest mark on the panel — the bullets above it
+          are 72%. Measured on /onboarding at 1280px, where this panel first
+          appears (it is hidden below lg, which is why the 360px sweeps that
+          cleared every other surface never saw it). */}
+      <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[color-mix(in_srgb,white_50%,transparent)]">
         {dict.hero.badge}
       </span>
     </div>

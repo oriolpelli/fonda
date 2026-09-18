@@ -19,7 +19,9 @@ export default function LocaleNotFound() {
       <p className="max-w-md text-muted-foreground">
         The page you&apos;re looking for doesn&apos;t exist or has moved.
       </p>
-      <Button asChild>
+      {/* size="lg", not the default: the default is h-10 (40px), under the
+          44px tap target, and this is the page's only control. */}
+      <Button asChild size="lg">
         <Link href="/">Back home</Link>
       </Button>
     </div>
