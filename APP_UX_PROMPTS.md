@@ -30,8 +30,10 @@ Do not run Prompt 1 until every line below is true. `ROADMAP.md` §1 is explicit
 ### How to use
 
 1. Paste one prompt into a fresh Claude Code session. Let it finish.
-2. Review the diff yourself. Click through the surface it touched, in all three
-   locales, at desktop and at 375px.
+2. Review the diff yourself, then click through the surface it touched using the
+   **Look for** list under that prompt — in all three locales, at desktop and at
+   375px. Those lists are what "done" means for each step; if something in one
+   fails, fix it before the next prompt, not three prompts later.
 3. Commit with the message suggested under the prompt. Small, reversible commits.
 4. At the end of each week (marked **Week gate** below) run the verification
    prompt (§V) before you ship.
@@ -159,6 +161,16 @@ fix everything, and show me the final diff plus a grep proving all three
 dictionaries have identical key sets.
 ```
 
+**Look for** — nothing visual yet; this one is judged in the diff and the dev server.
+
+- The app still boots. `npm run dev`, load `/dashboard` in en, es and ca — no crash, no error overlay.
+- The rail looks wrong (gear icons, old rows). That is expected here; Prompt 2 fixes it. Don't "fix" it yourself.
+- Open the three dictionaries side by side: the diff should add the *same* keys in the *same* order to all three. A key in `en` that isn't in `ca` is the failure mode of this step.
+- The chat label now reads Ask / Pregunta / Pregunta wherever it renders.
+- `layout.tsx` has no hard-coded label strings — every one is a dictionary lookup.
+
+**Wrong if:** the eight parked roadmap rows were deleted, or `inNav` / `roadmapNavFeatures()` was touched. That is Prompt 3's job and W4 still needs those rows.
+
 **Commit:** `feat(nav): two-pillar nav tree, dictionaries and roadmap rows`
 
 ---
@@ -235,6 +247,19 @@ both panels; on /dashboard/reputation only Operation is lit; keyboard: Tab into
 the rail, Enter opens a panel, Esc closes it and returns focus; the mobile drawer
 at 375px shows the group as an indented block. Show me the final diff.
 ```
+
+**Look for** — this is the most visible change in the pack. Spend ten minutes on it.
+
+- Count the icons: Home, Ask, hairline, Operation, Commercial, then Settings and Account at the foot. Five destinations, no more.
+- No gears left standing in for a real glyph, and no bullets on Guests or In-house.
+- The hairline reads as a hairline — same weight as every other border, inset from the edges. If it looks like a divider bar or a gap, it's wrong.
+- Open Operation: a `COMMUNICATIONS` eyebrow in quiet mono caps, two rows indented under it, icon column still aligned. No chevron, nothing collapsible.
+- The whole rail is still colorless. Active row = darker ink, never a tinted pill.
+- Go to `/dashboard/reputation`: Operation lights, Commercial does **not**. Two lit icons is the bug this prompt exists to prevent.
+- Keyboard: Tab into the rail, Enter opens a panel, Esc closes it and focus lands back on the icon you left from.
+- At 375px the drawer shows the group as an indented block inside the section — not a second accordion.
+
+**Wrong if:** the rail gained a sixth destination, or the group renders as a collapsible.
 
 **Commit:** `feat(nav): five-icon rail with two pillars, hairline and nested groups`
 
@@ -331,6 +356,17 @@ from the nav except the redirect pages. Curl or visit each old URL and paste me
 the resolved destination for all fifteen. Show me the final diff.
 ```
 
+**Look for** — the risk here is a dead link you don't notice for a month.
+
+- Visit all fifteen old URLs. Every one lands somewhere real; none 404s, none loops. Pay attention to `/dashboard/front-desk/reputation` → `/dashboard/reputation` (the new stub, not the old page).
+- `/dashboard/concierge` → `/dashboard/communications`. `/dashboard/checkins` still works untouched.
+- The three new stubs look identical to the stubs that already existed — same spacing, same sparkle. A stub that looks different wasn't copied from a neighbour.
+- Click every row in both panels. Nothing points anywhere dead.
+- Open a to-do and a needs-reply card that use `?email=` — the message still opens.
+- Scan the pages for raw dictionary keys showing as text. That's the tell that a key was deleted while something still reads it.
+
+**Wrong if:** the eight parked roadmap rows are gone — W4's locked tiles read them.
+
 **Commit:** `refactor(nav): redirect fifteen retired routes, delete dead nav code`
 
 ---
@@ -363,6 +399,13 @@ identical.
 
 No code changes.
 ```
+
+**Look for** — docs only, so read rather than click.
+
+- The new paragraph in `FONDA_SANA_REDESIGN.md` §5 should sound like the paragraph above it, not like a changelog entry.
+- `ROADMAP.md` §2: W2 ticked, today's date.
+- `COMINGSOON_CONTENT.md`: both new entries follow Lead / Will do / What's next, English only.
+- `git diff --stat` shows docs and nothing else. A `.tsx` in this diff is a mistake.
 
 **Commit:** `docs: record the two-pillar rail in the design spec and roadmap`
 
@@ -412,6 +455,15 @@ Run `npm run lint` and `npx tsc --noEmit`. Verify at desktop and 375px, in all
 three locales, and that a tapped starter produces a real answer. Show me the
 final diff.
 ```
+
+**Look for** — go to `/dashboard/chat` with no messages.
+
+- A quiet mono eyebrow, then six plain text lines. If it renders as cards, buttons or a grid, it's wrong — plain tappable text is the whole point.
+- Lines sit in `--fonda-text-2` and darken on hover. The only ring anywhere is on keyboard focus.
+- Tap one: it sends as if you typed it, a real answer comes back, and the list disappears the moment the thread has a message.
+- Ask the last two ("late check-out", "cancellation policy") and check the answer is grounded in your hotel settings, not hedged generic advice. If Claude Code flagged a missing context field, settle that before you ship.
+- es and ca are actually translated, in the voice of the existing chat copy.
+- At 375px the lines wrap; nothing truncates or scrolls sideways.
 
 **Commit:** `feat(chat): starter questions in the blank state`
 
@@ -476,6 +528,19 @@ only accented element on the page, and the first-run state is untouched. Show me
 the final diff.
 ```
 
+**Look for** — Home, in all three locales, at 1440 and 375.
+
+- Greeting and date, then "Needs you today" with its count, first and full width. Anything above it is wrong.
+- Scan down the page: every widget has the same heading — title left, mono freshness line right. Inconsistency here is what you're hunting for.
+- No chips on Home. A line, not a chip (proposal §7.4).
+- The occupancy strip is the only coloured thing on the page. Anything else with hue is a second accent.
+- Half-width widgets pair into two columns at desktop and stack at 375px; the column is still capped at 1120px.
+- A widget with no data shows its empty state, never a blank gap.
+- The first-run state (a hotel with nothing connected) looks exactly as it did before.
+- Throttle the network and reload: the skeletons match the new order.
+
+**Wrong if:** any underlying card was restyled. The widget files are thin wrappers — the diff should show moves, not redesigns.
+
 **Commit:** `feat(home): widget registry; "Needs you today" leads the page`
 
 ---
@@ -537,6 +602,16 @@ show the right people for today in the hotel's timezone, including a guest
 whose departure day is today. Show me the final diff.
 ```
 
+**Look for** — the failure here is quiet and about dates, so check against the PMS.
+
+- Arrivals and departures list the right people for **today in the hotel's timezone**. An off-by-one day is the classic bug; test with a guest departing today and, if you can, late in the evening.
+- Arrivals caps at 8 with a "+N more" link that lands on the check-ins page.
+- Departures has no balance column, and a late-checkout column only if that field genuinely exists.
+- Inbox pulse reads in the same StatRow language as the numbers widget, at half width.
+- Sync health is monochrome. No green dot, no status colour. A failure reads "Failed" plus a link to Settings → Connections.
+- Disconnect a source (or otherwise break one loader) and reload: only that widget degrades to its empty state, the page still renders.
+- Nothing beyond display names is on screen — no emails, no booking references.
+
 **Commit:** `feat(home): arrivals, departures, VIP, inbox pulse and sync health widgets`
 
 ---
@@ -570,6 +645,14 @@ Two small additions, nothing else:
 Dictionaries for the two headings, all three languages. Run `npm run lint` and
 `npx tsc --noEmit`. Show me the diff.
 ```
+
+**Look for** — the brief page should look untouched apart from two things.
+
+- "Since the brief" appears only when something genuinely happened after `generated_at`. Regenerate the brief and the whole block — heading included — must vanish. An empty heading is the bug.
+- Its items render identically to Home's to-dos.
+- "Past briefs" is now a quiet underlined ink link in the hero next to refresh. Not a button, no navy.
+- `/dashboard/brief/history` lists past briefs, each opening the existing detail page.
+- Nothing else on the brief moved. It is the best surface in the product; treat any restyling as a regression.
 
 **Commit:** `feat(brief): "since the brief" block; history moves to its own route`
 
@@ -638,6 +721,17 @@ Data layer only. No UI in this step.
 Run `npm run lint` and `npx tsc --noEmit`. Show me the diff and the SQL.
 ```
 
+**Look for** — data layer, so most of this happens in the SQL and the database.
+
+- Home looks exactly as it did after Prompt 7. Nothing new on screen is the correct outcome.
+- Read the migration before you apply it: RLS enabled, policies scoped to `auth.uid()` **and** the caller's hotel via the existing helper, the jsonb-array check constraint present, no delete policy.
+- Apply `0022`, then sign in as an owner and as a manager: different orders, both showing every widget, some off by default.
+- Hand-edit a stored row to contain a bogus key — the page renders without it and does not crash.
+- Delete a key from a stored row — it comes back appended and enabled.
+- `needs-you` never appears in the stored array and is always first on screen.
+
+**Wrong if:** `users.role` is read in a client component, or the layout is read with the service-role key.
+
 **Commit:** `feat(home): per-user dashboard layouts with role defaults (migration 0022)`
 
 Apply `0022` in Supabase before Prompt 9.
@@ -704,6 +798,19 @@ open the panel as a different user — it does not; 375px shows the bottom sheet
 VoiceOver/NVDA reads the drag announcements. Show me the final diff.
 ```
 
+**Look for** — open it, then close it, then reload. Persistence is where this breaks.
+
+- "Customize" is a quiet ghost button on the greeting row. If it reads as a primary action, it's too loud.
+- The panel is ~340px docked right at desktop and a bottom sheet at 375px, hairline border, 10px radius on the controls.
+- "Needs you today" is pinned at the top with a lock glyph — no checkbox, no handle.
+- Reorder with the mouse. Then do it again keyboard-only: space to lift, arrows to move, space to drop, and the announcement should be translated.
+- Toggle two widgets off, close the panel, reload: the layout holds. Watch the network tab — one save on close, not one per toggle.
+- Locked "Coming soon" tiles: title, grey blurb, the same sparkle the nav uses. Not draggable, not checkable, clicking does nothing visible.
+- Esc closes, pointer-down outside closes, focus returns, the page behind doesn't scroll.
+- Sign in as another user: their layout, not yours.
+
+**Wrong if:** a dependency other than `@dnd-kit` was installed. If dnd-kit fought the layout the answer was arrow buttons, not another library.
+
 **Commit:** `feat(home): customize panel with drag reorder and locked roadmap tiles`
 
 ---
@@ -769,6 +876,18 @@ Run `npm run lint` and `npx tsc --noEmit`. Verify: /dashboard/checkins and
 lands on the right tab; ChaserItem is byte-for-byte unchanged (git diff on that
 file should be empty). Show me the final diff.
 ```
+
+**Look for** — a rename touches more than it looks like it does.
+
+- `/dashboard/checkins` and `/dashboard/checkins?foo=1` both land on `/dashboard/arrivals` with the query string intact.
+- The segmented control carries live counts — "Arrivals (12)", "Departures (9)" — and looks identical to the inbox sort toggle. Put them side by side and compare.
+- Select Departures, reload: it stays on Departures with no flip after paint. That flip is the thing the `?tab=` server read exists to prevent.
+- The Arrivals tab shows the **whole day**, not only the exceptions: chaser grid on top, full list beneath.
+- Guest names link to `/dashboard/guests/[id]` — a stub for now, so expect ComingSoon, not a 404.
+- An empty day shows EmptyState ("No arrivals today"), not FirstRunState.
+- A to-do that targets arrivals lands on the right tab.
+
+**Wrong if:** `git diff` on `checkin-chasers.tsx` is not empty. That file was meant to be untouched.
 
 **Commit:** `feat(arrivals): rename check-ins to arrivals & departures, two tabs`
 
@@ -849,6 +968,17 @@ with the message open; the sort cookie still applies server-side. Show me the
 final diff.
 ```
 
+**Look for** — three real guests, three routes. Do this with actual data, not by reading the diff.
+
+- A guest currently in-house → In-house. Arriving tomorrow → Upcoming. Checked out yesterday → Upcoming **only** with the "Show past stays & other mail" chip on.
+- `?email=<id>` deep links open the right scoped route with the message open. Test all three entry points: a to-do, a needs-reply card, and a chat draft card.
+- Bare `/dashboard/communications` redirects sensibly and doesn't bounce between the two.
+- The nav badges split across the two rows, and the two numbers add up to what the single badge showed before.
+- In-house shows the WhatsApp first-run card **above** a real list of in-stay email — not instead of it. An empty list alone would be dishonest.
+- Reload with a non-default sort: still no flip after paint.
+- Spot-check urgency: an email that was urgent before this refactor is still urgent. The StayPhase widening was not supposed to change that.
+- `/dashboard/concierge` now lands on In-house.
+
 **Commit:** `feat(communications): in-house and upcoming windows; StayPhase widened to four`
 
 ---
@@ -878,6 +1008,14 @@ moment visible.
 Same segmented treatment as the arrivals tabs. Dictionaries, three languages.
 Run `npm run lint` and `npx tsc --noEmit`. Show me the diff.
 ```
+
+**Look for** — counts and persistence.
+
+- The segmented control sits above the list on both routes, in the same treatment as the arrivals tabs.
+- Count each queue by hand once. A wrong count here is worse than no count.
+- Default is "Needs you". Pick "Waiting", reload — still Waiting, no flip after paint.
+- The sort toggle still orders within the selected queue rather than replacing it.
+- Empty the "Needs you" queue and look at it: "Inbox clear". If it shows a generic empty state, that moment has been lost and it's worth sending back.
 
 **Commit:** `feat(communications): queue framing — needs you, waiting, done today`
 
@@ -988,6 +1126,14 @@ Run `npm run lint`, `npx tsc --noEmit`, `npm run analytics-pii-audit`. Tell me
 the migration is ready to apply. Show me the diff.
 ```
 
+**Look for** — no page yet; `/dashboard/reputation` is still the stub. Check the data.
+
+- Read the migration: RLS hotel-scoped, `unique (hotel_id, source, external_id)`, and `author_display` truncated **at write time**, not at render.
+- Connect Google reviews in Settings → Connections. The card should match the Gmail card's look and its three states (connect / connected since / disconnect); `tripadvisor-form.tsx` is unchanged beside it.
+- Run the sync twice. No duplicate rows — that's what the unique constraint is for, so confirm it holds.
+- Read a handful of classified rows: themes come from the fixed vocabulary, the sentiment matches the text, and the quote actually appears in the body.
+- Grep the logs for review text and author names. There should be none.
+
 **Commit:** `feat(reputation): reviews table, Google reviews sync, theme classifier (migration 0025)`
 
 Apply `0025` before Prompt 14.
@@ -1032,6 +1178,17 @@ Replace the /dashboard/reputation stub with the first real Commercial surface.
 Run `npm run lint` and `npx tsc --noEmit`. Verify at desktop and 375px, three
 locales, with a hotel that has reviews and one that doesn't. Show me the diff.
 ```
+
+**Look for** — the first Commercial surface, so it sets the tone for the rest of that pillar.
+
+- Score movement leads: score to one decimal, the delta as plain text (no red, no green), review count.
+- The sparkline is monochrome ink on `--fonda-border` gridlines, no fill. Any colour here is a second accent and has to go.
+- Praised / criticised in two columns, quotes in ~60ch prose, not stretched full width.
+- Recent reviews: ratings as small monochrome dots, bodies clamped to three lines with a working expand.
+- A "Google reviews" SourceChip on the score card — and chat still looks identical after the chip was extracted out of `chat-thread.tsx`.
+- On this route the Operation icon lights and Commercial does not.
+- Check both empty paths: a hotel with no source connected shows FirstRunState; a connected hotel with zero reviews shows EmptyState. They are different states.
+- At 375px the 3-up doesn't crush and the sparkline scales.
 
 **Commit:** `feat(reputation): score movement, themes and recent reviews`
 
@@ -1078,6 +1235,16 @@ Build the pane once, mount it in the inbox now; arrivals and guests mount it lat
 Dictionaries (three languages). Run `npm run lint` and `npx tsc --noEmit`.
 Verify at 1280 and 1440 wide, and that 1024 still shows two panes. Show me the diff.
 ```
+
+**Look for** — resize the window slowly; the breakpoint is the point.
+
+- At 1440: three columns — list, thread, context. At 1024: two, and the pane is **gone**, not squeezed and not a drawer.
+- The pane is 280px on `--fonda-surface` with a hairline left border.
+- Facts show only values that exist. A row reading "—" means the conditional wasn't applied.
+- "Returning · 3rd stay" appears only when it's true.
+- An unmatched sender shows the display name and a quiet "Not matched to a booking", with no call to action.
+- The one-line urgency note is still in the thread header and is not repeated in the pane.
+- "Open guest record" resolves — a stub until Prompt 17, which is fine, but not a 404.
 
 **Commit:** `feat(communications): guest context pane at xl`
 
@@ -1144,6 +1311,16 @@ has the surname shortened while the on-screen live answer showed the full name;
 another user of the same hotel does not see the thread. Show me the diff and
 the SQL.
 ```
+
+**Look for** — the important check is in the database, not on screen.
+
+- Ask something, reload: the thread is in the list with a sensible title trimmed from your first message.
+- Open `chat_logs` directly. Surnames are shortened **at rest**, while the answer you saw on screen used the full name. If they match, pseudonymisation didn't run.
+- A restored thread carries the quiet mono line explaining that past names are shortened.
+- "New conversation" starts a fresh thread without dropping the previous one.
+- The thread list lives inside `/dashboard/chat` (240px at lg+, a drawer below). The rail is still five icons — check it.
+- "Continue in chat ↗" shows on the docked bar only after an exchange, and carries the history across intact.
+- Sign in as another user of the same hotel: your threads are not visible to them.
 
 **Commit:** `feat(chat): persistent threads, thread list, continue-in-chat handoff (migration 0023)`
 
@@ -1227,6 +1404,16 @@ one at 23; search never leaks across hotels (test with two seeded hotels).
 Show me the diff and the SQL.
 ```
 
+**Look for** — the two tests that matter here are the note and the hotel boundary.
+
+- Write a staff note, then trigger an inference run. The note must come back untouched, and a staff-sourced tag must not be overwritten. If either changes, stop and send it back.
+- Seed two hotels and search from one. No guest from the other appears, ever. Do this one deliberately.
+- Tags are 12px rounded-full chips in `--fonda-text-2` on `--fonda-bg` — no hue. Coloured chips are wrong.
+- Hover or focus a tag: it says where it came from ("inferred from email, 12 Sep" / "staff").
+- The record is a 280px left column plus a timeline that merges emails, chasers and prior stays in reverse-chronological order.
+- Retention: a seeded profile at 25 months past last stay is deleted, one at 23 months is kept, and only counts are logged.
+- `/trust` carries the two new lines, in all three languages.
+
 **Commit:** `feat(guests): guest list and record with inferred tags and protected notes (migration 0024)`
 
 ---
@@ -1251,6 +1438,14 @@ beyond what is needed to report which context blocks were included.
 Run `npm run lint` and `npx tsc --noEmit`. Ask the six starter questions and
 paste me which chips each one produced. Show me the diff.
 ```
+
+**Look for** — ask the six starter questions and read the chips.
+
+- Each answer carries specific chips ("Apaleo · today's arrivals", "Gmail · 3 unread"), not the generic "hotel data".
+- Ask something off-topic: the generic chip should appear there and only there.
+- The chips are visually identical to the existing ones — 12px rounded-full, no hue.
+- es and ca labels are translated.
+- Answer quality didn't change. The model prompt was only supposed to report which context blocks it used.
 
 **Commit:** `feat(chat): specific source chips per answer`
 
@@ -1277,6 +1472,12 @@ in components/dashboard/email-inbox.tsx.
 Dictionaries, three languages. Run `npm run lint` and `npx tsc --noEmit`. Show
 me the diff.
 ```
+
+**Look for** — restraint. This is easy to overdo.
+
+- One chip per brief section heading. Open an old brief generated before this change: no chips, and nothing breaks.
+- The draft reply gets a **line**, not a chip. If it renders as a chip the page starts to rattle, which is exactly what §7.4 warns about.
+- "· edited" shows only on a draft you actually edited.
 
 **Commit:** `feat(trust): provenance chips on brief sections and draft replies`
 
@@ -1314,6 +1515,15 @@ Dictionaries, three languages. Run `npm run lint` and `npx tsc --noEmit`.
 Verify keyboard-only use end to end and that the guest search returns nothing
 for another hotel's guest. Show me the diff.
 ```
+
+**Look for** — do the whole thing without touching the mouse.
+
+- ⌘K / Ctrl+K opens it anywhere in the dashboard, Esc closes it, focus returns where it was.
+- Arrows move, Enter activates, and the trap holds.
+- The search glyph at the top of the rail is visibly quieter than the five icons. If it reads as a sixth destination, it's wrong.
+- Type two characters: at most five guests, debounced — watch the network tab for one request per pause, not one per keystroke.
+- The last row is always "Ask: <query>", and it lands in chat with the query pre-filled and the param cleared after use.
+- Another hotel's guest returns nothing.
 
 **Commit:** `feat(dashboard): command palette — pages, guests, ask`
 
@@ -1356,6 +1566,17 @@ Read APP_UX_PROPOSAL.md §8.3, §10 phase 12, and §12. Read FONDA_SANA_REDESIGN
 
 Show me the diff.
 ```
+
+**Look for** — this is the last full pass, so do it properly rather than trusting the greps.
+
+- All five command outputs pasted and clean.
+- Click every dashboard route in en, es and ca, at 1440 and 375. Note anything that overflows, truncates or shows a raw key.
+- No `text-primary` links left anywhere; in-app links are ink with an underline.
+- The grep results for hex, `bg-white`, `text-black` and any accent outside `occupancy-strip.tsx` come back empty.
+- The rail is still exactly five icons plus Settings and Account.
+- Throttle the network and click through: a route that flashes blank is missing its `loading.tsx`.
+- The en/es/ca key-set check passes with no drift.
+- `APP_UX_PROPOSAL.md`'s status line is updated and this pack has moved to `docs/archive/` with its retirement header.
 
 **Commit:** `chore(dashboard): post-IA sweep — links, audit, loading states, docs`
 
