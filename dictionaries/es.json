@@ -923,5 +923,38 @@
     "moreTitle": "La versión completa",
     "moreBody": "La política de privacidad detalla las bases jurídicas, la lista de proveedores, las transferencias internacionales y los derechos que te da el RGPD. Para cualquier pregunta sobre datos, escríbenos:",
     "moreCta": "Leer la política de privacidad →"
+  },
+  "onYourSide": {
+    "eyebrow": "De tu lado",
+    "headline": "El copiloto de tu PMS trabaja para tu PMS.",
+    "lead": "{brand} trabaja para ti. Se apoya sobre MEWS, Apaleo y el correo que ya usas — y si algún día tienes dos hoteles en dos sistemas, sigue siendo una sola herramienta.",
+    "b1": "Nada que migrar, nada que tu equipo tenga que reaprender.",
+    "b2": "Un solo sitio aunque cada hotel lleve un sistema distinto.",
+    "b3": "Si cambias de PMS, {brand} se queda."
+  },
+  "security": {
+    "eyebrow": "Seguridad",
+    "headline": "Tu equipo ya usa IA. Solo que en un chat público.",
+    "lead": "Ahora mismo alguien de recepción está pegando el correo de un huésped en un chat gratuito para redactar la respuesta en inglés. {brand} le da la misma rapidez dentro de tu propio entorno y sobre los datos de tu hotel.",
+    "i1Title": "Cifrados y alojados en la UE",
+    "i1Desc": "Los datos de tus huéspedes se guardan cifrados, en servidores europeos.",
+    "i2Title": "Solo para tu hotel",
+    "i2Desc": "Se usan únicamente para generar tus resúmenes y tus borradores. Nunca para entrenar nada.",
+    "i3Title": "Se borran si te vas",
+    "i3Desc": "Te das de baja y se eliminan. El hotel es el responsable del tratamiento; {brand}, el encargado.",
+    "cta": "Cómo tratamos tus datos →"
+  },
+  "comingSoon": {
+    "eyebrow": "Ya en camino",
+    "headline": "Lo que llega durante el piloto.",
+    "lead": "Escrito en futuro a propósito: hoy no lo hace. Cuatro cosas en construcción, que llegan mientras dure tu piloto.",
+    "i1Title": "Analítica y revenue",
+    "i1Desc": "El cuadro de mando de ingresos y la analítica del hotel. Primero llegará una señal en el resumen cuando una noche vaya floja: una señal, no un motor de precios.",
+    "i2Title": "Extras antes de la llegada",
+    "i2Desc": "Los borradores previos a la llegada incluirán tus propios extras con precio: late checkout, desayuno, parking. Un late checkout a la semana paga {brand}.",
+    "i3Title": "El resumen por WhatsApp",
+    "i3Desc": "Donde de verdad lo vas a leer a las 6:45.",
+    "i4Title": "Outlook",
+    "i4Desc": "Para los hoteles que no están en Gmail."
   }
 }

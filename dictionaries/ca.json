@@ -923,5 +923,38 @@
     "moreTitle": "La versió completa",
     "moreBody": "La política de privadesa detalla les bases jurídiques, la llista de proveïdors, les transferències internacionals i els drets que et dona el RGPD. Per a qualsevol pregunta sobre dades, escriu-nos:",
     "moreCta": "Llegir la política de privadesa →"
+  },
+  "onYourSide": {
+    "eyebrow": "Del teu costat",
+    "headline": "El copilot del teu PMS treballa per al teu PMS.",
+    "lead": "{brand} treballa per a tu. Es recolza sobre MEWS, Apaleo i el correu que ja fas servir — i si algun dia tens dos hotels en dos sistemes, continua sent una sola eina.",
+    "b1": "Res a migrar, res que el teu equip hagi de reaprendre.",
+    "b2": "Un sol lloc encara que cada hotel porti un sistema diferent.",
+    "b3": "Si canvies de PMS, {brand} es queda."
+  },
+  "security": {
+    "eyebrow": "Seguretat",
+    "headline": "El teu equip ja fa servir IA. Només que en un xat públic.",
+    "lead": "Ara mateix algú de recepció està enganxant el correu d'un hoste en un xat gratuït per redactar la resposta en anglès. {brand} li dona la mateixa rapidesa dins del teu propi entorn i sobre les dades del teu hotel.",
+    "i1Title": "Xifrades i allotjades a la UE",
+    "i1Desc": "Les dades dels teus hostes es guarden xifrades, en servidors europeus.",
+    "i2Title": "Només per al teu hotel",
+    "i2Desc": "S'utilitzen únicament per generar els teus resums i els teus esborranys. Mai per entrenar res.",
+    "i3Title": "S'esborren si marxes",
+    "i3Desc": "Et dones de baixa i s'eliminen. L'hotel és el responsable del tractament; {brand}, l'encarregat.",
+    "cta": "Com tractem les teves dades →"
+  },
+  "comingSoon": {
+    "eyebrow": "Ja en camí",
+    "headline": "El que arriba durant el pilot.",
+    "lead": "Escrit en futur a propòsit: avui no ho fa. Quatre coses en construcció, que arriben mentre duri el teu pilot.",
+    "i1Title": "Analítica i revenue",
+    "i1Desc": "El quadre de comandament d'ingressos i l'analítica de l'hotel. Primer arribarà un senyal al resum quan una nit vagi fluixa: un senyal, no un motor de preus.",
+    "i2Title": "Extres abans de l'arribada",
+    "i2Desc": "Els esborranys previs a l'arribada inclouran els teus propis extres amb preu: late checkout, esmorzar, pàrquing. Un late checkout a la setmana paga {brand}.",
+    "i3Title": "El resum per WhatsApp",
+    "i3Desc": "On de debò el llegiràs a les 6:45.",
+    "i4Title": "Outlook",
+    "i4Desc": "Per als hotels que no són a Gmail."
   }
 }

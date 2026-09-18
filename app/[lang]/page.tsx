@@ -289,6 +289,26 @@ export default async function Home({
   // Six rows is the whole brief, not a teaser: band 3 shows it complete, with
   // nothing truncated, blurred or gated (§3.7). The hero shows the opening
   // rows of the same morning — see HERO_BRIEFING below.
+  // Band 10's three cells. The stats treatment at three: one card, internal
+  // hairlines, no icons — §4 reserves the navy square for bands 8 and 9 and
+  // forbids a new icon set here.
+  const SECURITY = [
+    { title: dict.security.i1Title, desc: dict.security.i1Desc },
+    { title: dict.security.i2Title, desc: dict.security.i2Desc },
+    { title: dict.security.i3Title, desc: dict.security.i3Desc },
+  ];
+
+  // Band 11 — everything that is NOT live. lib/roadmap.ts governs what may be
+  // claimed above this band (§9.1 decision 8); this is where the rest lives.
+  // Every string here is future tense on purpose: a present-tense line in this
+  // band is a claim, and claims belong above it or nowhere.
+  const COMING_SOON = [
+    { title: dict.comingSoon.i1Title, desc: dict.comingSoon.i1Desc },
+    { title: dict.comingSoon.i2Title, desc: dict.comingSoon.i2Desc },
+    { title: dict.comingSoon.i3Title, desc: dict.comingSoon.i3Desc },
+    { title: dict.comingSoon.i4Title, desc: dict.comingSoon.i4Desc },
+  ];
+
   const BRIEFING: [string, string][] = [
     [ts(dict.briefingPreview.row1strong), ts(dict.briefingPreview.row1rest)],
     [ts(dict.briefingPreview.row2strong), ts(dict.briefingPreview.row2rest)],
@@ -1097,6 +1117,174 @@ export default async function Home({
                       {dict.hero.ctaPrimary}
                     </Link>
                   </Button>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* De tu lado — kills "mi PMS ya hace eso" on the page instead of on
+            the call. The ONLY band on the landing page that is nothing but
+            words: no card, no illustration, no icon, nothing to look at. That
+            is where its weight comes from (§2, band 9), and it is also the
+            breath between the three role cards above and the security card
+            below, both of which are dense.
+
+            §4 lists band 9 among the "multi-cell groups" that must be
+            contained in one card — but §2 says no card, and the two only
+            conflict if the three bullets are CELLS. They are a list: one
+            column, stacked, hanging off the lead. A list needs no container,
+            so both rules hold. Do not turn these into a three-across grid. */}
+        <section className="border-t border-border px-6 py-24 md:px-8">
+          <div className="mx-auto max-w-[1120px]">
+            <Reveal className="grid gap-x-12 gap-y-8 lg:grid-cols-[5fr_7fr] lg:items-start">
+              <div>
+                <Eyebrow>{dict.onYourSide.eyebrow}</Eyebrow>
+                <h2 className="mt-4 max-w-[18ch] text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
+                  {dict.onYourSide.headline}
+                </h2>
+              </div>
+              <div>
+                <p className="max-w-[56ch] text-[19px] leading-[1.6] text-muted-foreground">
+                  {t(dict.onYourSide.lead, { brand: COMPANY.brand })}
+                </p>
+                <ul className="mt-9 flex flex-col gap-5">
+                  {[
+                    dict.onYourSide.b1,
+                    dict.onYourSide.b2,
+                    t(dict.onYourSide.b3, { brand: COMPANY.brand }),
+                  ].map((bullet) => (
+                    <li key={bullet} className="flex items-start gap-4">
+                      <span className="mt-[9px]">
+                        <SquareMarker />
+                      </span>
+                      {/* Bigger than a card bullet: these three lines are the
+                          band's whole content, so they carry body weight
+                          rather than caption weight. */}
+                      <span className="max-w-[52ch] text-[17px] leading-[1.55] text-foreground">
+                        {bullet}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Seguridad — the highest-value steal in the redesign: it reframes
+            the data objection as a problem the buyer already has. Someone on
+            their front desk is pasting guest email into a free chatbot right
+            now; the question is not whether AI touches guest data, it is
+            whether it does so somewhere the hotel controls.
+
+            Copy left, three cells right in ONE card with internal hairlines —
+            the stats treatment at three (§2, band 10). The cta goes to the
+            trust page built in Phase I, in the reader's own locale. */}
+        <section className="border-t border-border px-6 py-24 md:px-8">
+          <div className="mx-auto max-w-[1120px]">
+            <div className="grid gap-x-12 gap-y-12 lg:grid-cols-[5fr_7fr] lg:items-start">
+              <Reveal>
+                <Eyebrow>{dict.security.eyebrow}</Eyebrow>
+                <h2 className="mt-4 max-w-[20ch] text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
+                  {dict.security.headline}
+                </h2>
+                <p className="mt-5 max-w-[52ch] text-[17px] leading-[1.6] text-muted-foreground">
+                  {t(dict.security.lead, { brand: COMPANY.brand })}
+                </p>
+                {/* The arrow travels inside the string, as the gate line's
+                    does, so a translator can move it. Same link treatment as
+                    showcase.gateCta — underlined in the border colour, ink on
+                    hover. No accent: §4 keeps navy for content, not chrome. */}
+                <p className="mt-8">
+                  <Link
+                    href={localizedHref(locale, "/trust")}
+                    className="text-[16px] font-medium text-foreground underline decoration-border underline-offset-4 transition-colors duration-[180ms] hover:decoration-foreground"
+                  >
+                    {dict.security.cta}
+                  </Link>
+                </p>
+              </Reveal>
+
+              <div className="overflow-hidden rounded-[18px] bg-card shadow-card">
+                {SECURITY.map((cell, i) => (
+                  <Reveal
+                    key={cell.title}
+                    index={i}
+                    className={cn(
+                      "px-7 py-8 sm:px-9",
+                      i > 0 && "border-t border-border"
+                    )}
+                  >
+                    <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-foreground">
+                      {cell.title}
+                    </h3>
+                    <p className="mt-2 max-w-[52ch] text-[16px] leading-[1.6] text-muted-foreground">
+                      {t(cell.desc, { brand: COMPANY.brand })}
+                    </p>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Ya en camino — honest momentum, and the home for everything that
+            is not live yet. It has to read as "not yet" at a glance, and it
+            does that by ELEVATION, the same ranking the comparison band uses:
+            every other group on this page is a white card floating on a
+            shadow; this one sits at ground level with a hairline and no fill.
+            §2 asked for a "lighter ground", which was written when the page
+            still alternated band grounds — that alternation was retired (§4),
+            so the surviving instruction is "no card shadow", and no fill is
+            what keeps it from looking like a card that lost its shadow.
+
+            The marker is the navy square HOLLOW — same 7px, same radius, no
+            fill. It is the one mark on the page that says "not yet" without
+            words, and it introduces no icon set (§4).
+
+            Copy rule, enforced in review: future tense in all three
+            languages. A present-tense line here is a claim, and claims belong
+            above this band or nowhere. */}
+        <section className="border-t border-border px-6 py-24 md:px-8">
+          <div className="mx-auto max-w-[1120px]">
+            <Reveal className="grid gap-x-12 gap-y-4 lg:grid-cols-[5fr_7fr] lg:items-end">
+              <div>
+                <Eyebrow>{dict.comingSoon.eyebrow}</Eyebrow>
+                <h2 className="mt-4 text-[clamp(1.875rem,3.6vw,2.875rem)] font-semibold leading-[1.05] tracking-[-0.028em] text-foreground">
+                  {dict.comingSoon.headline}
+                </h2>
+              </div>
+              <p className="max-w-[56ch] text-[17px] leading-[1.6] text-muted-foreground">
+                {dict.comingSoon.lead}
+              </p>
+            </Reveal>
+            <div className="mt-12 grid overflow-hidden rounded-[18px] border border-border sm:grid-cols-2">
+              {COMING_SOON.map((item, i) => (
+                <Reveal
+                  key={item.title}
+                  index={i}
+                  className={cn(
+                    "flex flex-col px-6 py-8 sm:px-8 sm:py-10",
+                    i < COMING_SOON.length - 1 && "border-b border-border",
+                    i === 2 && "sm:border-b-0",
+                    i % 2 === 0 && "sm:border-r sm:border-border"
+                  )}
+                >
+                  {/* Hollow — see the band comment. Drawn here rather than as
+                      a SquareMarker prop: the filled square means "live" on
+                      four other bands, and giving it a variant that means the
+                      opposite would make the shared component ambiguous. */}
+                  <span
+                    aria-hidden
+                    className="block size-[7px] rounded-[2px] border border-[var(--fonda-accent)]"
+                  />
+                  <h3 className="mt-4 text-[16px] font-semibold tracking-[-0.01em] text-foreground">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1.5 max-w-[46ch] text-sm leading-[1.55] text-muted-foreground">
+                    {t(item.desc, { brand: COMPANY.brand })}
+                  </p>
                 </Reveal>
               ))}
             </div>

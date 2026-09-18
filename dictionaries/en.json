@@ -923,5 +923,38 @@
     "moreTitle": "The full version",
     "moreBody": "The privacy policy sets out the legal bases, the list of providers, international transfers and the rights the GDPR gives you. For any question about data, write to us:",
     "moreCta": "Read the privacy policy →"
+  },
+  "onYourSide": {
+    "eyebrow": "On your side",
+    "headline": "Your PMS's copilot works for your PMS.",
+    "lead": "{brand} works for you. It sits on MEWS, Apaleo and the inbox you already use — and if you ever run two hotels on two systems, it's still one tool.",
+    "b1": "Nothing to migrate, nothing for your team to relearn.",
+    "b2": "One place, even when each hotel runs a different system.",
+    "b3": "Change your PMS and {brand} stays."
+  },
+  "security": {
+    "eyebrow": "Security",
+    "headline": "Your team is already using AI. Just not safely.",
+    "lead": "Right now someone on your front desk is pasting a guest's email into a free chatbot to write the reply in English. {brand} gives them the same speed inside your own environment, on your hotel's data.",
+    "i1Title": "Encrypted, EU-hosted",
+    "i1Desc": "Your guests' data is stored encrypted, on European servers.",
+    "i2Title": "Only for your hotel",
+    "i2Desc": "Used solely to produce your briefs and drafts. Never to train anything.",
+    "i3Title": "Deleted when you leave",
+    "i3Desc": "Cancel and it's erased. The hotel is the data controller; {brand} is the processor.",
+    "cta": "How we handle your data →"
+  },
+  "comingSoon": {
+    "eyebrow": "On the way",
+    "headline": "What lands during the pilot.",
+    "lead": "Written in the future on purpose: it doesn't do these today. Four things in build, landing while your pilot runs.",
+    "i1Title": "Analytics and revenue",
+    "i1Desc": "The revenue dashboard and hotel analytics. First will come a line in the brief when a night is running soft: a signal, not a pricing engine.",
+    "i2Title": "Pre-arrival extras",
+    "i2Desc": "Pre-arrival drafts will include your own paid extras with prices: late checkout, breakfast, parking. One late checkout a week pays for {brand}.",
+    "i3Title": "The brief on WhatsApp",
+    "i3Desc": "Where you'll actually read it at 6:45.",
+    "i4Title": "Outlook",
+    "i4Desc": "For the hotels that aren't on Gmail."
   }
 }
