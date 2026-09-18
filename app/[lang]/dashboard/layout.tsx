@@ -63,56 +63,88 @@ export default async function DashboardLayout({
   // (NAV_REORG_SPEC.md §3), and a flat list can't say which section owns what.
   const soon = (
     key: RoadmapKey,
-    label?: string,
-    sectionKey?: string
+    {
+      label,
+      sectionKey,
+      group,
+      canonicalSectionKey,
+    }: {
+      /** Overrides the roadmap row's own label, when the nav calls it something else. */
+      label?: string;
+      sectionKey?: string;
+      /** Sub-group inside the panel — see `NavItem.group`. */
+      group?: string;
+      /** Owner of the active state for a row that sits in both panels. */
+      canonicalSectionKey?: string;
+    } = {}
   ): NavItem => {
     const feature = roadmapFeature(key);
     return {
       key,
-      // A section's own row is its "Dashboard" sub-page: the roadmap label is
-      // the section name (right for the page heading), so the submenu passes
-      // "Dashboard" in instead.
       label: label ?? feature.label(dict),
       href: localizedHref(locale, feature.route),
       comingSoon: feature.status === "coming-soon",
       comingSoonLabel: dict.roadmap.badge,
       ...(sectionKey ? { sectionKey } : {}),
+      ...(group ? { group } : {}),
+      ...(canonicalSectionKey ? { canonicalSectionKey } : {}),
     };
   };
 
+  // The two-pillar tree (APP_UX_PROPOSAL.md §2.2): Home and Ask are places you
+  // always are, Operation and Commercial are where the surface area lives. No
+  // child route sits under a pillar's path — the pillars are groupings, not
+  // pages — so every child declares its `sectionKey` and the pillar hrefs exist
+  // only so the rail has something to hand `isActive`; a section with children
+  // opens its panel rather than navigating.
   const navItems: NavItem[] = [
     {
-      key: "dashboard",
-      label: dict.sidebar.dashboard,
+      key: "home",
+      label: dict.sidebar.home,
       href: localizedHref(locale, "/dashboard"),
     },
     {
-      // The four live surfaces keep their Phase 1 URLs (§4) — only their place
-      // in the nav moves — so each carries `sectionKey` for active-state
-      // grouping; the section path alone can't tell you you're inside it.
-      key: "front-desk",
-      label: dict.sidebar.frontDesk,
-      href: localizedHref(locale, "/dashboard/front-desk"),
+      // Key stays "chat" — the rail and the docked bar both reference it. Only
+      // the wording moved: it is "Ask" now, and a place rather than a feature.
+      key: "chat",
+      label: dict.sidebar.chat,
+      href: localizedHref(locale, "/dashboard/chat"),
+    },
+    {
+      // Neither pillar carries `comingSoon`: both have live children, so the
+      // section itself is real even where most rows below it are not.
+      key: "operation",
+      label: dict.sidebar.operation,
+      href: localizedHref(locale, "/dashboard/operation"),
       children: [
-        soon("front-desk", dict.sidebar.dashboard, "front-desk"),
-        soon("front-desk-info", undefined, "front-desk"),
         {
           key: "brief",
           label: dict.sidebar.brief,
           href: localizedHref(locale, "/dashboard/brief"),
-          sectionKey: "front-desk",
+          sectionKey: "operation",
         },
         {
+          // "Arrivals & departures" — it covers both now (§5.2). The route is
+          // still /dashboard/checkins; the rename to /dashboard/arrivals lands
+          // with the surface itself, so the key stays `checkins` too.
           key: "checkins",
-          label: dict.sidebar.checkins,
+          label: dict.sidebar.arrivals,
           href: localizedHref(locale, "/dashboard/checkins"),
-          sectionKey: "front-desk",
+          sectionKey: "operation",
         },
+        soon("communications-in-house", {
+          sectionKey: "operation",
+          group: "communications",
+        }),
         {
+          // The upcoming-stays window, still at the unscoped
+          // /dashboard/communications until W6 splits the two. The inbox badge
+          // belongs here: this is where unanswered guest mail lives.
           key: "communications",
-          label: dict.sidebar.communications,
+          label: dict.sidebar.upcoming,
           href: localizedHref(locale, "/dashboard/communications"),
-          sectionKey: "front-desk",
+          sectionKey: "operation",
+          group: "communications",
           badge: {
             count: inboxBadge.count,
             alert: inboxBadge.alert,
@@ -123,64 +155,31 @@ export default async function DashboardLayout({
             ),
           },
         },
-        soon("concierge", undefined, "front-desk"),
-        soon("reputation", undefined, "front-desk"),
+        soon("guests", { sectionKey: "operation" }),
+        // Shared with Commercial, and Operation owns the active state — see
+        // `NavItem.canonicalSectionKey`. Both copies say so.
+        soon("reputation", {
+          sectionKey: "operation",
+          canonicalSectionKey: "operation",
+        }),
+        soon("front-desk-info", { sectionKey: "operation" }),
       ],
     },
     {
-      key: "revenue",
-      label: dict.sidebar.revenue,
-      href: localizedHref(locale, "/dashboard/revenue"),
-      comingSoon: true,
-      comingSoonLabel: dict.roadmap.badge,
+      key: "commercial",
+      label: dict.sidebar.commercial,
+      href: localizedHref(locale, "/dashboard/commercial"),
       children: [
-        soon("revenue", dict.sidebar.dashboard, "revenue"),
-        soon("revenue-management", undefined, "revenue"),
-        soon("demand-forecasting", undefined, "revenue"),
-        soon("ota-parity", undefined, "revenue"),
-        soon("upsell-ai", undefined, "revenue"),
-        soon("room-upgrade-ai", undefined, "revenue"),
-      ],
-    },
-    // A section-level coming-soon page with nothing under it: clicking it just
-    // navigates, no submenu panel (§2).
-    soon("sales-marketing"),
-    {
-      key: "operations",
-      label: dict.sidebar.operations,
-      href: localizedHref(locale, "/dashboard/operations"),
-      comingSoon: true,
-      comingSoonLabel: dict.roadmap.badge,
-      children: [
-        soon("operations", dict.sidebar.dashboard, "operations"),
-        soon("staff", undefined, "operations"),
-        soon("housekeeping", undefined, "operations"),
-        soon("fnb", undefined, "operations"),
-        soon("procurement", undefined, "operations"),
-      ],
-    },
-    {
-      key: "finance",
-      label: dict.sidebar.finance,
-      href: localizedHref(locale, "/dashboard/finance"),
-      comingSoon: true,
-      comingSoonLabel: dict.roadmap.badge,
-      children: [
-        soon("finance", dict.sidebar.dashboard, "finance"),
-        soon("finance-reporting", undefined, "finance"),
-        soon("chargeback", undefined, "finance"),
-      ],
-    },
-    {
-      key: "oversight",
-      label: dict.sidebar.oversight,
-      href: localizedHref(locale, "/dashboard/oversight"),
-      comingSoon: true,
-      comingSoonLabel: dict.roadmap.badge,
-      children: [
-        soon("oversight", dict.sidebar.dashboard, "oversight"),
-        soon("ai-management", undefined, "oversight"),
-        soon("team-activity", undefined, "oversight"),
+        soon("reputation", {
+          sectionKey: "commercial",
+          canonicalSectionKey: "operation",
+        }),
+        soon("revenue-management", { sectionKey: "commercial" }),
+        soon("demand-forecasting", { sectionKey: "commercial" }),
+        soon("ota-parity", { sectionKey: "commercial" }),
+        soon("upsell-ai", { sectionKey: "commercial" }),
+        soon("room-upgrade-ai", { sectionKey: "commercial" }),
+        soon("sales-marketing", { sectionKey: "commercial" }),
       ],
     },
   ];

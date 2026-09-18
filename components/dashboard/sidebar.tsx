@@ -102,6 +102,34 @@ export interface NavItem {
    * Lets active-state grouping light the section while you're inside it.
    */
   sectionKey?: string;
+  /**
+   * The one section that owns this row's active state when the row appears in
+   * more than one panel (APP_UX_PROPOSAL.md §2.2).
+   *
+   * Reputation is genuinely both things — a GM reads reviews in the morning to
+   * find out what broke, and monthly to understand what's moving the score — so
+   * the same row, pointing at the same route, renders under both Operation and
+   * Commercial. Only one rail icon may light for it: two lit icons read as a
+   * bug, not a feature. The canonical owner is Operation, because the daily
+   * read is the operational one.
+   *
+   * The rule: set this to the owner's key on *every* copy of a shared row, so
+   * the ownership is stated rather than inferred from which panel happens to
+   * come first in the tree. Absent — the normal case — active state falls back
+   * to `sectionKey` and the URL prefix.
+   */
+  canonicalSectionKey?: string;
+  /**
+   * An optional labelled sub-group inside a panel (APP_UX_PROPOSAL.md §2.3) —
+   * used once today, for Communications under Operation. The value is the stem
+   * of the dictionary key holding the group's label: `group: "communications"`
+   * reads `sidebar.communicationsGroup`.
+   *
+   * Rows sharing a value render together under one mono eyebrow, in tree order.
+   * Data only for now — the panel and drawer learn to draw it in the rendering
+   * pass.
+   */
+  group?: string;
 }
 
 // Icons live here in the Client Component and are looked up by key. They must

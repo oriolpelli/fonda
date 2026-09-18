@@ -118,12 +118,37 @@ export const ROADMAP = [
     blurb: (dict: Dictionary) => dict.roadmap.blurb.frontDeskInfo,
   },
   {
+    // Shared between both pillars (APP_UX_PROPOSAL.md §2.2), so it sits under
+    // neither one's path: /dashboard/reputation, not the old
+    // /dashboard/front-desk/reputation — "front-desk" is not a section any more.
     key: "reputation",
-    route: "/dashboard/front-desk/reputation",
+    route: "/dashboard/reputation",
     status: "coming-soon",
     inNav: false,
     label: (dict: Dictionary) => dict.sidebar.reputation,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.reputation,
+  },
+
+  // --- Operation, the new pillar (APP_UX_PROPOSAL.md §2.2) -----------------
+  //
+  // Two surfaces that don't exist yet but have a place in the tree from day
+  // one. `communications-in-house` is the second Communications window and
+  // supersedes `concierge`; `guests` is the Guest Experience surface (§5.4).
+  {
+    key: "communications-in-house",
+    route: "/dashboard/communications/in-house",
+    status: "coming-soon",
+    inNav: false,
+    label: (dict: Dictionary) => dict.sidebar.inHouse,
+    blurb: (dict: Dictionary) => dict.roadmap.blurb["communications-in-house"],
+  },
+  {
+    key: "guests",
+    route: "/dashboard/guests",
+    status: "coming-soon",
+    inNav: false,
+    label: (dict: Dictionary) => dict.sidebar.guests,
+    blurb: (dict: Dictionary) => dict.roadmap.blurb.guests,
   },
 
   // Revenue — supersedes the standalone Analytics item (§6, decision 1).
