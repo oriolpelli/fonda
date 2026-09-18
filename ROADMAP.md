@@ -33,9 +33,10 @@ system. Three PMS sources work (MEWS, Apaleo, Google Sheet/CSV). Gmail ingest,
 classification and draft-writing work. The briefing cron runs. Twenty-one
 coming-soon stubs sit behind the nav.
 
-**Site.** `site/v3-redesign` is built through Phase J and **not merged to
-`main`** — production still serves the old site. That merge is the single
-oldest unblocked item in the repo.
+**Site.** ✅ **Merged and live, 18 September.** `site/v3-redesign` went to
+`main` as a fast-forward (25 commits) and production serves the v3 site in all
+three locales. The repo's oldest unblocked item is closed; the branch can be
+deleted.
 
 **Commercially.** Zero pilots live. `GTM_STRATEGY.md` §4.5's dated milestones —
 "2 pilots live by 4 Sep", "3 pilots by 18 Sep" — have all passed unmet. That is
@@ -56,7 +57,7 @@ buy yourself a conflict at the worst moment.
 
 ### Step 1 — Land B3 (site)
 
-1. Finish the remaining site work.
+1. ✅ **Site work finished** (18 Sep) — built through Phase J.
 2. ✅ **Migration `0021_sample_brief_requests.sql` applied** (18 Sep).
 3. ✅ **`lib/seo.ts` resolves the preview's own origin** (18 Sep). `SITE_URL`
    now takes the deployment's own host on Preview, so robots.txt, canonicals,
@@ -105,13 +106,27 @@ buy yourself a conflict at the worst moment.
    ability to *verify* anything from a preview — `robots.ts` advertised the
    production sitemap and `host`, canonicals and hreflang claimed production,
    and the JSON-LD `@id`s did too. That is fixed.
-4. **Merge `site/v3-redesign` → `main`.** Currently 17 commits ahead. Verify
-   production in all three locales.
+4. ✅ **Merged `site/v3-redesign` → `main`** (18 Sep). Fast-forward, 25
+   commits, no merge commit — the repo has one line of history again.
+   Production verified in all three locales: `/en` "The AI that runs the back
+   of house, so you can run the front.", `/es` "La IA que lleva la operativa, y
+   tú, a los huéspedes.", `/ca` "La IA que porta l'operativa, i tu, els
+   hostes." — each with its own canonical, and `/robots.txt` reporting
+   `https://fondas.app` for `Host` and `Sitemap`, which is item 3 behaving
+   correctly on the production side too.
 
-Nothing else goes in this commit range. When it's green, the branch is gone and
-the repo has one line of history again.
+✅ **Step 1 is closed.** The branch is merged; delete
+`site/v3-redesign` locally and on GitHub when convenient.
 
-### Step 2 — One cleanup pass, on `main`, three commits
+### Step 2 — One cleanup pass ✅ *(done 18 Sep — four commits, on the branch)*
+
+**What actually happened, and why it differs from the plan below.** The pass was
+already finished in the working tree when Step 1 was being closed, so it was
+committed on `site/v3-redesign` and arrived with the merge rather than landing
+on `main` separately. Four commits, not three: the archive move (2a), the
+reference sweep (2b), `APP_UX_PROPOSAL.md` added, and the doc refresh
+(`CLAUDE.md`, `README.md`, `FONDA_MARKETING_VOICE.md`). The plan as written is
+kept below as the record of what was decided.
 
 **2a · Move the retired documents.** Fifteen `.md` files, one `.docx`, five
 research `.html` files and `prompts/` into `docs/archive/` (§8 has the list).
@@ -133,9 +148,10 @@ permissions spec that exists) into a short section of this file before archiving
 it. Add the retirement header `POSITIONING_V3.md` §6 asked for to
 `FONDA_MARKETING_VOICE.md`.
 
-### Step 3 — Then, and only then, the release train
+### Step 3 — The release train ◀ **you are here**
 
-§2 below. Week 2 is the app IA change.
+§2 below. **Next: W2, prompts 1–4** in `APP_UX_PROMPTS.md` — the two-pillar
+rail. §2's "How to run a release week" states the loop.
 
 ### Running alongside all of it, from today
 
