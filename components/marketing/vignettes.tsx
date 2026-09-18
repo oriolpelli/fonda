@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 export type VignetteName =
   | "key"
   | "coffee"
-  | "olive"
   | "lantern"
   | "olivepot"
   | "lounger"
@@ -40,14 +39,6 @@ function CoffeeArt() {
   return (
     <>
       <path d="M50 30 q-6 -8 3 -15 M63 30 q-6 -8 3 -15" fill="none" stroke="#C9B79A" strokeWidth="3" strokeLinecap="round"/><ellipse cx="58" cy="84" rx="34" ry="8" fill="#F3EAD8" stroke="#6E5A44" strokeWidth="2.6"/><path d="M38 44 h40 v11 a20 18 0 0 1 -40 0 z" fill="#F3EAD8" stroke="#6E5A44" strokeWidth="2.6" strokeLinejoin="round"/><path d="M78 47 q15 2 11 16 q-3 9 -13 8" fill="none" stroke="#6E5A44" strokeWidth="2.6"/><ellipse cx="58" cy="45" rx="19" ry="4" fill="#6E4A2E" opacity="0.65"/>
-    </>
-  );
-}
-
-function OliveArt() {
-  return (
-    <>
-      <path d="M32 94 Q54 58 94 34" fill="none" stroke="#5C7348" strokeWidth="3" strokeLinecap="round"/><g fill="#7E9463"><ellipse cx="47" cy="74" rx="12" ry="5.4" transform="rotate(-34 47 74)"/><ellipse cx="64" cy="59" rx="12" ry="5.4" transform="rotate(-34 64 59)"/><ellipse cx="81" cy="45" rx="11" ry="5" transform="rotate(-34 81 45)"/><ellipse cx="40" cy="60" rx="10" ry="4.8" transform="rotate(26 40 60)"/><ellipse cx="57" cy="46" rx="10" ry="4.8" transform="rotate(26 57 46)"/></g><circle cx="52" cy="71" r="4.6" fill="#5C7348"/><circle cx="70" cy="55" r="4.6" fill="#6E8A5E"/>
     </>
   );
 }
@@ -97,7 +88,6 @@ function ArchArt() {
 const ART: Record<VignetteName, () => ReactElement> = {
   key: KeyArt,
   coffee: CoffeeArt,
-  olive: OliveArt,
   lantern: LanternArt,
   olivepot: OlivepotArt,
   lounger: LoungerArt,

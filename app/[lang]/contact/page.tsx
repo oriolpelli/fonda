@@ -39,7 +39,7 @@ export default async function ContactPage({
   const { locale, dict } = await loadDictionary((await params).lang);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="marketing-surface flex min-h-screen flex-col">
       <SiteHeader locale={locale} dict={dict} />
 
       <main className="flex-1 px-6 py-20 md:px-8 md:py-28">

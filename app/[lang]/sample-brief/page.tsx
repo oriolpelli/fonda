@@ -38,7 +38,7 @@ export default async function SampleBriefPage({
   const sample = getSampleBrief(locale);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="marketing-surface flex min-h-screen flex-col">
       {/* Marketing nav (hidden in print — the PDF is the brief alone) */}
       <header className="sticky top-0 z-50 border-b border-border bg-[var(--fonda-bg)]/82 backdrop-blur print:hidden">
         <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-6 md:px-8">

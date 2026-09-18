@@ -242,6 +242,49 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* ── The marketing ground (Phase E-pre) ────────────────────────────────
+     The public site runs on ONE warm ground, #F6F3EE, with no per-band
+     alternation: separation comes from the border-t hairlines and the
+     vertical padding. It previously alternated --fonda-bg (#EEEEEE, neutral)
+     with --fonda-surface-2 (#F6F3EE, warm), which alternates TEMPERATURE
+     rather than value — the page read as changing its mind, and with five
+     warm bands to one grey the grey one looked like a mistake. The rest of
+     the palette is warm already (borders #E2DDD3, inset #E4E0D7, ink
+     #1C1A16), so the neutral ground was the outlier.
+
+     Scoped, NOT global: --fonda-bg stays #EEEEEE at :root and the dashboard
+     keeps the neutral ground the GROUND CORRECTION note above specifies.
+
+     Both variables are set on purpose. `--background: var(--fonda-bg)` is
+     substituted at :root, so its computed value (#EEEEEE) is what descendants
+     inherit — redeclaring --fonda-bg alone would NOT re-resolve it. Setting
+     --fonda-bg as well is what carries the ground into anything that reads
+     the raw token, the hero parallax's scrim among them: its
+     color-mix(in srgb, var(--fonda-bg) N%, transparent) stops now resolve
+     warm without hero-parallax.tsx being touched.
+
+     White cards and product-shot windows still float on it at 1.107:1.
+
+     WHERE IT GOES — every route a prospect can reach from the site:
+       /                     landing
+       /sample-brief         the ungated sample + its request form
+       /contact
+       /(legal)/*            privacy, terms — linked from the footer
+       /newsletter/confirm   \ the sample-brief request's own landing pages;
+       /newsletter/unsubscribe/ a lead confirms mid-conversion here
+       404 (not-found.tsx)   reachable from anywhere
+     Phase I's /trust joins this list when it ships.
+
+     WHERE IT DOES NOT — /(auth)/* and /onboarding/* stay on the neutral app
+     ground. That is a decision, not an oversight: they are the app side of
+     the door, and their split-screen brand panel already carries the
+     transition from site to product. The dashboard likewise keeps neutral. */
+  .marketing-surface {
+    --fonda-bg: var(--fonda-surface-2);
+    --background: var(--fonda-surface-2);
+    background-color: var(--fonda-bg);
+  }
+
   /* Headlines: Geist, weight 600, tight tracking. The look comes from
      scale + weight + negative tracking — not from a display serif. */
   h1, h2, h3 {

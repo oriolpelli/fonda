@@ -53,7 +53,7 @@
     "closeMenu": "Cerrar menú"
   },
   "hero": {
-    "badge": "Juega con ventaja",
+    "badge": "Dos pasos por delante, cada mañana",
     "headlineLine1": "La IA que lleva la operativa,",
     "headlineLine2": "y tú, a los huéspedes.",
     "subhead": "{brand} se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Nada sale sin tu visto bueno.",
@@ -175,7 +175,7 @@
     "button": "Empezar →"
   },
   "footer": {
-    "rights": "© {year} Fondas. Juega con ventaja.",
+    "rights": "© {year} Fondas. Dos pasos por delante.",
     "privacy": "Privacidad",
     "terms": "Términos",
     "sampleBrief": "Ver un resumen de ejemplo",

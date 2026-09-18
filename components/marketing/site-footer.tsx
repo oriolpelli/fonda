@@ -4,7 +4,6 @@ import type { Dictionary } from "@/app/[lang]/dictionaries";
 import { Wordmark } from "@/components/brand/wordmark";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { NewsletterForm } from "@/components/marketing/newsletter-form";
-import { Vignette } from "@/components/marketing/vignettes";
 import { t } from "@/lib/i18n/format";
 import type { Locale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
@@ -93,11 +92,12 @@ export function SiteFooter({
         {/* Brand + newsletter */}
         <div className="grid gap-12 py-16 lg:grid-cols-[5fr_7fr] lg:gap-16">
           <div>
-            {/* A quiet sign-off in the hero's hand — decorative, one per page. */}
-            <Vignette name="olive" size={84} />
+            {/* The wordmark alone. A decorative olive branch used to sit
+                above it; it was removed rather than restyled — the footer
+                reads better with one voice in it. */}
             <Wordmark
               href={localizedHref(locale, "/")}
-              className="mt-3 block text-[clamp(2.75rem,7vw,4.5rem)] leading-none tracking-[-0.04em]"
+              className="block text-[clamp(2.75rem,7vw,4.5rem)] leading-none tracking-[-0.04em]"
             />
             <p className="mt-5 max-w-[34ch] text-[16px] leading-[1.6] text-muted-foreground">
               {dict.footer.valueProp}

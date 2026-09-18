@@ -66,11 +66,13 @@ Applied honestly, this rule alone recovers more conversion than any headline. It
 
 | | |
 |---|---|
-| **ES** | JUEGA CON VENTAJA. |
-| **CA** | JUGA AMB AVANTATGE. |
-| **EN** | PLAY WITH AN ADVANTAGE. |
+| **ES** | DOS PASOS POR DELANTE, CADA MAÑANA. |
+| **CA** | DOS PASSOS PER DAVANT, CADA MATÍ. |
+| **EN** | TWO STEPS AHEAD, EVERY MORNING. |
 
-Three words, cheeky, confident rather than loud — and, critically, it **names no segment and no enemy**. That matters more than it looks: every other candidate either jabbed at a peer (*el hotel de al lado*, who in Barcelona is often the person who referred you) or fixed the page to one size of hotel (§1.4).
+Cheeky, confident rather than loud, and it **names no segment and no enemy** — which matters more than it looks: other candidates either jabbed at a peer (*el hotel de al lado*, who in Barcelona is often the person who referred you) or fixed the page to one size of hotel (§1.4).
+
+*"Juega con ventaja"* held this slot briefly and was replaced on review: three words asked too much of a reader who has been on the page for four seconds. **"Cada mañana" is what does the work** — it anchors an abstract claim to a concrete, recurring moment, so the line is understood rather than decoded. The eyebrow also stops short of restating the hero: the hero says what Fondas does, the eyebrow says what it gets you.
 
 Dropped along the way: *"ventaja injusta"* — **unfair** carries a whiff of cheating, the wrong note two bands above a security section. Runner-up, still the most useful line in a live demo: *DOS PASOS POR DELANTE. SIN CONTRATAR A NADIE.*
 
@@ -144,7 +146,7 @@ Mechanical: apply by key, invent nothing, keep tokens (`{year}`, `{brand}`, `{pr
 
 | Key | ES | CA | EN |
 |---|---|---|---|
-| `hero.badge` | Juega con ventaja · Beta privada | Juga amb avantatge · Beta privada | Play with an advantage · Private beta |
+| `hero.badge` | Dos pasos por delante, cada mañana | Dos passos per davant, cada matí | Two steps ahead, every morning |
 | `hero.headlineLine1` | La IA que lleva la operativa, | La IA que porta l'operativa, | The AI that runs the back of house, |
 | `hero.headlineLine2` | y tú, a los huéspedes. | i tu, els hostes. | so you can run the front. |
 | `hero.subhead` | {brand} se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Nada sale sin tu visto bueno. | {brand} es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Res no surt sense el teu vistiplau. | {brand} connects to your PMS and your hotel inbox, and runs the four parts of the day: the morning brief, check-ins, guest communications, and any question about your hotel. Nothing goes out without your yes. |

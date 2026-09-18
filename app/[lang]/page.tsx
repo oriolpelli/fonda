@@ -36,9 +36,20 @@ import { cn } from "@/lib/utils";
 const LIVE_INTEGRATIONS = ["MEWS", "Apaleo", "Gmail"];
 const ON_REQUEST_INTEGRATIONS = ["Outlook"] as const;
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+function Eyebrow({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <span className="inline-flex items-center gap-2 font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+    <span
+      className={cn(
+        "inline-flex items-center gap-2 font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]",
+        className
+      )}
+    >
       {children}
     </span>
   );
@@ -339,7 +350,7 @@ export default async function Home({
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="marketing-surface flex min-h-screen flex-col">
       <JsonLd data={jsonLd} />
 
       <SiteHeader locale={locale} dict={dict} isHome />
@@ -360,7 +371,23 @@ export default async function Home({
                 parent's width; capping the h1 alone would have done nothing.
                 Every other section on the page keeps max-w-[1120px]. */}
             <Reveal className="mx-auto max-w-[1200px] text-center">
-              <Eyebrow>
+              {/* Tightened on phones, and only here. This is much the
+                  longest eyebrow on the page — es runs 34 characters — and at
+                  the shared 12px/0.14em it wrapped to two lines inside the
+                  pill at 360px, which a leading dot makes look broken. The
+                  string is not the thing to cut: 11px at 0.08em holds all
+                  three languages on one line down to 320px, and the section
+                  eyebrows keep the full treatment because they are short.
+
+                  The colour is stepped up too, and only here. Eyebrows are
+                  --fonda-text-3 everywhere else, which is 5.02:1 on the flat
+                  ground — fine. This one sits over the watercolour, where the
+                  lightest pixel beneath it is rgb(226,226,216) and text-3
+                  measures 4.26:1, under the 4.5:1 floor for 11-12px text.
+                  --fonda-text-2 measures 5.89:1 over that same pixel. No new
+                  token, and the hero is the only place the art is behind the
+                  type. */}
+              <Eyebrow className="text-[var(--fonda-text-2)] max-sm:text-[11px] max-sm:tracking-[0.08em]">
                 <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden>
                   <circle cx="3" cy="3" r="3" fill="var(--fonda-accent)" />
                 </svg>
@@ -490,7 +517,14 @@ export default async function Home({
               {[...ON_REQUEST_INTEGRATIONS, dict.trust.customPms].map((name) => (
                 <span
                   key={name}
-                  className="rounded-full bg-[var(--fonda-surface-2)] px-3.5 py-1 text-[13px] text-[var(--fonda-text-3)]"
+                  // Outline, not a fill. The fill used to be
+                  // --fonda-surface-2, which IS the page ground now, so the
+                  // chip dissolved into it. It cannot step down to
+                  // --fonda-inset either: --fonda-text-3 on #E4E0D7 measures
+                  // 4.22:1 and fails AA for 13px text. A hairline keeps the
+                  // chip quieter than the live ones (which float white) while
+                  // leaving its label on the ground at 5.02:1.
+                  className="rounded-full border border-[var(--fonda-border-2)] px-3.5 py-1 text-[13px] text-[var(--fonda-text-3)]"
                 >
                   {name}
                 </span>
@@ -516,17 +550,14 @@ export default async function Home({
 
         {/* Product showcase — the morning brief (Mobbin: Retool/ClickUp).
 
-            GROUND: the light bands are --fonda-surface-2 (#F6F3EE), not
-            --fonda-surface. Since the v3 ground flip, --fonda-surface resolves
-            to #FFFFFF — the same white as --card and as these windows — so a
-            "surface" band put a white window on a white ground at a 1.000:1
-            tonal step, i.e. no step at all, and §6's "cards float lighter than
-            the page" had nothing to float against. Bands 3 and 4 read as one
-            white slab once both went full width, which is what forced the
-            issue. #F6F3EE gives a 1.107:1 step; every text token still clears
-            AA on it (text-3, the worst, is 5.02:1 against 4.5:1 required).
-            The other light bands — bundle, stats, cta — moved with it so the
-            page has one light material, not two.
+            GROUND: none. Every band on this page sits on the one warm
+            marketing ground (#F6F3EE), set once on the page shell by
+            .marketing-surface in globals.css — see the note there. Bands are
+            separated by the border-t hairline and the vertical padding, and
+            nothing else. Do not reintroduce a per-band background: the
+            alternation this replaced swapped temperature rather than value,
+            so it read as the page changing its mind. White windows still
+            float on it at 1.107:1.
             
             The window is full width at 1120px, the same measure band 4 uses,
             because the two windows are a pair in width as well as in chrome —
@@ -534,7 +565,7 @@ export default async function Home({
             column of stubs. The header keeps its two columns so the band still
             opens differently from band 4's stacked header: one frame, filled
             three different ways, is the intent; three identical bands is not. */}
-        <section className="border-t border-border bg-[var(--fonda-surface-2)] px-6 py-24 md:px-8">
+        <section className="border-t border-border px-6 py-24 md:px-8">
           <div className="mx-auto max-w-[1120px]">
             <Reveal className="grid gap-x-12 gap-y-4 lg:grid-cols-[5fr_7fr] lg:items-end">
               <div>
@@ -590,7 +621,7 @@ export default async function Home({
             border and the same 1120px measure, enforced by the comment in
             email-draft-preview-window.tsx. It is only the band around them
             that differs, and it differs because the artefact got wider. */}
-        <section className="border-t border-border bg-[var(--fonda-surface-2)] px-6 py-24 md:px-8">
+        <section className="border-t border-border px-6 py-24 md:px-8">
           <div className="mx-auto max-w-[1120px]">
             <Reveal>
               <Eyebrow>{dict.emailShowcase.eyebrow}</Eyebrow>
@@ -683,16 +714,22 @@ export default async function Home({
                   key={column.title}
                   index={i}
                   // The two columns are ranked by elevation, not by colour:
-                  // Fondas floats as a white card, by-hand sits back as a warm
-                  // well with a hairline and no shadow. Both used to be
+                  // Fondas floats as a white card, by-hand sits back at ground
+                  // level with a hairline and no shadow. Both used to be
                   // "bg-card" and "--fonda-surface", which were different
                   // greys in v2 but resolve to the SAME white in v3 — the
                   // contrast the section is built on had quietly vanished.
+                  //
+                  // The by-hand column carries NO fill. It was
+                  // --fonda-surface-2, which is the page ground now, so the
+                  // class painted the column exactly the colour it was already
+                  // sitting on — a no-op that read as intent. The hairline is
+                  // what separates it; the elevation ranking is unchanged.
                   className={cn(
                     "rounded-[18px] p-7",
                     column.isFondas
                       ? "bg-card shadow-card"
-                      : "border border-border bg-[var(--fonda-surface-2)]"
+                      : "border border-border"
                   )}
                 >
                   <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-foreground">
@@ -748,7 +785,7 @@ export default async function Home({
         </section>
 
         {/* Bundle — one layer, not six subscriptions (ROADMAP v2 §0.2) */}
-        <section className="border-t border-border bg-[var(--fonda-surface-2)] px-6 py-24 md:px-8">
+        <section className="border-t border-border px-6 py-24 md:px-8">
           <div className="mx-auto max-w-[1120px]">
             <Reveal>
               <Eyebrow>{dict.bundle.eyebrow}</Eyebrow>
@@ -780,7 +817,7 @@ export default async function Home({
         </section>
 
         {/* ROI stats — Sana style */}
-        <section className="border-t border-border bg-[var(--fonda-surface-2)] px-6 py-24 md:px-8">
+        <section className="border-t border-border px-6 py-24 md:px-8">
           <div className="mx-auto max-w-[1120px]">
             <Reveal className="grid gap-8 pb-10 md:grid-cols-2 md:items-end">
               <h2 className="max-w-[13ch] text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold leading-[1.05] tracking-[-0.028em] text-foreground">
@@ -932,7 +969,7 @@ export default async function Home({
         </section>
 
         {/* CTA */}
-        <section className="bg-[var(--fonda-surface-2)] px-6 pb-24 md:px-8">
+        <section className="px-6 pb-24 md:px-8">
           <Reveal className="relative mx-auto max-w-[1120px] overflow-hidden rounded-[28px] bg-ink px-6 py-24 text-center md:px-24">
             <Eyebrow>
               <span className="text-[color-mix(in_srgb,white_55%,transparent)]">

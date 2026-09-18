@@ -53,7 +53,7 @@
     "closeMenu": "Close menu"
   },
   "hero": {
-    "badge": "Play with an advantage",
+    "badge": "Two steps ahead, every morning",
     "headlineLine1": "The AI that runs the back of house,",
     "headlineLine2": "so you can run the front.",
     "subhead": "{brand} connects to your PMS and your hotel inbox, and runs the four parts of the day: the morning brief, check-ins, guest communications, and any question about your hotel. Nothing goes out without your yes.",
@@ -175,7 +175,7 @@
     "button": "Get started →"
   },
   "footer": {
-    "rights": "© {year} Fondas. Play with an advantage.",
+    "rights": "© {year} Fondas. Two steps ahead.",
     "privacy": "Privacy",
     "terms": "Terms",
     "sampleBrief": "See a sample brief",

@@ -26,6 +26,20 @@
 // typing the number again, and changing the price stays a one-line edit here
 // plus one dashboard change.
 // -----------------------------------------------------------------------------
+// ⚠️ NOT PUBLIC. `PRICE_MONTHLY_EUR` is the real price and is deliberately
+// rendered on NO public page. The pricing band says "one price per property,
+// everything included" with no amount, the stats band spends its number on the
+// migration question instead, and the JSON-LD `Offer` carries a description and
+// a URL but no `price`/`priceCurrency` — structured data must not claim a figure
+// the page itself does not state.
+//
+// It stays here because it is still the real number: /terms renders it as legal
+// prose via `COMPANY.price`, and `STRIPE_UNIT_AMOUNT` derives from it for the
+// day billing ships. Until then, do not reintroduce a figure anywhere on the
+// marketing site — not in the hero, the pricing band, the stats row, the FAQ or
+// the structured data. If a price is going public again, that is a product
+// decision, not a copy tweak: change it here and update the JSON-LD in the same
+// commit so the two cannot disagree.
 const PRICE_MONTHLY_EUR = 199;
 
 /** ISO currency for every price we render or charge. */
@@ -53,13 +67,22 @@ export const COMPANY = {
   governingLawCountry: "Spain",
   courtsCity: "[Barcelona]",
   /**
-   * The bare monthly figure for the marketing site. The currency symbol is
-   * placed per-locale by the dictionary templates (`stats.priceValue`,
-   * `pricing.price` interpolate `{price}`). Derived — edit
-   * `PRICE_MONTHLY_EUR` above.
+   * The bare monthly figure. Derived — edit `PRICE_MONTHLY_EUR` above.
+   *
+   * ⚠️ Has NO public reader today. This used to feed `stats.priceValue` and
+   * `pricing.price` through a `{price}` token; both dictionary strings stopped
+   * carrying that token when the figure came off the public page, so nothing on
+   * the marketing site interpolates this any more. Kept for billing, and as the
+   * single source if a price goes public again — see the note on
+   * `PRICE_MONTHLY_EUR`. Do not wire it back into a marketing string.
    */
   priceMonthly: String(PRICE_MONTHLY_EUR),
-  /** Headline subscription price as legal prose (/terms). Derived. */
+  /**
+   * Headline subscription price as legal prose. Derived. The ONE public reader
+   * of the figure, and deliberately so: /terms must state what a customer will
+   * be charged. This is a legal page, not a marketing one — the no-figure rule
+   * above is about the marketing site.
+   */
   price: `€${PRICE_MONTHLY_EUR} per month per hotel property`,
 } as const;
 

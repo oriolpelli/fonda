@@ -53,7 +53,7 @@
     "closeMenu": "Tanca el menú"
   },
   "hero": {
-    "badge": "Juga amb avantatge",
+    "badge": "Dos passos per davant, cada matí",
     "headlineLine1": "La IA que porta l'operativa,",
     "headlineLine2": "i tu, els hostes.",
     "subhead": "{brand} es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Res no surt sense el teu vistiplau.",
@@ -175,7 +175,7 @@
     "button": "Comença →"
   },
   "footer": {
-    "rights": "© {year} Fondas. Juga amb avantatge.",
+    "rights": "© {year} Fondas. Dos passos per davant.",
     "privacy": "Privadesa",
     "terms": "Termes",
     "sampleBrief": "Veure un resum d'exemple",

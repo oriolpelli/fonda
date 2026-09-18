@@ -14,8 +14,13 @@ export default async function LegalLayout({
 }) {
   const { locale, dict } = await loadDictionary((await params).lang);
 
+  // Warm ground, applied at the group layout so privacy and terms cannot
+  // drift apart. These pages are linked from the marketing footer, so a
+  // prospect reaches them from the site — leaving them on the app's neutral
+  // grey just moved the warm-to-grey swing from between bands to between
+  // pages. See .marketing-surface in globals.css for the boundary.
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="marketing-surface flex min-h-screen flex-col">
       <header className="border-b border-border">
         <div className="mx-auto flex h-16 w-full max-w-3xl items-center justify-between px-6">
           <Wordmark href={localizedHref(locale, "/")} />

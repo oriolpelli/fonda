@@ -60,33 +60,92 @@ Defined as CSS custom properties in `:root` (see `globals.css`). Never hard-code
 --fonda-ink-hover:    #1C1C1C
 ```
 
-> **v3 amendment — `--fonda-surface-2` is also a band ground (Phase D-fix).**
+> **v3 amendment — `--fonda-surface-2` is the marketing ground (Phase E-pre,
+> superseding the Phase D-fix wording below it).**
 > The palette above is v2's. Under v3 (`FONDA_SANA_REDESIGN.md` §3.1, which
-> wins) the ground inverted — the page is neutral grey `#EEEEEE` and cards are
-> white — and a third surface was added: `--fonda-surface-2` `#F6F3EE`, warm
-> off-white, originally scoped to "nested wells, secondary panels, hover
+> wins) the ground inverted — the app page is neutral grey `#EEEEEE` and cards
+> are white — and a third surface was added: `--fonda-surface-2` `#F6F3EE`,
+> warm off-white, originally scoped to "nested wells, secondary panels, hover
 > fills".
 >
-> **That scope is now wider: it is also the marketing page's light band
-> ground**, alternating with `--fonda-bg` every two bands. The reason is
-> structural, not stylistic. `--fonda-surface` resolves to `#FFFFFF`, the same
-> white as `--card` and as the product-shot windows, so a "surface" band put a
-> white window on a white ground — a **1.000:1** tonal step, i.e. none at all,
-> leaving v3 §6's "cards float lighter than the page" nothing to float
-> against. Against `#F6F3EE` the step is **1.107:1**, and every text token
-> still clears WCAG AA on it (worst case `--fonda-text-3` at **5.02:1**, above
-> the 4.5:1 floor for normal text).
+> **That scope is now wider in two steps.** Phase D-fix made it the *light
+> band* of an alternating marketing rhythm, because `--fonda-surface` resolves
+> to `#FFFFFF` — the same white as `--card` and as the product-shot windows —
+> so a "surface" band gave a white window a **1.000:1** step and v3 §6's "cards
+> float lighter than the page" had nothing to float against.
 >
-> Two rules follow, and they are the cost of the wider scope:
-> - **A nested well must not be `--fonda-surface-2` on a `--fonda-surface-2`
->   band** — it would vanish for exactly the reason the white band did. Put
->   wells that sit on a light band inside a white card first, or step them
->   down to `--fonda-inset`. Verified clean at Phase D-fix: every
->   `--fonda-surface-2` element on the marketing pages sits on `#EEEEEE` or on
->   white inside a window.
+> **Phase E-pre removed the alternation entirely.** Alternating `--fonda-bg`
+> `#EEEEEE` with `--fonda-surface-2` `#F6F3EE` swaps **temperature, not
+> value** — the two are within a hair of each other in lightness but one is
+> neutral and one is warm — so the page read as changing its mind rather than
+> as having a rhythm, and with five warm bands to one grey the grey one looked
+> like a mistake. The rest of the palette is warm already (borders `#E2DDD3`,
+> inset `#E4E0D7`, ink `#1C1A16`), which made the neutral ground the outlier.
+>
+> **The shipped rule:** the public marketing site runs on **one** ground,
+> `--fonda-surface-2` `#F6F3EE`, with **no per-band background at all**. Bands
+> are separated by their `border-t` hairline and their vertical padding.
+> White cards and windows float on it at **1.107:1**.
+>
+> **Scope: marketing only.** It is applied by `.marketing-surface` in
+> `globals.css`, which redefines `--fonda-bg` *and* `--background` for that
+> subtree. `--fonda-bg` stays `#EEEEEE` at `:root` and **the dashboard keeps
+> the neutral ground** — the GROUND CORRECTION note in `globals.css` still
+> governs the app. Both variables have to be set: `--background:
+> var(--fonda-bg)` is substituted at `:root`, so descendants inherit its
+> computed value and redeclaring `--fonda-bg` alone would not re-resolve it.
+> Setting the raw token is also what carries the ground into the hero
+> parallax's scrim, whose `color-mix(in srgb, var(--fonda-bg) N%, transparent)`
+> stops now resolve warm without that component being edited.
+>
+> **Where the boundary falls (Phase E-pre-fix).** The rule is *every route a
+> prospect can reach from the site*, not "the landing page". Warm:
+>
+> | route | applied at |
+> |---|---|
+> | `/` | page shell |
+> | `/sample-brief` | page shell |
+> | `/contact` | page shell |
+> | `/privacy`, `/terms` | the `(legal)` **group layout**, so the two cannot drift apart |
+> | `/newsletter/confirm`, `/newsletter/unsubscribe` | page shell |
+> | 404 (`not-found.tsx`) | page shell |
+>
+> The two newsletter routes matter more than their size suggests: they are the
+> landing pages of the sample-brief request flow, so a lead who clicks the
+> confirm link in their email arrives there **mid-conversion**. Leaving them
+> neutral put a grey page in the middle of the one funnel the site has.
+>
+> **`/(auth)/*` and `/onboarding/*` stay neutral, deliberately.** They are the
+> app side of the door, and their split-screen brand panel already carries the
+> transition from site to product — a warm ground there would blur a line that
+> is currently doing useful work. The dashboard likewise stays neutral. If you
+> are adding a route and wondering which side it belongs to, the test is
+> whether someone who has not signed up can reach it.
+>
+> **Phase I's `/trust` page joins the warm set when it ships** — it is a
+> prospect-facing route and is linked from the marketing site.
+>
+> Extending the ground was not cosmetic: before it, the warm-to-grey swing this
+> amendment removed from *between bands* simply reappeared *between pages*.
+>
+> Three rules follow, and they are the cost of the wider scope:
+> - **Nothing on a marketing band may be filled `--fonda-surface-2`** — it is
+>   the ground there, so the fill is invisible. Two elements were caught by
+>   this at Phase E-pre: the "on request" integration chips became outline-only
+>   (hairline, no fill), and the comparison band's by-hand column dropped its
+>   fill and kept its hairline.
+> - **Do not "fix" such a well with `--fonda-inset` `#E4E0D7`.** It is a real
+>   tonal step (1.190:1) but `--fonda-text-3` `#6C685E` measures **4.22:1** on
+>   it, under the 4.5:1 floor for normal text. Use white, or no fill.
 > - `--fonda-surface` stays the token for **cards and panels**, never for a
 >   band. If a band looks like it wants white, what it actually wants is for
 >   the thing on top of it to be white.
+>
+> **AA on the unified ground** (measured, not estimated): `--fonda-text`
+> 15.70:1 · `--fonda-text-2` 6.94:1 · `--fonda-text-3` 5.02:1 ·
+> `--fonda-accent` 8.17:1. The hero eyebrow is the one exception to the
+> eyebrow token: over the watercolour `--fonda-text-3` measures 4.26:1, so
+> that instance uses `--fonda-text-2` (5.89:1 over the same pixel).
 >
 > See `SITE_REDESIGN_V3.md` §4 "Band rhythm" — this is load-bearing and is not
 > to be reverted.

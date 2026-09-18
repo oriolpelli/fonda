@@ -14,7 +14,7 @@ _Owner: Oriol · 17 September 2026 · Status: **final** — ready to execute_
 
 **The hero this page is built around:**
 
-> **JUEGA CON VENTAJA.**
+> **DOS PASOS POR DELANTE, CADA MAÑANA.**
 > **La IA que lleva la operativa, y tú, a los huéspedes.**
 > Fondas se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Nada sale sin tu visto bueno.
 
@@ -66,7 +66,7 @@ Their mechanics, restated as constraints for this page.
 
 **The eyebrow spine, top to bottom (ES):**
 
-> JUEGA CON VENTAJA → FUNCIONA CON → EL RESUMEN → LAS COMUNICACIONES → MIENTRAS EL HOTEL DUERME → LA DIFERENCIA → LAS CUATRO PARTES DEL DÍA → PARA QUIÉN ES → DE TU LADO → SEGURIDAD → YA EN CAMINO → LOS NÚMEROS → PRECIO → PREGUNTAS → CUANDO QUIERAS
+> DOS PASOS POR DELANTE → FUNCIONA CON → EL RESUMEN → LAS COMUNICACIONES → MIENTRAS EL HOTEL DUERME → LA DIFERENCIA → LAS CUATRO PARTES DEL DÍA → PARA QUIÉN ES → DE TU LADO → SEGURIDAD → YA EN CAMINO → LOS NÚMEROS → PRECIO → PREGUNTAS → CUANDO QUIERAS
 
 ---
 
@@ -206,7 +206,7 @@ The decided copy from `POSITIONING_V3.md` §3, inlined here so this document sta
 
 | Key | ES | CA | EN |
 |---|---|---|---|
-| `hero.badge` | Juega con ventaja | Juga amb avantatge | Play with an advantage |
+| `hero.badge` | Dos pasos por delante, cada mañana | Dos passos per davant, cada matí | Two steps ahead, every morning |
 | `hero.headlineLine1` | La IA que lleva la operativa, | La IA que porta l'operativa, | The AI that runs the back of house, |
 | `hero.headlineLine2` | y tú, a los huéspedes. | i tu, els hostes. | so you can run the front. |
 | `hero.subhead` | {brand} se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Nada sale sin tu visto bueno. | {brand} es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Res no surt sense el teu vistiplau. | {brand} connects to your PMS and your hotel inbox, and runs the four parts of the day: the morning brief, check-ins, guest communications, and any question about your hotel. Nothing goes out without your yes. |
@@ -215,7 +215,7 @@ The decided copy from `POSITIONING_V3.md` §3, inlined here so this document sta
 | `meta.title` | Fondas — La IA que lleva la operativa de tu hotel | Fondas — La IA que porta l'operativa del teu hotel | Fondas — The AI that runs your hotel's back of house |
 | `meta.description` | Fondas se conecta a tu PMS y al correo del hotel y te deja el día preparado: el resumen escrito antes de que abras, las respuestas a tus huéspedes redactadas para que las revises y las horas de llegada ya confirmadas. Sobre el PMS que ya usas, sin migrar nada. | Fondas es connecta al teu PMS i al correu de l'hotel i et deixa el dia preparat: el resum escrit abans que obris, les respostes als teus hostes redactades perquè les revisis i les hores d'arribada ja confirmades. Sobre el PMS que ja fas servir, sense migrar res. | Fondas connects to your PMS and your hotel inbox and leaves the day ready: the brief written before you open, guest replies drafted for your review, arrival times already confirmed. On top of the PMS you already run, with nothing to migrate. |
 | `footer.valueProp` | La IA que lleva la operativa de tu hotel. | La IA que porta l'operativa del teu hotel. | The AI that runs your hotel's back of house. |
-| `footer.rights` | © {year} Fondas. Juega con ventaja. | © {year} Fondas. Juga amb avantatge. | © {year} Fondas. Play with an advantage. |
+| `footer.rights` | © {year} Fondas. Dos pasos por delante. | © {year} Fondas. Dos passos per davant. | © {year} Fondas. Two steps ahead. |
 | `auth.signupDesc` | Conecta tu PMS y el correo del hotel. Mañana por la mañana ya estará hecho. | Connecta el teu PMS i el correu de l'hotel. Demà al matí ja estarà fet. | Connect your PMS and the hotel inbox. By tomorrow morning it's done. |
 | `authAside.headline` | La operativa del hotel, hecha. | L'operativa de l'hotel, feta. | The back of house, handled. |
 | `cta.eyebrow` | Cuando quieras | Quan vulguis | Ready when you are |
@@ -388,8 +388,9 @@ No new tokens. Everything composes what v2.0 already defines.
 |---|---|
 | **Hero artefact** | The one structural change. Product window over the lower edge of the parallax hero, cropped by the section boundary. Existing card treatment, no new shadow. |
 | **Proof-window pair** | `BriefingPreviewWindow` and `EmailDraftPreviewWindow` are a deliberate pair: same chrome, radius, shadow **and width — both full-bleed at `max-w-[1120px]`, copy above rather than beside** (decided at Phase D; three panes cannot fit a 7fr column, and band 3 matched to keep the pair true). They are bands 3 and 4, and the eye should read them as one argument in two parts. |
-| **Band rhythm** | Fifteen bands is a long page. Alternate ground every two bands so the scroll has a pulse. **The light band is `--fonda-surface-2` (#F6F3EE), not `--fonda-surface` (#FFFFFF)** — changed at Phase D-fix and load-bearing: the proof windows are white, so a white band gave them a 1.000:1 step and Signal §6's "cards float lighter than the page" had nothing to float against. Against `--fonda-surface-2` the step is 1.107:1 and every text token still clears AA (worst case `--fonda-text-3` at 5.02:1). **Do not revert this in Phase J.** It does mean `--fonda-surface-2` now serves as a band ground as well as "nested wells, secondary panels, hover fills" — record the widened meaning in `FONDA_DESIGN_IDENTITY.md` §2 rather than leaving code and design doc disagreeing. `comingSoon` still sits on the light ground with no card shadow — visually "not yet". |
-| **Eyebrow discipline** | Every band carries one: mono, uppercase, `tracking-[0.14em]`, two to four words. |
+| **Where the marketing ground applies** | `.marketing-surface` is a page-shell class, not a per-band one, and it is deliberately scoped: **warm** on `/`, `/sample-brief`, `/contact`, plus `/privacy`, `/terms`, `/newsletter/confirm`, `/newsletter/unsubscribe` and the 404 — every route a prospect can reach from the site. **Neutral** on `/(auth)/*` and `/onboarding/*`, which are the app side and keep `--fonda-bg`; the split-screen brand panel carries the transition. **Phase I's `/trust` joins the warm set** — it is linked from the security band and the footer. The class sets the raw `--fonda-bg` token rather than only `--background`, which is what carries the warm ground into the hero scrim's `color-mix()` stops without editing `hero-parallax.tsx`. |
+| **One marketing ground** | **The band alternation is retired (17 Sep).** It alternated `--fonda-bg` (#EEEEEE, neutral grey) with `--fonda-surface-2` (#F6F3EE, warm greige) — a change of *temperature*, not value, which read as the page changing its mind rather than as rhythm, and left the single grey band looking like a mistake. The whole marketing surface — landing page, works-with strip, hero scrim resolve, footer — is now one warm ground, `#F6F3EE`. Everything else in the palette is warm (borders #E2DDD3, inset #E4E0D7, text #1C1A16), so the neutral ground was the outlier. Separation between bands comes from the `border-t` hairlines and the vertical padding, as it does on the reference site. `--fonda-bg` is **not** changed globally: the dashboard keeps the neutral ground. Consequence: any nested well that used `#F6F3EE` *inside a band* (rather than inside a white window) now needs a different fill. `comingSoon` still carries no card shadow — visually "not yet". |
+| **Eyebrow discipline** | Every band carries one: mono, uppercase, `tracking-[0.14em]`, two to four words, `--fonda-text-3`. **Two deviations, both deliberate, both hero-only (17 Sep):** the hero eyebrow uses `--fonda-text-2`, because `--fonda-text-3` over the watercolour's worst pixel measures 4.26:1 and fails AA — `--fonda-text-2` holds 5.88:1 on the same pixel; and below `sm` the hero badge alone drops to 11px/0.08em, because the eyebrow copy is long enough to wrap inside its pill at 360px. Section eyebrows keep 12px/0.14em and `--fonda-text-3` everywhere. Do not "harmonise" these back. |
 | **`SquareMarker` over icons** | Bands 8 and 10 use the navy square. Signal §6 prefers this; the new bands must not introduce an icon set. |
 | **Containment** | Any multi-cell group (bands 6, 9, 11) is one card with internal hairlines — never loose cells on the grey ground. The comment in the `stats` block explains why; it applies to all three. |
 | **Mobile** | 24px gutter, no horizontal scroll, hero artefact legible for two lines. GTM §3.3 lists the mobile pass as **P0**: the GM reads the brief on a phone at 6:45, and that moment *is* the pitch. |
@@ -882,7 +883,9 @@ no-token headline path exercised and correct.
 - [ ] Nothing marked `coming-soon` in `lib/roadmap.ts` is claimed above band 10.
 - [ ] `comingSoon` is future tense in ES, CA and EN.
 - [ ] `nightShift.kicker` and `nightShift.note` are both on the page, and every timeline row still matches the schedules in `vercel.json`.
-- [ ] No traction number, no connection count, and no euro figure anywhere on the site (`grep -rn "199"` clean outside `company.ts`).
+- [ ] No traction number and no connection count anywhere on the site.
+- [ ] **No price figure on the marketing surface.** `/terms` is the one deliberate exception: it is a contract, and a billing clause that states no price is a worse document than one that does. `PRICE_MONTHLY_EUR` therefore has exactly two readers — `company.ts` and the Terms billing clause — and if the price ever changes, Terms changes with it.
+- [ ] Every prospect-reachable route carries `.marketing-surface`; no warm-to-grey seam on any footer link.
 - [ ] The JSON-LD `Offer` states no price.
 - [ ] The private beta is stated in exactly one FAQ answer.
 - [ ] No *independiente* / *boutique* / *pequeño* anywhere on the landing page or in the footer.
@@ -895,3 +898,39 @@ no-token headline path exercised and correct.
 - [ ] `hello@fondas.app` receives mail and the footer has no dead links (GTM §3.3, both P0).
 - [ ] Read the ES hero, the ES category line, the ES security headline and the nightShift kicker aloud to one hotelier before the outreach wave restarts.
 - [ ] Every phase is its own commit, so any single band can be reverted without unpicking the rest.
+
+---
+
+## 9. Execution log — read this first in a new session
+
+_Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`._
+
+**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix.
+**Next:** **Phase E**, then F, G, H, I, J in order.
+
+A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md. Phases 0 through E-pre-fix are done; start at Phase E."*
+
+### 9.1 Decisions already taken — do not undo these
+
+Each was made deliberately, and several reverse an earlier draft of this same document. A fresh session reading only the phase prompts could plausibly "fix" any of them back.
+
+| | Decision |
+|---|---|
+| **1** | **The `comparison` band stays** (band 6, after the overnight timeline), trimmed to three rows. An earlier draft retired it; that was reversed. |
+| **2** | **One warm marketing ground.** `.marketing-surface` = `#F6F3EE` on every prospect-reachable route. The per-band alternation is retired. `--fonda-bg` is untouched at `:root` — the dashboard stays neutral. §4. |
+| **3** | **Two hero-only eyebrow deviations**: `--fonda-text-2` (AA over the watercolour) and 11px/0.08em below `sm` (the badge wrapped at 360px). Section eyebrows keep 12px/0.14em and `--fonda-text-3`. §4. |
+| **4** | **Bands 3 and 4 are full-width with copy above**, not copy-beside-window. Three panes don't fit a 7fr column, and band 3 matched so the pair stays true. |
+| **5** | **No price figure on the marketing surface.** `/terms` is the one deliberate exception — it is a contract, and a billing clause naming no price is a worse document. `PRICE_MONTHLY_EUR` has exactly two readers: `company.ts` and that clause. |
+| **6** | **`lib/sample-hotel.ts` is the only definition of the sample hotel** — Hotel Pati Blau, 45 rooms, Barcelona, with the guests and the night. Bands 3 and 4 and `/sample-brief` all read from it. Never hardcode a hotel name, room count or date again. |
+| **7** | **Last-touch attribution** on `newsletter_subscribers.source`: a newsletter subscriber who later requests a brief flips to `sample_brief`. `sample_requested_at` is the reliable lead marker. |
+| **8** | **`lib/roadmap.ts` governs the landing page.** Anything `coming-soon` there cannot be claimed above the `comingSoon` band. Today that rules out analytics, revenue, finance, operations, front-desk, oversight, sales-marketing and concierge. |
+
+### 9.2 Environment state
+
+- **Migration `0021_sample_brief_requests.sql` is applied** to the live Supabase project (`newsletter_subscribers.source`, `hotel_name`, `sample_requested_at`). Verified with real submissions in all three locales, rows since deleted. If a separate Supabase project backs any preview environment, it needs the migration too.
+- The branch is **not** merged to `main`, so production still serves the old site. Merge after Phase J.
+
+### 9.3 Still open
+
+- `/trust` does not exist yet (Phase I). The `security` band's cta will point at it — build the band and the page in the same pass, or the link dangles.
+- Fifteen bands is long. Watch scroll depth once live; if bands 6 and 7 both underperform, band 6 is the one to cut.

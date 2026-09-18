@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 // on the dictionary context. Links to "/" — the proxy localizes it.
 export default function LocaleNotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
+    <div className="marketing-surface flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
       <Wordmark href="/" />
       <p className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
         404
