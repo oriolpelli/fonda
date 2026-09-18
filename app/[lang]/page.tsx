@@ -154,11 +154,38 @@ export default async function Home({
     { top: dict.stats.setupTop, value: dict.stats.setupValue, label: dict.stats.setupLabel },
   ];
 
-  // "How it works" — three numbered steps, mono numerals (Mobbin: Clay pattern).
+  // The three setup steps. They no longer own a band: Phase F folded them into
+  // the compact strip at the top of the overnight timeline, which is why the
+  // howItWorks.* keys survive and the #how anchor now lands on that band. They
+  // still answer the setup fear ("live in an afternoon") — the timeline beside
+  // them answers what happens once it is.
   const STEPS = [
     { num: "01", title: dict.howItWorks.step1Title, desc: dict.howItWorks.step1Desc },
     { num: "02", title: dict.howItWorks.step2Title, desc: dict.howItWorks.step2Desc },
     { num: "03", title: dict.howItWorks.step3Title, desc: dict.howItWorks.step3Desc },
+  ];
+
+  // The overnight timeline. Seven rows, 23:00 → 09:00, and every one of them is
+  // a real scheduled job in vercel.json:
+  //
+  //   r1        /api/sync           */15 — the PMS sync
+  //   r2, r3, r4 /api/cron/emails   */5  — read, match to a booking, draft
+  //   r5, r6    /api/cron/briefing  */15, delivering at brief_send_hour
+  //                                 (default 7, in the hotel's timezone)
+  //   r7        /api/cron/checkin   0 9  — the arrival-time chase
+  //
+  // IF A CRON CHANGES, THIS BAND CHANGES. The clock times are dramatised into
+  // one night — the jobs run far more often than once — and `note` below is
+  // what makes that honest. It is not decorative: do not ship the band without
+  // both the kicker and the note (SITE_REDESIGN_V3.md §3.6, band 5).
+  const NIGHT_SHIFT = [
+    { time: dict.nightShift.r1Time, title: dict.nightShift.r1Title, chip: dict.nightShift.r1Chip },
+    { time: dict.nightShift.r2Time, title: dict.nightShift.r2Title, chip: dict.nightShift.r2Chip },
+    { time: dict.nightShift.r3Time, title: dict.nightShift.r3Title, chip: dict.nightShift.r3Chip },
+    { time: dict.nightShift.r4Time, title: dict.nightShift.r4Title, chip: dict.nightShift.r4Chip },
+    { time: dict.nightShift.r5Time, title: dict.nightShift.r5Title, chip: dict.nightShift.r5Chip },
+    { time: dict.nightShift.r6Time, title: dict.nightShift.r6Title, chip: dict.nightShift.r6Chip },
+    { time: dict.nightShift.r7Time, title: dict.nightShift.r7Title, chip: dict.nightShift.r7Chip },
   ];
 
   // The four parts of the day — the anti-fragmentation close. These are the
@@ -657,38 +684,129 @@ export default async function Home({
           </div>
         </section>
 
-        {/* How it works — three numbered steps (Mobbin: Clay) */}
+        {/* While the hotel sleeps — the overnight timeline (band 5, Phase F).
+
+            This band replaced the three-card "how it works" section and
+            absorbed it: the steps are the strip under the headline, and the
+            #how anchor stays here because the header and footer both link to
+            it. The band answers the setup fear on the left and the "what does
+            it actually do all night" question on the right.
+
+            Motion is Reveal and nothing else — a one-shot staggered entrance,
+            no autoplay and no loop. index={i * 2} because Reveal's stagger
+            step is 60ms and §3.6 asks for roughly 120ms between rows; under
+            prefers-reduced-motion globals.css forces every row visible from
+            first paint with the delay zeroed. */}
         <section
           id="how"
-          className="mx-auto max-w-[1120px] scroll-mt-20 px-6 py-24 md:px-8"
+          className="scroll-mt-20 border-t border-border px-6 py-24 md:px-8"
         >
-          <Reveal>
-            <Eyebrow>{dict.howItWorks.eyebrow}</Eyebrow>
-            <h2 className="mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
-              {dict.howItWorks.headline}
-            </h2>
-            <p className="mt-5 max-w-[52ch] text-[17px] leading-[1.6] text-muted-foreground">
-              {dict.howItWorks.lead}
-            </p>
-          </Reveal>
-          <div className="mt-12 grid gap-4 md:grid-cols-3">
-            {STEPS.map((step, i) => (
-              <Reveal
-                key={step.num}
-                index={i}
-                className="flex flex-col rounded-[18px] bg-card p-7 shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
-              >
-                <span className="font-mono text-[13px] font-medium tracking-[0.1em] text-[var(--fonda-accent)]">
-                  {step.num}
-                </span>
-                <h3 className="mt-8 text-[19px] font-semibold tracking-[-0.015em] text-foreground">
-                  {step.title}
-                </h3>
-                <p className="mt-2 text-[15px] leading-[1.6] text-muted-foreground">
-                  {step.desc}
-                </p>
-              </Reveal>
-            ))}
+          <div className="mx-auto max-w-[1120px]">
+            <div className="grid gap-x-12 gap-y-14 lg:grid-cols-[5fr_7fr] lg:items-start">
+              {/* Left: text only. Otel puts a photograph of an unmade bed
+                  here; decided against — the only honest source would be our
+                  own brand photography, and stock would cheapen the one band
+                  on the page that has to feel true. No sticky either: a
+                  sticky descendant of Reveal is fragile (see the transform
+                  note in reveal.tsx), and the column is nearly as tall as the
+                  timeline anyway. */}
+              <div>
+                <Reveal>
+                  <Eyebrow>{dict.nightShift.eyebrow}</Eyebrow>
+                  <h2 className="mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
+                    {dict.nightShift.headline}
+                  </h2>
+                  <p className="mt-5 max-w-[52ch] text-[17px] leading-[1.6] text-muted-foreground">
+                    {dict.nightShift.lead}
+                  </p>
+                </Reveal>
+                {/* The three steps, compacted: one card with internal
+                    hairlines rather than three loose cells (§4,
+                    containment), so the strip reads as a note beside the
+                    headline and never competes with the timeline. */}
+                <Reveal index={1} className="mt-10">
+                  <ol className="rounded-[18px] bg-card shadow-card">
+                    {STEPS.map((step) => (
+                      <li
+                        key={step.num}
+                        className="flex gap-4 border-t border-border px-6 py-5 first:border-t-0"
+                      >
+                        <span className="mt-[2px] font-mono text-[13px] font-medium tracking-[0.1em] text-[var(--fonda-accent)]">
+                          {step.num}
+                        </span>
+                        <div>
+                          <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-foreground">
+                            {step.title}
+                          </h3>
+                          <p className="mt-1 text-[14px] leading-[1.6] text-muted-foreground">
+                            {step.desc}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                </Reveal>
+              </div>
+
+              {/* Right: the timeline. The hour sits in a narrow right-aligned
+                  gutter with a hairline running down the gap between it and
+                  the cards, so seven separate rows still read as one night.
+                  Below sm the hour moves above its card and the rule is gone —
+                  a 360px screen has no room for a gutter. */}
+              <div className="relative">
+                <span
+                  aria-hidden
+                  className="absolute inset-y-2 left-[80px] hidden w-px bg-border sm:block"
+                />
+                {/* Below sm the rows stack and the hour moves above its card,
+                    so the gap BETWEEN rows has to be clearly larger than the
+                    6px from an hour to the card it labels — otherwise the hour
+                    reads as a footer on the row above it. */}
+                <ol className="space-y-5 sm:space-y-2">
+                  {NIGHT_SHIFT.map((row, i) => (
+                    <li key={row.time}>
+                      <Reveal
+                        index={i * 2}
+                        className="grid gap-x-4 sm:grid-cols-[72px_1fr] sm:items-center"
+                      >
+                        <span className="font-mono text-[13px] tabular-nums text-[var(--fonda-text-3)] sm:text-right">
+                          {row.time}
+                        </span>
+                        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-[14px] bg-card px-5 py-4 shadow-card sm:mt-0">
+                          <p className="text-[15px] font-medium leading-[1.45] text-foreground">
+                            {row.title}
+                          </p>
+                          {/* The muted badge, never the accent one: the chip
+                              is the detail, the row title is the message. The
+                              §5.4 badge fills with --fonda-surface, which is
+                              the card it sits on — so it steps down to
+                              --fonda-surface-2 (#56534B on #F6F3EE, 6.9:1)
+                              and keeps the hairline to hold its shape. */}
+                          <span className="shrink-0 rounded-full border border-border bg-[var(--fonda-surface-2)] px-3 py-1 font-mono text-[12px] text-[var(--fonda-text-2)]">
+                            {row.chip}
+                          </span>
+                        </div>
+                      </Reveal>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+
+            {/* The closing argument, then the admission that makes it honest.
+                The kicker is body size at full contrast because it is the
+                sentence the whole band exists to earn — work nobody had to
+                stay up for, never people you no longer need. The note says
+                the times are examples; without it the band is a claim, and
+                §0.4 does not allow claims. Both lines are required. */}
+            <Reveal className="mt-14 text-center">
+              <p className="mx-auto max-w-[46ch] text-[17px] font-medium leading-[1.55] text-foreground">
+                {dict.nightShift.kicker}
+              </p>
+              <p className="mx-auto mt-3 max-w-[72ch] text-[13px] leading-[1.6] text-[var(--fonda-text-3)]">
+                {t(dict.nightShift.note, { brand: COMPANY.brand })}
+              </p>
+            </Reveal>
           </div>
         </section>
 

@@ -342,6 +342,11 @@
   .reveal-init {
     opacity: 1 !important;
     transform: none !important;
+    /* Reveal sets transitionDelay inline for its stagger; a !important CSS
+       delay of 0s beats the inline value, so a staggered group (the overnight
+       timeline's seven rows) renders as one immediate block rather than a
+       queue of instant-but-delayed steps. */
+    transition-delay: 0s !important;
   }
 }
 
