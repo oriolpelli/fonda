@@ -175,10 +175,21 @@ existing focus-trap / Esc / scroll-lock discipline, the account menu at the foot
 
 Desktop rail:
 1. Five icons in this order: Home, Ask, [hairline], Operation, Commercial, then
-   (mt-auto) Settings, Account. Add ICONS entries: home=House (or keep the current
-   dashboard icon), chat=Sparkles (it is already the chat glyph in ChatThread and
-   AskYourHotel — stay consistent), operation=ClipboardList or CalendarClock,
-   commercial=TrendingUp. Pick lucide icons that read at 20px in monochrome.
+   (mt-auto) Settings, Account.
+   First, know what the fallbacks do today, so you can tell a gap from a bug:
+   rail-level items resolve `ICONS[item.key] ?? Settings`, so Home, Ask,
+   Operation and Commercial all draw a gear right now; panel rows resolve
+   `ICONS[panelIconKey(item)] ?? Dot`, so Guests and In-house draw a bullet.
+   Six keys need entries, not four:
+   - home=House (or keep the current dashboard icon)
+   - chat=Sparkles (it is already the chat glyph in ChatThread and AskYourHotel
+     — stay consistent)
+   - operation=ClipboardList or CalendarClock
+   - commercial=TrendingUp
+   - guests=BookUser or UserRound — NOT Users, which `staff` already holds
+   - communications-in-house=MessageSquare — must not share a glyph with
+     `communications: Send`; the two Communications rows sit one above the other
+   Pick lucide icons that read at 20px in monochrome.
 2. The hairline after Ask: exactly
    `<div className="mx-3 my-2 h-px bg-[var(--fonda-border)]" />` — one element,
    no label, no other new chrome. It is the only structural divider in the rail.
@@ -277,23 +288,42 @@ Goal: no dead routes, no dead code, every old URL lands somewhere sensible.
    - Update the file's header comment: the tree in layout.tsx is the only source
      of nav structure; roadmap.ts owns label + blurb + status per key.
 
-4. Dictionaries: fold the `dashboardNav.*` namespace into `sidebar.*`. Grep every
+4. sidebar.tsx dead icon code — delete it in the same pass. The two-pillar tree
+   no longer contains a row whose `sectionKey === key`, so the machinery that
+   served those rows is now unreachable:
+   - `panelIconKey()` and its docblock. Nothing can satisfy its condition any
+     more, so each call site becomes a plain `ICONS[item.key] ?? Dot` lookup.
+   - The `dashboard: LayoutDashboard` ICONS entry, which existed only as that
+     function's return value.
+   - The ICONS entries for the six per-section dashboards you just deleted from
+     roadmap.ts: front-desk, revenue, operations, finance, oversight (analytics
+     never had one). Keep `revenue-management` — that is a live row, not a
+     section.
+   Grep each symbol before deleting it and show me the greps.
+
+5. Dictionaries: fold the `dashboardNav.*` namespace into `sidebar.*`. Grep every
    reader of dict.dashboardNav, retarget it, delete the namespace from all three
    files, keep key order identical across en/es/ca. Remove blurb/label entries
    for the six deleted per-section dashboard keys. Keep blurbs for the parked
    eight.
 
-5. ⚠️ Deep links: /dashboard/communications?email=<id> is used by
+6. ⚠️ Deep links: /dashboard/communications?email=<id> is used by
    components/dashboard/needs-reply-card.tsx and components/dashboard/todo-list.tsx
    (and by DraftResultCard in components/dashboard/chat/chat-thread.tsx — grep
    for "?email=" to catch all of them). Nothing
    in this step changes that URL, so nothing should break — but add a comment at
    each call site noting that W6 will scope it, so it is not missed.
 
-6. Comments: search sidebar.tsx, layout.tsx, roadmap.ts and brief-summary-card.tsx
+7. Comments: search sidebar.tsx, layout.tsx, roadmap.ts and brief-summary-card.tsx
    for references to NAV_REORG_SPEC.md sections that described the eight-section
    structure and update them to cite APP_UX_PROPOSAL.md §2. Leave references to
    NAV_REORG_SPEC.md §2 (rail pattern) and §9 (panel spec) — those survive.
+   In the same sweep, fix any comment that cites a dictionary key that no longer
+   exists. Specifically: the paragraph above the grouped sections in
+   lib/roadmap.ts saying a section's own row IS its "Dashboard" sub-page and
+   that the submenu calls it "Dashboard" instead, `from sidebar.dashboard`.
+   Prompt 1 deleted that key and the convention it describes is gone with the
+   per-section rows — delete the sentence, don't reword it.
 
 Run `npm run lint` and `npx tsc --noEmit`. Then `npm run build` and confirm the
 route list contains no route that 404s and no page file that is unreachable
@@ -319,7 +349,19 @@ in FONDA_SANA_REDESIGN.md). Add a short paragraph in the same place and voice:
 the rail now carries Home, Ask, a hairline, then two pillars (Operation,
 Commercial); the panel supports one level of nesting under a mono eyebrow; a
 shared row has a canonical owner for the active state. Cite APP_UX_PROPOSAL.md
-§2. Also tick the W2 row in ROADMAP.md §2 with today's date. No code changes.
+§2. Also tick the W2 row in ROADMAP.md §2 with today's date.
+
+Then close a content gap Prompt 1 opened: COMINGSOON_CONTENT.md has no section
+for the two roadmap rows it added. Write them in the doc's existing three-part
+shape (Lead / Will do / What's next) and its existing voice — `guests` under
+Operation, `communications-in-house` beside the other Communications entries.
+English only; the doc's own header says the translation happens where the copy
+is used, and `roadmap.blurb.guests` / `roadmap.blurb.communications-in-house`
+already exist in all three dictionaries. Leave those blurbs alone unless the new
+Lead is genuinely better, in which case update all three and keep key order
+identical.
+
+No code changes.
 ```
 
 **Commit:** `docs: record the two-pillar rail in the design spec and roadmap`
