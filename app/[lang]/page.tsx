@@ -10,6 +10,10 @@ import { JsonLd } from "@/components/marketing/json-ld";
 import { Reveal } from "@/components/marketing/reveal";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
+import {
+  Vignette,
+  type VignetteName,
+} from "@/components/marketing/vignettes";
 import { Button } from "@/components/ui/button";
 import { isLocale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
@@ -196,6 +200,64 @@ export default async function Home({
     { title: dict.sections.i2Title, desc: dict.sections.i2Desc },
     { title: dict.sections.i3Title, desc: dict.sections.i3Desc },
     { title: dict.sections.i4Title, desc: dict.sections.i4Desc },
+  ];
+
+  // Who it's for — the same brief, doing a different job for three readers.
+  // Otel segments by role and we follow, because a GM and an owner want
+  // opposite things from the same morning.
+  //
+  // The vignette per card is the old FEATURE_VIGNETTES idea remapped: the
+  // bento tiles it used to front were retired in Phase A, and these are the
+  // only cards left that want a mark. Navy is spent once across the three —
+  // `key` carries the fob (vignettes.tsx §: navy belongs to key and sail
+  // only) — so the row still holds the one-accent rule.
+  //
+  // The FIRST card is written for one hotel OR twenty. Nothing here may say
+  // independiente / boutique / pequeño: a multi-property reader who concludes
+  // this was built for someone smaller than them leaves (§6, guardrail 10).
+  const AUDIENCE: {
+    role: string;
+    sub: string;
+    promise: string;
+    vignette: VignetteName;
+    bullets: string[];
+  }[] = [
+    {
+      role: dict.audience.ownerRole,
+      sub: dict.audience.ownerSub,
+      promise: dict.audience.ownerPromise,
+      vignette: "arch",
+      bullets: [
+        dict.audience.ownerB1,
+        dict.audience.ownerB2,
+        dict.audience.ownerB3,
+        dict.audience.ownerB4,
+      ],
+    },
+    {
+      role: dict.audience.gmRole,
+      sub: dict.audience.gmSub,
+      promise: dict.audience.gmPromise,
+      vignette: "coffee",
+      bullets: [
+        dict.audience.gmB1,
+        dict.audience.gmB2,
+        dict.audience.gmB3,
+        dict.audience.gmB4,
+      ],
+    },
+    {
+      role: dict.audience.deskRole,
+      sub: dict.audience.deskSub,
+      promise: dict.audience.deskPromise,
+      vignette: "key",
+      bullets: [
+        dict.audience.deskB1,
+        dict.audience.deskB2,
+        dict.audience.deskB3,
+        dict.audience.deskB4,
+      ],
+    },
   ];
 
   // Every string about the sample hotel carries {tokens} — the hotel's name,
@@ -941,6 +1003,100 @@ export default async function Home({
                   <p className="mt-1.5 max-w-[46ch] text-sm leading-[1.55] text-muted-foreground">
                     {part.desc}
                   </p>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Para quién es — the same information, three jobs. Three floating
+            white cards, not one contained grid: each card carries its own
+            headline and its own CTA, which is the comparison band's treatment
+            rather than the stats band's. §4's containment rule is about loose
+            CELLS sharing one thought; these are three separate arguments.
+
+            Three across only at lg. At md the 1120px cap leaves ~230px a
+            column, which puts the four bullets on three lines each; below lg
+            they stack full width and stay short. */}
+        <section className="border-t border-border px-6 py-24 md:px-8">
+          <div className="mx-auto max-w-[1120px]">
+            <Reveal className="grid gap-8 pb-12 md:grid-cols-2 md:items-end">
+              <div>
+                <Eyebrow>{dict.audience.eyebrow}</Eyebrow>
+                <h2 className="mt-4 max-w-[16ch] text-[clamp(1.875rem,3.6vw,2.875rem)] font-semibold leading-[1.05] tracking-[-0.028em] text-foreground">
+                  {dict.audience.headline}
+                </h2>
+              </div>
+              <p className="max-w-[46ch] text-[17px] leading-[1.6] text-muted-foreground">
+                {dict.audience.lead}
+              </p>
+            </Reveal>
+
+            <div className="grid gap-4 lg:grid-cols-3">
+              {AUDIENCE.map((card, i) => (
+                <Reveal
+                  key={card.role}
+                  index={i}
+                  className="flex flex-col rounded-[18px] bg-card p-7 shadow-card"
+                >
+                  {/* Decorative only — aria-hidden inside Vignette, so the
+                      role label below carries all the meaning. */}
+                  <Vignette name={card.vignette} size={76} className="-ml-2" />
+                  <h3 className="mt-5 text-[18px] font-semibold tracking-[-0.01em] text-foreground">
+                    {card.role}
+                  </h3>
+                  {/* Plain, not a second eyebrow. A mono uppercase micro-label
+                      here would put four of them in one band and dilute the
+                      spine the eyebrows are supposed to be (§4). */}
+                  <p className="mt-1 text-[14px] leading-[1.5] text-[var(--fonda-text-3)]">
+                    {card.sub}
+                  </p>
+                  <p className="mt-5 text-[17px] font-medium leading-[1.4] tracking-[-0.01em] text-foreground">
+                    {card.promise}
+                  </p>
+                  {/* flex-1 so the list absorbs the card's spare height and the
+                      three buttons land on one line whatever the bullets wrap
+                      to — the cards are already equal height from the grid. */}
+                  <ul className="mt-5 flex-1 space-y-3">
+                    {card.bullets.map((bullet) => (
+                      <li key={bullet} className="flex items-start gap-3">
+                        <span className="mt-[7px]">
+                          <SquareMarker />
+                        </span>
+                        <span className="text-[15px] leading-[1.5] text-muted-foreground">
+                          {bullet}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  {/* mt-auto so the three buttons line up whatever the bullets
+                      wrap to. `secondary` fills with --fonda-surface-2, which
+                      is the page ground — a no-op out there, but these sit on
+                      a white card, so it reads as a quiet step down from the
+                      hero's ink CTA. Same reasoning as the timeline chips.
+
+                      The label is hero.ctaPrimary: §3.2 ships no CTA string,
+                      and reusing the one the page already says for /signup
+                      beats inventing a fourth way to word it.
+
+                      size="lg" because every other button on this page is lg,
+                      and because the default h-10 is 40px — under the 44px tap
+                      target Phase J has to certify.
+
+                      Full width where the card is narrow (stacked phone) or
+                      one of three; auto in between, where the card is a single
+                      column up to ~960px and a stretched button would be a
+                      metre of fill around two words. */}
+                  <Button
+                    asChild
+                    variant="secondary"
+                    size="lg"
+                    className="mt-8 self-stretch sm:self-start lg:self-stretch"
+                  >
+                    <Link href={localizedHref(locale, "/signup")}>
+                      {dict.hero.ctaPrimary}
+                    </Link>
+                  </Button>
                 </Reveal>
               ))}
             </div>
