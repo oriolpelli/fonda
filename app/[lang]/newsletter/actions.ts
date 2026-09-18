@@ -37,6 +37,35 @@ export type ConfirmState =
   | { status: "invalid" }
   | { status: "error" };
 
+/**
+ * What reaches the log when a write fails.
+ *
+ * The obvious `instanceof Error` narrowing does not hold here: supabase-js
+ * only wraps a PostgREST failure in a `PostgrestError` when `throwOnError` is
+ * set, which nothing on these paths does — so the thrown value is a plain
+ * `{ code, message, details, hint }` object, the narrowing is false, and the
+ * whole object gets serialised. Its `details` echoes the offending value
+ * verbatim ("Key (lower(email))=(gm@hotel.com) already exists."), which puts a
+ * prospect's address in plaintext in the log of a public, unauthenticated
+ * form.
+ *
+ * So: `code` and `message` only. Postgres messages name the constraint, not
+ * the value; `details` and `hint` are the two fields that carry it, and
+ * neither is ever read here.
+ */
+function safeErrorLabel(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === "object") {
+    const { code, message } = error as { code?: unknown; message?: unknown };
+    const parts = [
+      typeof code === "string" ? `code=${code}` : null,
+      typeof message === "string" ? message : null,
+    ].filter(Boolean);
+    if (parts.length > 0) return parts.join(" ");
+  }
+  return "unknown error";
+}
+
 function localeFrom(formData: FormData): Locale {
   const value = String(formData.get("locale") ?? "");
   return isLocale(value) ? value : defaultLocale;
@@ -124,10 +153,7 @@ export async function subscribeToNewsletter(
     return { status: "sent" };
   } catch (error) {
     // Never log the address itself — it is PII and this is a public form.
-    console.error(
-      "[newsletter] subscribe failed:",
-      error instanceof Error ? error.message : error
-    );
+    console.error("[newsletter] subscribe failed:", safeErrorLabel(error));
     return { status: "error" };
   }
 }
@@ -180,10 +206,7 @@ export async function confirmSubscription(
 
     return { status: "confirmed" };
   } catch (error) {
-    console.error(
-      "[newsletter] confirm failed:",
-      error instanceof Error ? error.message : error
-    );
+    console.error("[newsletter] confirm failed:", safeErrorLabel(error));
     return { status: "error" };
   }
 }
@@ -237,10 +260,7 @@ export async function unsubscribeFromNewsletter(
 
     return { status: "unsubscribed" };
   } catch (error) {
-    console.error(
-      "[newsletter] unsubscribe failed:",
-      error instanceof Error ? error.message : error
-    );
+    console.error("[newsletter] unsubscribe failed:", safeErrorLabel(error));
     return { status: "error" };
   }
 }
@@ -361,10 +381,7 @@ export async function requestSampleBrief(
   } catch (error) {
     // Never log the address, the name or the hotel — all three are PII and
     // this is a public, unauthenticated form.
-    console.error(
-      "[sample-brief] request failed:",
-      error instanceof Error ? error.message : error
-    );
+    console.error("[sample-brief] request failed:", safeErrorLabel(error));
     return { status: "error" };
   }
 }
