@@ -158,22 +158,50 @@ it. Add the retirement header `POSITIONING_V3.md` §6 asked for to
 
 One release a week. Each row is a week's work and ships on its own.
 
-| Wk | Release | Contents | Source |
+| Wk | Release | Contents | Spec · prompts |
 |---|---|---|---|
 | **W1** | *Site live* | §1 above | — |
-| **W2** | **Two pillars** | Rail to five icons; two panels; nested Communications group; `canonicalSectionKey` for shared Reputation; 15 stub routes → redirects; `roadmapNavFeatures()`/`inNav`/`dashboardNav` deleted | `APP_UX_PROPOSAL.md` ph. 1–2 |
-| **W3** | **Ask + Home v1** | Chat as a rail section; starter questions in the blank state; Home leads with "Needs you today"; existing cards become a widget registry | APP_UX ph. 3–4 |
-| **W4** | **Home v2 — customize** | `dashboard_layouts`, pick + reorder, role defaults, locked roadmap tiles | APP_UX ph. 5 |
-| **W5** | **Arrivals & departures** | `/dashboard/checkins` → `/dashboard/arrivals`; departures tab; `TodoTarget` renamed | APP_UX ph. 6 |
-| **W6** | **Communications, two windows** | `StayPhase` widened to four; In-house + Upcoming; Concierge absorbed; WhatsApp first-run card | APP_UX ph. 7 |
-| **W7** | **Billing** | Stripe + trial gating (B20). Blocked on the legal entity — start §4 now, not in week 7 | B20 · Gate 2 |
-| **W8** | **Reputation** | The first real Commercial surface. Reviews fetched, themed, score movement | APP_UX §6 |
+| **W2** | **Two pillars** | Rail to five icons; two panels; nested Communications group; `canonicalSectionKey` for shared Reputation; 15 stub routes → redirects; `roadmapNavFeatures()`/`inNav`/`dashboardNav` deleted | ph. 1–2 · **prompts 1–4** |
+| **W3** | **Ask + Home v1** | Chat as a rail section; starter questions in the blank state; Home leads with "Needs you today"; existing cards become a widget registry | ph. 3–4 · **prompts 5–7**, 7b optional |
+| **W4** | **Home v2 — customize** | `dashboard_layouts`, pick + reorder, role defaults, locked roadmap tiles | ph. 5 · **prompts 8–9** |
+| **W5** | **Arrivals & departures** | `/dashboard/checkins` → `/dashboard/arrivals`; departures tab; `TodoTarget` renamed | ph. 6 · **prompt 10** |
+| **W6** | **Communications, two windows** | `StayPhase` widened to four; In-house + Upcoming; Concierge absorbed; WhatsApp first-run card | ph. 7 · **prompts 11–12** |
+| **W7** | **Billing** | Stripe + trial gating (B20). Blocked on the legal entity — start §4 now, not in week 7 | B20 · Gate 2 · `EXECUTION_PLAYBOOK.md` |
+| **W8** | **Reputation** | The first real Commercial surface. Reviews fetched, themed, score movement | §6 · **prompts 13–14**, after decision P-4 |
 
-**Then, in order:** the guest context pane → chat threads → Guests v1 →
-rate cache (B17) → Revenue Management. The four parked house sections
+**Then, in order:** the guest context pane (prompt 15) → chat threads (16) →
+Guests v1 (17) → chat source chips (18) → provenance chips (19) → ⌘K palette
+(20) → the post-IA sweep (21) → rate cache (B17) → Revenue Management. The four parked house sections
 (Housekeeping, F&B, Staff, Procurement) and the three business ones
 (Reporting & audit, Chargeback, Team activity) re-enter the nav the week each
 one ships, and not before — see §6.
+
+### How to run a release week
+
+The prompt text lives in `APP_UX_PROMPTS.md`; **this table says which prompts and
+in what order.** Start here every week, not there. The loop:
+
+1. Read the week's row above. It names the prompts by number.
+2. Open `APP_UX_PROMPTS.md`, find that prompt, paste it into a **fresh** Claude
+   Code session in the repo. One prompt per session.
+3. Review the diff. Click the surface it touched in en/es/ca, desktop and 375px.
+4. Commit with the message suggested under the prompt.
+5. At the end of the week run the pack's verification prompt (§V) before shipping.
+
+If a prompt asks a question it doesn't answer, the answer is in
+`APP_UX_PROPOSAL.md` — point at the section rather than inventing a decision in
+chat. If the proposal is silent: stop, decide, write it into `APP_UX_PROPOSAL.md`
+§11, continue.
+
+**Two prompt documents, one boundary.** `APP_UX_PROMPTS.md` holds the app IA/UX
+prompts (W2–W8, prompts 1–21). `EXECUTION_PLAYBOOK.md` holds the B-numbered
+build tasks, including B20 (billing, W7) and B15–B22. Neither says *when* —
+that is this table. If they ever disagree with it, they are stale.
+
+**Why the prompts are not pasted into this file.** They run to 1,400 lines. This
+document is the thing you read to know what matters; burying the priorities
+under prompt text would cost you the one job it does. The table above is the
+index, and it is always current.
 
 > **Weeks 7–8 are the ones to watch.** Billing is gated on a legal entity that
 > takes weeks to incorporate, and Reputation is the first surface with no
@@ -385,7 +413,7 @@ disagreed. Recording the resolutions so they don't get re-litigated.
 
 | # | The disagreement | Resolution |
 |---|---|---|
-| 1 | Is `EXECUTION_PLAYBOOK.md` superseded? | **No.** It holds the only B15–B22 ID map. It stays authority for build prompts; it has no say on priority |
+| 1 | Is `EXECUTION_PLAYBOOK.md` superseded? | **No, and it is no longer alone.** It holds the only B15–B22 ID map and stays authority for the B-numbered build prompts; `APP_UX_PROMPTS.md` (18 Sep) holds the app IA/UX prompts 1–21 for W2–W8. Neither has any say on priority — §2 does |
 | 2 | One inbox or two? | **Two windows**, In-house + Upcoming, with Concierge absorbed. Settled 18 Sep |
 | 3 | Phase G (permissions) priority | **Deferred to the first multi-staff pilot.** It had silently fallen off every list despite a 34-line spec — §3.6 now holds it |
 | 4 | Analytics — defer, repurpose, or delete? | **Delete.** `/dashboard/analytics` → `/dashboard` |
@@ -420,14 +448,15 @@ this requires.
 | `FONDA_MARKETING_VOICE.md` | **keep**, with the retirement header it was supposed to get in §6 of `POSITIONING_V3.md` |
 | `CLAUDE.md.bak-*`, `_to_delete/` | delete |
 
-**Surviving set — nine documents.** `CLAUDE.md` + `AGENTS.md` (the contract) ·
+**Surviving set — seventeen documents.** `CLAUDE.md` + `AGENTS.md` (the contract) ·
 `README.md` (needs a refresh; it still claims Inter and `#1A56DB`) ·
 `ROADMAP.md` (this) · `GTM_STRATEGY.md` + `POSITIONING_V3.md` (commercial) ·
 `FONDA_SANA_REDESIGN.md` + `FONDA_DESIGN_IDENTITY.md` (design) ·
 `SITE_REDESIGN_V3.md` + `APP_UX_PROPOSAL.md` (the two live specs) ·
 `RUNBOOK.md` + `RELIABILITY.md` + `B1_VERIFY_RUNBOOK.md` (ops) ·
-`EXECUTION_PLAYBOOK.md` (prompts) · `COMINGSOON_CONTENT.md` +
-`NAV_REORG_SPEC.md` (content and the rail spec the code still cites).
+`EXECUTION_PLAYBOOK.md` + `APP_UX_PROMPTS.md` (prompts — B-numbers and W2–W8
+respectively) · `COMINGSOON_CONTENT.md` + `NAV_REORG_SPEC.md` (content and the
+rail spec the code still cites).
 
 ---
 
@@ -461,7 +490,20 @@ Short on purpose, and shorter than it was.
 - **Finance stays out of the nav** and returns in a later update. Whether it
   comes back as its own pillar or a row under Operation is decided then.
 
-**Still open — none.** Everything above was settled on 18 September.
+**Still open — one.**
+
+- **Where Reputation's reviews come from** (decision P-4 in `APP_UX_PROMPTS.md`
+  §W8). Due **before prompt 13**, i.e. before W8 starts — not on the day. Three
+  options are written up in the pack: Google Business Profile API (official,
+  structured, the score a GM actually watches, but OAuth + business verification
+  per hotel), manual/CSV import (ships in the week, weakest weekly number), or a
+  hospitality review aggregator (multi-source, new vendor and cost). The prompts
+  are written for Google with manual import as a fallback inside the same data
+  model, so choosing Google costs nothing extra and choosing otherwise means
+  editing step 2 of prompt 13. Write the answer into `APP_UX_PROPOSAL.md` §11 as
+  decision 7.
+
+Everything else was settled on 18 September.
 
 ---
 

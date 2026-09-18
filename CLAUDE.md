@@ -21,6 +21,9 @@ Situational docs live in the repo root — read them when a task calls for them,
 - `APP_UX_PROPOSAL.md` — the product IA and UX spec (two pillars, the rail, Home,
   chat, the Operation surfaces). `SITE_REDESIGN_V3.md` — the marketing site spec.
 - `EXECUTION_PLAYBOOK.md` — build-task prompts and the B1–B22 task-ID map.
+- `APP_UX_PROMPTS.md` — the Claude Code prompts that implement
+  `APP_UX_PROPOSAL.md`, W2–W8 (prompts 1–21). Run them in `ROADMAP.md` §2's
+  order; the pack itself says *how* to ask, never *when*.
 - `RUNBOOK.md` — ops and go-live. `RELIABILITY.md` — the morning ritual and the
   daily log. `B1_VERIFY_RUNBOOK.md` — the brief-delivery E2E test.
 
