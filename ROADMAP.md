@@ -177,7 +177,7 @@ One release a week. Each row is a week's work and ships on its own.
 | Wk | Release | Contents | Spec · prompts |
 |---|---|---|---|
 | **W1** | *Site live* | §1 above | — |
-| **W2** | **Two pillars** | Rail to five icons; two panels; nested Communications group; `canonicalSectionKey` for shared Reputation; 15 stub routes → redirects; `roadmapNavFeatures()`/`inNav`/`dashboardNav` deleted | ph. 1–2 · **prompts 1–4** |
+| **W2** ✅ *(18 Sep)* | **Two pillars** | Rail to five icons; two panels; nested Communications group; `canonicalSectionKey` for shared Reputation; 15 stub routes → redirects; `roadmapNavFeatures()`/`inNav`/`dashboardNav` deleted | ph. 1–2 · **prompts 1–4** |
 | **W3** | **Ask + Home v1** | Chat as a rail section; starter questions in the blank state; Home leads with "Needs you today"; existing cards become a widget registry | ph. 3–4 · **prompts 5–7**, 7b optional |
 | **W4** | **Home v2 — customize** | `dashboard_layouts`, pick + reorder, role defaults, locked roadmap tiles | ph. 5 · **prompts 8–9** |
 | **W5** | **Arrivals & departures** | `/dashboard/checkins` → `/dashboard/arrivals`; departures tab; `TodoTarget` renamed | ph. 6 · **prompt 10** |

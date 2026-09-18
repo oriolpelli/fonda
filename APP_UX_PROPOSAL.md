@@ -171,7 +171,7 @@ Live routes keep their URLs except the two that genuinely move:
 | `/dashboard/finance/{reporting,chargeback}` | `/dashboard` | parked to the roadmap |
 | `/dashboard/oversight/{ai,team}` | `/dashboard` | parked to the roadmap |
 
-Use the redirect pattern `app/[lang]/dashboard/admin/page.tsx` already establishes. The parked eight have never been linked from anywhere but the nav that is being removed, so a plain redirect to Home is sufficient — no query preservation needed, unlike the communications case below. `/dashboard/brief` stays — the `NAV_REORG_SPEC.md` §7 URL harmonisation stays deferred, and with pillars instead of Front Desk it is now moot.
+Use the redirect pattern `app/[lang]/dashboard/admin/page.tsx` already establishes — sixteen redirect pages in all, the fifteen departures plus Reputation's relocation, which is a move rather than a departure. The parked eight have never been linked from anywhere but the nav that is being removed, so a plain redirect to Home is sufficient — no query preservation needed, unlike the communications case below. `/dashboard/brief` stays — the `NAV_REORG_SPEC.md` §7 URL harmonisation stays deferred, and with pillars instead of Front Desk it is now moot.
 
 > ⚠️ **One thing to check before shipping the rename:** `/dashboard/communications?email=<id>` is a real deep link, used by `NeedsReplyCard` rows and by `DraftResultCard` in chat. The redirect must preserve the query string, and both call sites should be updated to point at the scoped route directly.
 
@@ -547,6 +547,8 @@ Each phase is independently shippable and independently reviewable. Phases 1–3
 
 | 6 | Guest-data position | **Settled 18 Sep** — see below |
 
+| 7 | The two pillar hrefs | **Deliberately unrouted** — see below |
+
 ### 6 · The guest-data position
 
 **Decided:**
@@ -562,6 +564,23 @@ A 30-room property at ~70% occupancy with an average 2.5-night stay produces rou
 For scale, the same hotel writes **~140,000 log rows a year**: `sync_logs` takes one row per hotel per sync and sync runs every 15 minutes (~35,000/year), and the emails cron writes one `cron_logs` row per hotel per run, unconditionally, on a 5-minute schedule (~105,000/year). **Twenty-four months of guest profiles costs about the same storage as ten days of cron logs.**
 
 So: the retention policy is safe, and the thing that will actually grow the database is operational logging that nobody has put a ceiling on. That is now tracked in `ROADMAP.md` §3.2 as its own item — it is a real finding, not a footnote to this one.
+
+### 7 · The two pillar hrefs, and why they go nowhere
+
+`/dashboard/operation` and `/dashboard/commercial` are not routes, and must not
+become routes. A section with children opens its panel instead of navigating
+(§2.1), so neither pillar has a page to point at — the href is there only
+because every nav item carries one. A *never-matching* href is the point:
+`isSectionActive` starts with `isActive(item.href)`, so giving the pillars
+`/dashboard` would light both of them the moment you were on Home. They stay
+dark until one of their children matches, which is the only correct answer to
+"where am I?".
+
+Nor is either string reachable. `RailLink` and `DrawerLink` render only in the
+childless branch of the tree; a pillar renders as `RailSection` — a panel
+trigger, not a link — so nothing in the UI ever puts these two hrefs in front of
+a user. Their absence from the build's route list is therefore the expected
+result, not a missing page. Leave them exactly as they are.
 
 ---
 

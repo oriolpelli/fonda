@@ -305,6 +305,24 @@ and adjust the padding in `app/[lang]/dashboard/layout.tsx`.
 > "mobile unchanged in behavior" holds otherwise. Read §§5.1–5.5 for the rail's
 > material and `NAV_REORG_SPEC.md` §2 for its shape.
 
+> **Amendment (applied 2026-09-18 — the rail is two pillars).** `APP_UX_PROPOSAL.md`
+> §2 supersedes the amendment above on **structure**, again without touching
+> material. The eight sections are now **five icons**: Home, then Ask, then a
+> hairline — the only structural divider in the column — then the two pillars,
+> **Operation** and **Commercial**, with Settings and the account button pinned at
+> the foot exactly as before. The docked panel looks the same and learns one
+> capability: **a single level of nesting**, a labelled sub-group under a quiet
+> mono eyebrow (the panel header's own treatment, one step softer) with its rows
+> indented so the icon column still aligns — used once, for Communications. A row
+> may appear in **both** panels, as Reputation does; when it does, one panel is
+> its **canonical owner** for active-state purposes, so only ever one rail icon
+> lights. And one real change to the rail's visual language: **the rail no longer
+> shows a coming-soon sparkle at all.** `SoonMarker` is still the product's "not
+> built yet" glyph everywhere else, panel rows included, but all five rail
+> destinations are live — the pillars because their children are — so nothing in
+> the column is marked unbuilt any more. Read §§5.1–5.5 for the rail's material
+> and `APP_UX_PROPOSAL.md` §2 for its shape.
+
 ### 5.1 Shape & anatomy
 
 - **Fixed, full-height, ~64px wide** (`w-16`) on `md+`. Background

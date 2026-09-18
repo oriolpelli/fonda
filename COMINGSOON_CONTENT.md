@@ -46,6 +46,22 @@ are not here — they already have real pages.
 - A day-of check — flight number in hand — and a note back to the guest
 **What's next:** In-house messaging (WhatsApp included), so guests reach the concierge the moment they think of something.
 
+### Communications › In-house  `communications-in-house`
+**Lead:** Messaging for guests who are already in the house, WhatsApp included, so a request mid-stay reaches someone who can act on it.
+**Will do:**
+- WhatsApp, email and the desk in one thread per stay, so a guest never repeats themselves
+- A reply drafted with the room, the stay and the last request already in view
+- What needs a person — a complaint, a bill query — lifted out of the queue first
+**What's next:** Requests that are really jobs hand off to housekeeping and the concierge, so the guest hears back when it's actually done.
+
+### Guests  `guests`
+**Lead:** Every guest in one place — who they are, what they asked for last time, and what to have ready before they arrive.
+**Will do:**
+- One profile per guest, built up each stay: preferences, allergies, the dates that matter
+- Repeat guests recognised at booking rather than at the desk
+- The two or three things worth knowing, on the arrivals list where the shift will see them
+**What's next:** Communications reads the same profile, so every reply already knows who it's talking to.
+
 ### Reputation Analysis  `reputation`
 **Lead:** Every review across Booking, Google, TripAdvisor and Vrbo read, themed and answered — so your score stops being a mystery.
 **Will do:**

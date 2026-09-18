@@ -353,12 +353,12 @@ Goal: no dead routes, no dead code, every old URL lands somewhere sensible.
 Run `npm run lint` and `npx tsc --noEmit`. Then `npm run build` and confirm the
 route list contains no route that 404s and no page file that is unreachable
 from the nav except the redirect pages. Curl or visit each old URL and paste me
-the resolved destination for all fifteen. Show me the final diff.
+the resolved destination for all sixteen. Show me the final diff.
 ```
 
 **Look for** — the risk here is a dead link you don't notice for a month.
 
-- Visit all fifteen old URLs. Every one lands somewhere real; none 404s, none loops. Pay attention to `/dashboard/front-desk/reputation` → `/dashboard/reputation` (the new stub, not the old page).
+- Visit all sixteen old URLs. Every one lands somewhere real; none 404s, none loops. Pay attention to `/dashboard/front-desk/reputation` → `/dashboard/reputation` (the new stub, not the old page).
 - `/dashboard/concierge` → `/dashboard/communications`. `/dashboard/checkins` still works untouched.
 - The three new stubs look identical to the stubs that already existed — same spacing, same sparkle. A stub that looks different wasn't copied from a neighbour.
 - Click every row in both panels. Nothing points anywhere dead.
@@ -367,7 +367,7 @@ the resolved destination for all fifteen. Show me the final diff.
 
 **Wrong if:** the eight parked roadmap rows are gone — W4's locked tiles read them.
 
-**Commit:** `refactor(nav): redirect fifteen retired routes, delete dead nav code`
+**Commit:** `refactor(nav): redirect sixteen retired routes, delete dead nav code`
 
 ---
 
@@ -1683,7 +1683,7 @@ Do not start the next week's work.
 ```
 W2   feat(nav): two-pillar nav tree, dictionaries and roadmap rows
      feat(nav): five-icon rail with two pillars, hairline and nested groups
-     refactor(nav): redirect fifteen retired routes, delete dead nav code
+     refactor(nav): redirect sixteen retired routes, delete dead nav code
      docs: record the two-pillar rail in the design spec and roadmap
 W3   feat(chat): starter questions in the blank state
      feat(home): widget registry; "Needs you today" leads the page
