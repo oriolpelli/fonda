@@ -201,10 +201,14 @@ export default async function TrustPage({
             {COMPANY.privacyEmail}
           </a>
         </p>
+        {/* The landing page's link treatment (showcase.gateCta,
+            security.cta): ink, underlined in the border colour. Not accent —
+            §4 keeps navy for content, never for chrome, and the security
+            band's CTA that sends a reader here looks exactly like this. */}
         <p className="mt-6">
           <Link
             href={localizedHref(locale, "/privacy")}
-            className="text-[16px] font-medium text-[var(--fonda-accent)] underline-offset-4 hover:underline"
+            className="text-[16px] font-medium text-foreground underline decoration-border underline-offset-4 transition-colors duration-[180ms] hover:decoration-foreground"
           >
             {copy.moreCta}
           </Link>
