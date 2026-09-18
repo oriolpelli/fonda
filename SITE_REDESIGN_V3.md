@@ -406,7 +406,7 @@ No new tokens. Everything composes what v2.0 already defines.
 | `components/marketing/briefing-preview-window.tsx` | Used in the hero **and** band 3. Add a `variant` prop (`hero` = cropped, `full` = complete) — do not fork the component. |
 | `components/marketing/email-draft-preview-window.tsx` | Add the matched-reservation column beside the draft. Highest-value component work here. |
 | `components/marketing/hero-parallax.tsx` | Unchanged. The artefact sits **outside** it — never on the parallax layer. |
-| `components/marketing/vignettes.tsx` | `FEATURE_VIGNETTES` remapped to the three roles in band 7. |
+| `components/marketing/vignettes.tsx` | Unchanged — the artwork is fine as it is. `FEATURE_VIGNETTES` lived in `page.tsx`, not here, and went out with the bento in Phase A; band 8 declares its own role→vignette map in `page.tsx` (§9.1, 13). |
 | `lib/features.ts` | Keep only if the FAQ still reads it (see §3.7). |
 | `lib/roadmap.ts` | **Source of truth for band 10.** Anything `coming-soon` there must not be claimed above band 10 on the site. |
 | `dictionaries/{en,es,ca}.json` | Phase 0 copy swap (§3.0) + six new namespaces (§3.1–§3.7) + three deletions (§3.8). |
@@ -912,12 +912,12 @@ no-token headline path exercised and correct.
 
 ## 9. Execution log — read this first in a new session
 
-_Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`, head `a2f476d`. Not merged to `main` — production still serves the old site._
+_Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`, head `9c0d6cd`. Not merged to `main` — production still serves the old site._
 
-**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix · E · F — all verified by computed style and AA-swept.
-**Next:** **Phase G**, then H, I, J in order.
+**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix · E · F · G — all verified by computed style and AA-swept.
+**Next:** **Phase H**, then I, J in order.
 
-A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md, including §9. Phases 0 through F are done; start at Phase G."*
+A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md, including §9. Phases 0 through G are done; start at Phase H."*
 
 > **Standing rule for every phase, whether or not the prompt repeats it.**
 > The session is cleared between phases, so this log is the only memory that survives. Before committing a phase, update §9: move it from **Next** to **Done**, add anything you decided along the way to §9.1 with its reason, and add anything you could not verify to §9.3. A deviation that isn't written here will be silently reverted by the next session, which will be reading the phase prompt and nothing else.
@@ -943,10 +943,22 @@ Each was made deliberately, and several reverse an earlier draft of this same do
 | **11** | **No sticky left column in band 5**, though §2 allowed it "if it's cheap". It isn't: a `position: sticky` descendant of `Reveal` is fragile for the reason reveal.tsx's own comment gives, and the two columns are close enough in height that sticky would buy almost nothing. |
 | **12** | **Band 5's chips fill with `--fonda-surface-2`, not the `--fonda-surface` of Signal §5.4.** The badge spec assumes a chip on the page ground; these sit inside a white card, where a white fill is a no-op. `--fonda-text-2` on `#F6F3EE` measures 6.9:1, and the hairline still holds the pill's shape. |
 
+| **13** | **`FEATURE_VIGNETTES` was never in `vignettes.tsx`.** Phase G's prompt says to remap it there; it lived in `page.tsx` and went out with the bento in Phase A. The artwork component is untouched — band 8 declares its own `AUDIENCE` map with a vignette per role: `arch` for Propiedad y grupo, `coffee` for Dirección, `key` for Recepción. Navy is spent once across the three, by the key's fob (`vignettes.tsx` reserves the accent for `key` and `sail`), so the row keeps the one-accent rule. These are the only vignettes left on the site — the footer's olive went in E-pre-fix, which was a footer call, not a retirement of the system. |
+| **14** | **Band 8's cards carry `hero.ctaPrimary` as their CTA label.** §3.2 ships no CTA string for a band whose spec asks for a button. Reusing the label the page already says for `/signup` beats inventing a fourth wording, and it needs no new key in three dictionaries. If band 8 ever earns its own verb, add `audience.cta` — do not hardcode one. |
+| **15** | **Three across only at `lg`, not `md`.** At `md` the 1120px cap leaves ~224px a column, which puts most of the twelve bullets on three lines. Below `lg` the cards stack full width, and the CTA goes auto-width there (`self-stretch sm:self-start lg:self-stretch`) — a stretched button on a 960px card is a metre of fill around two words. On a phone it is full width again, which is the thumb-friendly read. |
+| **16** | **The card sub-label is plain text, not a second eyebrow.** Mono uppercase there would have put four eyebrow-shaped strings in one band and diluted the spine §4 asks the eyebrows to be. The band's one eyebrow is "Para quién es". |
+| **17** | **Band 8's buttons are `size="lg"`.** Every other button on the landing page is, and the default `h-10` is 40px — under the 44px tap target Phase J has to certify. |
+
 ### 9.2 Environment state
 
 - **Migration `0021_sample_brief_requests.sql` is applied** to the live Supabase project (`newsletter_subscribers.source`, `hotel_name`, `sample_requested_at`). Verified with real submissions in all three locales, rows since deleted. If a separate Supabase project backs any preview environment, it needs the migration too.
 - The branch is **not** merged to `main`, so production still serves the old site. Merge after Phase J.
+
+### 9.2b Rulings on Phase F's open items (18 Sep)
+
+**The nav label stays "Cómo funciona" — this is settled, not outstanding.** The band it points at is now titled "Mientras el hotel duerme", but a nav label's job is to predict what the reader will find, not to match the heading. "Cómo funciona" predicts an explanation and the band contains one — the three setup steps are right at the top of it. The evocative title would make a worse nav item, because a scanner reading the header can't tell what it leads to. Do not rename the label or the `#how` anchor.
+
+**The chips wrapping between 1024–1279px is Phase J's, and the fix is a layout one.** Three of seven chips take a second line at that range, which breaks the rhythm of seven equal rows at a very common laptop width. When Phase J fixes it: move the chip below the title at that breakpoint, or reduce the hour gutter — **do not shorten the chip strings.** "Cada 15 min" and "Cada 5 min" are the two rows that prove Fondas never stops, and abbreviating them costs the band its most surprising fact.
 
 ### 9.3 Still open
 
