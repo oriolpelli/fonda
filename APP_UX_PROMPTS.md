@@ -376,38 +376,100 @@ the resolved destination for all fifteen. Show me the final diff.
 Run §V with scope "W2". Then amend the design doc (small, but do it now while it
 is fresh):
 
-### Prompt 4 — Doc amendment for W2
+### Prompt 4 — W2 close-out: one icon fix, then the documents
 
 ```
-Read APP_UX_PROPOSAL.md §8.3 (last bullet) and the amendment paragraph that
-NAV_REORG_SPEC.md added to FONDA_SANA_REDESIGN.md §5 (search for "NAV_REORG"
-in FONDA_SANA_REDESIGN.md). Add a short paragraph in the same place and voice:
-the rail now carries Home, Ask, a hairline, then two pillars (Operation,
-Commercial); the panel supports one level of nesting under a mono eyebrow; a
-shared row has a canonical owner for the active state. Cite APP_UX_PROPOSAL.md
-§2. Also tick the W2 row in ROADMAP.md §2 with today's date.
+Read APP_UX_PROPOSAL.md §2.2, §2.5, §8.3 (last bullet) and §11, the amendment
+paragraph that NAV_REORG_SPEC.md added to FONDA_SANA_REDESIGN.md §5 (search for
+"NAV_REORG" in FONDA_SANA_REDESIGN.md), and the ICONS map in
+components/dashboard/sidebar.tsx before changing anything.
 
-Then close a content gap Prompt 1 opened: COMINGSOON_CONTENT.md has no section
-for the two roadmap rows it added. Write them in the doc's existing three-part
-shape (Lead / Will do / What's next) and its existing voice — `guests` under
-Operation, `communications-in-house` beside the other Communications entries.
-English only; the doc's own header says the translation happens where the copy
-is used, and `roadmap.blurb.guests` / `roadmap.blurb.communications-in-house`
-already exist in all three dictionaries. Leave those blurbs alone unless the new
-Lead is genuinely better, in which case update all three and keep key order
-identical.
+W2 is finished apart from one icon collision and a set of documents that still
+describe the pre-pillar product. Do the code fix first and commit it, then the
+documents as a second commit. Two commits, not one.
 
-No code changes.
+PART 1 — one code change, and only this one.
+
+1. Sparkles is currently doing three jobs: `chat: Sparkles` (the Ask rail icon),
+   `"upsell-ai": Sparkles` (a row in the Commercial panel), and the coming-soon
+   marker itself — `SoonMarker` in the rail, plus the inline <Sparkles> that
+   PanelLink draws at marker="glyph". The visible symptom: open the Commercial
+   panel and the Upsell AI row carries the same glyph twice, once on the left as
+   its identity and once on the right meaning "not built yet".
+   Fix it by changing `"upsell-ai"` to a lucide icon no other ICONS entry uses.
+   Tag, Gift and PlusCircle are the candidates — pick the one that reads as
+   "sell the guest something extra" at 20px in monochrome, and tell me why.
+   Do NOT change `chat: Sparkles` (it matches ChatThread and AskYourHotel) and
+   do NOT change the coming-soon marker — that sparkle is the product's
+   established "not built yet" glyph and it is used everywhere.
+   Nothing else in sidebar.tsx changes. Run `npm run lint` and
+   `npx tsc --noEmit`, then commit before starting Part 2.
+
+PART 2 — the documents. No code in this half.
+
+2. FONDA_SANA_REDESIGN.md §5 — add a short paragraph in the same place and voice
+   as the NAV_REORG amendment: the rail now carries Home, Ask, a hairline, then
+   two pillars (Operation, Commercial); the panel supports one level of nesting
+   under a mono eyebrow; a row appearing in two panels has a canonical owner for
+   the active state; and — say this one explicitly, it is a real change to the
+   rail's visual language — the rail no longer shows a coming-soon sparkle at
+   all, because all five of its destinations are live. Cite APP_UX_PROPOSAL.md
+   §2.
+
+3. The redirect count. §2.5's sentence — "Fifteen routes leave the product —
+   eight parked to the roadmap, six per-section dashboards deleted, one
+   (Concierge) absorbed" — is right on its own terms and stays as it is. What is
+   wrong is this file: grep APP_UX_PROMPTS.md for "fifteen" and you will find
+   four hits, all describing a list of sixteen entries. The redirect pages
+   number sixteen because Reputation's move from /dashboard/front-desk/reputation
+   to /dashboard/reputation needs one too, and a relocation is not a departure.
+   - In Prompt 3's body and its **Look for** list, "all fifteen" → "all sixteen".
+   - The Prompt 3 commit line, and its copy in §V, become
+     `refactor(nav): redirect sixteen retired routes, delete dead nav code`.
+     That is the message already in git history, so the pack should match it.
+   - Add a half-sentence to §2.5 saying sixteen redirect pages exist: the fifteen
+     departures plus Reputation's relocation. Do not restate the fifteen.
+   Afterwards, grep for "fifteen" again — zero hits in APP_UX_PROMPTS.md.
+
+4. APP_UX_PROPOSAL.md §11 — record the decision Prompt 1 made that no document
+   states. The two pillar hrefs, /dashboard/operation and /dashboard/commercial,
+   are deliberately routes that do not exist: a section with children opens its
+   panel rather than navigating, and a never-matching href is what stops
+   isActive() lighting a pillar spuriously (pointing them at /dashboard would
+   light both on Home). Nothing in the UI renders them as links — RailLink and
+   DrawerLink only render in the childless branch — so they are unreachable, and
+   they are correctly absent from the build's route list. One entry, §11's
+   existing voice, so the next person reading layout.tsx doesn't "fix" it.
+
+5. COMINGSOON_CONTENT.md has no section for the two roadmap rows Prompt 1 added.
+   Write them in the doc's existing three-part shape (Lead / Will do / What's
+   next) and its existing voice — `guests` under Operation,
+   `communications-in-house` beside the other Communications entries. English
+   only; the doc's own header says translation happens where the copy is used,
+   and roadmap.blurb.guests / roadmap.blurb.communications-in-house already exist
+   in all three dictionaries. Leave those blurbs alone unless the new Lead is
+   genuinely better, in which case update all three and keep key order identical.
+
+6. ROADMAP.md §2 — tick the W2 row with today's date.
+
+Show me `git diff --stat` for each of the two commits separately.
 ```
 
-**Look for** — docs only, so read rather than click.
+**Look for** — one glance at the panel, then read rather than click.
 
-- The new paragraph in `FONDA_SANA_REDESIGN.md` §5 should sound like the paragraph above it, not like a changelog entry.
+- Open the Commercial panel: Upsell AI now has two *different* glyphs, one left, one right. Nothing else in the rail or either panel changed.
+- The ICONS diff is one line. If another row lost or changed its icon, that's a mistake.
+- `FONDA_SANA_REDESIGN.md` §5 reads like the paragraph above it, not like a changelog entry — and it mentions the rail losing its coming-soon sparkle.
+- Search `APP_UX_PROMPTS.md` for "fifteen": zero hits.
+- The new `§11` entry explains *why* the pillar hrefs don't resolve, not merely that they don't.
+- `COMINGSOON_CONTENT.md`: both entries follow Lead / Will do / What's next, English only.
 - `ROADMAP.md` §2: W2 ticked, today's date.
-- `COMINGSOON_CONTENT.md`: both new entries follow Lead / Will do / What's next, English only.
-- `git diff --stat` shows docs and nothing else. A `.tsx` in this diff is a mistake.
+- The second commit's `git diff --stat` is documents only. A `.tsx` in that diff is a mistake.
 
-**Commit:** `docs: record the two-pillar rail in the design spec and roadmap`
+**Wrong if:** `chat: Sparkles` or the coming-soon marker changed, or the two halves landed as one commit.
+
+**Commit 1:** `fix(nav): stop Upsell AI sharing the coming-soon sparkle`
+**Commit 2:** `docs: record the two-pillar rail, the pillar-href decision and the W2 tick`
 
 ---
 
