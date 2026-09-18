@@ -912,12 +912,17 @@ no-token headline path exercised and correct.
 
 ## 9. Execution log — read this first in a new session
 
-_Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`._
+_Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`, head `a2f476d`. Not merged to `main` — production still serves the old site._
 
-**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix · E — all verified by computed style and AA-swept.
-**Next:** **Phase F**, then G, H, I, J in order.
+**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix · E · F — all verified by computed style and AA-swept.
+**Next:** **Phase G**, then H, I, J in order.
 
-A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md. Phases 0 through E are done; start at Phase F."*
+A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md, including §9. Phases 0 through F are done; start at Phase G."*
+
+> **Standing rule for every phase, whether or not the prompt repeats it.**
+> The session is cleared between phases, so this log is the only memory that survives. Before committing a phase, update §9: move it from **Next** to **Done**, add anything you decided along the way to §9.1 with its reason, and add anything you could not verify to §9.3. A deviation that isn't written here will be silently reverted by the next session, which will be reading the phase prompt and nothing else.
+>
+> Commit doc updates separately from code, as Phase E did (`09f9ff8` then `a2f476d`) — it keeps each phase's code diff readable.
 
 ### 9.1 Decisions already taken — do not undo these
 
@@ -933,6 +938,10 @@ Each was made deliberately, and several reverse an earlier draft of this same do
 | **6** | **`lib/sample-hotel.ts` is the only definition of the sample hotel** — Hotel Pati Blau, 45 rooms, Barcelona, with the guests and the night. Bands 3 and 4 and `/sample-brief` all read from it. Never hardcode a hotel name, room count or date again. |
 | **7** | **Last-touch attribution** on `newsletter_subscribers.source`: a newsletter subscriber who later requests a brief flips to `sample_brief`. `sample_requested_at` is the reliable lead marker. |
 | **8** | **`lib/roadmap.ts` governs the landing page.** Anything `coming-soon` there cannot be claimed above the `comingSoon` band. Today that rules out analytics, revenue, finance, operations, front-desk, oversight, sales-marketing and concierge. |
+| **9** | **The three-step strip keeps the full `howItWorks` steps — titles *and* descriptions.** Phase F's prompt names them as "Conecta · Trabaja de noche · Te lo encuentras hecho", which is the gist, not copy: §3 ships no strings for the strip. The existing descriptions are the only place the setup fear is still answered ("Unos minutos, una sola vez"), so they stay. `howItWorks.eyebrow`, `.headline` and `.lead` are now unread — the band uses `nightShift`'s — but the keys stay in all three dictionaries in case the strip ever grows a heading. |
+| **10** | **Band 5's stagger is `index={i * 2}`, not `index={i}`.** `Reveal`'s step is 60ms and §3.6 asks for ~120ms, so the rows double the index rather than the shared component changing for one band. The reduced-motion block in `globals.css` now also zeroes `transition-delay` — a CSS `!important` beats Reveal's inline delay, so the stagger is *disabled* under reduced motion rather than merely invisible. |
+| **11** | **No sticky left column in band 5**, though §2 allowed it "if it's cheap". It isn't: a `position: sticky` descendant of `Reveal` is fragile for the reason reveal.tsx's own comment gives, and the two columns are close enough in height that sticky would buy almost nothing. |
+| **12** | **Band 5's chips fill with `--fonda-surface-2`, not the `--fonda-surface` of Signal §5.4.** The badge spec assumes a chip on the page ground; these sit inside a white card, where a white fill is a no-op. `--fonda-text-2` on `#F6F3EE` measures 6.9:1, and the hairline still holds the pill's shape. |
 
 ### 9.2 Environment state
 
@@ -944,3 +953,5 @@ Each was made deliberately, and several reverse an earlier draft of this same do
 - `/trust` does not exist yet (Phase I). The `security` band's cta will point at it — build the band and the page in the same pass, or the link dangles.
 - Fifteen bands is long. Watch scroll depth once live; if bands 6 and 7 both underperform, band 6 is the one to cut.
 - Two measurement gaps carried into Phase J: the newsletter routes were AA-checked in their invalid-token state only, and `/onboarding` was confirmed from source rather than measured (auth-guarded). Neither is believed to be a problem; both are unverified.
+- Between 1024 and 1279px, three of the timeline's seven chips wrap onto a second line inside their card, so those rows sit taller than the rest. Measured, not broken — the band is legible and the hour stays centred on its row. It resolves itself at 1280+ and below 1024; fix it only if the tablet read bothers someone, and fix it by moving the two-column split to `xl`, not by shrinking the chip.
+- The header and footer still label the `#how` anchor "Cómo funciona", which now lands on a band whose eyebrow reads "Mientras el hotel duerme". Deliberate for now — the strip inside it *is* the how-it-works answer, and §3 ships no new `nav` string. Revisit with the nav pass in Phase J.
