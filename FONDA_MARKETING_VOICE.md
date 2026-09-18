@@ -4,6 +4,15 @@
 > fixes the *words*. The mechanical string-swap lands as **Phase 7.5** in
 > `FONDA_SANA_PROMPT_PACK.md` once you approve the copy.
 >
+> **⚠️ PARTIALLY RETIRED — read `POSITIONING_V3.md` first.**
+> §2 (the voice) **survives intact and is still the standard.**
+> §1 (the "AI hotel manager" repositioning) and §3–§4 (hero options, anchor
+> lines) are **superseded** by `POSITIONING_V3.md`, which argues that "AI
+> hotel manager" is structurally the wrong category word. The hero was locked
+> on 17 September in `POSITIONING_V3.md` §1. Phase 7.5 referenced below is
+> retired; the copy swap became Phase 0 of `SITE_REDESIGN_V3.md`.
+> Everything under the v2 banner that follows is kept for history.
+>
 > **v2 — repositioned.** Fonda is not just an "AI front office." It's a full **AI
 > hotel manager**: it prices rooms against competitors and adjusts rates, drives
 > upgrades and extras to lift RevPAR and occupancy, sends guests activity offers

@@ -20,7 +20,11 @@ Core surfaces:
   (`proxy.ts` at the project root) — see `proxy.ts`.
 - **Supabase** for auth (email/password) and database
 - **shadcn/ui** + **Tailwind CSS v4** for components
-- **Inter** typeface, primary brand colour `#1A56DB`
+- **Geist** + **Geist Mono**, on a neutral grey `#EEEEEE` ground with warm
+  surfaces and colorless chrome. The design authority is
+  `FONDA_SANA_REDESIGN.md` (v3 "Fonda x Sana"); `FONDA_DESIGN_IDENTITY.md`
+  (v2 "Signal") is background only. Never hard-code hex - reference the CSS
+  variables in `app/globals.css`.
 
 ## Getting started
 
@@ -46,7 +50,7 @@ app/
     login/           /login
     signup/          /signup
   dashboard/         Protected area (guarded by proxy.ts + layout check)
-  layout.tsx         Root layout (Inter font, metadata)
+  layout.tsx         Root layout (Geist fonts, metadata)
   page.tsx           Marketing landing page
 components/
   ui/                shadcn/ui primitives (button, input, label, card)

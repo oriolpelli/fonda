@@ -9,10 +9,20 @@ design-token comments and `FONDA_DESIGN_IDENTITY.md` refers to that system, not
 the product, and should be left as-is.
 
 Situational docs live in the repo root — read them when a task calls for them, not by default:
-GTM_STRATEGY.md (the single source of truth for market, positioning, pricing, pilot
-outreach, and the raise — supersedes the old GO_TO_MARKET / MARKET_STRATEGY /
-PILOT_OUTREACH / LAUNCH_PLAN / COMPETITOR_LANDSCAPE docs), EXECUTION_PLAYBOOK.md
-(build-task prompts), RUNBOOK.md (ops/runbook), STAGE0.md, and the Dev Roadmap `.docx` file.
+
+- `ROADMAP.md` — **the only roadmap.** Priority and sequencing live here and nowhere
+  else. It supersedes PATH_TO_MVP / WHATS_LEFT / LAUNCH_PUNCHLIST / FEATURE_GAPS /
+  BUILD_PLAN_JULY31 / STAGE0 / F1_FOUNDER_CHECKLIST / the Dev Roadmap `.docx` and the
+  two `*_START_HERE` notes. **If another document claims a priority or a build order,
+  it is stale — ROADMAP.md wins.**
+- `GTM_STRATEGY.md` — market, positioning, pricing, pilot outreach, the raise.
+  `POSITIONING_V3.md` amends its §3.1, §4.7–4.9 and §4.13; where they differ,
+  POSITIONING_V3 wins.
+- `APP_UX_PROPOSAL.md` — the product IA and UX spec (two pillars, the rail, Home,
+  chat, the Operation surfaces). `SITE_REDESIGN_V3.md` — the marketing site spec.
+- `EXECUTION_PLAYBOOK.md` — build-task prompts and the B1–B22 task-ID map.
+- `RUNBOOK.md` — ops and go-live. `RELIABILITY.md` — the morning ritual and the
+  daily log. `B1_VERIFY_RUNBOOK.md` — the brief-delivery E2E test.
 
 # Commands
 
