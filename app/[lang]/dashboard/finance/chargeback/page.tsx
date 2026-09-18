@@ -1,25 +1,18 @@
-import type { Metadata } from "next";
+import { notFound, redirect } from "next/navigation";
 
-import { loadDictionary } from "@/app/[lang]/dictionaries";
-import { ComingSoon } from "@/components/dashboard/coming-soon";
+import { isLocale } from "@/lib/i18n/config";
+import { localizedHref } from "@/lib/i18n/navigation";
 
-// Status, label and blurb all live in lib/roadmap.ts — flip this feature to
-// "live" there and replace the body below when the real page ships.
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ lang: string }>;
-}): Promise<Metadata> {
-  const { dict } = await loadDictionary((await params).lang);
-  return { title: dict.sidebar.chargeback };
-}
-
+/**
+ * Parked to the roadmap (APP_UX_PROPOSAL.md §2.4, deletion 0): the stub page
+ * is gone, its lib/roadmap.ts row stays and feeds the customize panel.
+ */
 export default async function ChargebackPage({
   params,
 }: {
   params: Promise<{ lang: string }>;
 }) {
-  const { dict } = await loadDictionary((await params).lang);
-  return <ComingSoon featureKey="chargeback" dict={dict} />;
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  redirect(localizedHref(lang, "/dashboard"));
 }

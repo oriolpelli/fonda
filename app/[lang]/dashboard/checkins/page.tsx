@@ -15,7 +15,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   const { dict } = await loadDictionary((await params).lang);
-  return { title: dict.dashboardNav.checkin };
+  return { title: dict.sidebar.checkins };
 }
 
 export default async function CheckinPage({

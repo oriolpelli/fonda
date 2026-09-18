@@ -14,12 +14,11 @@ import type { Dictionary } from "@/app/[lang]/dictionaries";
  * were live from day one (dashboard, brief, check-ins, communications) are not
  * listed here — they're the hand-written nav list in the dashboard layout.
  *
- * NOTE (nav reorg, NAV_REORG_SPEC.md §3): the sidebar is a two-level tree now,
- * and that tree is written by hand in `app/[lang]/dashboard/layout.tsx` — a
- * flat list can't express which section owns which sub-page. So `inNav` no
- * longer decides what the rail shows; it is false on every row below, and this
- * file's job is to be the source of truth for label + blurb + coming-soon
- * status per key. Adding a row here does NOT put it in the nav; add it to the
+ * NOTE (APP_UX_PROPOSAL.md §2.2): the nav is a two-pillar tree, written by
+ * hand in `app/[lang]/dashboard/layout.tsx`, and that tree is the *only*
+ * source of nav structure — a flat list can't express which pillar owns which
+ * sub-page. This file owns label + blurb + coming-soon status per key, and
+ * nothing else. Adding a row here does NOT put it in the nav; add it to the
  * tree in the layout as well.
  *
  * Copy is held as `(dict) => …` accessors rather than literal strings so every
@@ -35,16 +34,9 @@ export interface RoadmapFeature {
    * components/dashboard/sidebar.tsx) and as the empty-state icon key.
    */
   key: string;
-  /** Route below the locale prefix, e.g. "/dashboard/analytics". */
+  /** Route below the locale prefix, e.g. "/dashboard/reputation". */
   route: string;
   status: FeatureStatus;
-  /**
-   * Legacy flag from the flat rail. The grouped tree in the dashboard layout
-   * decides placement now (see the note at the top), so this is false
-   * everywhere; `roadmapNavFeatures()` reads it and is kept for the one
-   * caller that may still want a flat list.
-   */
-  inNav: boolean;
   /** Sidebar label and page title. */
   label: (dict: Dictionary) => string;
   /**
@@ -54,66 +46,48 @@ export interface RoadmapFeature {
   blurb: (dict: Dictionary) => string;
 }
 
+/**
+ * Not every row below has a page.
+ *
+ * The eight parked sections — housekeeping, fnb, staff, procurement,
+ * finance-reporting, chargeback, ai-management, team-activity — lost their
+ * stub pages and their nav rows (APP_UX_PROPOSAL.md §2.4, deletion 0); their
+ * routes are redirects to Home now. The rows stay because the customize
+ * panel's locked tiles (§3.4, landing in W4) render their label and blurb:
+ * that panel is where the roadmap gets sold from here on. The canonical list
+ * of what is parked and when each returns is ROADMAP.md §6.
+ *
+ * So a row here means "this key has copy", not "this key has a page".
+ */
 export const ROADMAP = [
-  {
-    // Superseded by Revenue › Dashboard (NAV_REORG_SPEC.md §6, decision 1).
-    // The route still resolves — old links and bookmarks keep working — but it
-    // is out of the nav tree; Revenue's own dashboard is the surface now.
-    key: "analytics",
-    route: "/dashboard/analytics",
-    status: "coming-soon",
-    inNav: false,
-    label: (dict: Dictionary) => dict.sidebar.analytics,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.analytics,
-  },
   {
     // Live since the v3 chat work: /dashboard/chat is the full conversation
     // surface, and the docked bar on every other page is a shortcut into it.
     // The blurb below is kept for the row's shape; it no longer renders.
-    // Cross-cutting, so it is deliberately not one of the eight rail sections
-    // (NAV_REORG_SPEC.md §6, decision 2) — it is reached from the docked bar.
+    // "Ask" in the rail (APP_UX_PROPOSAL.md §2.1) — a place, second icon,
+    // above the hairline.
     key: "chat",
     route: "/dashboard/chat",
     status: "live",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.chat,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.chat,
   },
   {
-    // Back in the nav under Front Desk (NAV_REORG_SPEC.md §3), still a stub:
-    // in-house guests email rarely enough that their mail stays in
-    // Communications until real in-house messaging (WhatsApp and the like)
-    // exists. Its placement comes from the tree in the layout, not `inNav`.
+    // Absorbed by Communications › In-house (APP_UX_PROPOSAL.md §2.5): the
+    // route redirects to the inbox, and `communications-in-house` below is the
+    // surface that replaces it. Kept only until W6 retires the key with it.
     key: "concierge",
     route: "/dashboard/concierge",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.concierge,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.concierge,
   },
 
-  // --- The grouped sections (NAV_REORG_SPEC.md §3) -------------------------
-  //
-  // Every row below is a stub the nav tree in app/[lang]/dashboard/layout.tsx
-  // points at. A section's own row IS its "Dashboard" sub-page: the route is
-  // the bare section path, and `label` is the *section* name because that is
-  // what the page's own heading should say — the submenu calls it
-  // "Dashboard" instead, from `sidebar.dashboard`.
-
-  // Front Desk
-  {
-    key: "front-desk",
-    route: "/dashboard/front-desk",
-    status: "coming-soon",
-    inNav: false,
-    label: (dict: Dictionary) => dict.sidebar.frontDesk,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.frontDesk,
-  },
+  // --- Operation, the first pillar (APP_UX_PROPOSAL.md §2.2) ---------------
   {
     key: "front-desk-info",
     route: "/dashboard/front-desk/information",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.frontDeskInfo,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.frontDeskInfo,
   },
@@ -124,47 +98,31 @@ export const ROADMAP = [
     key: "reputation",
     route: "/dashboard/reputation",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.reputation,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.reputation,
   },
-
-  // --- Operation, the new pillar (APP_UX_PROPOSAL.md §2.2) -----------------
-  //
-  // Two surfaces that don't exist yet but have a place in the tree from day
-  // one. `communications-in-house` is the second Communications window and
-  // supersedes `concierge`; `guests` is the Guest Experience surface (§5.4).
   {
+    // The second Communications window, and what supersedes `concierge`.
     key: "communications-in-house",
     route: "/dashboard/communications/in-house",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.inHouse,
     blurb: (dict: Dictionary) => dict.roadmap.blurb["communications-in-house"],
   },
   {
+    // The Guest Experience surface (APP_UX_PROPOSAL.md §5.4).
     key: "guests",
     route: "/dashboard/guests",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.guests,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.guests,
   },
 
-  // Revenue — supersedes the standalone Analytics item (§6, decision 1).
-  {
-    key: "revenue",
-    route: "/dashboard/revenue",
-    status: "coming-soon",
-    inNav: false,
-    label: (dict: Dictionary) => dict.sidebar.revenue,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.revenue,
-  },
+  // --- Commercial, the second pillar (APP_UX_PROPOSAL.md §2.2) -------------
   {
     key: "revenue-management",
     route: "/dashboard/revenue/management",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.revenueManagement,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.revenueManagement,
   },
@@ -172,7 +130,6 @@ export const ROADMAP = [
     key: "demand-forecasting",
     route: "/dashboard/revenue/forecasting",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.demandForecasting,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.demandForecasting,
   },
@@ -180,7 +137,6 @@ export const ROADMAP = [
     key: "ota-parity",
     route: "/dashboard/revenue/parity",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.otaParity,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.otaParity,
   },
@@ -188,7 +144,6 @@ export const ROADMAP = [
     key: "upsell-ai",
     route: "/dashboard/revenue/upsell",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.upsellAi,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.upsellAi,
   },
@@ -196,35 +151,25 @@ export const ROADMAP = [
     key: "room-upgrade-ai",
     route: "/dashboard/revenue/upgrades",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.roomUpgradeAi,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.roomUpgradeAi,
   },
-
-  // Sales & Marketing — one coming-soon page, no sub-pages.
   {
     key: "sales-marketing",
     route: "/dashboard/sales-marketing",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.salesMarketing,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.salesMarketing,
   },
 
-  // Operations
-  {
-    key: "operations",
-    route: "/dashboard/operations",
-    status: "coming-soon",
-    inNav: false,
-    label: (dict: Dictionary) => dict.sidebar.operations,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.operations,
-  },
+  // --- The eight parked sections -------------------------------------------
+  //
+  // No page and no nav row (see the note above ROADMAP). Their routes redirect
+  // to Home; these rows exist so the customize panel's locked tiles have copy.
   {
     key: "staff",
     route: "/dashboard/operations/staff",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.staff,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.staff,
   },
@@ -232,7 +177,6 @@ export const ROADMAP = [
     key: "housekeeping",
     route: "/dashboard/operations/housekeeping",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.housekeeping,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.housekeeping,
   },
@@ -240,7 +184,6 @@ export const ROADMAP = [
     key: "fnb",
     route: "/dashboard/operations/fnb",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.fnb,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.fnb,
   },
@@ -248,25 +191,13 @@ export const ROADMAP = [
     key: "procurement",
     route: "/dashboard/operations/procurement",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.procurement,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.procurement,
-  },
-
-  // Finance
-  {
-    key: "finance",
-    route: "/dashboard/finance",
-    status: "coming-soon",
-    inNav: false,
-    label: (dict: Dictionary) => dict.sidebar.finance,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.finance,
   },
   {
     key: "finance-reporting",
     route: "/dashboard/finance/reporting",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.financeReporting,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.financeReporting,
   },
@@ -274,25 +205,13 @@ export const ROADMAP = [
     key: "chargeback",
     route: "/dashboard/finance/chargeback",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.chargeback,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.chargeback,
-  },
-
-  // Oversight / Management
-  {
-    key: "oversight",
-    route: "/dashboard/oversight",
-    status: "coming-soon",
-    inNav: false,
-    label: (dict: Dictionary) => dict.sidebar.oversight,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.oversight,
   },
   {
     key: "ai-management",
     route: "/dashboard/oversight/ai",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.aiManagement,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.aiManagement,
   },
@@ -300,51 +219,41 @@ export const ROADMAP = [
     key: "team-activity",
     route: "/dashboard/oversight/team",
     status: "coming-soon",
-    inNav: false,
     label: (dict: Dictionary) => dict.sidebar.teamActivity,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.teamActivity,
   },
 
   // --- How to add a future roadmap feature ---------------------------------
   //
-  // The nav is a two-level tree now, so a new feature is a *sub-page of a
-  // section* — decide which of the eight sections owns it before you start.
-  // Copy the row below, uncomment it, and edit the four values.
+  // The nav is a two-pillar tree, so a new feature is a *sub-page of a pillar*
+  // — decide whether Operation or Commercial owns it before you start. Copy
+  // the row below, uncomment it, and edit the four values.
   //
   // {
   //   key: "groups",
   //   route: "/dashboard/revenue/groups",
   //   status: "coming-soon",
-  //   inNav: false,
   //   label: (dict: Dictionary) => dict.sidebar.groups,
   //   blurb: (dict: Dictionary) => dict.roadmap.blurb.groups,
   // },
   //
-  // Four small things have to exist alongside it:
+  // Three small things have to exist alongside it:
   //
   //   · the two strings, in all three dictionaries — `sidebar.groups` and
   //     `roadmap.blurb.groups`. Keep en/es/ca structurally identical.
   //
   //   · a page file at app/[lang]/dashboard/revenue/groups/page.tsx — copy
-  //     app/[lang]/dashboard/analytics/page.tsx and swap the key (5 lines).
+  //     app/[lang]/dashboard/guests/page.tsx and swap the key (5 lines).
   //
-  //   · an entry in the owning section's `children` array in
-  //     app/[lang]/dashboard/layout.tsx — for the example above, Revenue's.
-  //     THIS is what puts it in the nav; `inNav` no longer does (see the note
-  //     at the top of this file), which is why the row above sets it false.
-  //     Use the `soon()` helper there: `soon("groups", undefined, "revenue")`.
-  //     The third argument is `sectionKey`, and it only matters when the route
-  //     doesn't sit under the section's path — a page at /dashboard/revenue/*
-  //     is found by prefix, so it can be omitted; a live page parked at a
-  //     top-level URL (the Front Desk four) needs it to keep its section lit.
-  //
-  //   · nothing else, if the section already exists. A *new section* is more
-  //     work: it needs its own row here (the section's row doubles as its
-  //     "Dashboard" sub-page), a top-level entry in the layout's tree, and an
-  //     icon under its key in the ICONS map in components/dashboard/sidebar.tsx
-  //     — the rail draws sections, so a section without an icon falls back to a
-  //     gear. Sub-pages need no icon at all: the submenu panel and the mobile
-  //     accordion render children as text.
+  //   · an entry in the owning pillar's `children` array in
+  //     app/[lang]/dashboard/layout.tsx — for the example above, Commercial's.
+  //     THIS is what puts it in the nav (see the note at the top of this file).
+  //     Use the `soon()` helper there:
+  //     `soon("groups", { sectionKey: "commercial" })`. No child route sits
+  //     under a pillar's path — the pillars are groupings, not pages — so
+  //     `sectionKey` is required on every child, and an icon under the new key
+  //     in the ICONS map in components/dashboard/sidebar.tsx is what keeps the
+  //     panel row from falling back to a bullet.
   //
   // Optionally, a marquee feature can claim its own empty-state glyph by adding
   // its key to EmptyStateIcon in components/dashboard/empty-state.tsx. Without
@@ -362,9 +271,4 @@ export function roadmapFeature(key: RoadmapKey): RoadmapFeature {
     throw new Error(`No roadmap feature named "${key}" — see lib/roadmap.ts`);
   }
   return feature;
-}
-
-/** The rows that belong in the dashboard sidebar, in order. */
-export function roadmapNavFeatures(): RoadmapFeature[] {
-  return ROADMAP.filter((feature) => feature.inNav);
 }

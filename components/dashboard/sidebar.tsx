@@ -12,22 +12,18 @@ import {
 } from "react";
 import {
   Activity,
-  BarChart3,
   BedDouble,
   Bell,
   BookUser,
   Bot,
   ChevronDown,
   ClipboardList,
-  ConciergeBell,
   CreditCard,
   DoorOpen,
   Dot,
-  Eye,
   FileText,
   House,
   Info,
-  LayoutDashboard,
   LineChart,
   LogOut,
   Megaphone,
@@ -45,8 +41,6 @@ import {
   UserCog,
   Users,
   Utensils,
-  Wallet,
-  Wrench,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -98,18 +92,20 @@ export interface NavItem {
   /** Localized "Coming soon", supplied by the server layout. */
   comingSoonLabel?: string;
   /**
-   * The sub-pages this item owns (NAV_REORG_SPEC.md §3). A section with
-   * children does not navigate: its icon opens the submenu panel, and its own
-   * page is reached through its "Dashboard" child. `badge`, `comingSoon` and
+   * The sub-pages this item owns (APP_UX_PROPOSAL.md §2.2). A section with
+   * children does not navigate: its icon opens the submenu panel, and the
+   * pillar itself has no page of its own. `badge`, `comingSoon` and
    * `comingSoonLabel` all work at either level — a section can be unbuilt, and
    * so can a child.
    */
   children?: NavItem[];
   /**
-   * Which section a child belongs to, when its route can't say so — the four
-   * live Front Desk pages still sit at their Phase 1 URLs (`/dashboard/brief`
-   * and friends), so `startsWith` against the section path won't find them.
-   * Lets active-state grouping light the section while you're inside it.
+   * Which section a child belongs to, when its route can't say so. Under the
+   * two pillars (APP_UX_PROPOSAL.md §2.2) that is every child: no route sits
+   * below `/dashboard/operation` or `/dashboard/commercial`, because the
+   * pillars are groupings rather than pages, so `startsWith` against the
+   * section path never matches. Lets active-state grouping light the section
+   * while you're inside it.
    */
   sectionKey?: string;
   /**
@@ -159,23 +155,14 @@ const ICONS: Record<string, LucideIcon> = {
   commercial: TrendingUp,
   settings: Settings,
 
-  // Section keys from the pre-pillar tree. Out of the rail now (§2.4 parks
-  // them), kept because their pages and routes are still here and `Megaphone`
-  // still draws the Sales & marketing row inside the Commercial panel.
-  dashboard: LayoutDashboard,
-  "front-desk": ConciergeBell,
-  revenue: TrendingUp,
+  // Sales & marketing is a Commercial row, not a section — the six per-section
+  // dashboards that used to keep it company are redirects now
+  // (APP_UX_PROPOSAL.md §2.4, deletion 1) and their icons went with them.
   "sales-marketing": Megaphone,
-  operations: Wrench,
-  finance: Wallet,
-  oversight: Eye,
 
   // Children — what the submenu panel and the drawer's accordion draw
   // (NAV_REORG_SPEC.md §9.6). Those small row icons are most of the
   // Customer.io craft the panel is copying, so every sub-page has one.
-  //
-  // A section's own "Dashboard" child shares the section's key, so it can't be
-  // listed here — `panelIconKey()` below special-cases it to LayoutDashboard.
   "front-desk-info": Info,
   brief: Sunrise,
   checkins: DoorOpen,
@@ -200,30 +187,7 @@ const ICONS: Record<string, LucideIcon> = {
   chargeback: CreditCard,
   "ai-management": Bot,
   "team-activity": UserCog,
-
-  // Out of the tree, kept for its route.
-  analytics: BarChart3,
 };
-
-/**
- * The ICONS key a child row should draw.
- *
- * A section's "Dashboard" sub-page carries the *section's* key (that row is the
- * section's own page), so a plain lookup would hand it the section's glyph —
- * Front Desk › Dashboard would show a concierge bell. The tell is that such a
- * row names itself as its own section: `sectionKey === key`. Everything else
- * looks itself up.
- *
- * Returns a key, not a component, for two reasons: it keeps this file's rule
- * that icons are resolved by string (see the ICONS comment above), and a
- * function that *returns a component* trips `react-hooks/static-components` at
- * the call site, which can only see that a component came out of a call.
- */
-function panelIconKey(item: NavItem): string {
-  return item.sectionKey && item.sectionKey === item.key
-    ? "dashboard"
-    : item.key;
-}
 
 /**
  * Where the rail's one hairline goes: immediately above the first section that
@@ -430,7 +394,7 @@ function PanelLink({
 }) {
   const soon = item.comingSoon === true;
   // Neutral bullet if a sub-page has no icon of its own.
-  const Icon = ICONS[panelIconKey(item)] ?? Dot;
+  const Icon = ICONS[item.key] ?? Dot;
   return (
     <Link
       href={item.href}
@@ -1323,10 +1287,10 @@ export function Sidebar({
    * A section is lit for its own page, for any child's page, or for a deeper
    * route under either.
    *
-   * The `sectionKey` clause is what keeps Front Desk lit on the Morning Brief:
-   * the four live children still sit at their Phase 1 URLs (/dashboard/brief,
-   * /dashboard/checkins, /dashboard/communications, /dashboard/concierge),
-   * none of which a prefix test against /dashboard/front-desk will ever match.
+   * The `sectionKey` clause is what keeps Operation lit on the Morning Brief:
+   * its children sit at their own top-level URLs (/dashboard/brief,
+   * /dashboard/checkins, /dashboard/communications), none of which a prefix
+   * test against /dashboard/operation will ever match.
    */
   const isSectionActive = (item: NavItem) => {
     if (isActive(item.href)) return true;

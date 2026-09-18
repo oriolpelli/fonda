@@ -7,9 +7,9 @@ import { plural } from "@/lib/i18n/format";
 import { localizedHref } from "@/lib/i18n/navigation";
 
 /**
- * The dashboard's teaser for the Morning Brief (NAV_REORG_SPEC.md §3): the
+ * The dashboard's teaser for the Morning Brief (APP_UX_PROPOSAL.md §2.2): the
  * brief's opening line plus the two counts a GM checks first, in a card that
- * is entirely a link into Front Desk › Morning Brief.
+ * is entirely a link into Operation › Morning Brief.
  *
  * Deliberately not a second brief. Two lines of the summary, clamped — no
  * sections, no refresh, no history. If it grows past that it stops being a

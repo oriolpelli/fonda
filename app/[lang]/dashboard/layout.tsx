@@ -60,7 +60,7 @@ export default async function DashboardLayout({
   // Everything that isn't built yet takes its label, blurb and "Coming soon"
   // status from lib/roadmap.ts, so all three languages stay in step. The
   // *placement* is here, though: the rail is a two-level tree now
-  // (NAV_REORG_SPEC.md §3), and a flat list can't say which section owns what.
+  // (APP_UX_PROPOSAL.md §2.2), and a flat list can't say which pillar owns what.
   const soon = (
     key: RoadmapKey,
     {
@@ -200,7 +200,7 @@ export default async function DashboardLayout({
 
   const settingsItem: NavItem = {
     key: "settings",
-    label: dict.dashboardNav.settings,
+    label: dict.sidebar.settings,
     href: localizedHref(locale, "/dashboard/settings"),
   };
 

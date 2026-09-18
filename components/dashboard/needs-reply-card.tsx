@@ -39,6 +39,9 @@ export function NeedsReplyCard({
   locale: Locale;
   emails: InboxEmail[];
 }) {
+  // `${inboxHref}?email=<id>` below is a real deep link. W6 scopes
+  // Communications into Upcoming and In-house (APP_UX_PROPOSAL.md §5.3) — this
+  // href becomes the scoped route then, query string intact.
   const inboxHref = localizedHref(locale, "/dashboard/communications");
 
   return (

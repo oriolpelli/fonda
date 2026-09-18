@@ -23,6 +23,10 @@ import { cn } from "@/lib/utils";
 function href(locale: Locale, target: TodoTarget): string {
   switch (target.page) {
     case "communications":
+      // W6 splits Communications into Upcoming and In-house
+      // (APP_UX_PROPOSAL.md §5.3). This link stays unscoped until then; when
+      // the split lands it should point at the scoped route directly, with the
+      // `?email=` query preserved.
       return (
         localizedHref(locale, "/dashboard/communications") +
         (target.emailId ? `?email=${target.emailId}` : "")
