@@ -1,155 +1,493 @@
-# Fonda — Objectives Re-assessment & July Roadmap (v2)
+# Fondas — Roadmap
 
-_v2 — 8 July 2026, reworked after the 8-startup competitive deep dive (`COMPETITOR_LANDSCAPE.md`). Goal unchanged: solid MVP **and** first properties trying it by **31 July**._
-_Inputs: `FONDA_REDESIGN_SPEC.md` (Phases A–B done, verified), `MARKET_STRATEGY.md`, `COMPETITOR_LANDSCAPE.md`, `LAUNCH_PLAN.md`, `PILOT_OUTREACH.md`. Assumes Claude Code velocity: build phases are measured in sessions, not weeks — the binding constraints are external (DNS, Google, lawyers, GM calendars, and calendar days for the reliability proof)._
+**Status:** Authority. This is the only roadmap.
+**Owner:** Oriol
+**Rewritten:** 2026-09-18
+**Cadence:** one release a week
 
-## 0. What changed in v2 (and what deliberately didn't)
+> **The rule this document exists to enforce.** Before today, ten documents
+> described what to build next, and three of them each opened by claiming to be
+> "the single list." That is how items get worked twice and dropped once.
+> **From here: priority lives in this file and nowhere else.** A spec may say
+> *what* a thing is (`APP_UX_PROPOSAL.md`, `FONDA_SANA_REDESIGN.md`,
+> `SITE_REDESIGN_V3.md`); a playbook may say *how* to prompt it
+> (`EXECUTION_PLAYBOOK.md`); a runbook may say how to operate it
+> (`RUNBOOK.md`, `RELIABILITY.md`). None of them say *when*. This does.
+>
+> If you find a priority claim in another file, it is stale. Fix it here.
 
-**The July plan survives the competitive research almost intact — that's a feature.** Nothing in the landscape says "build something else in July"; it says "the window is real, the region is open, move." The changes:
-
-1. **Spain-density is now doctrine, not preference.** Every comparable winner took a home region first (Otel→Ireland, Altek→Nordics, profitize→South Tyrol, Cora/ALOE→Italy). Nobody has Spain. Outreach stays 100% Barcelona/Madrid until 10 paying — resist opportunistic Lisbon/Amsterdam demos in July.
-2. **The demo gets a new closing slide: the fragmentation map** (`COMPETITOR_LANDSCAPE.md` §1). "You could buy six subscriptions — comms, revenue, finance, tasks, experiences, CRM — or one layer that runs your morning." This is now Fonda's sharpest sales line.
-3. **One small July addition (1.12): upsell fields in the hotel profile** (late checkout price, breakfast, transfer, parking). ~Minutes of Claude Code work now; unlocks August's highest-leverage feature (pre-arrival upsell drafts, per ALOE's territory) and lets pilot onboarding capture the data while you're on the call anyway.
-4. **August is reprioritized around three "combine, don't build" features** (landscape §4): pre-arrival upsell suggestions, revenue *signal* in the brief (rate cache promoted), and repeat-guest personalization. Graduated autonomy for the email assistant enters the roadmap as the answer to Altek AI's "we execute, not draft" positioning.
-5. **A quarterly watchlist cadence is added** (landscape §5): Altek southward moves, Otel down-market, platform copilots adding inbox handling, Cora/ALOE adding GM digests.
-
-**Explicitly unchanged:** no booking engine, no dynamic pricing, no task management, no FP&A, no guest chatbot — each now has a funded specialist, which strengthens rather than weakens the bundle thesis.
-
----
-
-## 1. Spec verification (task 1)
-
-**Status confirmed against the codebase:**
-
-- **Phase A ✅ done** — sidebar + all §2 routes exist (`brief`, `checkins`, `concierge`, `communications`, `analytics`, `chat`, `settings`).
-- **Phase B ✅ done and wired** — `0011_hotel_profile.sql`, profile/room-types/TripAdvisor forms, and `buildHotelProfileSummary` injected into **all four** AI surfaces (briefing, email-processor, checkin-chaser, chat).
-- **Phase C ⬜ not started** — no `brief_recipients` in code or migrations; `api/cron/briefing` still emails *all* hotel users. Correctly the next phase.
-
-**Consistency findings (minor):**
-
-1. **Stale mapping column** — §2 "Maps to today" still references old routes (`/briefing`, `/checkin`, `/emails`); the migration to the new IA already happened. Cosmetic; update or ignore.
-2. **`/dashboard/admin` exists but isn't in the spec's IA** — §2 puts user management in the account menu / Settings §5.4. Reconcile when Phase G lands (recommend: fold admin into Settings → Users as specced).
-3. **Open decisions §10: two are already decided de facto** — #1 room types = manual capture (room-types-editor ✅) and #6 TripAdvisor = paste-and-summarize (tripadvisor-form ✅). Mark them resolved. #2 (to-do list): go rules-first, as the spec itself recommends. #3 (analytics depth) and #5 (extra languages): resolved below by deferral. #4 (stay-phase split): keep stay-phase.
-4. Internal consistency is otherwise good — recipients ≤3 agrees across §3.2/§5/§8; page keys match presets; migrations list covers every "Data: new" flag.
-
-**Completeness gaps (matter more):**
-
-5. **No mobile phase.** The spec never mentions responsive layout, yet `LAUNCH_PLAN.md` 1.3 calls the 6:45am phone moment pilot-critical, and the app has only ~40 responsive utilities. → Added as **Phase M** below.
-6. **No onboarding-wizard phase.** PMS connect still lives in Settings; launch plan 1.5 wants it in onboarding so a new hotel reaches a real briefing in one sitting. → **Phase O** below.
-7. **No draft-quality feedback loop.** `MARKET_STRATEGY.md` §3.6 makes draft-acceptance rate the #1 PMF metric, but nothing in the spec measures it. Cheap to add (store sent-vs-draft diff). → **Phase Q** below (August).
-8. Analytics page is a 35-line stub with, per spec, Manager-only permission — verify a server-side guard exists when Phase G lands (currently permissions don't exist at all, which is fine for single-user pilots).
+**Replaces, in full:** `PATH_TO_MVP.md` · `WHATS_LEFT.md` · `LAUNCH_PUNCHLIST.md` ·
+`FEATURE_GAPS.md` · `BUILD_PLAN_JULY31.md` · `STAGE0.md` ·
+`F1_FOUNDER_CHECKLIST.md` · `TUESDAY_28_START_HERE.md` ·
+`WEDNESDAY_29_START_HERE.md` · `Fonda_MVP_Dev_Roadmap.docx` · the previous
+`ROADMAP.md`. Every open item in all eleven is carried below. See §8 for where
+each one went.
 
 ---
 
-## 2. Objectives re-assessment (task 2)
+## 0. Where we actually are, 18 September
 
-**The July goal is not "finish the spec." It's "pilot-ready product + properties in the door."** The spec is a good build reference, but treating phases C→I as the to-do list would spend July building Analytics and permissions while zero hotels use Fonda. Reordered through the market lens:
+**Product.** Five live surfaces behind the login — Home, Morning Brief,
+Check-ins, Communications, Chat — plus Settings, on the v3 "Fonda × Sana" design
+system. Three PMS sources work (MEWS, Apaleo, Google Sheet/CSV). Gmail ingest,
+classification and draft-writing work. The briefing cron runs. Twenty-one
+coming-soon stubs sit behind the nav.
 
-**What stays (validated by the market work):**
+**Site.** `site/v3-redesign` is built through Phase J and **not merged to
+`main`** — production still serves the old site. That merge is the single
+oldest unblocked item in the repo.
 
-- **The four-surface bundle and GM-first thesis** — reinforced by Otel AI's funding and the platform copilots; the segment (20–80-room boutique, MEWS/Apaleo, ES/CA) is yours.
-- **Phase B investment** — Hotel Profile & Tone is exactly the "brain that knows your hotel" moat `MARKET_STRATEGY.md` Appendix A says to market. Money well spent.
-- **Phase C next** — correct, and now urgent for a different reason: Spanish pilots getting an English brief kills the demo. It's also small (one migration + settings panel + cron change).
-- **Signal design system, €199 flat, pilot outreach plan** — unchanged.
+**Commercially.** Zero pilots live. `GTM_STRATEGY.md` §4.5's dated milestones —
+"2 pilots live by 4 Sep", "3 pilots by 18 Sep" — have all passed unmet. That is
+the honest headline of this document and §2 is built around fixing it.
 
-**What changes:**
-
-- **Phase E (Concierge/Communications split) is promoted** — it's the UI expression of the inbox-first positioning, so it must exist before demos. Phase D (Dashboard) matters for the demo's first impression but ships with ADR stubbed and a rules-only to-do list.
-- **Phases G, H, I are deferred to August.** Pilots are single-GM users (no permissions needed), Analytics has no 30-day data to show yet, and the chat widget already works. Building these in July would be procrastination with good aesthetics.
-- **Mobile becomes a real phase (M)** — it was the spec's biggest omission and it's pilot-critical.
-- **Outreach starts this week, not after the build.** Contact→active pilot takes ~3 weeks (`PILOT_OUTREACH.md` §8). Started July 21st, pilots land in mid-August and the July 31 goal is missed by arithmetic, not effort. **This is the single most important scheduling fact in this document.**
-- **The reliability proof is calendar-bound** — 5+ unattended days means it must start by ~14 July, which means domain + Resend + Vercel Pro this week.
-
-**Focus order, in one line:** unblock infra (you) → open the funnel (you) → Phase C + E + D + M (Claude Code) → onboard → feedback. Everything else is August.
+**The thing that has been true all along and is still true:** the product is
+further ahead than the distribution. Nothing in §3 matters more than the two
+items in §1.
 
 ---
 
-## 3. The roadmap (task 3)
+## 1. Getting straight — the order
 
-### Week 1 — Mon 7 → Sun 13 July · "Unblock + open the funnel"
+Everything below is sequenced, and the sequence matters more than the speed.
+**Nothing reorganises, and no app code changes, until B3 is merged.** Touching
+the repo root or the dashboard while a large branch is pending merge is how you
+buy yourself a conflict at the worst moment.
 
-**You / business (~half-day of clicking, then ~1h/day):**
+### Step 1 — Land B3 (site)
 
-| # | Item | Source |
+1. Finish the remaining site work.
+2. ✅ **Migration `0021_sample_brief_requests.sql` applied** (18 Sep).
+3. ✅ **`lib/seo.ts` resolves the preview's own origin** (18 Sep). `SITE_URL`
+   now takes the deployment's own host on Preview, so robots.txt, canonicals,
+   hreflang and the JSON-LD `@id`s describe the preview instead of claiming to
+   be production:
+
+   ```ts
+   const previewHost =
+     process.env.NEXT_PUBLIC_VERCEL_ENV === "preview"
+       ? process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL ||
+         process.env.NEXT_PUBLIC_VERCEL_URL
+       : undefined;
+   ```
+
+   `NEXT_PUBLIC_SITE_URL` stays `https://fondas.app` for Production and is now
+   harmless on Preview — the branch above runs first. The **branch** URL
+   (`*-git-*.vercel.app`) is preferred over the per-deployment URL: it is stable
+   across pushes, so a preview link keeps working as the branch moves, and
+   Vercel documents `VERCEL_URL` as unusable under Standard Deployment
+   Protection. The deployment URL stays as the fallback for CLI deploys, which
+   have no branch.
+
+   ⚠️ **Still to confirm:** "Enable access to System Environment Variables"
+   (Vercel → Project Settings; formerly "Automatically expose System
+   Environment Variables") must be on, or both `NEXT_PUBLIC_VERCEL_*` values are
+   undefined and the production fallback holds silently. Don't hunt the
+   checkbox — verify the chain: on a preview deployment,
+   `curl https://<preview-host>/robots.txt` and read `Sitemap:` / `Host:`.
+   Preview hostname = working. `fondas.app` = the setting is off.
+
+   **Severity: testing fidelity, not SEO.** Vercel marks preview deployments
+   `noindex`, so nothing gets wrongly indexed. What breaks is your ability to
+   *verify* anything from a preview — `robots.ts` advertises the production
+   sitemap and `host`, canonicals and hreflang claim production, and the
+   JSON-LD `@id`s do too. The OG unfurl spot-check in §3.4 is meaningless from a
+   preview until this is confirmed.
+4. **Merge `site/v3-redesign` → `main`.** Currently 17 commits ahead. Verify
+   production in all three locales.
+
+Nothing else goes in this commit range. When it's green, the branch is gone and
+the repo has one line of history again.
+
+### Step 2 — One cleanup pass, on `main`, three commits
+
+**2a · Move the retired documents.** Fifteen `.md` files, one `.docx`, five
+research `.html` files and `prompts/` into `docs/archive/` (§8 has the list).
+Delete only what is provably redundant: `CLAUDE.md.bak-*`, `_to_delete/`, and
+the two `.docx` exports (`FEATURE_GAPS.docx`, `GTM_STRATEGY.docx`) — both
+verified byte-for-byte derivable from their `.md` twins, and both a drift hazard
+the moment the `.md` changes and the export doesn't.
+
+**2b · Sweep the references that break.** Three source comments cite
+`FONDA_REDESIGN_SPEC.md`; `NAV_REORG_SPEC.md` is cited fourteen times across
+`lib/roadmap.ts`, `sidebar.tsx`, `layout.tsx` and `brief-summary-card.tsx` and
+**stays in the root for exactly that reason**. `.claude/rules/design.md`
+hard-references two design docs — both survive, so it is unaffected. Verify with
+a grep before and after, not by eye.
+
+**2c · Fix the stale facts.** `README.md` still says Inter and `#1A56DB`, two
+design systems out of date. Extract `FONDA_REDESIGN_SPEC.md` §6 (the only
+permissions spec that exists) into a short section of this file before archiving
+it. Add the retirement header `POSITIONING_V3.md` §6 asked for to
+`FONDA_MARKETING_VOICE.md`.
+
+### Step 3 — Then, and only then, the release train
+
+§2 below. Week 2 is the app IA change.
+
+### Running alongside all of it, from today
+
+- **Log five green mornings in `RELIABILITY.md` — fresh ones, starting now.**
+  The five blank rows are dated 28 Jul – 1 Aug and are seven weeks stale.
+  Reconstructing them would mean archaeology in `cron_logs` / `sync_logs`, and
+  the result would be a worse sentence: *"five green mornings in July"* is not
+  what you say to a GM in September. **Replace the five stale rows with five
+  fresh dates and fill them as they happen.** Same evidentiary value, no
+  archaeology, and the blocker that has sat for seven weeks clears in five days.
+  While you're in the file: line 46 still says "Four consecutive green days" —
+  the bar is five (§7 #7).
+- **Restart outreach: five contacts a day**, using `POSITIONING_V3.md` §5.1.
+  This does not wait for any build, any merge or any cleanup. Zero pilots is the
+  actual problem.
+
+---
+
+## 2. The release train — next eight weeks
+
+One release a week. Each row is a week's work and ships on its own.
+
+| Wk | Release | Contents | Source |
+|---|---|---|---|
+| **W1** | *Site live* | §1 above | — |
+| **W2** | **Two pillars** | Rail to five icons; two panels; nested Communications group; `canonicalSectionKey` for shared Reputation; 15 stub routes → redirects; `roadmapNavFeatures()`/`inNav`/`dashboardNav` deleted | `APP_UX_PROPOSAL.md` ph. 1–2 |
+| **W3** | **Ask + Home v1** | Chat as a rail section; starter questions in the blank state; Home leads with "Needs you today"; existing cards become a widget registry | APP_UX ph. 3–4 |
+| **W4** | **Home v2 — customize** | `dashboard_layouts`, pick + reorder, role defaults, locked roadmap tiles | APP_UX ph. 5 |
+| **W5** | **Arrivals & departures** | `/dashboard/checkins` → `/dashboard/arrivals`; departures tab; `TodoTarget` renamed | APP_UX ph. 6 |
+| **W6** | **Communications, two windows** | `StayPhase` widened to four; In-house + Upcoming; Concierge absorbed; WhatsApp first-run card | APP_UX ph. 7 |
+| **W7** | **Billing** | Stripe + trial gating (B20). Blocked on the legal entity — start §4 now, not in week 7 | B20 · Gate 2 |
+| **W8** | **Reputation** | The first real Commercial surface. Reviews fetched, themed, score movement | APP_UX §6 |
+
+**Then, in order:** the guest context pane → chat threads → Guests v1 →
+rate cache (B17) → Revenue Management. The four parked house sections
+(Housekeeping, F&B, Staff, Procurement) and the three business ones
+(Reporting & audit, Chargeback, Team activity) re-enter the nav the week each
+one ships, and not before — see §6.
+
+> **Weeks 7–8 are the ones to watch.** Billing is gated on a legal entity that
+> takes weeks to incorporate, and Reputation is the first surface with no
+> existing precedent in the codebase. If either slips, slip it — do not
+> compress the pilot work in §1 to protect a build date.
+
+---
+
+## 3. The backlog
+
+Everything still open, by area. Items are dropped from here only when done.
+
+### 3.1 Before pilots
+
+| | Item | Notes |
 |---|---|---|
-| 1.1 | Revoke leaked GitHub token; re-auth via `gh`/SSH | STAGE0 §0.1 — **today** |
-| 1.2 | Buy fondas.app → Vercel domains; Resend DNS (SPF/DKIM/DMARC); test email to a real Gmail inbox | STAGE0 §0.3 |
-| 1.3 | Vercel Pro + all env vars + confirm 4 crons return 200; Supabase daily backups; Anthropic spend cap | STAGE0 §0.5 |
-| 1.4 | Fill `company.ts`; legal pages live; book lawyer review + DPA | STAGE0 §0.4 |
-| 1.5 | Submit Google verification (needs 1.2 + 1.4 live) | STAGE0 §0.2 — weeks of lead time |
-| 1.6 | **Outreach day 1:** build 30-hotel list (Apaleo community, Design Hotels, LinkedIn BCN/MAD); send 5/day from Tue 8th | PILOT_OUTREACH — critical path |
+| 🔴 | **Reliability log backfill — 5 blank rows** | §1. The bar is **five green mornings**, resolved in §7 |
+| 🔴 | **Run the full demo twice — laptop, then phone** | dashboard → inbox with a draft → brief → check-ins → chat |
+| 🔴 | **Seed the test hotel with realistic Spanish guest names** | sandbox data makes demos feel fake |
+| 🟠 | **Brief email still on the v2 palette** | see §3.5 — the most precisely-specified open item in the corpus |
+| 🔴 | **Settings is flat (~7 sections) + a separate Admin item** | group into click-in categories, fold Admin in, absorb the mislocated `SyncNowButton` |
+| 🟠 | **Disconnect / switch a hotel's data source** | built in the working tree (`pms-disconnect-card`), pending push, deploy and test |
+| 🟡 | **"Email me this brief now"** | Refresh only updates the on-screen brief |
+| 🟡 | **Friendly error states for known failure modes** | PMS down, email auth expired, API rate limit. From the Dev Roadmap `.docx` §8 — it appears nowhere else and would have been lost |
 
-**Build (Claude Code, ~3–4 sessions):**
+### 3.2 Live product defects
 
-| # | Item | Done when |
+All from `RUNBOOK.md` §14 unless noted. These are real and a pilot will hit them.
+
+| | Defect | Consequence |
 |---|---|---|
-| 1.7 | **Phase C complete:** `brief_recipients` (≤3) migration + Morning Brief settings panel (recipients, send time, language) + cron emails configured list | A Spanish-language brief lands in an arbitrary inbox, end-to-end |
-| 1.8 | ✅ Naming unified on **Fondas**. Audit found customer-facing surfaces (wordmark, emails, legal, dictionaries, package.json) were already 100% "Fondas" — no UI inconsistency. Aligned README/CLAUDE.md prose to "Fondas" and documented that the design system is separately named "Signal" (the 7 "Fonda" design-token comments are intentional, not drift). | Zero customer-facing inconsistencies ✅ |
-| 1.9 | Landing: hero reordered inbox-first per `MARKET_STRATEGY.md` §2.1; claims stay honest | Copy matches positioning |
-| 1.10 | Sample-briefing asset (beautiful anonymized brief as PDF/page) for outreach touch 3 | Sendable link |
-| 1.11 | **Start the reliability run**: dummy/real hotel syncing + briefing daily, unattended | Running by Sun 13 — gates pilot onboarding |
-| 1.12 | **Upsell fields in hotel profile** (late checkout / breakfast / transfer / parking, with prices) — data model + form only | Fields exist; captured during pilot onboarding (drafting feature ships in August) |
+| 🔴 | **`arrival_time` is never populated by sync** | *every* upcoming confirmed guest is chase-eligible |
+| 🔴 | **Chat "draft an email" produces a draft with no recipient** | it cannot be sent |
+| 🟠 | **Room types show the PMS category ID, not a name** | categories/spaces aren't cached |
+| 🟠 | **`rates.currentRates` is empty** in briefings and chat | no rate-plan cache — this is B17, and it blocks Revenue Management |
+| 🟠 | **Brief email subject and section headings are hardcoded English** | a Spanish pilot gets Spanish body text under English headings. Drive off `briefing_language`. **This had exactly one mention in the whole corpus and was the item closest to being lost** |
+| 🟡 | **`supabase/schema.sql` is missing migration 0011** | a rebuilt or staging DB would silently lack the 18-column hotel profile |
+| 🟠 | **Nothing in the product is ever deleted.** There is no retention policy, no pruning job and no `delete` outside cascades, anywhere | see below |
 
-**Non-blocking follow-ups surfaced during B1 (Phase C) verification** — queue, don't block:
+**On the log tables specifically.** `sync_logs` takes one row per hotel per sync
+and sync runs every 15 minutes — **~35,000 rows per hotel per year**. The emails
+cron writes one `cron_logs` row per hotel per run, unconditionally on both the
+success and the error branch, on a 5-minute schedule — **~105,000 rows per hotel
+per year**. That is ~140,000 rows of pure operational noise annually per hotel,
+against which the entire 24-month guest-profile history is ~6,000 rows.
 
-- **Localize the brief email** — subject line and section headings (`Arrivals & departures`, `Overnight email`, `Rate alert`) are hardcoded English in `app/api/cron/briefing/route.ts`; drive them off `briefing_language`. Fits naturally into the settings/brief work (Claude Code's B2) or the email-polish pass (B13). Without it a Spanish pilot gets Spanish body text under English headings.
-- **Timezone-throw hardening** — `Intl.DateTimeFormat` throws on an invalid `hotels.timezone`; a single bad row currently aborts the whole cron tick. Wrap `localHour`/`localDate`/`formatLongDate` per-hotel so one bad timezone skips that hotel instead of failing all.
+It is not urgent at one hotel and it is unpleasant at fifty. **Recommended: keep
+30 days of `cron_logs` and `sync_logs` and prune nightly** — `RELIABILITY.md`'s
+morning ritual only ever looks at recent runs, so nothing is lost. Do it at the
+same time as the guest-profile retention cron; it is the same job.
 
-### Week 2 — Mon 14 → Sun 20 July · "Pilot-ready product"
+### 3.3 Before charging
 
-**Build (~4–5 sessions):**
+Nothing here is optional once money changes hands.
 
-| # | Item | Done when |
+| | Item | Lead time |
 |---|---|---|
-| 2.1 | **Phase E:** Concierge/Communications stay-phase split over existing inbox | In-house vs pre-arrival correctly routed on real emails |
-| 2.2 | **Phase D:** Dashboard (occupancy, free rooms, in/out counts, concierge summary, **rules-based** to-do list; ADR stubbed) | Demo-ready snapshot |
-| 2.3 | **Phase M (new):** mobile pass on Brief, Dashboard, Concierge/Comms + sidebar → drawer | Brief is clean on a phone |
-| 2.4 | **Phase O (new):** PMS connect step inside onboarding wizard + first-run empty states | New hotel reaches a real brief in one sitting |
-| 2.5 | **Phase F-lite:** parse ETA from chaser replies → `arrival_time` → Check-ins page shows it | Reply populates ETA without manual entry |
+| 🔴 | **Legal entity — Spanish SL or autónomo** | **weeks.** Book the lawyer the week pilot #2 lands. Everything below blocks on this |
+| 🔴 | **One-page pilot agreement** | write it now — data accessed, no model training, encrypted EU-hosted, sub-processor list, deletion on request |
+| 🔴 | **Lawyer-drafted DPA** | triggered the day a hotel's DPO asks |
+| 🔴 | **Stripe billing + trial gating (B20)** | W7 |
+| 🔴 | **Rate limiting + per-hotel AI spend caps (B21)** | required before public signups |
+| 🔴 | **Google OAuth verification** | weeks; blocked on the entity; **may require a CASA security assessment and a demo video of the OAuth flow** — that requirement is recorded only in `STAGE0.md` §0.2 |
+| 🔴 | **Newsletter unsubscribe flow** | `unsubscribed`/`unsubscribed_at` columns exist, the flow does not. **It is illegal to send a marketing email without it** |
+| 🔴 | **`company.ts` real details** | the live site still shows `[Fondas Technologies, S.L.]` placeholders |
+| 🟡 | Decide whether a separate cookie notice is needed | |
 
-**You:** keep 5/day outreach cadence; book demos (target 3–5); run the **email-draft quality pass** on a real inbox (tune tone via the Phase B profile); demo script updated to open on the inbox (MARKET_STRATEGY §3.4).
+### 3.4 Site & marketing
 
-**Gate at Sun 20:** reliability run ≥5 green days · Spanish brief verified · drafts mostly sendable. If any fail, fix before onboarding anyone — a broken pilot is worse than a late one.
-
-### Week 3 — Mon 21 → Sun 27 July · "Properties in"
-
-| # | Item |
+| | Item |
 |---|---|
-| 3.1 | **Onboard pilots 1–2** (30-min screen-share each: PMS connect + Gmail + profile/tone fill-in — add each as Google test user) |
-| 3.2 | WhatsApp support thread per pilot; check in daily on brief quality |
-| 3.3 | Minimal PostHog (EU): brief opens, draft edits/sends, chat queries — the §3.6 metrics |
-| 3.4 | **Feature freeze** except pilot-feedback fixes; Claude Code time goes to polish (room-type names, empty states, error copy, ES/CA translations of new UI) |
+| 🔴 | `lib/seo.ts` preview-URL resolution — see §1 step 3. The env var is set; the code change is not made |
+| 🟡 | **Real product screenshots in the feature bento** — check-in and chat have no showcase band. Dependency: a nicely-seeded demo hotel |
+| 🟡 | **Real Morning-Brief screenshot** replacing the hand-built mockup; optional 2-min demo video |
+| 🟡 | Reduced-motion visual check on the parallax hero |
+| 🟡 | Hero final QA — one line on desktop, villa ~70vw, navy legible over the pool |
+| 🟡 | OG image spot-check on a real Slack/X unfurl, all three locales |
+| 🟢 | Review the comparison-table copy — "Late arrivals surface in the brief, not at the door" is the writer's wording, not yours |
+| 🟢 | Site IA for SEO: real `/features`, `/customers`, `/resources` pages; FAQPage JSON-LD |
+| 🟢 | An **About page** carrying the *fonda* = Spanish inn story — free brand equity in Spain |
+| 🟢 | Auth verify-email "Open Gmail / Outlook" shortcuts; secondary "Book a demo" on the final CTA |
+| 🟢 | `(auth)` submit buttons are 40px, under the 44px floor — one `size="lg"` per call site |
+| — | **Post-launch:** watch scroll depth. If bands 6 and 7 both underperform, band 6 (`comparison`) is the one to cut |
 
-### Week 4 — Mon 28 → Fri 31 July · "Feedback + stabilize"
+### 3.5 The email / OG palette migration
 
-| # | Item |
+Singled out because it is the most exactly-specified open item in the repo and
+the constraints are easy to get wrong.
+
+Three surfaces are still on the v2 Signal palette: `app/api/cron/briefing/route.ts`
+(still `#F6F6F4` ground, `#0A0A0A` ink, navy `#1B3BB3` date eyebrow — **and its
+`CARD`/`GROUND` comments have the tokens backwards**), `lib/newsletter.ts`, and
+`app/[lang]/opengraph-image.tsx`.
+
+- **Do not migrate by swapping in `var(--fonda-*)`.** Email clients don't
+  evaluate CSS custom properties and Satori can't either. Every value stays
+  literal hex.
+- `app/global-error.tsx` is already on v3 and is the reference implementation.
+- **Gate the change** on a real send to Gmail *and* Outlook, mobile and desktop,
+  plus an OG spot-check in Slack or X.
+
+### 3.6 Later
+
+Held deliberately. Each has a trigger, not a date.
+
+| Item | Trigger |
 |---|---|
-| 4.1 | Onboard pilot 3 (if scheduled — peak season may push it to early Aug; 2 live pilots still meets the goal) |
-| 4.2 | First structured feedback: 15-min call or 5-question note per pilot (what's wrong in the brief, which drafts they edited, what they'd pay) |
-| 4.3 | Fix the top 3 reported issues; screenshot/quote collection begins (case-study raw material) |
-| 4.4 | **31 July checkpoint — "solid MVP" defined as:** Phases A–E + M + O live · 5-day+ unattended reliability · ≥2 properties connected, receiving daily briefs and using the inbox · first feedback captured in writing |
-
-### August — reprioritized with the competitive knowledge
-
-**Revenue & differentiation track (new priorities, from `COMPETITOR_LANDSCAPE.md` §4):**
-
-| Priority | Item | Why now |
-|---|---|---|
-| Aug-1 | **Pre-arrival upsell drafts** in Communications (uses 1.12 fields; guest replies, hotel books in PMS — no catalog, no payments) | Turns Fonda from cost-saver into revenue-maker; "one late checkout a week pays for Fonda" is the €199 justification against €99 anchors (Cora) |
-| Aug-2 | **Phase Q — draft-diff tracking** → acceptance-rate metric | The #1 PMF number; also the dataset that later justifies autonomy |
-| Aug-3 | **Rate cache (Phase H, promoted)** → revenue *signal* in the brief ("Thu is 40% sold at €145; last year 70%") — prose signal, never a pricing engine | The GauVendi/happyhotel space, taken as a sentence in the brief instead of a product |
-| Aug-4 | **Repeat-guest personalization** — `customers.preferred_language` + "3rd stay, always asks for a quiet room" in drafts/brief | Cheap (existing data), and it's what "boutique" means |
-| Aug-5 | **Graduated autonomy settings** (auto-send routine confirmations; always-review complaints/VIPs) — design + first category | The answer to Altek AI's "we execute, not draft"; ship only after Aug-2 data proves draft quality |
-
-**Commercial & infra track (unchanged from v1):** Stripe billing + trial gating · week-2 pilot survey → **the €199 ask** (mid-late August) · Google verification lands · Hotel Tech Report profile + first pilot reviews · Phase G (users/permissions — first multi-staff pilot triggers it) · Phase I (chat page) · Outlook-vs-3rd-PMS decision with pipeline evidence.
-
-**Watchlist cadence:** first quarterly competitive review **1 October** (Altek expansion, Otel down-market, platform copilots' inbox moves, Cora/ALOE GM-digest moves — triggers in `COMPETITOR_LANDSCAPE.md` §5).
+| **Outlook / Microsoft 365** | pipeline evidence — "the biggest addressable-market lever", but only if pilots keep asking |
+| **Pre-arrival upsell drafting (B15)** | B6 data fields are done; "one late checkout a week pays for Fondas" |
+| **Repeat-guest personalization (B18)** | largely absorbed by Guests v1 (`APP_UX_PROPOSAL.md` §5.4) |
+| **Graduated autonomy (B19)** | gate on B16 acceptance data proving draft quality |
+| **Multi-property owner digest** | unlocks the Group tier |
+| **Apaleo multi-property merge** | fine for single-property pilots; matters for the 1–3-property owners in the ICP |
+| **3rd PMS — Cloudbeds or Amenitiz** | pilot-pipeline evidence |
+| **WhatsApp — brief delivery + urgent flags**, and separately **in-house guest messaging** | the second one is what makes Communications › In-house worth splitting |
+| **Automated tests / CI on money paths (B22)** | before, not after, Stripe carries real charges |
+| **User permissions (Phase G)** | first multi-staff pilot. The spec was the only copy in the repo and is now preserved in §10 below |
+| **ES/CA translation quality sweep** | a native pass over all UI from B1–B12 |
+| **Extra brief languages beyond en/es/ca** | an open question since 2 July that has never been answered anywhere. Answer it when a pilot asks |
+| **Database-level per-hotel-timezone lock** | duplicate briefs are prevented but not bullet-proof. Deferred, not forgotten |
+| **Founder-tune `lib/todo-rules.ts` thresholds** | is 38% occupancy next week really a to-do? Your call, from hospitality experience |
+| **Sentry read token (`SENTRY_AUTH_TOKEN`)** | would let Claude Code query issues directly |
+| **Quarterly competitive review** | first one **1 October** — the only dated commitment carried over |
 
 ---
 
-## 4. Risks to this plan
+## 4. Commercial
 
-- **Peak-season calendars** (the known objection): GMs slow to book demos in July. Mitigation: over-contact (30+, not 20), lead with "setup fits around you, 30 min," and accept pilots starting Aug 1–7 as partial success.
-- **Reliability run finds real bugs** (that's its job): budget week-2 Claude Code time for fixes, not only features.
-- **Gmail restricted-scope friction**: pilots must be added as test users *before* their onboarding call — do it when the demo is booked, not during.
-- **Scope creep via the spec**: G/H/I are explicitly out of July. If a build session finishes early, the next task is polish or outreach research — not Analytics.
+From `GTM_STRATEGY.md`, which stays the authority on market, positioning,
+pricing and the raise. Only the dates and triggers live here.
+
+**The milestones that passed unmet:** 2 pilots live by 4 Sep, 3 pilots by 18 Sep.
+Reset honestly rather than re-dated optimistically — the gating activity is
+outreach, and outreach stopped.
+
+**Hard triggers, unchanged:**
+
+- Charging anyone → legal entity, invoicing, Stripe
+- A hotel's DPO asks for a DPA → lawyer-drafted DPA
+- Opening public signups → entity + Google verification + real legal pages + rate limiting
+- More than ~3 pilots → entity
+- **Book the lawyer conversation the week your second pilot goes live**
+
+**The number that decides everything:** draft acceptance >60%. It is the #1 PMF
+signal, `lib/draft-acceptance.ts` already measures it, and the day a pilot says
+*"I send about eight in ten as they come"* that sentence becomes the strongest
+line on the site. Ask permission to quote **at the pilot agreement stage**, not
+after.
+
+**Kill criterion, kept visible on purpose:** if by the end of Q1 2027 there are
+fewer than 8 paying hotels despite 100+ qualified contacts and two positioning
+iterations, stop and rethink.
+
+---
+
+## 5. Standing constraints
+
+Not tasks. Rules that outlive any sprint, gathered from the docs being retired
+so they don't vanish with them.
+
+1. **No fake social proof.** Quotes only from a named hotel that agreed **in
+   writing**. No `Review` or `AggregateRating` JSON-LD until the quotes are real.
+2. **No invented data.** The occupancy strip's ADR row stays a placeholder until
+   there is a rate cache. Inventing an ADR is the fastest way to lose a GM.
+3. **No unearned trust badges.** `/trust` states out loud that there is no
+   ISO 27001 and no SOC 2. No seal, badge or "compliant with" line until a
+   certificate exists.
+4. **No price figure on the marketing surface** (`SITE_REDESIGN_V3.md` §9.1 #5).
+   Keep `COMPANY.priceMonthly`, the Stripe price and the `COMPANY.price` prose in
+   step — they are hand-synced.
+5. **`lib/roadmap.ts` governs what the landing page may claim.** Anything
+   `coming-soon` there cannot be claimed above the `comingSoon` band.
+6. **`lib/sample-hotel.ts` is the only definition of the sample hotel.** Never
+   hardcode a hotel name, room count or date again.
+7. **Guest PII is sensitive.** Never logged in plaintext, never returned to the
+   client, never bypassed with the service-role key. `lib/briefing.ts`
+   pseudonymises surnames before sending to Claude; anything new that ships guest
+   data to a model does the same.
+8. **`FONDA_SANA_REDESIGN.md` wins on any visual question.** Read it before
+   touching UI. Colorless chrome, one accent, light only, WCAG AA.
+9. **A deviation that isn't written down will be silently reverted by the next
+   session.** Write decisions into the doc that owns them.
+
+---
+
+## 6. The parked sections
+
+Removed from the navigation on 18 September (`APP_UX_PROPOSAL.md` §2.4). Not
+cancelled — waiting, and now tracked here rather than as eight empty pages.
+
+Housekeeping & maintenance · F&B · Staff · Procurement · Reporting & audit ·
+Chargeback · AI management · Team activity
+
+Their rows stay in `lib/roadmap.ts` and their copy stays in
+`COMINGSOON_CONTENT.md`. Both now feed the **locked tiles in the Home customize
+panel**, which is where the roadmap is sold from here on — and clicks on those
+tiles are the signal for which one to build. Log them via `lib/analytics.ts`.
+
+Each returns to the rail the week it ships. **Finance** is the most likely to
+come back as its own pillar rather than a row under Operation; decide when
+there's something to put in it.
+
+---
+
+## 7. Contradictions, resolved
+
+The audit of the retired documents found fourteen places where two docs
+disagreed. Recording the resolutions so they don't get re-litigated.
+
+| # | The disagreement | Resolution |
+|---|---|---|
+| 1 | Is `EXECUTION_PLAYBOOK.md` superseded? | **No.** It holds the only B15–B22 ID map. It stays authority for build prompts; it has no say on priority |
+| 2 | One inbox or two? | **Two windows**, In-house + Upcoming, with Concierge absorbed. Settled 18 Sep |
+| 3 | Phase G (permissions) priority | **Deferred to the first multi-staff pilot.** It had silently fallen off every list despite a 34-line spec — §3.6 now holds it |
+| 4 | Analytics — defer, repurpose, or delete? | **Delete.** `/dashboard/analytics` → `/dashboard` |
+| 5 | The six per-section "Dashboard" pages | **Deleted.** A customizable Home makes them a worse version of a preset |
+| 6 | URL harmonization | **Two renames only** (`checkins` → `arrivals`, `communications` → scoped children). The rest is moot |
+| 7 | Reliability bar: 4 days or 5? | **Five green mornings.** Four docs said four, three said five. Five, logged honestly |
+| 8 | B11 (ETA-from-reply) priority | **Droppable.** Deferred four times across four docs; that is itself the answer. The PMS can supply ETAs — fixing `arrival_time` (§3.2) matters more |
+| 9 | The timezone bug | **Fixed 27 July.** `BUILD_PLAN_JULY31.md` §5's "known unfixed bug" was never updated |
+| 10 | Migration 0016 | **Applied.** `LAUNCH_PUNCHLIST.md`'s warning was wrong and sent readers to do unnecessary work |
+| 11 | `FONDA_MARKETING_VOICE.md` authority | **§2 (the voice) survives; §1 and §3–4 are retired.** Needs the header `POSITIONING_V3.md` §6 asked for — §8 |
+| 12 | `FONDA_SANA_PROMPT_PACK.md` Phase 7.5 | **Retired.** The pack still ships it; archive the pack |
+| 13 | `STAGE0.md` and the Dev Roadmap `.docx` | **Both spent.** Archive. The `.docx` is a live hazard — it contains a prompt that would restore the retired v1 terracotta palette |
+| 14 | Three docs each called "the single list" | **This one.** The other three are archived |
+
+---
+
+## 8. Where the retired documents went
+
+Proposed: move to `docs/archive/` rather than delete — the history is worth
+keeping and nothing breaks. See the archive plan for the code-comment sweep
+this requires.
+
+| Document | Disposition |
+|---|---|
+| `PATH_TO_MVP.md`, `WHATS_LEFT.md`, `LAUNCH_PUNCHLIST.md`, `FEATURE_GAPS.md` (+`.docx`) | archive — every open item is in §3 |
+| `BUILD_PLAN_JULY31.md` | archive — **but §11's non-technical glossary is the only one of its kind**; keep it findable |
+| `STAGE0.md`, `F1_FOUNDER_CHECKLIST.md` | archive — the env-var table survives in `RUNBOOK.md` §9 |
+| `TUESDAY_28_START_HERE.md`, `WEDNESDAY_29_START_HERE.md` | archive — the three test-email scripts are worth keeping as demo-seed fixtures |
+| `Fonda_MVP_Dev_Roadmap.docx` | archive, and **remove from `CLAUDE.md`** — it would restore a retired palette |
+| the previous `ROADMAP.md` | replaced by this file |
+| `FONDA_CLAUDE_CODE_BRIEF.md`, `FONDAS_DESIGN_POLISH.md`, `FONDA_SANA_PROMPT_PACK.md`, `NAV_REORG_PROMPTS.md`, `FONDA_REDESIGN_SPEC.md` | archive — all executed. `FONDA_REDESIGN_SPEC.md` §6 (permissions) is the exception worth extracting first |
+| `FONDA_MARKETING_VOICE.md` | **keep**, with the retirement header it was supposed to get in §6 of `POSITIONING_V3.md` |
+| `CLAUDE.md.bak-*`, `_to_delete/` | delete |
+
+**Surviving set — nine documents.** `CLAUDE.md` + `AGENTS.md` (the contract) ·
+`README.md` (needs a refresh; it still claims Inter and `#1A56DB`) ·
+`ROADMAP.md` (this) · `GTM_STRATEGY.md` + `POSITIONING_V3.md` (commercial) ·
+`FONDA_SANA_REDESIGN.md` + `FONDA_DESIGN_IDENTITY.md` (design) ·
+`SITE_REDESIGN_V3.md` + `APP_UX_PROPOSAL.md` (the two live specs) ·
+`RUNBOOK.md` + `RELIABILITY.md` + `B1_VERIFY_RUNBOOK.md` (ops) ·
+`EXECUTION_PLAYBOOK.md` (prompts) · `COMINGSOON_CONTENT.md` +
+`NAV_REORG_SPEC.md` (content and the rail spec the code still cites).
+
+---
+
+## 9. Decisions owed
+
+Short on purpose, and shorter than it was.
+
+**Settled 18 September**
+
+- **The guest-data position.** 24-month retention on `guest_profiles`, surname
+  pseudonymisation of chat transcripts at rest but not in the live context
+  window, both stated on `/trust`. Capacity checked: 24 months of guest profiles
+  is ~6,000 rows per hotel, about the same storage as ten days of cron logs.
+  Full reasoning in `APP_UX_PROPOSAL.md` §11.
+
+- **Log retention: 30 days** for `cron_logs` and `sync_logs`, pruned nightly by
+  the same job as the guest-profile cron.
+- **DNS lives at Namecheap** — to be confirmed against the live nameservers
+  before anyone touches a record.
+- **`COMINGSOON_CONTENT.md` re-check: done, and it is clean.** There is no
+  Fondas pricing, plan, tier, trial or offer language anywhere in the file — zero
+  hits for `199`, "per month", "subscription", "billing" or "trial". Every
+  occurrence of "pricing" refers to *hotel room rates* as a product capability
+  (Revenue Management "reprices continuously", Room Upgrade AI "priced to what
+  each guest will pay"), which is the subject matter, not a commercial claim.
+  The adjacent constraint still stands and is already a locked decision:
+  `SITE_REDESIGN_V3.md` §9.1 #8 — `lib/roadmap.ts` governs the landing page, and
+  nothing `coming-soon` there may be claimed above the `comingSoon` band.
+  Keeping the eight parked sections' rows in `lib/roadmap.ts` (§6) keeps that
+  band unchanged.
+- **Finance stays out of the nav** and returns in a later update. Whether it
+  comes back as its own pillar or a row under Operation is decided then.
+
+**Still open — none.** Everything above was settled on 18 September.
+
+---
+
+## 10. Preserved: user permissions (Phase G)
+
+Rescued from `FONDA_REDESIGN_SPEC.md` §6 before archiving — it was the only copy
+of this spec anywhere, it had silently fallen off every roadmap despite being
+fully designed, and it is triggered by the first multi-staff pilot. Nav page keys
+below predate the two-pillar IA and need remapping when it is built.
+
+**Model**
+
+- `users.role` — `manager` | `staff` | `custom`
+- `users.page_access text[]` — allowed page keys
+- `manager` ⇒ implicit access to everything, array ignored
+- Presets fill the array; toggling an individual page flips the user to `custom`
+
+**Presets**
+
+| Preset | Gets |
+|---|---|
+| Manager (GM) | Everything, incl. Settings & Users |
+| Reception | Dashboard, Check-ins, Concierge, Communications, Chat |
+| Concierge / guest relations | Concierge, Communications, Chat, Check-ins |
+| Read-only owner | Dashboard, Analytics, Morning Brief |
+
+**Enforcement — two layers, both required**
+
+- **UI:** the rail renders only permitted items; direct navigation to a blocked
+  route redirects to the user's first allowed page.
+- **Server:** each route segment checks `page_access` in its layout — defence in
+  depth, like today's auth guard. Data stays hotel-scoped by RLS; sensitive
+  surfaces get a server check, not just hidden nav.
+
+**Invites:** admin adds a user by email; provisioning stays server-side via the
+service role, consistent with the no-client-INSERT rule.
+
+> Note: `users.role` today is `owner | manager` and **nothing in the UI reads
+> it**. The Home dashboard's role-based default layout
+> (`APP_UX_PROPOSAL.md` §3.5) will be the first consumer — worth keeping this
+> spec in view when that lands, so the two don't diverge.
