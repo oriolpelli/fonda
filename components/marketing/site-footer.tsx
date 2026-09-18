@@ -15,9 +15,16 @@ import { localizedHref } from "@/lib/i18n/navigation";
  * on the day their pages ship, not before — a link to nothing is worse than a
  * link that isn't there.
  *
- * Security and Cookies resolve to sections of the privacy policy, which is
- * where that material actually lives; the ids they target are declared in
+ * Cookies resolves to a section of the privacy policy, which is where that
+ * material actually lives; the id it targets is declared in
  * `app/[lang]/(legal)/privacy/page.tsx`.
+ *
+ * Security points at /trust, not at /privacy#security. The trust page answers
+ * the same question in the reader's own language and in plain words, and it
+ * links on to the policy for anyone who wants the legal version — so sending
+ * a worried GM to a clause in an English legal document was the worse of the
+ * two destinations. The #security id stays declared on the privacy page; it
+ * simply has no footer link pointing at it any more.
  */
 function footerColumns(locale: Locale, dict: Dictionary, isHome: boolean) {
   const home = localizedHref(locale, "/");
@@ -58,10 +65,7 @@ function footerColumns(locale: Locale, dict: Dictionary, isHome: boolean) {
           label: dict.footer.cookies,
           href: `${localizedHref(locale, "/privacy")}#cookies`,
         },
-        {
-          label: dict.footer.security,
-          href: `${localizedHref(locale, "/privacy")}#security`,
-        },
+        { label: dict.footer.security, href: localizedHref(locale, "/trust") },
       ],
     },
   ];

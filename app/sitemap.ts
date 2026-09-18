@@ -14,6 +14,10 @@ import { absoluteUrl, languageAlternates, PUBLIC_PATHS } from "@/lib/seo";
 const PRIORITY: Record<string, number> = {
   "/": 1,
   "/sample-brief": 0.7,
+  // Higher than the legal pages below it: /trust is a sales asset with real
+  // search intent ("hotel AI data security"), not boilerplate a crawler has
+  // to be told about.
+  "/trust": 0.5,
   "/privacy": 0.3,
   "/terms": 0.3,
 };
