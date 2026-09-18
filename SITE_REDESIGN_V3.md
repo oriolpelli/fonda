@@ -868,7 +868,16 @@ it. That code path has never been exercised.
 
 Produce a 360px screenshot of every band.
 
-Acceptance: screenshots for all fourteen bands; zero contrast failures; the
+Two gaps carried forward from E-pre-fix, close them here:
+ - /newsletter/confirm and /newsletter/unsubscribe were AA-measured in their
+   invalid-token state only (5 elements each). Measure the other states —
+   success, already-confirmed, expired — since these are the landing pages of
+   the sample-brief conversion flow.
+ - /onboarding could not be measured directly (auth-guarded, redirects to
+   /login); its neutral ground was confirmed from source. Measure it signed in.
+
+Acceptance: screenshots for all fifteen bands; zero contrast failures; every
+state of both newsletter routes measured; /onboarding measured signed in; the
 no-token headline path exercised and correct.
 ```
 **Commit:** `fix(site): mobile and accessibility pass for v3`
@@ -905,7 +914,7 @@ no-token headline path exercised and correct.
 
 _Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`._
 
-**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix.
+**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix — all verified by computed style and AA-swept.
 **Next:** **Phase E**, then F, G, H, I, J in order.
 
 A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md. Phases 0 through E-pre-fix are done; start at Phase E."*
@@ -934,3 +943,4 @@ Each was made deliberately, and several reverse an earlier draft of this same do
 
 - `/trust` does not exist yet (Phase I). The `security` band's cta will point at it — build the band and the page in the same pass, or the link dangles.
 - Fifteen bands is long. Watch scroll depth once live; if bands 6 and 7 both underperform, band 6 is the one to cut.
+- Two measurement gaps carried into Phase J: the newsletter routes were AA-checked in their invalid-token state only, and `/onboarding` was confirmed from source rather than measured (auth-guarded). Neither is believed to be a problem; both are unverified.
