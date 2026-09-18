@@ -2,20 +2,30 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import {
   Activity,
   BarChart3,
   BedDouble,
   Bell,
+  BookUser,
   Bot,
   ChevronDown,
+  ClipboardList,
   ConciergeBell,
   CreditCard,
   DoorOpen,
   Dot,
   Eye,
   FileText,
+  House,
   Info,
   LayoutDashboard,
   LineChart,
@@ -136,7 +146,22 @@ export interface NavItem {
 // NOT be passed as props from the Server layout — component functions can't
 // cross the server/client boundary (doing so throws at render).
 const ICONS: Record<string, LucideIcon> = {
-  // Top-level sections — what the rail draws.
+  // The rail, in its own order (APP_UX_PROPOSAL.md §2.1). All five keys are
+  // mapped on purpose: the `?? Settings` fallback at the call site is a guard
+  // against a typo, not a default, and an unmapped key doesn't announce itself
+  // — it just draws one more gear in a column of gears.
+  home: House,
+  // Ask. Sparkles rather than a speech bubble: it is already this surface's
+  // glyph in `ChatThread` and `AskYourHotel`, and MessageSquare is spoken for
+  // by Communications › In-house below.
+  chat: Sparkles,
+  operation: ClipboardList,
+  commercial: TrendingUp,
+  settings: Settings,
+
+  // Section keys from the pre-pillar tree. Out of the rail now (§2.4 parks
+  // them), kept because their pages and routes are still here and `Megaphone`
+  // still draws the Sales & marketing row inside the Commercial panel.
   dashboard: LayoutDashboard,
   "front-desk": ConciergeBell,
   revenue: TrendingUp,
@@ -144,7 +169,6 @@ const ICONS: Record<string, LucideIcon> = {
   operations: Wrench,
   finance: Wallet,
   oversight: Eye,
-  settings: Settings,
 
   // Children — what the submenu panel and the drawer's accordion draw
   // (NAV_REORG_SPEC.md §9.6). Those small row icons are most of the
@@ -156,6 +180,11 @@ const ICONS: Record<string, LucideIcon> = {
   brief: Sunrise,
   checkins: DoorOpen,
   communications: Send,
+  // The two Communications rows sit one above the other under their eyebrow,
+  // so they must not share a glyph: Send is the mail going out to an upcoming
+  // stay, MessageSquare the conversation with a guest already in the building.
+  "communications-in-house": MessageSquare,
+  guests: BookUser,
   concierge: Bell,
   reputation: Star,
   "revenue-management": LineChart,
@@ -172,9 +201,8 @@ const ICONS: Record<string, LucideIcon> = {
   "ai-management": Bot,
   "team-activity": UserCog,
 
-  // Out of the tree, kept for their routes.
+  // Out of the tree, kept for its route.
   analytics: BarChart3,
-  chat: MessageSquare,
 };
 
 /**
@@ -195,6 +223,20 @@ function panelIconKey(item: NavItem): string {
   return item.sectionKey && item.sectionKey === item.key
     ? "dashboard"
     : item.key;
+}
+
+/**
+ * Where the rail's one hairline goes: immediately above the first section that
+ * owns a panel (APP_UX_PROPOSAL.md §2.1).
+ *
+ * The divider is load-bearing rather than decorative — it says *these two are
+ * places you are always in* (Home, Ask) and *these two are where the product's
+ * surface area lives* (Operation, Commercial). Derived from the tree instead of
+ * hard-coded against a key, so renaming a pillar can't strand it in the wrong
+ * place; -1 when the tree opens with a section, which suppresses it entirely.
+ */
+function firstSectionIndexOf(items: NavItem[]) {
+  return items.findIndex((item) => Boolean(item.children?.length));
 }
 
 /** Shared shell for every control in the rail — 40px hit target, soft corners. */
@@ -442,6 +484,88 @@ function PanelLink({
   );
 }
 
+/**
+ * The header for a labelled sub-group inside a panel (APP_UX_PROPOSAL.md §2.3):
+ * the panel's own mono eyebrow treatment, one step quieter — 10px against the
+ * header's 11px, and no `font-medium` — so the group reads as a level below the
+ * section it sits in rather than a second section.
+ *
+ * A `<p>`, not a button: there is no chevron and no collapse. At two rows there
+ * is nothing to collapse, and a control that only ever has one state is a thing
+ * to tab past for no reason.
+ */
+function GroupEyebrow({ label }: { label: string }) {
+  return (
+    <p className="pb-1 pl-2.5 pt-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+      {label}
+    </p>
+  );
+}
+
+/**
+ * A section's rows in tree order, with each labelled sub-group's eyebrow drawn
+ * once before its first member (APP_UX_PROPOSAL.md §2.3).
+ *
+ * General on purpose, though only Communications needs it today: the renderer
+ * knows nothing about which group it is drawing, so Finance gets it for free
+ * when it comes back — a `group` on the item and a `<stem>Group` key in the
+ * dictionary, no code.
+ *
+ * The grouping is read off tree order — a row opens a group when the row above
+ * it isn't in the same one — rather than kept in a second structure that could
+ * disagree with the tree about where a row belongs.
+ *
+ * Shared by the desktop panel and the drawer's accordion: on mobile the same
+ * block renders indented *inside* the section that is already expanded, never
+ * as a second accordion nested in the first.
+ */
+function PanelRows({
+  items,
+  groupLabels,
+  isActive,
+  onNavigate,
+  marker = "glyph",
+  rowClassName,
+}: {
+  items: NavItem[];
+  /** Group label by `NavItem.group` — see `SidebarProps.groupLabels`. */
+  groupLabels: Record<string, string>;
+  isActive: (href: string) => boolean;
+  onNavigate?: () => void;
+  marker?: "glyph" | "chip";
+  /** Row overrides from the caller — the drawer's taller rows. */
+  rowClassName?: string;
+}) {
+  return (
+    <>
+      {items.map((item, index) => {
+        const group = item.group;
+        const label = group ? groupLabels[group] : undefined;
+        const opensGroup =
+          group !== undefined && group !== items[index - 1]?.group;
+        return (
+          <Fragment key={item.key}>
+            {opensGroup && label ? <GroupEyebrow label={label} /> : null}
+            <PanelLink
+              item={item}
+              active={isActive(item.href)}
+              onNavigate={onNavigate}
+              marker={marker}
+              className={cn(
+                rowClassName,
+                // Indented so a grouped row's icon column lines up under the
+                // eyebrow instead of under the ungrouped rows above it. Last
+                // in the class list, so it wins the `px-2.5` on the row shell.
+                group && "pl-7"
+              )}
+            />
+          </Fragment>
+        );
+      })}
+    </>
+  );
+}
+
 /** One icon-only rail item. Desktop rail only — the drawer uses `DrawerLink`. */
 function RailLink({ item, active }: { item: NavItem; active: boolean }) {
   const Icon = ICONS[item.key] ?? Settings;
@@ -511,6 +635,7 @@ function RailSection({
   onToggle,
   onClose,
   isActive,
+  groupLabels,
 }: {
   item: NavItem;
   /** Lit for the whole time the route is anywhere inside this section. */
@@ -521,6 +646,8 @@ function RailSection({
   onToggle: (key: string) => void;
   onClose: () => void;
   isActive: (href: string) => boolean;
+  /** Group label by `NavItem.group` — see `SidebarProps.groupLabels`. */
+  groupLabels: Record<string, string>;
 }) {
   const Icon = ICONS[item.key] ?? Settings;
   const label = visibleLabel(item);
@@ -620,16 +747,14 @@ function RailSection({
         <p className="px-3 pb-2 pt-1 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
           {item.label}
         </p>
-        {(item.children ?? []).map((child) => (
-          <PanelLink
-            key={child.key}
-            item={child}
-            active={isActive(child.href)}
-            // Following a link to the page you are already on can't change the
-            // pathname, so close here too.
-            onNavigate={onClose}
-          />
-        ))}
+        <PanelRows
+          items={item.children ?? []}
+          groupLabels={groupLabels}
+          isActive={isActive}
+          // Following a link to the page you are already on can't change the
+          // pathname, so close here too.
+          onNavigate={onClose}
+        />
       </nav>
     </div>
   );
@@ -851,6 +976,7 @@ function DrawerGroup({
   onToggle,
   isActive,
   onNavigate,
+  groupLabels,
 }: {
   item: NavItem;
   active: boolean;
@@ -858,6 +984,8 @@ function DrawerGroup({
   onToggle: () => void;
   isActive: (href: string) => boolean;
   onNavigate: () => void;
+  /** Group label by `NavItem.group` — see `SidebarProps.groupLabels`. */
+  groupLabels: Record<string, string>;
 }) {
   const Icon = ICONS[item.key] ?? Settings;
   const soon = item.comingSoon === true;
@@ -904,21 +1032,19 @@ function DrawerGroup({
           expanded ? "flex" : "hidden"
         )}
       >
-        {(item.children ?? []).map((child) => (
-          <PanelLink
-            key={child.key}
-            item={child}
-            active={isActive(child.href)}
-            onNavigate={onNavigate}
-            // The drawer has the width for words, so it keeps the mono chip
-            // where the 220px panel takes the glyph (§9.6).
-            marker="chip"
-            // Taller than the desktop panel's rows: a thumb needs the height,
-            // and this matches the rhythm of `DrawerLink` above it. The text
-            // stays a step smaller than the header, so the hierarchy holds.
-            className="py-2.5"
-          />
-        ))}
+        <PanelRows
+          items={item.children ?? []}
+          groupLabels={groupLabels}
+          isActive={isActive}
+          onNavigate={onNavigate}
+          // The drawer has the width for words, so it keeps the mono chip
+          // where the 220px panel takes the glyph (§9.6).
+          marker="chip"
+          // Taller than the desktop panel's rows: a thumb needs the height,
+          // and this matches the rhythm of `DrawerLink` above it. The text
+          // stays a step smaller than the header, so the hierarchy holds.
+          rowClassName="py-2.5"
+        />
       </div>
     </div>
   );
@@ -927,6 +1053,16 @@ function DrawerGroup({
 interface SidebarProps {
   navItems: NavItem[];
   settingsItem: NavItem;
+  /**
+   * The label for each labelled sub-group inside a panel, keyed by
+   * `NavItem.group` (APP_UX_PROPOSAL.md §2.3) — `{ communications:
+   * "Communications" }` from `sidebar.communicationsGroup`.
+   *
+   * A prop rather than a lookup in here for the same reason the icons are the
+   * other way round: the dictionary can't cross into a Client Component, and
+   * the icons can't cross out of one.
+   */
+  groupLabels: Record<string, string>;
   dashboardHref: string;
   connectionState: ConnectionState;
   connectionLabels: Record<ConnectionState, string>;
@@ -951,6 +1087,7 @@ interface SidebarProps {
 function DrawerContent({
   navItems,
   settingsItem,
+  groupLabels,
   dashboardHref,
   connectionState,
   connectionLabels,
@@ -966,6 +1103,7 @@ function DrawerContent({
   SidebarProps,
   | "navItems"
   | "settingsItem"
+  | "groupLabels"
   | "dashboardHref"
   | "connectionState"
   | "connectionLabels"
@@ -987,6 +1125,8 @@ function DrawerContent({
   const isExpanded = (item: NavItem) =>
     toggled[item.key] ?? isSectionActive(item);
 
+  const firstSectionIndex = firstSectionIndexOf(navItems);
+
   return (
     <>
       <div className="flex flex-col gap-3 px-5 py-6">
@@ -998,31 +1138,37 @@ function DrawerContent({
         aria-label={menuLabel}
         className="flex flex-1 flex-col gap-1 overflow-y-auto px-3"
       >
-        {navItems.map((item) =>
-          item.children?.length ? (
-            <DrawerGroup
-              key={item.key}
-              item={item}
-              active={isSectionActive(item)}
-              expanded={isExpanded(item)}
-              onToggle={() =>
-                setToggled((prev) => ({
-                  ...prev,
-                  [item.key]: !isExpanded(item),
-                }))
-              }
-              isActive={isActive}
-              onNavigate={onNavigate}
-            />
-          ) : (
-            <DrawerLink
-              key={item.key}
-              item={item}
-              active={isActive(item.href)}
-              onNavigate={onNavigate}
-            />
-          )
-        )}
+        {navItems.map((item, index) => (
+          <Fragment key={item.key}>
+            {/* The rail's one structural divider, kept in the drawer so both
+                widths say the same thing — see the rail's copy below. */}
+            {index === firstSectionIndex && index > 0 ? (
+              <div className="mx-3 my-2 h-px bg-[var(--fonda-border)]" />
+            ) : null}
+            {item.children?.length ? (
+              <DrawerGroup
+                item={item}
+                active={isSectionActive(item)}
+                expanded={isExpanded(item)}
+                onToggle={() =>
+                  setToggled((prev) => ({
+                    ...prev,
+                    [item.key]: !isExpanded(item),
+                  }))
+                }
+                isActive={isActive}
+                onNavigate={onNavigate}
+                groupLabels={groupLabels}
+              />
+            ) : (
+              <DrawerLink
+                item={item}
+                active={isActive(item.href)}
+                onNavigate={onNavigate}
+              />
+            )}
+          </Fragment>
+        ))}
       </nav>
 
       <div className="flex flex-col gap-1 border-t border-border px-3 py-3">
@@ -1084,6 +1230,7 @@ function DrawerContent({
 export function Sidebar({
   navItems,
   settingsItem,
+  groupLabels,
   dashboardHref,
   connectionState,
   connectionLabels,
@@ -1117,6 +1264,8 @@ export function Sidebar({
     route: string;
   } | null>(null);
   const openSection = section?.route === pathname ? section.key : null;
+
+  const firstSectionIndex = firstSectionIndexOf(navItems);
 
   /** Hover preview. A pinned panel wins — hovering elsewhere won't steal it. */
   const hoverSection = useCallback(
@@ -1181,6 +1330,21 @@ export function Sidebar({
    */
   const isSectionActive = (item: NavItem) => {
     if (isActive(item.href)) return true;
+    // A row that sits in more than one panel names its owner, and only that
+    // section lights (APP_UX_PROPOSAL.md §2.2). Reputation is the case: it is
+    // genuinely both a morning read and a monthly one, so the same row renders
+    // under Operation and under Commercial — and without this clause the two
+    // clauses below would light *both* rail icons on /dashboard/reputation.
+    //
+    // That would be a bug, not a feature. The rail's active state answers one
+    // question — where am I? — and it has exactly one answer; two lit icons
+    // makes the tell meaningless everywhere else, since a lit icon would no
+    // longer mean "you are in here". Operation wins because the daily read is
+    // the operational one. Both panels still show Reputation as their active
+    // row when opened: that is `isActive` on the row, not this.
+    if (activeChild?.canonicalSectionKey) {
+      return activeChild.canonicalSectionKey === item.key;
+    }
     if (activeChild?.sectionKey === item.key) return true;
     return (item.children ?? []).some((child) => isActive(child.href));
   };
@@ -1268,11 +1432,17 @@ export function Sidebar({
 
         {/* Deliberately NOT scrollable. `overflow-y: auto` forces `overflow-x`
             to compute to `auto` as well, which would clip the flyout labels at
-            the rail's 64px edge. The budget that makes this safe is roughly a
-            dozen 40px items in a viewport at least 768px wide; the nav list is
-            fed from lib/roadmap.ts, so if you are adding rows there and this
-            stack starts running long, the fix is a scroll container with the
-            flyout portalled out of it — not silently re-adding overflow here. */}
+            the rail's 64px edge.
+
+            This used to carry a budget of roughly a dozen 40px items, on the
+            assumption the rail grew with the product. It doesn't: the rail is
+            five icons — Home, Ask, Operation, Commercial, Settings — and
+            APP_UX_PROPOSAL.md §12 makes that a rule rather than a count. "Every
+            future feature wants to be a sixth. They go in a panel." So a new
+            surface is a row inside Operation or Commercial, and this stack has
+            no way to outgrow a 768px viewport. If the rule is ever broken
+            anyway, the fix is a scroll container with the flyout portalled out
+            of it — not silently re-adding overflow here. */}
         {/* `w-full` so a section's hover wrapper spans the rail's whole 64px:
             the pointer then crosses from the icon to the docked panel without
             ever leaving the element that opened it, and the preview doesn't
@@ -1281,29 +1451,33 @@ export function Sidebar({
           aria-label={menuLabel}
           className="mt-4 flex w-full flex-col items-center gap-1"
         >
-          {navItems.map((item) =>
-            item.children?.length ? (
-              <RailSection
-                key={item.key}
-                item={item}
-                active={isSectionActive(item)}
-                open={openSection === item.key}
-                onHover={hoverSection}
-                onLeave={unhoverSection}
-                onToggle={toggleSection}
-                onClose={closeSection}
-                isActive={isActive}
-              />
-            ) : (
-              // A direct link (Dashboard) or a childless coming-soon section
-              // (Sales & Marketing): clicking just navigates, no panel.
-              <RailLink
-                key={item.key}
-                item={item}
-                active={isActive(item.href)}
-              />
-            )
-          )}
+          {navItems.map((item, index) => (
+            <Fragment key={item.key}>
+              {/* The rail's one structural divider, and the only new chrome the
+                  two-pillar rail adds (§2.1). One element, no label: it is a
+                  change of register, not a heading. */}
+              {index === firstSectionIndex && index > 0 ? (
+                <div className="mx-3 my-2 h-px bg-[var(--fonda-border)]" />
+              ) : null}
+              {item.children?.length ? (
+                <RailSection
+                  item={item}
+                  active={isSectionActive(item)}
+                  open={openSection === item.key}
+                  onHover={hoverSection}
+                  onLeave={unhoverSection}
+                  onToggle={toggleSection}
+                  onClose={closeSection}
+                  isActive={isActive}
+                  groupLabels={groupLabels}
+                />
+              ) : (
+                // A direct link — Home and Ask, the two places you are always
+                // in. Clicking just navigates, no panel.
+                <RailLink item={item} active={isActive(item.href)} />
+              )}
+            </Fragment>
+          ))}
         </nav>
 
         <div className="mt-auto flex flex-col items-center gap-1 pt-4">
@@ -1367,6 +1541,7 @@ export function Sidebar({
         <DrawerContent
           navItems={navItems}
           settingsItem={settingsItem}
+          groupLabels={groupLabels}
           dashboardHref={dashboardHref}
           connectionState={connectionState}
           connectionLabels={connectionLabels}

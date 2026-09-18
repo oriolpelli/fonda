@@ -184,6 +184,20 @@ export default async function DashboardLayout({
     },
   ];
 
+  // The eyebrow for each labelled sub-group inside a panel
+  // (APP_UX_PROPOSAL.md §2.3), read off the tree rather than hand-listed: a
+  // `group` value names its own dictionary key, so `group: "communications"`
+  // is `sidebar.communicationsGroup` and a future Finance group needs a key,
+  // not a change here. Labels have to travel as a prop — `dict` is server-only
+  // and the sidebar is a Client Component.
+  const sidebarDict = dict.sidebar as unknown as Record<string, string>;
+  const groupLabels: Record<string, string> = Object.fromEntries(
+    navItems
+      .flatMap((item) => item.children ?? [])
+      .flatMap((child) => (child.group ? [child.group] : []))
+      .map((group) => [group, sidebarDict[`${group}Group`] ?? group])
+  );
+
   const settingsItem: NavItem = {
     key: "settings",
     label: dict.dashboardNav.settings,
@@ -195,6 +209,7 @@ export default async function DashboardLayout({
       <Sidebar
         navItems={navItems}
         settingsItem={settingsItem}
+        groupLabels={groupLabels}
         dashboardHref={localizedHref(locale, "/dashboard")}
         connectionState={connectionState}
         connectionLabels={{
