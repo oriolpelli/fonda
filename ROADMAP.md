@@ -79,20 +79,32 @@ buy yourself a conflict at the worst moment.
    Protection. The deployment URL stays as the fallback for CLI deploys, which
    have no branch.
 
-   ⚠️ **Still to confirm:** "Enable access to System Environment Variables"
-   (Vercel → Project Settings; formerly "Automatically expose System
-   Environment Variables") must be on, or both `NEXT_PUBLIC_VERCEL_*` values are
-   undefined and the production fallback holds silently. Don't hunt the
-   checkbox — verify the chain: on a preview deployment,
-   `curl https://<preview-host>/robots.txt` and read `Sitemap:` / `Host:`.
-   Preview hostname = working. `fondas.app` = the setting is off.
+   ✅ **Confirmed on the preview of `4f4cda4`** (18 Sep). `/robots.txt` on that
+   preview reports:
 
-   **Severity: testing fidelity, not SEO.** Vercel marks preview deployments
-   `noindex`, so nothing gets wrongly indexed. What breaks is your ability to
-   *verify* anything from a preview — `robots.ts` advertises the production
-   sitemap and `host`, canonicals and hreflang claim production, and the
-   JSON-LD `@id`s do too. The OG unfurl spot-check in §3.4 is meaningless from a
-   preview until this is confirmed.
+   ```
+   Host: https://fonda-git-site-v3-redesign-fonda.vercel.app
+   Sitemap: https://fonda-git-site-v3-redesign-fonda.vercel.app/sitemap.xml
+   ```
+
+   That settles both open questions at once. "Enable access to System
+   Environment Variables" is on — otherwise `NEXT_PUBLIC_VERCEL_BRANCH_URL`
+   would be undefined and these two lines would read `fondas.app`. And the
+   branch URL is being preferred over the per-deployment URL, as intended.
+   Previews now describe themselves.
+
+   **Previews are behind Deployment Protection.** An anonymous request to a
+   preview URL 302s to `vercel.com/login`, so anything that must *fetch* a
+   preview — an OG unfurl debugger, a crawler test, a third party — needs a
+   signed-in session or a protection-bypass token. In a browser where you are
+   logged in, it just works; from `curl` it does not. Worth knowing before
+   §3.4.
+
+   **Severity was testing fidelity, not SEO.** Vercel marks preview deployments
+   `noindex`, so nothing was ever wrongly indexed. What was broken was the
+   ability to *verify* anything from a preview — `robots.ts` advertised the
+   production sitemap and `host`, canonicals and hreflang claimed production,
+   and the JSON-LD `@id`s did too. That is fixed.
 4. **Merge `site/v3-redesign` → `main`.** Currently 17 commits ahead. Verify
    production in all three locales.
 
