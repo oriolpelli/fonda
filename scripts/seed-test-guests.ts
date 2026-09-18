@@ -1,8 +1,10 @@
 /**
- * Seed two clearly-labelled test guests for exercising the email inbox.
+ * Seed three clearly-labelled test guests for exercising the email inbox and
+ * Home's arrivals / departures widgets.
  *
- *   npx tsx scripts/seed-test-guests.ts            # create / refresh
- *   npx tsx scripts/seed-test-guests.ts --remove   # delete them again
+ *   npx tsx scripts/seed-test-guests.ts                 # create / refresh
+ *   npx tsx scripts/seed-test-guests.ts --remove        # delete them again
+ *   npx tsx scripts/seed-test-guests.ts --hotel=<uuid>  # pick one of several
  *
  * Why this exists: to see the inbox do its job you need mail from an address
  * that matches a real booking. The synced MEWS data belongs to real guests
@@ -32,7 +34,7 @@ try {
 }
 
 const PREFIX = "FONDA-TEST-";
-/** Nights between check-in and check-out for both stays. */
+/** Nights between check-in and check-out, unless a guest overrides it. */
 const STAY_NIGHTS = 4;
 /** How far out the "future" booking sits. */
 const FUTURE_ARRIVAL_DAYS = 28;
@@ -94,10 +96,20 @@ interface TestGuest {
   firstName: string;
   lastName: string;
   bookingNumber: string;
-  /** Days from today until check-in. 0 = arriving today. */
+  /** Days from today until check-in. 0 = arriving today, negative = already in. */
   arrivalOffsetDays: number;
+  /** Nights of stay. Defaults to STAY_NIGHTS. */
+  nights?: number;
   /** MEWS reservation state; 'Started' is in-house, 'Confirmed' is upcoming. */
   state: string;
+  /**
+   * Extra fields merged into `reservations.raw`, in the shape the sheet
+   * importer writes them (lib/sheet-parse.ts). This is where Home's arrivals
+   * and departures widgets read the room type, the room and the ETA from
+   * (lib/pms-fields.ts) — MEWS sends ids for those, so a seeded booking is the
+   * only local way to see the labelled version of those rows.
+   */
+  extras?: Record<string, string>;
   expect: string;
 }
 
@@ -110,7 +122,8 @@ const GUESTS: TestGuest[] = [
     bookingNumber: "TEST-INHOUSE",
     arrivalOffsetDays: 0,
     state: "Started",
-    expect: 'in-house · urgency note "Arrives today"',
+    extras: { RoomType: "Double Deluxe", Room: "201", Eta: "16:30" },
+    expect: 'in-house · urgency note "Arrives today" · Home: arrivals today, 16:30',
   },
   {
     key: "FUTURE",
@@ -120,7 +133,25 @@ const GUESTS: TestGuest[] = [
     bookingNumber: "TEST-FUTURE",
     arrivalOffsetDays: FUTURE_ARRIVAL_DAYS,
     state: "Confirmed",
-    expect: "pre-arrival · no urgency note (too far out)",
+    extras: { RoomType: "Single" },
+    expect: "pre-arrival · no urgency note (too far out) · Home: neither list",
+  },
+  {
+    // Checks out *today*, which no other fixture does — the case Home's
+    // departures widget exists for, and the one most likely to be got wrong,
+    // since occupancy deliberately does NOT count the check-out night
+    // (lib/occupancy.ts). Its address is a placeholder: this guest is here for
+    // the arrivals/departures lists, not for mail.
+    key: "DEPARTING",
+    email: "fonda-test-departing@example.com",
+    firstName: "TEST",
+    lastName: "Departing Guest",
+    bookingNumber: "TEST-DEPARTING",
+    arrivalOffsetDays: -3,
+    nights: 3,
+    state: "Started",
+    extras: { RoomType: "Twin", Room: "108" },
+    expect: "in-house until this morning · Home: departures today, 11:00",
   },
 ];
 
@@ -152,14 +183,30 @@ async function main(): Promise<number> {
     );
     return 1;
   }
-  if (hotels.length > 1) {
+
+  // A dev database with several hotels has to be told which one, or the
+  // fixtures land in someone else's data. `--hotel=<uuid>` is that answer; with
+  // one hotel it isn't needed.
+  const requested = process.argv
+    .find((a) => a.startsWith("--hotel="))
+    ?.slice("--hotel=".length);
+  const chosen = requested
+    ? hotels.find((h) => h.id === requested)
+    : hotels.length === 1
+      ? hotels[0]
+      : undefined;
+
+  if (!chosen) {
     console.error(
-      `Expected one hotel, found ${hotels.length}. Narrow this script before running it.`
+      requested
+        ? `No hotel with id ${requested}.`
+        : `Found ${hotels.length} hotels — pass --hotel=<uuid> to choose one:`
     );
+    for (const h of hotels) console.error(`  ${h.id}  ${h.name}`);
     return 1;
   }
 
-  const hotel = hotels[0];
+  const hotel = chosen;
   const tz = hotel.timezone || "UTC";
   const remove = process.argv.includes("--remove");
 
@@ -192,7 +239,7 @@ async function main(): Promise<number> {
 
   for (const g of GUESTS) {
     const arrival = addDays(today, g.arrivalOffsetDays);
-    const departure = addDays(arrival, STAY_NIGHTS);
+    const departure = addDays(arrival, g.nights ?? STAY_NIGHTS);
 
     const { error: custError } = await db.from("customers").upsert(
       {
@@ -224,7 +271,7 @@ async function main(): Promise<number> {
         end_utc: zonedTimeUtc(tz, departure, "11:00"),
         adult_count: 2,
         child_count: 0,
-        raw: marker,
+        raw: { ...marker, ...(g.extras ?? {}) },
         synced_at: new Date().toISOString(),
       },
       { onConflict: "hotel_id,mews_id" }
@@ -275,10 +322,18 @@ async function main(): Promise<number> {
     const arrival = localDate(tz, new Date(reservation.start_utc!));
     const departure = localDate(tz, new Date(reservation.end_utc!));
     const inHouse = arrival <= today && today <= departure;
+    // What Home's two movement widgets will list, by the same hotel-local
+    // date rule they use (lib/arrivals.ts).
+    const movement = [
+      arrival === today ? "ARRIVES-TODAY" : null,
+      departure === today ? "DEPARTS-TODAY" : null,
+    ]
+      .filter(Boolean)
+      .join(" ");
     console.log(
       `  PASS  ${g.email} → ${guest.first_name} ${guest.last_name} · ` +
         `booking ${reservation.number} · ${arrival}→${departure} · ` +
-        `${inHouse ? "IN-HOUSE" : "PRE-ARRIVAL"}`
+        `${inHouse ? "IN-HOUSE" : "PRE-ARRIVAL"}${movement ? ` · ${movement}` : ""}`
     );
   }
 

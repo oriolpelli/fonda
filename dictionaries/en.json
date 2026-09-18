@@ -417,7 +417,42 @@
   },
   "home": {
     "goodMorning": "Good morning, {name}",
-    "readBrief": "Read today's brief →",
+    "widgets": {
+      "needs-you": {
+        "title": "Needs you today"
+      },
+      "brief": {
+        "title": "Morning brief"
+      },
+      "numbers": {
+        "title": "Today's numbers"
+      },
+      "outlook": {
+        "title": "The next 14 nights"
+      },
+      "needs-reply": {
+        "title": "Needs a reply"
+      },
+      "arrivals-today": {
+        "title": "Arrivals today"
+      },
+      "departures-today": {
+        "title": "Departures today"
+      },
+      "vip-no-note": {
+        "title": "VIP arrivals without a note"
+      },
+      "inbox-pulse": {
+        "title": "Inbox pulse"
+      },
+      "sync-health": {
+        "title": "Sync health"
+      }
+    },
+    "needsYouCount": "{count} things",
+    "syncedAt": "synced {time}",
+    "generatedAt": "generated {time}",
+    "updatedAt": "updated {time}",
     "briefEmpty": "Today's brief isn't ready yet — open it to see what's holding it up.",
     "briefArrivalsOne": "{count} arriving today",
     "briefArrivalsOther": "{count} arriving today",
@@ -427,14 +462,41 @@
     "freeRooms": "Rooms free",
     "checkinsToday": "Checking in",
     "checkoutsToday": "Checking out",
-    "outlookTitle": "The next 14 nights",
     "outlookRates": "Average rate",
     "ratesComingSoon": "Rates coming soon",
     "firstSyncNote": "Your first sync hasn't finished yet — today's numbers will fill in as soon as it does.",
-    "needsReply": "Needs a reply",
     "needsReplyAll": "Open Communications →",
     "needsReplyEmpty": "Nothing waiting on you — every guest message has been handled.",
-    "todoTitle": "Do this first",
+    "movements": {
+      "guest": "Guest",
+      "more": "+{count} more →"
+    },
+    "arrivals": {
+      "noEta": "no ETA",
+      "returning": "returning",
+      "empty": "Nobody is checking in today."
+    },
+    "departures": {
+      "room": "Room {room}",
+      "empty": "Nobody is checking out today."
+    },
+    "vipNoNoteEmpty": "No VIP is arriving today without a note on the booking.",
+    "inboxPulse": {
+      "drafts": "Drafts ready",
+      "sent": "Sent today",
+      "response": "Avg. first reply",
+      "hours": "{value}h",
+      "minutes": "{value}m",
+      "none": "—"
+    },
+    "syncHealth": {
+      "email": "Gmail",
+      "stale": "last synced {time}",
+      "never": "never synced",
+      "failed": "Failed {time}",
+      "settings": "Check connections →",
+      "empty": "Nothing is connected yet."
+    },
     "todoEmpty": "Nothing needs your attention right now.",
     "todo": {
       "complaint": "Reply to {guest} — they've made a complaint.",

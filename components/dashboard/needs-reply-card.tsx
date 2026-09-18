@@ -4,7 +4,7 @@ import type { Dictionary } from "@/app/[lang]/dictionaries";
 import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { t } from "@/lib/i18n/format";
 import type { Locale } from "@/lib/i18n/config";
-import { localizedHref } from "@/lib/i18n/navigation";
+import { communicationsHref } from "@/lib/i18n/navigation";
 import type { InboxEmail } from "@/lib/inbox";
 import { urgencyNoteFor } from "@/lib/urgency-note";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,14 @@ import { cn } from "@/lib/utils";
  * this card says exactly the same thing when you open it.
  *
  * A server component — every row is a link, nothing here is interactive.
+ *
+ * No heading and no empty branch of its own: on Home both belong to
+ * `needs-reply-widget.tsx`, which owns the widget slot (APP_UX_PROPOSAL.md
+ * §3.2). The "Open Communications" link stays here — it is an action on the
+ * card, not part of the widget heading, which carries the title and the
+ * freshness line and nothing else. It sits under the rows now: above them, with
+ * no title to sit beside, it read as a toolbar; below them it reads as what it
+ * is — "and the rest are over here".
  */
 
 // Quiet by default. A complaint stays the one red note — that is a semantic
@@ -39,71 +47,58 @@ export function NeedsReplyCard({
   locale: Locale;
   emails: InboxEmail[];
 }) {
-  // `${inboxHref}?email=<id>` below is a real deep link. W6 scopes
-  // Communications into Upcoming and In-house (APP_UX_PROPOSAL.md §5.3) — this
-  // href becomes the scoped route then, query string intact.
-  const inboxHref = localizedHref(locale, "/dashboard/communications");
+  // The `?email=` deep link and the plain inbox link are the same helper, so
+  // W6's scoped Communications route moves both at once
+  // (lib/i18n/navigation.ts).
+  const inboxHref = communicationsHref(locale);
 
   return (
-    <section className="flex flex-col rounded-[18px] bg-card shadow-card">
-      <div className="flex items-center justify-between gap-3 px-6 pt-6">
-        <h2 className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-          {dict.home.needsReply}
-        </h2>
-        {emails.length > 0 ? (
-          <Link
-            href={inboxHref}
-            className="text-[13px] text-[var(--fonda-text-2)] transition-colors hover:text-foreground"
-          >
-            {dict.home.needsReplyAll}
-          </Link>
-        ) : null}
-      </div>
-
-      {emails.length === 0 ? (
-        <p className="px-6 pb-6 pt-4 text-sm text-muted-foreground">
-          {dict.home.needsReplyEmpty}
-        </p>
-      ) : (
-        <ul className="mt-4 flex flex-col divide-y divide-border border-t border-border">
-          {emails.map((email) => {
-            const note = urgencyNoteFor(email.urgency);
-            const sender =
-              email.guest_name || email.from_email || dict.emails.unknownSender;
-            return (
-              <li key={email.id}>
-                <Link
-                  href={`${inboxHref}?email=${email.id}`}
-                  className="flex items-start justify-between gap-4 px-6 py-4 transition-colors hover:bg-muted"
-                >
-                  <span className="flex min-w-0 items-start gap-3">
-                    <GuestAvatar name={sender} className="mt-0.5" />
-                    <span className="flex min-w-0 flex-col gap-0.5">
-                      <span className="truncate text-sm font-medium text-foreground">
-                        {sender}
-                      </span>
-                      <span className="truncate text-sm text-muted-foreground">
-                        {email.subject || dict.emails.noSubject}
-                      </span>
+    <div className="flex flex-col overflow-hidden rounded-[18px] bg-card shadow-card">
+      <ul className="flex flex-col divide-y divide-border">
+        {emails.map((email) => {
+          const note = urgencyNoteFor(email.urgency);
+          const sender =
+            email.guest_name || email.from_email || dict.emails.unknownSender;
+          return (
+            <li key={email.id}>
+              <Link
+                href={communicationsHref(locale, email.id)}
+                className="flex items-start justify-between gap-4 px-6 py-4 transition-colors hover:bg-muted"
+              >
+                <span className="flex min-w-0 items-start gap-3">
+                  <GuestAvatar name={sender} className="mt-0.5" />
+                  <span className="flex min-w-0 flex-col gap-0.5">
+                    <span className="truncate text-sm font-medium text-foreground">
+                      {sender}
+                    </span>
+                    <span className="truncate text-sm text-muted-foreground">
+                      {email.subject || dict.emails.noSubject}
                     </span>
                   </span>
-                  {note ? (
-                    <span
-                      className={cn(
-                        "shrink-0 font-mono text-[11px] font-medium",
-                        NOTE_CLASS[email.urgency.kind] ??
-                          "text-[var(--fonda-text-3)]"
-                      )}
-                    >
-                      {t(dict.emails.urgency[note.key], note.vars)}
-                    </span>
-                  ) : null}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
+                </span>
+                {note ? (
+                  <span
+                    className={cn(
+                      "shrink-0 font-mono text-[11px] font-medium",
+                      NOTE_CLASS[email.urgency.kind] ??
+                        "text-[var(--fonda-text-3)]"
+                    )}
+                  >
+                    {t(dict.emails.urgency[note.key], note.vars)}
+                  </span>
+                ) : null}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+
+      <Link
+        href={inboxHref}
+        className="border-t border-border px-6 py-3.5 text-[13px] text-[var(--fonda-text-2)] transition-colors hover:bg-muted hover:text-foreground"
+      >
+        {dict.home.needsReplyAll}
+      </Link>
+    </div>
   );
 }

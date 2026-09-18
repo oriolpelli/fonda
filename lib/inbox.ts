@@ -8,6 +8,7 @@ import {
   localDateOf,
   stayPhaseFor,
 } from "@/lib/stay-phase";
+import { fetchInChunks } from "@/lib/supabase/paged";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
@@ -397,4 +398,45 @@ export async function loadInboxBadge(): Promise<InboxBadge> {
   } catch {
     return zero;
   }
+}
+
+/**
+ * The newest email linked to each of these reservations, as
+ * `reservationId -> emailId`.
+ *
+ * Home's VIP widget uses it to send the GM to the conversation instead of a
+ * list, when there is a conversation to send them to. Only the stored link
+ * counts (`emails.reservation_mews_id`, written by lib/email-processor.ts) —
+ * resolving by address the way `withGuestContext` does would be guessing at
+ * which booking a message belongs to, and this link is a navigation target, not
+ * context.
+ *
+ * Reservations with no mail are simply absent from the map; the caller falls
+ * back to its own destination.
+ */
+export async function loadReservationThreads(
+  reservationIds: string[]
+): Promise<Map<string, string>> {
+  const found = new Map<string, string>();
+  if (reservationIds.length === 0) return found;
+
+  const supabase = await createClient();
+  const rows = await fetchInChunks<{
+    id: string;
+    reservation_mews_id: string | null;
+  }>(reservationIds, (chunk) =>
+    supabase
+      .from("emails")
+      .select("id, reservation_mews_id")
+      .in("reservation_mews_id", chunk)
+      .order("created_at", { ascending: false })
+  );
+
+  // Newest first, so the first row seen for a reservation is the one to open.
+  for (const row of rows) {
+    if (row.reservation_mews_id && !found.has(row.reservation_mews_id)) {
+      found.set(row.reservation_mews_id, row.id);
+    }
+  }
+  return found;
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Dictionary } from "@/app/[lang]/dictionaries";
 import { intlLocale, type Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/format";
-import { localizedHref } from "@/lib/i18n/navigation";
+import { checkinsHref, communicationsHref } from "@/lib/i18n/navigation";
 import type { TodoItem, TodoTarget } from "@/lib/todo-rules";
 import { cn } from "@/lib/utils";
 
@@ -18,21 +18,19 @@ import { cn } from "@/lib/utils";
  * One navy marker only — the top item. Every other marker is muted. The design
  * identity allows 2–3 uses of the signal colour per screen and tonight's column
  * in the occupancy strip already claims one.
+ *
+ * No heading and no empty branch of its own: on Home both belong to
+ * `needs-you-widget.tsx`, which owns the widget slot this list sits in
+ * (APP_UX_PROPOSAL.md §3.2). Hand it a non-empty `items` — an empty array
+ * renders an empty card.
  */
 
 function href(locale: Locale, target: TodoTarget): string {
   switch (target.page) {
     case "communications":
-      // W6 splits Communications into Upcoming and In-house
-      // (APP_UX_PROPOSAL.md §5.3). This link stays unscoped until then; when
-      // the split lands it should point at the scoped route directly, with the
-      // `?email=` query preserved.
-      return (
-        localizedHref(locale, "/dashboard/communications") +
-        (target.emailId ? `?email=${target.emailId}` : "")
-      );
+      return communicationsHref(locale, target.emailId);
     case "checkins":
-      return localizedHref(locale, "/dashboard/checkins");
+      return checkinsHref(locale);
     case "occupancy":
       // The 14-day strip is on this page — scroll to it rather than navigate.
       return "#occupancy";
@@ -86,43 +84,35 @@ export function TodoList({
   items: TodoItem[];
 }) {
   return (
-    <section className="flex flex-col rounded-[18px] bg-card shadow-card">
-      <h2 className="px-6 pt-6 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-        {dict.home.todoTitle}
-      </h2>
-
-      {items.length === 0 ? (
-        <p className="px-6 pb-6 pt-4 text-sm text-muted-foreground">
-          {dict.home.todoEmpty}
-        </p>
-      ) : (
-        <ul className="mt-4 flex flex-col divide-y divide-border border-t border-border">
-          {items.map((item) => (
-            <li key={item.id}>
-              <Link
-                href={href(locale, item.target)}
-                className="flex items-start gap-3 px-6 py-4 transition-colors hover:bg-muted"
-              >
-                <span
-                  aria-hidden
-                  className={cn(
-                    "mt-[7px] size-[7px] shrink-0 rounded-[2px]",
-                    // Ink, not navy (§10): chrome is colourless in v3, and the
-                    // page's one accent belongs to the occupancy strip. The
-                    // primary item still leads by darkness.
-                    item.primary
-                      ? "bg-[var(--fonda-text)]"
-                      : "bg-[var(--fonda-text-3)]"
-                  )}
-                />
-                <span className="text-sm leading-relaxed text-foreground">
-                  {sentence(dict, locale, item)}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+    // overflow-hidden so a row's hover fill is clipped by the card's 18px
+    // corners — the rows used to start below a heading, never at the radius.
+    <div className="flex flex-col overflow-hidden rounded-[18px] bg-card shadow-card">
+      <ul className="flex flex-col divide-y divide-border">
+        {items.map((item) => (
+          <li key={item.id}>
+            <Link
+              href={href(locale, item.target)}
+              className="flex items-start gap-3 px-6 py-4 transition-colors hover:bg-muted"
+            >
+              <span
+                aria-hidden
+                className={cn(
+                  "mt-[7px] size-[7px] shrink-0 rounded-[2px]",
+                  // Ink, not navy (§10): chrome is colourless in v3, and the
+                  // page's one accent belongs to the occupancy strip. The
+                  // primary item still leads by darkness.
+                  item.primary
+                    ? "bg-[var(--fonda-text)]"
+                    : "bg-[var(--fonda-text-3)]"
+                )}
+              />
+              <span className="text-sm leading-relaxed text-foreground">
+                {sentence(dict, locale, item)}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

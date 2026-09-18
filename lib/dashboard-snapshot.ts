@@ -61,6 +61,12 @@ export interface DashboardSnapshot {
   connected: boolean;
   /** A sync has completed at least once. */
   hasSyncedData: boolean;
+  /**
+   * When the last PMS sync finished, ISO-8601 UTC. Null before the first one.
+   * Home's PMS-backed widgets print it as their freshness line
+   * (APP_UX_PROPOSAL.md §7.4 — a line, not a chip).
+   */
+  lastSyncedAt: string | null;
 
   occupancyPct: number;
   freeRooms: number;
@@ -113,6 +119,7 @@ function emptySnapshot(
     today,
     connected: false,
     hasSyncedData: false,
+    lastSyncedAt: null,
     occupancyPct: 0,
     freeRooms: 0,
     checkinsToday: 0,
@@ -151,6 +158,7 @@ export async function loadDashboardSnapshot(): Promise<DashboardSnapshot> {
     today,
     connected: hotel.pms_connected ?? false,
     hasSyncedData: Boolean(hotel.last_synced_at),
+    lastSyncedAt: hotel.last_synced_at ?? null,
   };
 
   if (!base.connected) return emptySnapshot(base);

@@ -417,7 +417,42 @@
   },
   "home": {
     "goodMorning": "Buenos días, {name}",
-    "readBrief": "Leer el resumen de hoy →",
+    "widgets": {
+      "needs-you": {
+        "title": "Hoy te necesita"
+      },
+      "brief": {
+        "title": "Resumen de la mañana"
+      },
+      "numbers": {
+        "title": "Los números de hoy"
+      },
+      "outlook": {
+        "title": "Las próximas 14 noches"
+      },
+      "needs-reply": {
+        "title": "Pendiente de respuesta"
+      },
+      "arrivals-today": {
+        "title": "Entradas de hoy"
+      },
+      "departures-today": {
+        "title": "Salidas de hoy"
+      },
+      "vip-no-note": {
+        "title": "Llegadas VIP sin nota"
+      },
+      "inbox-pulse": {
+        "title": "Pulso de la bandeja"
+      },
+      "sync-health": {
+        "title": "Estado de la sincronización"
+      }
+    },
+    "needsYouCount": "{count} cosas",
+    "syncedAt": "sincronizado {time}",
+    "generatedAt": "generado {time}",
+    "updatedAt": "actualizado {time}",
     "briefEmpty": "El resumen de hoy aún no está listo: ábrelo para ver qué falta.",
     "briefArrivalsOne": "{count} llegada hoy",
     "briefArrivalsOther": "{count} llegadas hoy",
@@ -427,14 +462,41 @@
     "freeRooms": "Habitaciones libres",
     "checkinsToday": "Entradas",
     "checkoutsToday": "Salidas",
-    "outlookTitle": "Las próximas 14 noches",
     "outlookRates": "Tarifa media",
     "ratesComingSoon": "Tarifas próximamente",
     "firstSyncNote": "Tu primera sincronización aún no ha terminado — los datos de hoy aparecerán en cuanto lo haga.",
-    "needsReply": "Pendiente de respuesta",
     "needsReplyAll": "Abrir Comunicaciones →",
     "needsReplyEmpty": "No hay nada pendiente — todos los mensajes de huéspedes están atendidos.",
-    "todoTitle": "Empieza por esto",
+    "movements": {
+      "guest": "Huésped",
+      "more": "+{count} más →"
+    },
+    "arrivals": {
+      "noEta": "sin hora",
+      "returning": "repite",
+      "empty": "Hoy no llega nadie."
+    },
+    "departures": {
+      "room": "Habitación {room}",
+      "empty": "Hoy no sale nadie."
+    },
+    "vipNoNoteEmpty": "Hoy no llega ningún VIP sin nota en la reserva.",
+    "inboxPulse": {
+      "drafts": "Borradores listos",
+      "sent": "Enviados hoy",
+      "response": "Respuesta media",
+      "hours": "{value} h",
+      "minutes": "{value} min",
+      "none": "—"
+    },
+    "syncHealth": {
+      "email": "Gmail",
+      "stale": "última sinc. {time}",
+      "never": "sin sincronizar",
+      "failed": "Fallo {time}",
+      "settings": "Ver conexiones →",
+      "empty": "Todavía no hay nada conectado."
+    },
     "todoEmpty": "Ahora mismo no hay nada que requiera tu atención.",
     "todo": {
       "complaint": "Responde a {guest} — ha presentado una queja.",

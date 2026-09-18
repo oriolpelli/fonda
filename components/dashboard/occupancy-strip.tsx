@@ -24,7 +24,9 @@ import { cn } from "@/lib/utils";
  * fastest way to lose a GM's trust — they know their own numbers. So the row
  * exists, sized and positioned where the real figures will go, and says so.
  *
- * Carries `id="occupancy"` so the low-occupancy to-do item can point back here.
+ * No heading of its own: on Home that belongs to `outlook-widget.tsx`, which
+ * also carries the `id="occupancy"` the low-occupancy to-do jumps to — the
+ * anchor moved up with the label so the jump lands on the title, not under it.
  */
 
 const BAR_HEIGHT_PX = 88;
@@ -53,23 +55,14 @@ export function OccupancyStrip({
   });
 
   return (
-    <section
-      id="occupancy"
-      // scroll-mt-20 on mobile so the to-do list's "#occupancy" jump doesn't
-      // park this section underneath the fixed 56px top bar.
-      // v3 (§6): white card floating on the grey ground — borderless, 18px, the
-      // resting whisper shadow doing the separating, same as the stat row above.
-      className="scroll-mt-20 rounded-[18px] bg-card p-6 shadow-card md:scroll-mt-8"
-    >
-      <h2 className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-        {dict.home.outlookTitle}
-      </h2>
-
+    // v3 (§6): white card floating on the grey ground — borderless, 18px, the
+    // resting whisper shadow doing the separating, same as the stat row above.
+    <div className="rounded-[18px] bg-card p-6 shadow-card">
       {/* Fourteen 42px columns don't fit a 375px phone, so the strip scrolls
           sideways and snaps night-to-night. The negative margin lets it run to
           the card's edges — so a half-cut column reads as "there's more" — while
           the matching padding and scroll-padding keep the ends inset. */}
-      <div className="-mx-6 mt-5 flex snap-x snap-mandatory gap-1.5 overflow-x-auto scroll-px-6 px-6 pb-1">
+      <div className="-mx-6 flex snap-x snap-mandatory gap-1.5 overflow-x-auto scroll-px-6 px-6 pb-1">
         {outlook.map((day) => {
           const date = new Date(`${day.date}T00:00:00Z`);
           const isToday = day.date === today;
@@ -150,6 +143,6 @@ export function OccupancyStrip({
           {dict.home.ratesComingSoon}
         </span>
       </div>
-    </section>
+    </div>
   );
 }

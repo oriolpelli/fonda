@@ -22,6 +22,11 @@ import { localizedHref } from "@/lib/i18n/navigation";
  *
  * Colourless by design: v3 keeps the accent for data viz (§10), and a teaser
  * is not a chart. It leads with the white-on-grey float and the type.
+ *
+ * No heading: on Home that belongs to `brief-widget.tsx`, which owns the widget
+ * slot (APP_UX_PROPOSAL.md §3.2). The arrow stays — it is the card's "this is a
+ * door" affordance, not a label — but it now rides alongside the summary rather
+ * than on a row of its own, which without a title beside it was just a gap.
  */
 export function BriefSummaryCard({
   dict,
@@ -58,29 +63,23 @@ export function BriefSummaryCard({
       href={localizedHref(locale, "/dashboard/brief")}
       className="group flex flex-col gap-3 rounded-[18px] bg-card p-6 shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
     >
-      <div className="flex items-center justify-between gap-3">
-        {/* The nav's own label for the destination, not a second copy of it:
-            one string means the card and the rail can never drift apart. */}
-        <h2 className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-          {dict.sidebar.brief}
-        </h2>
+      <div className="flex items-start justify-between gap-4">
+        {summary ? (
+          // Clamped, never truncated in JS: splitting prose on "." breaks on
+          // abbreviations and doesn't survive translation. CSS clips it cleanly
+          // and the full text is one click away.
+          <p className="line-clamp-2 text-[15px] leading-6 text-foreground">
+            {summary}
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground">{dict.home.briefEmpty}</p>
+        )}
         <ArrowRight
           aria-hidden="true"
           strokeWidth={1.5}
-          className="size-4 shrink-0 text-[var(--fonda-text-3)] transition-colors group-hover:text-foreground"
+          className="mt-1 size-4 shrink-0 text-[var(--fonda-text-3)] transition-colors group-hover:text-foreground"
         />
       </div>
-
-      {summary ? (
-        // Clamped, never truncated in JS: splitting prose on "." breaks on
-        // abbreviations and doesn't survive translation. CSS clips it cleanly
-        // and the full text is one click away.
-        <p className="line-clamp-2 text-[15px] leading-6 text-foreground">
-          {summary}
-        </p>
-      ) : (
-        <p className="text-sm text-muted-foreground">{dict.home.briefEmpty}</p>
-      )}
 
       <p className="font-mono text-[11px] tabular-nums text-[var(--fonda-text-3)]">
         {facts.join(" · ")}

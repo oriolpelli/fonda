@@ -417,7 +417,42 @@
   },
   "home": {
     "goodMorning": "Bon dia, {name}",
-    "readBrief": "Llegir el resum d'avui →",
+    "widgets": {
+      "needs-you": {
+        "title": "Avui et necessita"
+      },
+      "brief": {
+        "title": "Resum del matí"
+      },
+      "numbers": {
+        "title": "Els números d'avui"
+      },
+      "outlook": {
+        "title": "Les properes 14 nits"
+      },
+      "needs-reply": {
+        "title": "Pendent de resposta"
+      },
+      "arrivals-today": {
+        "title": "Entrades d'avui"
+      },
+      "departures-today": {
+        "title": "Sortides d'avui"
+      },
+      "vip-no-note": {
+        "title": "Arribades VIP sense nota"
+      },
+      "inbox-pulse": {
+        "title": "Pols de la safata"
+      },
+      "sync-health": {
+        "title": "Estat de la sincronització"
+      }
+    },
+    "needsYouCount": "{count} coses",
+    "syncedAt": "sincronitzat {time}",
+    "generatedAt": "generat {time}",
+    "updatedAt": "actualitzat {time}",
     "briefEmpty": "El resum d'avui encara no està a punt: obre'l per veure què falta.",
     "briefArrivalsOne": "{count} arribada avui",
     "briefArrivalsOther": "{count} arribades avui",
@@ -427,14 +462,41 @@
     "freeRooms": "Habitacions lliures",
     "checkinsToday": "Entrades",
     "checkoutsToday": "Sortides",
-    "outlookTitle": "Les properes 14 nits",
     "outlookRates": "Tarifa mitjana",
     "ratesComingSoon": "Tarifes properament",
     "firstSyncNote": "La primera sincronització encara no ha acabat — les dades d'avui apareixeran quan ho faci.",
-    "needsReply": "Pendent de resposta",
     "needsReplyAll": "Obrir Comunicacions →",
     "needsReplyEmpty": "No hi ha res pendent — tots els missatges d'hostes estan atesos.",
-    "todoTitle": "Comença per això",
+    "movements": {
+      "guest": "Hoste",
+      "more": "+{count} més →"
+    },
+    "arrivals": {
+      "noEta": "sense hora",
+      "returning": "repeteix",
+      "empty": "Avui no arriba ningú."
+    },
+    "departures": {
+      "room": "Habitació {room}",
+      "empty": "Avui no marxa ningú."
+    },
+    "vipNoNoteEmpty": "Avui no arriba cap VIP sense nota a la reserva.",
+    "inboxPulse": {
+      "drafts": "Esborranys a punt",
+      "sent": "Enviats avui",
+      "response": "Resposta mitjana",
+      "hours": "{value} h",
+      "minutes": "{value} min",
+      "none": "—"
+    },
+    "syncHealth": {
+      "email": "Gmail",
+      "stale": "última sinc. {time}",
+      "never": "sense sincronitzar",
+      "failed": "Ha fallat {time}",
+      "settings": "Veure connexions →",
+      "empty": "Encara no hi ha res connectat."
+    },
     "todoEmpty": "Ara mateix no hi ha res que requereixi la teva atenció.",
     "todo": {
       "complaint": "Respon a {guest} — ha presentat una queixa.",
