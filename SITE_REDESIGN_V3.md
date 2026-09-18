@@ -888,38 +888,38 @@ no-token headline path exercised and correct.
 
 ## 8. Verification checklist
 
-- [ ] All three dictionaries parse as valid JSON; no missing-key warnings in any locale.
-- [ ] `grep -i` across the dictionaries: zero hits for *capa*, *director con IA*, *director amb IA*, *AI manager*, *piloto automático*, *pilot automàtic*, *on autopilot*, *front office*.
+- [x] All three dictionaries parse as valid JSON; no missing-key warnings in any locale. *(Phase J: all three `require()` clean at 50 namespaces each; `npm run build` prerenders every locale of every route with no warning.)*
+- [x] `grep -i` across the dictionaries: zero hits for *capa*, *director con IA*, *director amb IA*, *AI manager*, *piloto automático*, *pilot automàtic*, *on autopilot*, *front office*. *(Phase J: the only match is "es**capa**n" inside `manual3`, which is the verb, not the noun.)*
 - [ ] Every claim on the page is demonstrable in the 20-minute demo (`POSITIONING_V3.md` §0.4) or sits inside `comingSoon`.
 - [ ] Nothing marked `coming-soon` in `lib/roadmap.ts` is claimed above band 10.
 - [ ] `comingSoon` is future tense in ES, CA and EN.
 - [ ] `nightShift.kicker` and `nightShift.note` are both on the page, and every timeline row still matches the schedules in `vercel.json`.
 - [ ] No traction number and no connection count anywhere on the site.
 - [ ] **No price figure on the marketing surface.** `/terms` is the one deliberate exception: it is a contract, and a billing clause that states no price is a worse document than one that does. `PRICE_MONTHLY_EUR` therefore has exactly two readers — `company.ts` and the Terms billing clause — and if the price ever changes, Terms changes with it.
-- [ ] Every prospect-reachable route carries `.marketing-surface`; no warm-to-grey seam on any footer link.
+- [x] Every prospect-reachable route carries `.marketing-surface`; no warm-to-grey seam on any footer link. *(Phase J, measured: `/`, `/sample-brief`, `/contact`, `/trust`, `/privacy`, `/terms`, both newsletter routes and the 404 all paint `rgb(246,243,238)` from a scoped `--fonda-bg: #f6f3ee`; `/login`, `/signup` and `/onboarding` paint `rgb(238,238,238)` with no `.marketing-surface` node, and `:root` stays `#eee`.)*
 - [ ] The JSON-LD `Offer` states no price.
 - [ ] The private beta is stated in exactly one FAQ answer.
-- [ ] No *independiente* / *boutique* / *pequeño* anywhere on the landing page or in the footer.
-- [ ] `LIVE_INTEGRATIONS` and `ON_REQUEST_INTEGRATIONS` unchanged unless a connection actually shipped.
-- [ ] The fourteen eyebrows, read in order, tell the story on their own.
-- [ ] 360px screenshots of every band, no horizontal scroll.
-- [ ] WCAG AA across the page, hero included — re-checked against `--fonda-surface-2` as the light band ground, not white.
+- [x] No *independiente* / *boutique* / *pequeño* anywhere on the landing page or in the footer. *(Phase J: the only hits are `settings.propertyTypePlaceholder`, which §6.10 exempts as a form hint.)*
+- [x] `LIVE_INTEGRATIONS` and `ON_REQUEST_INTEGRATIONS` unchanged unless a connection actually shipped. *(Phase J: no diff on either list across `c911403..HEAD`; still MEWS · Apaleo · Gmail, and Outlook on request.)*
+- [x] The fourteen eyebrows, read in order, tell the story on their own. *(Phase J inventoried all fifteen bands: fourteen eyebrows, `stats` the only band without — see §9.1 (32).)*
+- [x] 360px screenshots of every band, no horizontal scroll. *(Phase J: seventeen PNGs at DPR 2 — header, fifteen bands, footer. `scrollWidth` equals the viewport at 360 and 390 on every route and locale, and content sits at exactly 24px from both edges. One real overflow was found on `/sample-brief` and fixed — §9.4.)*
+- [x] WCAG AA across the page, hero included — re-checked against `--fonda-surface-2` as the light band ground, not white. *(Phase J: zero failures on every prospect-reachable route in all three locales at 360 / 390 / 768 / 1280 / 1440. The hero was measured against decoded watercolour PIXELS, worst ratio 5.54 at 1440 and 6.89 at 360. One failure was found at 1280 in `BrandPanel` and fixed — §9.1 (33).)*
 - [ ] `FONDA_DESIGN_IDENTITY.md` §2 records `--fonda-surface-2` as a band ground.
 - [ ] Migration 0021 is applied in every environment the site is deployed to, not just the one checked.
 - [ ] `hello@fondas.app` receives mail and the footer has no dead links (GTM §3.3, both P0).
 - [ ] Read the ES hero, the ES category line, the ES security headline and the nightShift kicker aloud to one hotelier before the outreach wave restarts.
-- [ ] Every phase is its own commit, so any single band can be reverted without unpicking the rest.
+- [x] Every phase is its own commit, so any single band can be reverted without unpicking the rest.
 
 ---
 
 ## 9. Execution log — read this first in a new session
 
-_Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`, head `d91fe6f`. Not merged to `main` — production still serves the old site._
+_Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`. Not merged to `main` — production still serves the old site._
 
-**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix · E · F · G · I · H — all verified by computed style and AA-swept.
-**Next:** **Phase J**, the last one. Then merge to `main`. *(I and H were deliberately swapped — the security band's cta points at `/trust`, so building the page first meant the link never dangled. `/trust` also joined the `.marketing-surface` warm set.)*
+**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix · E · F · G · I · H · **J** — all verified by computed style and AA-swept.
+**Next:** **merge to `main`.** Every phase is built and Phase J's sweep is clean; nothing in §7 is outstanding. *(I and H were deliberately swapped — the security band's cta points at `/trust`, so building the page first meant the link never dangled. `/trust` also joined the `.marketing-surface` warm set.)*
 
-All fifteen bands are built. A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md, including §9. Phases 0 through I are done; run Phase J."*
+All fifteen bands are built. A cold session needs this file and nothing else — every string is in §3.
 
 > **Standing rule for every phase, whether or not the prompt repeats it.**
 > The session is cleared between phases, so this log is the only memory that survives. Before committing a phase, update §9: move it from **Next** to **Done**, add anything you decided along the way to §9.1 with its reason, and add anything you could not verify to §9.3. A deviation that isn't written here will be silently reverted by the next session, which will be reading the phase prompt and nothing else.
@@ -960,6 +960,12 @@ Each was made deliberately, and several reverse an earlier draft of this same do
 | **25** | **Band 11's marker is the navy square HOLLOW** — same 7px, same 2px radius, `border` instead of `background`. It is the one mark on the page that says "not yet" without words, and it introduces no icon set (§4). Drawn inline in the band rather than added as a `SquareMarker` variant: the filled square means *live* on four other bands, and giving the shared component a prop that means the opposite would make it ambiguous everywhere it is used. |
 | **26** | **Band 10's cta and `/trust`'s outbound link share one treatment** — ink, `underline decoration-border underline-offset-4`, ink on hover, the same as `showcase.gateCta`. Not accent: §4 keeps navy for content and never for chrome. The arrow lives inside the dictionary string in all three languages, so it travels with the translation instead of being glued on in JSX. |
 | **27** | **`comingSoon`'s headline and lead use the Spanish/Catalan present-for-future** ("Lo que **llega** durante el piloto", "que **llegan** mientras dure tu piloto"). These are §3.5's own strings, shipped verbatim, and the tense is carried by the line between them — *"Escrito en futuro a propósito: hoy no lo hace."* The future-tense rule bites on the four ITEM descriptions, which are future throughout (`llegará`, `incluirán`, `lo vas a leer`). Do not "fix" the headline into a future tense that no one says out loud. |
+| **28** | **Tap targets are 44px, and where 44px would change the chrome the TARGET grows and the paint does not.** The header CTA (`h-9`), the hamburger (`size-9`) and the language switcher's segments (31×25) each carry an invisible `after:` strip — 44px tall, centred on the visible box — instead of being enlarged. All three sit in containers with the slack for it (64px header bars, `gap-3`/`gap-4` stacks), and the strips are vertical-only except the hamburger's, which spills 4px into a 12px gap and a 24px gutter. This is measured by hit test (`elementFromPoint`), not by `getBoundingClientRect`, which cannot see a pseudo-element. **Do not "simplify" these into bigger buttons** — the sizes they paint are the header's tuning, decided in earlier phases. |
+| **29** | **The language switcher is grown VERTICALLY ONLY — 31×45, not 44×44.** Three 44px-wide segments would be a 140px control for three two-letter labels, and it has to fit beside the CTA in the mobile drawer's 312px row, which had 2px of slack. The segments also sit 2px apart, so widening them would make their targets overlap each other — worse than small. 31px clears WCAG 2.2 AA's actual floor (SC 2.5.8, 24×24); the vertical axis is where a thumb misses in a footer bar. |
+| **30** | **The footer's link columns are two lists in one markup.** `md:` and up keeps the 15px column exactly as designed (19px links, `gap-3`); below it each link becomes a full-width 43px block with the gap folded into its padding. The desktop footer is pixel-identical — verified by screenshot at 1280px. The phone footer grows ~170px on a page that is 18,000px tall. |
+| **31** | **Band 5's two-column split moved from `lg` to `min-[1100px]`, not to `xl`.** §9.3 proposed `xl`; measurement showed the chip wrap lives only between 1024 and ~1095px, where the timeline column is 444px and three rows need 474. At 1100 the column is 488px and nothing wraps, so `xl` would have stacked a 180px range that already works. Below 1100 the band simply stays in the single-column state it already uses from `md` up. Measured after the change: 0 of 7 rows wrapped at 1024 / 1100 / 1180 / 1279 / 1280 / 1440, all rows 60px tall. |
+| **32** | **The `stats` band (12) keeps NO eyebrow — the exception is written down rather than fixed.** §4 says every band carries one, but §8's checklist counts *fourteen* eyebrows across fifteen bands, so adding one would break the count the checklist expects. The spine still reads: hero badge, then Compatible con · El resumen matinal · La bandeja · Mientras el hotel duerme · La diferencia · Las cuatro partes del día · Para quién es · De tu lado · Seguridad · Ya en camino · *(stats)* · Precio · Preguntas · Cuando quieras. Do not add one. |
+| **33** | **`BrandPanel`'s badge is `white 50%`, not `white 45%`.** At 45% it resolved to rgb(130,129,127) on `#1C1A16` and measured **4.46:1** — an AA failure for 11px text, by 0.04. 46% is the first passing step (4.59) and too close to the line; 50% measures 5.24:1 and is still the quietest mark on the panel (the bullets are 72%). It survived every earlier sweep because the panel is `hidden … lg:flex`, so no 360px pass ever rendered it — it was found only once Phase J measured `/onboarding` at 1280px. |
 
 ### 9.2 Environment state
 
@@ -975,8 +981,36 @@ Each was made deliberately, and several reverse an earlier draft of this same do
 ### 9.3 Still open
 
 - ~~`/trust` does not exist yet (Phase I).~~ **Shipped** — `app/[lang]/(legal)/trust/page.tsx`, live in all three locales, in the sitemap with hreflang. Phase H's `security.cta` links to it with `localizedHref(locale, "/trust")`.
+- ~~Two measurement gaps carried into Phase J: the newsletter routes were AA-checked in their invalid-token state only, and `/onboarding` was confirmed from source rather than measured.~~ **Both closed in Phase J** — see §9.4.
+- ~~Between 1024 and 1279px, three of the timeline's seven chips wrap onto a second line.~~ **Fixed in Phase J** (§9.1, 31). The real range was 1024–1095, not 1024–1279.
+- ~~The `stats` band (12) is the one band with no eyebrow.~~ **Ruled on in Phase J** (§9.1, 32): the exception stands and is now written down.
+- ~~The header and footer still label the `#how` anchor "Cómo funciona" … Revisit with the nav pass in Phase J.~~ **Settled** — §9.2b already closed this, and Phase J did not reopen it. The label predicts an explanation and the band opens with the three setup steps. Do not rename the label or the `#how` anchor.
 - Fifteen bands is long, and all fifteen are now built. Watch scroll depth once live; if bands 6 and 7 both underperform, band 6 is the one to cut.
-- The `stats` band (12) is the one band with **no eyebrow**, against §4's "every band carries one". Pre-existing, not introduced by H. The spine still reads without it — fourteen eyebrows, hero badge included, exactly as §8's checklist expects. Decide in Phase J whether to give it one or to write the exception down.
-- Two measurement gaps carried into Phase J: the newsletter routes were AA-checked in their invalid-token state only, and `/onboarding` was confirmed from source rather than measured (auth-guarded). Neither is believed to be a problem; both are unverified.
-- Between 1024 and 1279px, three of the timeline's seven chips wrap onto a second line inside their card, so those rows sit taller than the rest. Measured, not broken — the band is legible and the hour stays centred on its row. It resolves itself at 1280+ and below 1024; fix it only if the tablet read bothers someone, and fix it by moving the two-column split to `xl`, not by shrinking the chip.
-- The header and footer still label the `#how` anchor "Cómo funciona", which now lands on a band whose eyebrow reads "Mientras el hotel duerme". Deliberate for now — the strip inside it *is* the how-it-works answer, and §3 ships no new `nav` string. Revisit with the nav pass in Phase J.
+- **The `(auth)` routes' submit buttons are 40px tall, and were left that way.** `/login`, `/signup` and `/onboarding` step 1 each render a full-width primary button at the `Button` default (`h-10`). They are outside Phase J's stated surface — §4 puts `/(auth)/*` and `/onboarding/*` on the app side, not the marketing one — so the phase's 44px floor was not applied to them, and widening its scope was not this phase's call. They are 264px wide, which is a forgiving target, and everything else about those pages measures clean (0 contrast failures at 360px and 1280px, no overflow, 24px gutters). One `size="lg"` per call site closes it if someone decides the funnel should match the site.
+- **Inline links inside a sentence are deliberately not padded to 44px.** The gate line's cta, the newsletter form's privacy link and `/trust`'s outbound links all sit mid-paragraph; WCAG 2.2 SC 2.5.8 exempts a link in a block of text, and padding them would break the line's leading. Standalone ctas on their own line — band 10's, the newsletter pages' "back home" — are held to 44 and were fixed.
+
+### 9.4 Phase J — what was measured, and how
+
+The sweep ran against a headless Chrome over CDP: computed styles for contrast and layout, `elementFromPoint` for tap targets that are grown by a pseudo-element, and decoded screenshot pixels for text over the watercolour. Anything below can be re-run the same way.
+
+**Contrast.** Every text-bearing element on every prospect-reachable route, in all three locales, at 360 and 390px, plus 768 / 1280 / 1440: **zero failures**. Backgrounds are composited through translucent ancestors, and `oklab()` — which is how Chrome serialises the `color-mix()` the header and several chips use — is converted properly rather than number-scraped, which had produced one false failure on the header wordmark.
+
+**The hero over the watercolour.** Not inferred from a CSS colour: the hero text is hidden, the page is screenshotted, and every pixel inside each text box is scored against that element's own colour, so the *worst* pixel is what passes. Worst ratios — 360px: **6.89**; 390px: **6.88**; 768px: **5.77**; 1440px: **5.54**. The eyebrow's worst pixel at 1440 is rgb(224,225,215) against the rgb(226,226,216) the §9.1 (3) comment cites, at 5.82 vs its 5.89 — so the warm ground did not erode it, and the scrim is unchanged since `c911403` anyway. Elements that paint their own opaque fill (the ink CTA, the brief window) are excluded from the pixel test and covered by the computed-style sweep instead.
+
+**Mobile.** 360 and 390px, all three locales: `scrollWidth` equals the viewport everywhere, and content sits at exactly 24px from both edges. The hero artefact carries the date line, the greeting and two full brief rows above the cut at 360px.
+
+**One real overflow was found and fixed.** `/sample-brief` blew out to **411px at both 360 and 390**, in all three locales: its header has no hamburger to fall back on, so wordmark + language switcher + the full es CTA ("Solicitar acceso anticipado", 193px) needed 445px. It now uses `nav.getEarlyAccessShort` below `sm`, exactly as `SiteHeader` does, and measures 328px.
+
+**Tap targets.** Hit-tested, not measured by box. Fixed: the skip link (41→45 focused), the header wordmark, the header CTA, the hamburger, the mobile drawer's CTA (36→48, full width, with the switcher restacked below it), the footer's link columns on phones, band 10's `/trust` cta (21→45), `/sample-brief`'s header CTA and footer links, the newsletter pages' button (40→48) and their back-home link, and the 404's button. What remains under 44 is listed in §9.3 and is deliberate.
+
+**`HeadlineWithBrand` with no `{brand}` token.** The path had never run; all three locales use it now, and none carries the token. Verified in the DOM: `headlineLine2` renders as exactly one text node with zero child elements, no brace leak, and the accent colour applied. The computed accessible name of the `h1` is correct too — *"La IA que lleva la operativa, y tú, a los huéspedes."* — with the space the two `block` spans contribute, so a screen reader does not run the lines together.
+
+**Both newsletter routes, every state, every locale — 33 combinations, zero failures.** `idle` renders on navigation and `invalid` was produced **for real** by submitting the form with a junk token (the heading matched each locale's `invalidHeading`, so the server action really ran). `confirmed` / `already` / `expired` / `error` share one code path with `invalid` — `newsletter-confirm.tsx` builds a single `{ heading, body }` and feeds it to one `<h1>` and one `<p>` — so each was measured by putting that state's real dictionary strings into that real DOM, which exercises the same styles and also catches a long string wrapping or overflowing. No rows were written to Supabase.
+
+**`/onboarding`, measured rather than read.** The guard in `onboarding/layout.tsx` and the `/onboarding` arm of `lib/supabase/proxy.ts` were bypassed **on the dev server only**, step 1 was measured in all three locales, and both guards were then restored and re-verified (`/es/onboarding` redirects to `/es/login` again). Nothing was written to Supabase and neither file is in the Phase J commit. Result: ground is `--fonda-bg` `#eee`, neutral, with no `.marketing-surface` anywhere on the page — the source reading in the old §9.3 was right. 360px: `scrollWidth` 360, 24px gutters, 15 text pairs, 0 failures. Steps 2–4 need a hotel row and remain source-confirmed.
+
+**1280px found the one contrast bug of the phase.** `BrandPanel`'s badge measured 4.46:1 — see §9.1 (33). It is fixed, and `/onboarding`, `/login` and `/signup` now measure clean at 1280 in all three locales.
+
+**Screenshots.** One 360px PNG per band at DPR 2, seventeen in all — the header, the fifteen bands, and the footer — captured after every `Reveal` has fired and with the Next dev indicator suppressed. The band inventory confirms §8's count: **fifteen bands, fourteen eyebrows**, `stats` the only one without.
+
+`npm run lint`, `npx tsc --noEmit` and `npm run build` all pass.
