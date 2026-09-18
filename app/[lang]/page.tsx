@@ -161,14 +161,14 @@ export default async function Home({
     { num: "03", title: dict.howItWorks.step3Title, desc: dict.howItWorks.step3Desc },
   ];
 
-  // The jobs Fondas bundles — the "one layer, not six subscriptions" story.
-  const BUNDLE_JOBS = [
-    { title: dict.bundle.guestRepliesTitle, desc: dict.bundle.guestRepliesDesc },
-    { title: dict.bundle.morningBriefTitle, desc: dict.bundle.morningBriefDesc },
-    { title: dict.bundle.etaChasingTitle, desc: dict.bundle.etaChasingDesc },
-    { title: dict.bundle.askAnythingTitle, desc: dict.bundle.askAnythingDesc },
-    { title: dict.bundle.preArrivalTitle, desc: dict.bundle.preArrivalDesc },
-    { title: dict.bundle.dailySignalTitle, desc: dict.bundle.dailySignalDesc },
+  // The four parts of the day — the anti-fragmentation close. These are the
+  // four surfaces that are live in lib/roadmap.ts; anything coming-soon there
+  // (analytics, revenue, the rest) belongs in the comingSoon band, not here.
+  const SECTIONS = [
+    { title: dict.sections.i1Title, desc: dict.sections.i1Desc },
+    { title: dict.sections.i2Title, desc: dict.sections.i2Desc },
+    { title: dict.sections.i3Title, desc: dict.sections.i3Desc },
+    { title: dict.sections.i4Title, desc: dict.sections.i4Desc },
   ];
 
   // Every string about the sample hotel carries {tokens} — the hotel's name,
@@ -784,31 +784,44 @@ export default async function Home({
           </div>
         </section>
 
-        {/* Bundle — one layer, not six subscriptions (ROADMAP v2 §0.2) */}
+        {/* The four parts of the day — the four LIVE surfaces, framed as the
+            anti-fragmentation close (six subscriptions, or one tool that
+            already knows the hotel). Nothing coming-soon in lib/roadmap.ts may
+            appear here; that is what the comingSoon band is for. */}
         <section className="border-t border-border px-6 py-24 md:px-8">
           <div className="mx-auto max-w-[1120px]">
-            <Reveal>
-              <Eyebrow>{dict.bundle.eyebrow}</Eyebrow>
-              <h2 className="mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.028em] text-foreground">
-                {dict.bundle.headline}
-              </h2>
-              <p className="mt-5 max-w-[52ch] text-[17px] leading-[1.6] text-muted-foreground">
-                {dict.bundle.lead}
+            <Reveal className="grid gap-x-12 gap-y-4 lg:grid-cols-[5fr_7fr] lg:items-end">
+              <div>
+                <Eyebrow>{dict.sections.eyebrow}</Eyebrow>
+                <h2 className="mt-4 text-[clamp(1.875rem,3.6vw,2.875rem)] font-semibold leading-[1.05] tracking-[-0.028em] text-foreground">
+                  {dict.sections.headline}
+                </h2>
+              </div>
+              <p className="max-w-[60ch] text-[17px] leading-[1.6] text-muted-foreground">
+                {dict.sections.lead}
               </p>
             </Reveal>
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {BUNDLE_JOBS.map((job, i) => (
+            {/* One white card holding four cells, not four loose cards: same
+                containment treatment as the stats band below, and for the same
+                reason its comment gives — the internal hairlines only read as
+                "one thought split four ways" when something contains them. */}
+            <div className="mt-12 grid overflow-hidden rounded-[18px] bg-card shadow-card sm:grid-cols-2">
+              {SECTIONS.map((part, i) => (
                 <Reveal
-                  key={job.title}
+                  key={part.title}
                   index={i}
-                  className="rounded-[18px] bg-card p-6 shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
+                  className={`flex flex-col px-6 py-8 sm:px-8 sm:py-10 ${
+                    i < SECTIONS.length - 1 ? "border-b border-border" : ""
+                  } ${i === 2 ? "sm:border-b-0" : ""} ${
+                    i % 2 === 0 ? "sm:border-r sm:border-border" : ""
+                  }`}
                 >
                   <SquareMarker />
                   <h3 className="mt-4 text-[16px] font-semibold tracking-[-0.01em] text-foreground">
-                    {job.title}
+                    {part.title}
                   </h3>
-                  <p className="mt-1.5 text-sm leading-[1.55] text-muted-foreground">
-                    {job.desc}
+                  <p className="mt-1.5 max-w-[46ch] text-sm leading-[1.55] text-muted-foreground">
+                    {part.desc}
                   </p>
                 </Reveal>
               ))}

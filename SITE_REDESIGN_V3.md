@@ -914,10 +914,10 @@ no-token headline path exercised and correct.
 
 _Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`._
 
-**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix — all verified by computed style and AA-swept.
-**Next:** **Phase E**, then F, G, H, I, J in order.
+**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix · E — all verified by computed style and AA-swept.
+**Next:** **Phase F**, then G, H, I, J in order.
 
-A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md. Phases 0 through E-pre-fix are done; start at Phase E."*
+A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md. Phases 0 through E are done; start at Phase F."*
 
 ### 9.1 Decisions already taken — do not undo these
 

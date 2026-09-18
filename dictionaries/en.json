@@ -138,22 +138,18 @@
     "setupValue": "1×",
     "setupLabel": "connect your PMS and inbox — done"
   },
-  "bundle": {
-    "eyebrow": "One layer",
-    "headline": "One layer, not six subscriptions.",
-    "lead": "The jobs that eat a GM's day, handled in one place — because Fondas learns your hotel once and puts it to work everywhere.",
-    "guestRepliesTitle": "Guest replies",
-    "guestRepliesDesc": "Every email answered in your hotel's voice.",
-    "morningBriefTitle": "Morning brief",
-    "morningBriefDesc": "What matters today, before you walk in.",
-    "etaChasingTitle": "ETA chasing",
-    "etaChasingDesc": "Arrival times confirmed without asking twice.",
-    "askAnythingTitle": "Ask anything",
-    "askAnythingDesc": "Occupancy, arrivals, tonight's picture — in plain language.",
-    "preArrivalTitle": "Pre-arrival messages",
-    "preArrivalDesc": "Guests arrive informed, not surprised.",
-    "dailySignalTitle": "Daily signal",
-    "dailySignalDesc": "A quiet flag when a date needs attention."
+  "sections": {
+    "eyebrow": "The four parts of the day",
+    "headline": "Four parts of the day, one place.",
+    "lead": "You can pay for six subscriptions — comms, revenue, tasks, finance, experiences, CRM — or have the four things that actually eat your morning in one tool that already knows your hotel.",
+    "i1Title": "Morning brief",
+    "i1Desc": "The day written before you open: arrivals, departures, VIPs, and what needs you.",
+    "i2Title": "Check-ins",
+    "i2Desc": "Arrival times chased and confirmed on their own, so housekeeping stays ahead.",
+    "i3Title": "Communications",
+    "i3Desc": "Every guest email with the reply drafted and the booking beside it. Sending is your call.",
+    "i4Title": "Ask anything",
+    "i4Desc": "Occupancy, arrivals, how tonight looks. Plain language, on your own data."
   },
   "comparison": {
     "eyebrow": "The difference",

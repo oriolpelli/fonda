@@ -138,22 +138,18 @@
     "setupValue": "1×",
     "setupLabel": "connecta el teu PMS i el correu, i a punt"
   },
-  "bundle": {
-    "eyebrow": "Una sola capa",
-    "headline": "Una sola capa, no sis subscripcions.",
-    "lead": "Les feines que es mengen el dia d'un director, resoltes en un sol lloc — perquè Fondas coneix el teu hotel un cop i ho aprofita a tot arreu.",
-    "guestRepliesTitle": "Respostes als hostes",
-    "guestRepliesDesc": "Cada correu contestat amb la veu del teu hotel.",
-    "morningBriefTitle": "Resum matinal",
-    "morningBriefDesc": "El que importa avui, abans d'entrar per la porta.",
-    "etaChasingTitle": "Hores d'arribada",
-    "etaChasingDesc": "Confirmades sense haver de preguntar dos cops.",
-    "askAnythingTitle": "Pregunta el que vulguis",
-    "askAnythingDesc": "Ocupació, arribades, com es presenta la nit — en llenguatge natural.",
-    "preArrivalTitle": "Missatges abans de l'arribada",
-    "preArrivalDesc": "Hostes que arriben informats, sense sorpreses.",
-    "dailySignalTitle": "Senyal diari",
-    "dailySignalDesc": "Un avís discret quan una data necessita atenció."
+  "sections": {
+    "eyebrow": "Les quatre parts del dia",
+    "headline": "Quatre parts del dia, un sol lloc.",
+    "lead": "Pots pagar sis subscripcions —comunicacions, revenue, tasques, finances, experiències, CRM— o tenir les quatre coses que de debò et mengen el matí en una sola eina, que a més ja coneix el teu hotel.",
+    "i1Title": "Resum matinal",
+    "i1Desc": "El dia escrit abans que obris: arribades, sortides, VIPs i el que necessita la teva atenció.",
+    "i2Title": "Check-ins",
+    "i2Desc": "Les hores d'arribada demanades i confirmades soles, perquè pisos vagi per davant.",
+    "i3Title": "Comunicacions",
+    "i3Desc": "Cada correu d'hoste amb la resposta redactada i la reserva al davant. Enviar, ho decideixes tu.",
+    "i4Title": "Pregunta el que vulguis",
+    "i4Desc": "Ocupació, arribades, com pinta la nit. En llenguatge normal, sobre les teves pròpies dades."
   },
   "comparison": {
     "eyebrow": "La diferència",

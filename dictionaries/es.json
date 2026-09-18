@@ -138,22 +138,18 @@
     "setupValue": "1×",
     "setupLabel": "conecta tu PMS y el correo, y listo"
   },
-  "bundle": {
-    "eyebrow": "Una sola capa",
-    "headline": "Una sola capa, no seis suscripciones.",
-    "lead": "Las tareas que se comen el día de un director, resueltas en un solo sitio — porque Fondas conoce tu hotel una vez y lo aprovecha en todo.",
-    "guestRepliesTitle": "Respuestas a huéspedes",
-    "guestRepliesDesc": "Cada correo contestado con la voz de tu hotel.",
-    "morningBriefTitle": "Resumen matinal",
-    "morningBriefDesc": "Lo que importa hoy, antes de entrar por la puerta.",
-    "etaChasingTitle": "Horas de llegada",
-    "etaChasingDesc": "Confirmadas sin tener que preguntar dos veces.",
-    "askAnythingTitle": "Pregunta lo que quieras",
-    "askAnythingDesc": "Ocupación, llegadas, cómo pinta la noche — en lenguaje natural.",
-    "preArrivalTitle": "Mensajes previos a la llegada",
-    "preArrivalDesc": "Huéspedes que llegan informados, sin sorpresas.",
-    "dailySignalTitle": "Señal diaria",
-    "dailySignalDesc": "Un aviso discreto cuando una fecha necesita atención."
+  "sections": {
+    "eyebrow": "Las cuatro partes del día",
+    "headline": "Cuatro partes del día, un solo sitio.",
+    "lead": "Puedes pagar seis suscripciones —comunicaciones, revenue, tareas, finanzas, experiencias, CRM— o tener las cuatro cosas que de verdad te comen la mañana en una sola herramienta, que además ya conoce tu hotel.",
+    "i1Title": "Resumen matutino",
+    "i1Desc": "El día escrito antes de que abras: llegadas, salidas, VIPs y lo que necesita tu atención.",
+    "i2Title": "Check-ins",
+    "i2Desc": "Las horas de llegada pedidas y confirmadas solas, para que pisos vaya por delante.",
+    "i3Title": "Comunicaciones",
+    "i3Desc": "Cada correo de huésped con la respuesta redactada y la reserva delante. Enviar, lo decides tú.",
+    "i4Title": "Pregunta lo que quieras",
+    "i4Desc": "Ocupación, llegadas, cómo pinta la noche. En lenguaje normal, sobre tus propios datos."
   },
   "comparison": {
     "eyebrow": "La diferencia",
