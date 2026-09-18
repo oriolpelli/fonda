@@ -336,7 +336,7 @@ The decided copy from `POSITIONING_V3.md` §3, inlined here so this document sta
 | Key | ES | CA | EN |
 |---|---|---|---|
 | `eyebrow` | Mientras el hotel duerme | Mentre l'hotel dorm | While the hotel sleeps |
-| `headline` | Trabaja de noche. Tú llegas y ya está hecho. | Treballa de nit. Tu arribes i ja està fet. | It works the night. You arrive and it's done. |
+| `headline` | Trabaja 24/7 para tu hotel. Sin turnos, sin pausas. | Treballa 24/7 per al teu hotel. Sense torns, sense pauses. | Works 24/7 for your hotel. No shifts, no breaks. |
 | `lead` | A las siete es una sola lista: qué ha pasado, qué necesita tu atención y qué ya está resuelto. Cada línea sale de tus propios datos. | A les set és una sola llista: què ha passat, què necessita la teva atenció i què ja està resolt. Cada línia surt de les teves pròpies dades. | By seven it's one list: what happened, what needs you, and what's already handled. Every line comes from your own data. |
 | `r1Time` | 23:00 | 23:00 | 11 PM |
 | `r1Title` | Sincroniza tu PMS | Sincronitza el teu PMS | Syncs your PMS |
