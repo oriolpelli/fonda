@@ -562,6 +562,15 @@
     "subtitle": "Answers from your live data",
     "empty": "Ask me anything about today's operations — arrivals, VIPs, occupancy, or your inbox.",
     "tryAsking": "Try asking",
+    "startersLabel": "Some ideas",
+    "starters": [
+      "How many check-ins do we have today?",
+      "Who is arriving that has stayed before?",
+      "Is anyone celebrating something this week?",
+      "What did the guest in room 14 complain about last time?",
+      "How do I handle a late check-out request?",
+      "What's our cancellation policy for direct bookings?"
+    ],
     "placeholder": "Ask a question…",
     "errorPrefix": "Sorry — {message}",
     "dockedCta": "Ask your hotel anything…",

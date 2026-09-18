@@ -562,6 +562,15 @@
     "subtitle": "Respostes a partir de les teves dades en directe",
     "empty": "Pregunta'm el que vulguis sobre les operacions d'avui — arribades, VIPs, ocupació o la teva safata d'entrada.",
     "tryAsking": "Prova de preguntar",
+    "startersLabel": "Algunes idees",
+    "starters": [
+      "Quants check-ins tenim avui?",
+      "Quins hostes que arriben ja s'han allotjat abans?",
+      "Hi ha algú que celebri alguna cosa aquesta setmana?",
+      "De què es va queixar l'última vegada l'hoste de l'habitació 14?",
+      "Com gestiono una petició de sortida tardana?",
+      "Quina és la nostra política de cancel·lació per a reserves directes?"
+    ],
     "placeholder": "Fes una pregunta…",
     "errorPrefix": "Ho sento — {message}",
     "dockedCta": "Pregunta al teu hotel el que vulguis…",

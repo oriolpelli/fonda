@@ -562,6 +562,15 @@
     "subtitle": "Respuestas a partir de tus datos en vivo",
     "empty": "Pregúntame lo que quieras sobre las operaciones de hoy — llegadas, VIPs, ocupación o tu bandeja de entrada.",
     "tryAsking": "Prueba a preguntar",
+    "startersLabel": "Algunas ideas",
+    "starters": [
+      "¿Cuántos check-ins tenemos hoy?",
+      "¿Qué huéspedes que llegan ya se han alojado antes?",
+      "¿Hay alguien que celebre algo esta semana?",
+      "¿De qué se quejó la última vez el huésped de la habitación 14?",
+      "¿Cómo gestiono una petición de salida tardía?",
+      "¿Cuál es nuestra política de cancelación para reservas directas?"
+    ],
     "placeholder": "Haz una pregunta…",
     "errorPrefix": "Lo siento — {message}",
     "dockedCta": "Pregunta a tu hotel lo que quieras…",

@@ -31,12 +31,14 @@ export function ChatSurface({ userEmail }: { userEmail: string }) {
             {dict.askYourHotel.empty}
           </p>
         </div>
-        <ChatComposer
-          onSend={send}
-          streaming={streaming}
-          blank
-          className="w-full max-w-[640px]"
-        />
+        <div className="flex w-full max-w-[640px] flex-col gap-7">
+          {/* `blank={false}` on purpose: the starter list below is this page's
+              one set of suggestions, so the composer's own chip row stays
+              closed here rather than saying the same thing twice. The `+`
+              still opens it. The docked widget keeps the chips. */}
+          <ChatComposer onSend={send} streaming={streaming} blank={false} />
+          <StarterQuestions onPick={send} />
+        </div>
       </div>
     );
   }
@@ -59,6 +61,43 @@ export function ChatSurface({ userEmail }: { userEmail: string }) {
       <div className="sticky bottom-0 z-10 -mx-1 mt-auto bg-[var(--fonda-bg)] px-1 pb-4 pt-3">
         <ChatComposer onSend={send} streaming={streaming} blank={false} />
       </div>
+    </div>
+  );
+}
+
+/**
+ * The Lightfield pattern (§4.3): a quiet mono eyebrow over plain tappable
+ * lines. No cards, no icons, no borders — the cheapest way to teach a GM what
+ * this thing can answer. Radius appears on the focus ring only, via a border
+ * that is transparent until focus so nothing shifts.
+ *
+ * Picking one sends it through the page's own `send`, so there is exactly one
+ * path to the API (`use-hotel-chat.ts`). The list is rendered only while the
+ * transcript is empty, so it disappears with the first message.
+ */
+function StarterQuestions({ onPick }: { onPick: (text: string) => void }) {
+  const { dict } = useDictionary();
+
+  return (
+    <div className="flex flex-col gap-2.5">
+      <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+        {dict.askYourHotel.startersLabel}
+      </span>
+      <ul className="flex flex-col items-start gap-0.5">
+        {dict.askYourHotel.starters.map((question) => (
+          <li key={question} className="w-full">
+            <button
+              type="button"
+              onClick={() => onPick(question)}
+              // `text-left` + no truncation: a long question wraps to a second
+              // line on a narrow viewport rather than being cut off.
+              className="-mx-2 w-[calc(100%+1rem)] rounded-[10px] border border-transparent px-2 py-1.5 text-left text-[15px] leading-relaxed text-[var(--fonda-text-2)] transition-colors duration-[180ms] hover:text-[var(--fonda-text)] focus-visible:border-[var(--fonda-accent)] focus-visible:text-[var(--fonda-text)] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]"
+            >
+              {question}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
