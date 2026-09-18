@@ -5,7 +5,7 @@
  *   pre_arrival  everything else — a future reservation, a past one, or no
  *                matched reservation at all (general enquiries, non-guests)
  *
- * This once split the inbox in two (FONDA_REDESIGN_SPEC.md §2). In-house guests
+ * This once split the inbox in two (docs/archive/FONDA_REDESIGN_SPEC.md §2). In-house guests
  * email rarely enough that the split wasn't worth it, so today it does a
  * quieter job: picking which of a guest's bookings is the relevant one, and
  * feeding the arrival-based urgency rules in lib/email-urgency.ts.

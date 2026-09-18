@@ -173,7 +173,7 @@ async function enrich(
 
       // A guest can hold several bookings. Prefer the stay they're on right
       // now — otherwise a future booking would win and their in-stay request
-      // would be filed under pre-arrival (FONDA_REDESIGN_SPEC.md §2).
+      // would be filed under pre-arrival (docs/archive/FONDA_REDESIGN_SPEC.md §2).
       const now = new Date().toISOString();
       const { data: current } = await reservations
         .lte("start_utc", now)
@@ -311,7 +311,7 @@ export async function processEmail(
 
   // Persist *which* reservation/guest matched, not what phase of their stay
   // they're in. The phase is derived on every read (lib/inbox.ts) so it can't
-  // go stale as the guest checks out — see FONDA_REDESIGN_SPEC.md §2.
+  // go stale as the guest checks out — see docs/archive/FONDA_REDESIGN_SPEC.md §2.
   const reservationMewsId =
     (context.reservation?.mews_id as string | undefined) ?? null;
   const customerMewsId =

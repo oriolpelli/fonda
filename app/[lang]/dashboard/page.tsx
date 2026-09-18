@@ -17,7 +17,7 @@ import { buildTodoList, LOW_OCCUPANCY_PCT } from "@/lib/todo-rules";
 
 /**
  * The Dashboard — the ten-second "how is the hotel right now, and what do I do
- * first?" snapshot (FONDA_REDESIGN_SPEC §3.1).
+ * first?" snapshot (docs/archive/FONDA_REDESIGN_SPEC.md §3.1).
  *
  * Four numbers, the fortnight ahead, the messages waiting on a reply, and a
  * ranked to-do list. Everything is derived at read time from synced PMS data

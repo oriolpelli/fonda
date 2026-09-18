@@ -76,7 +76,7 @@ function parseRecipients(raw: string): string[] | { error: string } {
 /**
  * Saves the Morning Brief's delivery settings: who receives it, at what
  * local hour, and in which language. Reuses `briefing_language` (already on
- * hotel_settings) rather than duplicating it — see FONDA_REDESIGN_SPEC §3.2.
+ * hotel_settings) rather than duplicating it — see docs/archive/FONDA_REDESIGN_SPEC.md §3.2.
  */
 export async function updateBriefDeliverySettings(
   _prevState: BriefDeliveryState,
