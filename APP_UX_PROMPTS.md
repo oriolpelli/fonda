@@ -58,7 +58,9 @@ Do not run Prompt 1 until every line below is true. `ROADMAP.md` §1 is explicit
 - **RLS, not service-role.** Every new table is hotel-scoped (and user-scoped where
   the proposal says so). No service-role shortcuts in page code.
 - **PII:** never log guest names or emails; run `npm run analytics-pii-audit`
-  whenever an analytics event is added.
+  whenever an analytics event is added. **Mask guest names to initials in
+  anything pasted back into the chat** — verification output read from the dev DB
+  is real guest data, and the chat is not a place it belongs.
 - **One new dependency is pre-approved:** `@dnd-kit/core` + `@dnd-kit/sortable`,
   for Prompt 9 only. Anything else must be flagged and refused by default.
 - **Keep the existing distinctions:** `EmptyState` (nothing to do) vs
@@ -659,7 +661,8 @@ integrations, no new tables.
    Run `npm run analytics-pii-audit` to be sure nothing regressed.
 
 Run `npm run lint` and `npx tsc --noEmit`. Verify with the seeded test guests
-(`npm run seed-test-guests` if the dev DB is empty) that arrivals and departures
+(`npm run seed-test-guests -- --hotel=<uuid>`; the script refuses to run against
+a multi-hotel dev DB without the flag) that arrivals and departures
 show the right people for today in the hotel's timezone, including a guest
 whose departure day is today. Show me the final diff.
 ```
@@ -689,12 +692,39 @@ best surface in the product; it is not being redesigned).
 Two small additions, nothing else:
 
 1. "Since the brief": between the article and the quick actions, a block listing
-   TodoItems whose underlying event is newer than the brief's generated_at
-   (a complaint email received after it, a cancellation, a new VIP arrival).
-   Reuse buildTodoList with a `since` filter (add an optional `since?: Date`
-   to TodoInput, applied per rule where the source has a timestamp) and the same
-   TodoList rendering Home uses. Render nothing at all when the list is empty —
-   no empty state, no heading.
+   TodoItems whose underlying event is newer than the brief's generated_at — in
+   v1 that means unanswered complaints and new VIP arrivals, nothing else. There
+   is no cancellation rule in buildTodoList and this prompt does not add one.
+
+   Reuse buildTodoList with an optional `since?: Date` on TodoInput. Four things
+   the current shapes make non-obvious:
+
+   - The rules carry no timestamps today. `TodoEmail` is id / guest_name /
+     from_email / urgency — add a `receivedAt` and feed it the email row's
+     created_at, which lib/inbox.ts already selects; the call site is the
+     buildTodoList({...}) block in app/[lang]/dashboard/page.tsx.
+   - `vipArrivalsWithoutNote` is {reservationId, name}, also untimed. The only
+     reservation timestamps are `mews_updated_utc` (MEWS's UpdatedUtc — last
+     *modified*, not created, and null for non-MEWS sources) and `synced_at`,
+     which lib/mews-sync.ts stamps on every upserted row on every sync.
+     `synced_at` is NOT an event time: use it and every reservation reads as new
+     after each sync. Use mews_updated_utc, and where it is null the VIP rule
+     contributes nothing to this block rather than guessing.
+   - `unconfirmed_etas` and `low_occupancy` are aggregates with no event
+     instant. Exclude them from the since list outright; do not invent a time.
+   - The `since` filter narrows each rule's source collection *before* the caps
+     apply (PER_RULE_CAP, MAX_TODO_ITEMS), never the list buildTodoList returns
+     — otherwise a complaint that arrived after the brief gets cut by two older
+     complaints that were already in it.
+
+   The comparison is a plain UTC instant comparison against generated_at. Do NOT
+   route it through hotelToday or the hotel timezone: that rule answers
+   day-boundary questions (arrivals, departures), not "newer than".
+
+   Render with the same TodoList component Home uses, but with the `primary`
+   navy signal suppressed — buildTodoList marks its first item primary, and the
+   brief hero already owns the one accent on this page. Render nothing at all
+   when the list is empty — no empty state, no heading.
 
 2. "Past briefs": move the history list out of the page body into a quiet link
    in the hero's action slot next to the refresh button (LocaleLink,
@@ -711,7 +741,9 @@ Dictionaries for the two headings, all three languages. Run `npm run lint` and
 **Look for** — the brief page should look untouched apart from two things.
 
 - "Since the brief" appears only when something genuinely happened after `generated_at`. Regenerate the brief and the whole block — heading included — must vanish. An empty heading is the bug.
-- Its items render identically to Home's to-dos.
+- Its items render identically to Home's to-dos, minus the navy primary signal.
+- The boundary, not the happy path: seed one email created a minute after `generated_at` and one a minute before, and confirm exactly one appears. Prompt 7's ETA-sort bug passed lint, tsc, build and the PII audit and died only under a hand-check; this one is the same species.
+- Run a PMS sync with the block on screen. If everything suddenly reads as "since the brief", `synced_at` got used as the event time.
 - "Past briefs" is now a quiet underlined ink link in the hero next to refresh. Not a button, no navy.
 - `/dashboard/brief/history` lists past briefs, each opening the existing detail page.
 - Nothing else on the brief moved. It is the best surface in the product; treat any restyling as a regression.
@@ -870,6 +902,7 @@ VoiceOver/NVDA reads the drag announcements. Show me the final diff.
 - Locked "Coming soon" tiles: title, grey blurb, the same sparkle the nav uses. Not draggable, not checkable, clicking does nothing visible.
 - Esc closes, pointer-down outside closes, focus returns, the page behind doesn't scroll.
 - Sign in as another user: their layout, not yours.
+- `app/[lang]/dashboard/loading.tsx` still matches what renders. Its doc comment binds it to `HOME_WIDGETS` order, which a saved layout no longer follows — the skeleton either goes order-agnostic or reads the saved layout.
 
 **Wrong if:** a dependency other than `@dnd-kit` was installed. If dnd-kit fought the layout the answer was arrow buttons, not another library.
 
