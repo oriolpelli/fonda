@@ -448,8 +448,8 @@ Paste one at a time. Each ends with a diff review and its own commit.
 | **E** | The four parts of the day | `page.tsx`, dictionaries | none |
 | **F** | The overnight timeline | `page.tsx`, dictionaries | none |
 | **G** | Role cards | `page.tsx`, `vignettes.tsx`, dictionaries | none |
+| **I** | Trust page — **runs before H** | new route, footer, sitemap | none — full page, stated as facts, no DPA claimed |
 | **H** | On your side · Security · Coming soon | `page.tsx`, dictionaries | none |
-| **I** | Trust page | new route, footer, sitemap | none — full page, stated as facts, no DPA claimed |
 | **J** | Mobile, accessibility, the `{brand}` token path | everything | none |
 
 **Every decision in this table is closed as of 17 Sep** — the phases run end to end without stopping. Two things still need care rather than a call: C and D must invent the *same* hotel on the *same* night, and Phase B has two visual systems cohabiting, so check it on a phone before moving on.
@@ -826,7 +826,8 @@ Every comingSoon string must be in the FUTURE tense in all three languages.
 Reject any present-tense line in review.
 
 Acceptance: all three locales render with no missing keys; comingSoon is future
-tense throughout; no horizontal scroll at 360px; no new icon set introduced.
+tense throughout; no horizontal scroll at 360px; no new icon set introduced; the
+security band's cta resolves to the /trust page built in Phase I, with no 404.
 ```
 **Commit:** `feat(site): add on-your-side, security and coming-soon bands`
 
@@ -845,8 +846,9 @@ Do NOT claim a signed DPA, and claim no certification we do not hold — there i
 no ISO and no SOC 2 here. Say what is true: what we read, what we store, where
 it is hosted, what we never do, and what happens on offboarding.
 
-Link it from the security band's cta and from the footer, and add it to the
-sitemap and the hreflang alternates.
+Link it from the footer, and add it to the sitemap and the hreflang alternates.
+Do not try to wire the security band's cta — that band does not exist yet;
+Phase H wires its own link to this page when it ships.
 
 Acceptance: reachable in all three locales; no certification claimed; sitemap
 and hreflang updated; the security band's cta resolves.
@@ -912,12 +914,12 @@ no-token headline path exercised and correct.
 
 ## 9. Execution log — read this first in a new session
 
-_Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`, head `9c0d6cd`. Not merged to `main` — production still serves the old site._
+_Last updated 18 September 2026. Branch `site/v3-redesign`, base commit `c911403`, head `942308f`. Not merged to `main` — production still serves the old site._
 
-**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix · E · F · G — all verified by computed style and AA-swept.
-**Next:** **Phase H**, then I, J in order.
+**Done:** Phase 0 · 0b · A · A-fix · B · C · D · D-fix · E-pre · E-pre-fix · E · F · G · I — all verified by computed style and AA-swept.
+**Next:** **Phase H**, then J. *(I and H were deliberately swapped — the security band's cta points at `/trust`, so building the page first meant the link never dangled. `/trust` also joined the `.marketing-surface` warm set.)*
 
-A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md, including §9. Phases 0 through G are done; start at Phase H."*
+A cold session needs this file and nothing else — every string is in §3. Start with: *"Read SITE_REDESIGN_V3.md, including §9. Phases 0 through G and I are done; start at Phase H."*
 
 > **Standing rule for every phase, whether or not the prompt repeats it.**
 > The session is cleared between phases, so this log is the only memory that survives. Before committing a phase, update §9: move it from **Next** to **Done**, add anything you decided along the way to §9.1 with its reason, and add anything you could not verify to §9.3. A deviation that isn't written here will be silently reverted by the next session, which will be reading the phase prompt and nothing else.
@@ -948,6 +950,11 @@ Each was made deliberately, and several reverse an earlier draft of this same do
 | **15** | **Three across only at `lg`, not `md`.** At `md` the 1120px cap leaves ~224px a column, which puts most of the twelve bullets on three lines. Below `lg` the cards stack full width, and the CTA goes auto-width there (`self-stretch sm:self-start lg:self-stretch`) — a stretched button on a 960px card is a metre of fill around two words. On a phone it is full width again, which is the thumb-friendly read. |
 | **16** | **The card sub-label is plain text, not a second eyebrow.** Mono uppercase there would have put four eyebrow-shaped strings in one band and diluted the spine §4 asks the eyebrows to be. The band's one eyebrow is "Para quién es". |
 | **17** | **Band 8's buttons are `size="lg"`.** Every other button on the landing page is, and the default `h-10` is 40px — under the 44px tap target Phase J has to certify. |
+| **18** | **The trust page is LOCALISED; `/privacy` and `/terms` stay English-only.** Its copy lives in the new `trustPage` namespace in all three dictionaries. The English-only rule on the other two is about *legal text needing professional translation*; `/trust` is not legal text, it is the answer to *"¿están seguros mis datos?"* asked by a GM reading Spanish, and it is where band 10's cta sends them. It renders no `legal.englishNotice`. The namespace is `trustPage`, not `trust` — `trust` was already the works-with band. |
+| **19** | **The footer's Security link now points at `/trust`, not `/privacy#security`.** Same question, plain words, in the reader's language, and the trust page links on to the policy for anyone who wants the legal version. The `#security` id stays declared on the privacy page; it simply has no footer link pointing at it any more. `footer.cookies` still goes to `/privacy#cookies`. No new dictionary key was needed — `footer.security` already said "Seguridad". |
+| **20** | **The page states, out loud, that we hold no ISO 27001 and no SOC 2.** §7 said to claim no certification we do not hold; the page goes one step further and names their absence in a short "Lo que todavía no tenemos" section, because a GM who has to ask has already assumed the worst. Do not add a badge, a seal or a "compliant with" line here unless the certificate exists. |
+| **21** | **Every claim on `/trust` is checked against code, not against the pitch.** The read-only line is true because Apaleo's scopes are `reservations.read rateplans.read setup.read` and MEWS is called only on `getAll` endpoints; "nothing sends without a person" is true because `sendReply` is a server action behind a button; "disconnect erases the credentials that moment" is true because `PMS_CREDENTIAL_COLUMNS` nulls them in the same update, with the synced rows purged in the same step if the box is ticked. **If any of those change, the matching line on `/trust` changes with them** — the page header comment says so too. |
+| **22** | **`/trust` sits in the `(legal)` route group, so it wears the reduced legal chrome**, not the marketing header and footer that `/contact` wears. The group layout already applies `.marketing-surface`, so it joins the warm set for free, and the wordmark + language switcher + "Inicio" is enough of a way back for a page a reader arrives at mid-decision. Sitemap priority is 0.5 — above the legal pages' 0.3, because it has real search intent. |
 
 ### 9.2 Environment state
 
@@ -962,7 +969,7 @@ Each was made deliberately, and several reverse an earlier draft of this same do
 
 ### 9.3 Still open
 
-- `/trust` does not exist yet (Phase I). The `security` band's cta will point at it — build the band and the page in the same pass, or the link dangles.
+- ~~`/trust` does not exist yet (Phase I).~~ **Shipped** — `app/[lang]/(legal)/trust/page.tsx`, live in all three locales, in the sitemap with hreflang. Phase H's `security.cta` links to it with `localizedHref(locale, "/trust")`.
 - Fifteen bands is long. Watch scroll depth once live; if bands 6 and 7 both underperform, band 6 is the one to cut.
 - Two measurement gaps carried into Phase J: the newsletter routes were AA-checked in their invalid-token state only, and `/onboarding` was confirmed from source rather than measured (auth-guarded). Neither is believed to be a problem; both are unverified.
 - Between 1024 and 1279px, three of the timeline's seven chips wrap onto a second line inside their card, so those rows sit taller than the rest. Measured, not broken — the band is legible and the hour stays centred on its row. It resolves itself at 1280+ and below 1024; fix it only if the tablet read bothers someone, and fix it by moving the two-column split to `xl`, not by shrinking the chip.
