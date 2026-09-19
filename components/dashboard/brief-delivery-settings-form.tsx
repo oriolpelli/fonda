@@ -4,8 +4,10 @@ import { startTransition, useActionState, useEffect, useState } from "react";
 
 import {
   updateBriefDeliverySettings,
+  type BriefDeliveryError,
   type BriefDeliveryState,
 } from "@/app/[lang]/dashboard/brief/actions";
+import type { Dictionary } from "@/app/[lang]/dictionaries";
 import { BriefRecipientsEditor } from "@/components/dashboard/brief-recipients-editor";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
@@ -18,6 +20,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { t } from "@/lib/i18n/format";
 import { cn } from "@/lib/utils";
 
 const selectClassName = cn(
@@ -38,6 +41,26 @@ interface BriefDeliverySettingsFormProps {
 
 function hourLabel(hour: number): string {
   return `${String(hour).padStart(2, "0")}:00`;
+}
+
+/**
+ * The action reports a code, not a sentence — it has no locale to write one in
+ * (see `BriefDeliveryError`). The wording is chosen here, where the dictionary
+ * is, so an es/ca session gets its own language and no Postgres text ever
+ * reaches the screen.
+ */
+function errorMessage(
+  error: BriefDeliveryError,
+  copy: Dictionary["briefing"]["deliveryErrors"]
+): string {
+  switch (error.code) {
+    case "tooManyRecipients":
+      return t(copy.tooManyRecipients, { max: error.max });
+    case "invalidEmail":
+      return t(copy.invalidEmail, { email: error.email });
+    default:
+      return copy[error.code];
+  }
 }
 
 export function BriefDeliverySettingsForm({
@@ -157,7 +180,7 @@ export function BriefDeliverySettingsForm({
 
           {state && "error" in state ? (
             <p role="alert" className="text-sm font-medium text-destructive">
-              {state.error}
+              {errorMessage(state.error, dict.briefing.deliveryErrors)}
             </p>
           ) : null}
           {showSaved ? (

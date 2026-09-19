@@ -6,6 +6,29 @@ import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database";
 
 /**
+ * Why a code and not a sentence: this action runs on the server, where there is
+ * no locale — `[lang]` is the caller's, not ours — so any string built here is
+ * English by construction and an es/ca session would read it in the wrong
+ * language. Worse, the save branch used to interpolate `error.message`, putting
+ * a raw Postgres string on screen in guest-facing software. The client owns the
+ * wording (`dict.briefing.deliveryErrors`); the real reason goes to the server
+ * console, where support can find it. Same split as the Home customize panel
+ * (components/dashboard/home-customize-panel.tsx).
+ *
+ * `max` and `email` travel with their code because the translated template
+ * interpolates them — `email` is the value the user just typed, echoed back so
+ * they can see which row is wrong.
+ */
+export type BriefDeliveryError =
+  | { code: "recipientsUnreadable" }
+  | { code: "tooManyRecipients"; max: number }
+  | { code: "invalidEmail"; email: string }
+  | { code: "invalidSendHour" }
+  | { code: "invalidLanguage" }
+  | { code: "noHotel" }
+  | { code: "saveFailed" };
+
+/**
  * On success the action echoes back what was persisted. The form re-seeds its
  * controlled inputs from this rather than from its server props, so the value
  * on screen is the value in the database — with no dependency on when the
@@ -13,7 +36,7 @@ import type { Json } from "@/types/database";
  */
 export type BriefDeliveryState =
   | { ok: true; saved: { recipients: string[]; sendHour: number; language: string } }
-  | { error: string }
+  | { error: BriefDeliveryError }
   | undefined;
 
 const LANGUAGES = ["en", "es", "ca"] as const;
@@ -37,15 +60,15 @@ async function requireHotelId(): Promise<string> {
 }
 
 /** Trims, dedupes (case-insensitive), caps at 3, and validates recipient emails. */
-function parseRecipients(raw: string): string[] | { error: string } {
+function parseRecipients(raw: string): string[] | { error: BriefDeliveryError } {
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
   } catch {
-    return { error: "Couldn't read the recipients list." };
+    return { error: { code: "recipientsUnreadable" } };
   }
   if (!Array.isArray(parsed)) {
-    return { error: "Couldn't read the recipients list." };
+    return { error: { code: "recipientsUnreadable" } };
   }
 
   const trimmed = parsed
@@ -63,11 +86,11 @@ function parseRecipients(raw: string): string[] | { error: string } {
   }
 
   if (deduped.length > MAX_RECIPIENTS) {
-    return { error: `Up to ${MAX_RECIPIENTS} recipients.` };
+    return { error: { code: "tooManyRecipients", max: MAX_RECIPIENTS } };
   }
   for (const email of deduped) {
     if (!EMAIL_RE.test(email)) {
-      return { error: `"${email}" doesn't look like a valid email.` };
+      return { error: { code: "invalidEmail", email } };
     }
   }
   return deduped;
@@ -90,19 +113,22 @@ export async function updateBriefDeliverySettings(
   const sendHourRaw = String(formData.get("sendHour") ?? "").trim();
   const sendHour = Number.parseInt(sendHourRaw, 10);
   if (!Number.isInteger(sendHour) || sendHour < 0 || sendHour > 23) {
-    return { error: "Choose a valid send hour." };
+    return { error: { code: "invalidSendHour" } };
   }
 
   const language = String(formData.get("language") ?? "").trim();
   if (!LANGUAGES.includes(language as (typeof LANGUAGES)[number])) {
-    return { error: "Choose a brief language." };
+    return { error: { code: "invalidLanguage" } };
   }
 
   let hotelId: string;
   try {
     hotelId = await requireHotelId();
   } catch (err) {
-    return { error: (err as Error).message };
+    // "Not authenticated" and "no hotel" are the same dead end for the user and
+    // neither is actionable in the form, so they collapse to one message.
+    console.error("[brief] delivery settings: no hotel for session:", err);
+    return { error: { code: "noHotel" } };
   }
 
   // hotel_settings is client-writable for hotel members (RLS), so the session
@@ -117,7 +143,8 @@ export async function updateBriefDeliverySettings(
     })
     .eq("hotel_id", hotelId);
   if (error) {
-    return { error: `Couldn't save settings: ${error.message}` };
+    console.error("[brief] delivery settings save rejected:", error.message);
+    return { error: { code: "saveFailed" } };
   }
 
   // Route paths, not URL paths — the locale is a dynamic `[lang]` segment, so

@@ -572,7 +572,16 @@
     "syncingTitle": "La teva primera sincronització no ha acabat",
     "syncingBody": "El teu PMS està connectat i Fondas està llegint les teves reserves. El teu primer resum s'escriurà quan acabi.",
     "syncingCta": "Mira la sincronització",
-    "languageAccountHint": "Només l'idioma en què s'escriu el teu resum. L'idioma del compte, a Configuració, controla la interfície."
+    "languageAccountHint": "Només l'idioma en què s'escriu el teu resum. L'idioma del compte, a Configuració, controla la interfície.",
+    "deliveryErrors": {
+      "recipientsUnreadable": "No s'ha pogut llegir la llista de destinataris. Torna-ho a provar.",
+      "tooManyRecipients": "Fins a {max} destinataris.",
+      "invalidEmail": "«{email}» no sembla una adreça de correu vàlida.",
+      "invalidSendHour": "Tria una hora d'enviament vàlida.",
+      "invalidLanguage": "Tria un idioma per al resum.",
+      "noHotel": "No hem trobat el teu hotel. Torna a iniciar la sessió i prova-ho de nou.",
+      "saveFailed": "No s'han pogut desar els ajustos d'enviament. Torna-ho a provar."
+    }
   },
   "emails": {
     "title": "Correus",

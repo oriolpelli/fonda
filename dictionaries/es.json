@@ -572,7 +572,16 @@
     "syncingTitle": "Tu primera sincronización no ha terminado",
     "syncingBody": "Tu PMS está conectado y Fondas está leyendo tus reservas. Tu primer resumen se escribirá en cuanto termine.",
     "syncingCta": "Ver la sincronización",
-    "languageAccountHint": "Solo el idioma en que se escribe tu resumen. El idioma de la cuenta, en Ajustes, controla la interfaz."
+    "languageAccountHint": "Solo el idioma en que se escribe tu resumen. El idioma de la cuenta, en Ajustes, controla la interfaz.",
+    "deliveryErrors": {
+      "recipientsUnreadable": "No se ha podido leer la lista de destinatarios. Inténtalo de nuevo.",
+      "tooManyRecipients": "Hasta {max} destinatarios.",
+      "invalidEmail": "«{email}» no parece una dirección de correo válida.",
+      "invalidSendHour": "Elige una hora de envío válida.",
+      "invalidLanguage": "Elige un idioma para el resumen.",
+      "noHotel": "No hemos encontrado tu hotel. Vuelve a iniciar sesión e inténtalo de nuevo.",
+      "saveFailed": "No se han podido guardar los ajustes de entrega. Inténtalo de nuevo."
+    }
   },
   "emails": {
     "title": "Correos",

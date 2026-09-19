@@ -572,7 +572,16 @@
     "syncingTitle": "Your first sync hasn't finished",
     "syncingBody": "Your PMS is connected and Fondas is reading your bookings. Your first brief is written as soon as that's done.",
     "syncingCta": "Check the sync",
-    "languageAccountHint": "Only the language your brief is written in. Your account language, set in Settings, controls the interface."
+    "languageAccountHint": "Only the language your brief is written in. Your account language, set in Settings, controls the interface.",
+    "deliveryErrors": {
+      "recipientsUnreadable": "Couldn't read the recipients list. Try again.",
+      "tooManyRecipients": "Up to {max} recipients.",
+      "invalidEmail": "“{email}” doesn't look like a valid email address.",
+      "invalidSendHour": "Choose a valid send time.",
+      "invalidLanguage": "Choose a language for the brief.",
+      "noHotel": "We couldn't find your hotel. Sign in again and retry.",
+      "saveFailed": "Couldn't save your delivery settings. Try again."
+    }
   },
   "emails": {
     "title": "Emails",
