@@ -11,7 +11,7 @@ import {
 import type { Arrival } from "@/lib/arrivals";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/format";
-import { checkinsHref } from "@/lib/i18n/navigation";
+import { arrivalsHref } from "@/lib/i18n/navigation";
 
 /**
  * Who is checking in today (APP_UX_PROPOSAL.md §3.3).
@@ -36,7 +36,7 @@ export function ArrivalsWidget({
   arrivals: Arrival[];
   syncedAt: string | null;
 }) {
-  const href = checkinsHref(locale);
+  const href = arrivalsHref(locale);
   const shown = arrivals.slice(0, WIDGET_LIST_ROWS);
   const more = arrivals.length - shown.length;
 
@@ -55,7 +55,7 @@ export function ArrivalsWidget({
       freshness={syncedAt ? t(dict.home.syncedAt, { time: syncedAt }) : null}
     >
       {rows.length === 0 ? (
-        <WidgetEmpty icon="checkins" message={dict.home.arrivals.empty} />
+        <WidgetEmpty icon="arrivals" message={dict.home.arrivals.empty} />
       ) : (
         <WidgetList
           rows={rows}

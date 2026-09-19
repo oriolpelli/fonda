@@ -166,7 +166,7 @@ const ICONS: Record<string, LucideIcon> = {
   // Customer.io craft the panel is copying, so every sub-page has one.
   "front-desk-info": Info,
   brief: Sunrise,
-  checkins: DoorOpen,
+  arrivals: DoorOpen,
   communications: Send,
   // The two Communications rows sit one above the other under their eyebrow,
   // so they must not share a glyph: Send is the mail going out to an upcoming
@@ -1290,7 +1290,7 @@ export function Sidebar({
    *
    * The `sectionKey` clause is what keeps Operation lit on the Morning Brief:
    * its children sit at their own top-level URLs (/dashboard/brief,
-   * /dashboard/checkins, /dashboard/communications), none of which a prefix
+   * /dashboard/arrivals, /dashboard/communications), none of which a prefix
    * test against /dashboard/operation will ever match.
    */
   const isSectionActive = (item: NavItem) => {

@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 
 import {
   approveAllChasers,
-  generateChasers,
   sendChaser,
   skipChaser,
-} from "@/app/[lang]/dashboard/checkins/actions";
+} from "@/app/[lang]/dashboard/arrivals/actions";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
@@ -135,28 +134,16 @@ export function CheckinChasers({ chasers }: { chasers: ChaserCard[] }) {
         <p className="text-sm text-muted-foreground">
           {plural(chasers.length, dict.checkin.pendingOne, dict.checkin.pendingOther)}
         </p>
-        <div className="flex gap-2">
-          <Button
-            onClick={() =>
-              run(async () => {
-                const result = await generateChasers();
-                return result.error ? { error: result.error } : undefined;
-              })
-            }
-            disabled={pending}
-            variant="outline"
-            size="sm"
-          >
-            {dict.checkin.generateNow}
-          </Button>
-          <Button
-            onClick={handleBulk}
-            disabled={pending || chasers.length === 0}
-            size="sm"
-          >
-            {t(dict.checkin.approveAll, { count: chasers.length })}
-          </Button>
-        </div>
+        {/* Generating is the page's action now, in the arrivals header
+            (components/dashboard/generate-chasers-button.tsx) — this toolbar
+            belongs to the queue, so it only approves what is in it. */}
+        <Button
+          onClick={handleBulk}
+          disabled={pending || chasers.length === 0}
+          size="sm"
+        >
+          {t(dict.checkin.approveAll, { count: chasers.length })}
+        </Button>
       </div>
 
       {error ? (
@@ -166,7 +153,7 @@ export function CheckinChasers({ chasers }: { chasers: ChaserCard[] }) {
       ) : null}
 
       {chasers.length === 0 ? (
-        <EmptyState icon="checkins" message={dict.checkin.noChasers} />
+        <EmptyState icon="arrivals" message={dict.checkin.noChasers} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {chasers.map((chaser) => (

@@ -11,7 +11,7 @@ import {
 import type { Departure } from "@/lib/arrivals";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/format";
-import { checkinsHref } from "@/lib/i18n/navigation";
+import { arrivalsHref } from "@/lib/i18n/navigation";
 import { clockTime } from "@/components/dashboard/widgets/widget-section";
 
 /**
@@ -41,7 +41,9 @@ export function DeparturesWidget({
   timezone: string;
   syncedAt: string | null;
 }) {
-  const href = checkinsHref(locale);
+  // Straight to the departures tab: the "+N more" door has to open on the half
+  // of the day the card is showing (APP_UX_PROPOSAL.md §5.2).
+  const href = arrivalsHref(locale, "departures");
   const shown = departures.slice(0, WIDGET_LIST_ROWS);
   const more = departures.length - shown.length;
 
@@ -61,7 +63,7 @@ export function DeparturesWidget({
       freshness={syncedAt ? t(dict.home.syncedAt, { time: syncedAt }) : null}
     >
       {rows.length === 0 ? (
-        <WidgetEmpty icon="checkins" message={dict.home.departures.empty} />
+        <WidgetEmpty icon="arrivals" message={dict.home.departures.empty} />
       ) : (
         <WidgetList
           rows={rows}

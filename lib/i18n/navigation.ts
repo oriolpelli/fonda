@@ -1,3 +1,5 @@
+import { type ArrivalsTab } from "@/lib/arrivals-tab";
+
 import { type Locale } from "./config";
 
 /**
@@ -21,16 +23,34 @@ export function stripLocale(pathname: string): string {
 }
 
 /**
- * The surface that lists today's movements — arrivals, ETAs, and the check-in
- * chasers.
+ * The surface that lists today's movements — arrivals, ETAs, the check-in
+ * chasers, and today's departures (APP_UX_PROPOSAL.md §5.2).
  *
- * A helper rather than an inline path because W5 renames this route
- * (APP_UX_PROPOSAL.md §5.2) and six call sites point at it: the to-do list, the
- * arrivals, departures and VIP widgets, and whatever W5 adds. One edit here
- * moves all of them.
+ * A helper rather than an inline path, which is what made the W5 rename from
+ * `/dashboard/checkins` one edit rather than six: the to-do list, the arrivals,
+ * departures and VIP widgets and the Morning Brief all come through here.
+ *
+ * `tab` names the half of the day the caller means. It is omitted for arrivals
+ * because the page defaults to them — a link with no opinion should not carry
+ * one, and `?tab=arrivals` in every href would be noise in the address bar.
  */
-export function checkinsHref(locale: Locale): string {
-  return localizedHref(locale, "/dashboard/checkins");
+export function arrivalsHref(locale: Locale, tab?: ArrivalsTab): string {
+  const base = localizedHref(locale, "/dashboard/arrivals");
+  return tab === "departures" ? `${base}?tab=departures` : base;
+}
+
+/**
+ * One guest's record.
+ *
+ * Guests v1 hasn't shipped — the route is a stub — but the arrivals and
+ * departures lists link to it anyway (§5.2): the link is the right destination
+ * today and stops being a stub without a single call site changing.
+ */
+export function guestHref(locale: Locale, customerMewsId: string): string {
+  return localizedHref(
+    locale,
+    `/dashboard/guests/${encodeURIComponent(customerMewsId)}`
+  );
 }
 
 /**

@@ -10,7 +10,7 @@ import {
 import type { VipArrival } from "@/lib/dashboard-snapshot";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/format";
-import { checkinsHref, communicationsHref } from "@/lib/i18n/navigation";
+import { arrivalsHref, communicationsHref } from "@/lib/i18n/navigation";
 
 /**
  * VIPs arriving today whose booking carries no note for the desk
@@ -43,7 +43,7 @@ export function VipNoNoteWidget({
   threads: Map<string, string>;
   syncedAt: string | null;
 }) {
-  const fallbackHref = checkinsHref(locale);
+  const fallbackHref = arrivalsHref(locale);
 
   const rows: WidgetListRow[] = vips.map((vip) => {
     const emailId = threads.get(vip.reservationId);

@@ -104,7 +104,7 @@ export default async function BriefingPage({
 
   const quickActions = [
     { label: dict.briefing.reviewEmails, href: "/dashboard/communications" },
-    { label: dict.briefing.seeArrivals, href: "/dashboard/checkins" },
+    { label: dict.briefing.seeArrivals, href: "/dashboard/arrivals" },
   ];
 
   return (

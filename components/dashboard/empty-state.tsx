@@ -20,7 +20,7 @@ export type EmptyStateIcon =
   | "concierge"
   | "analytics"
   | "chat"
-  | "checkins"
+  | "arrivals"
   | "emails"
   // A handful of the roadmap sections carry their own glyph, so a demo that
   // walks the nav isn't twenty-one identical clocks. The rest deliberately
@@ -41,7 +41,7 @@ const ICONS: Record<EmptyStateIcon, LucideIcon> = {
   concierge: ConciergeBell,
   analytics: BarChart3,
   chat: MessageSquare,
-  checkins: DoorOpen,
+  arrivals: DoorOpen,
   emails: Inbox,
   reputation: Star,
   revenue: TrendingUp,

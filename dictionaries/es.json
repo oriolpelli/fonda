@@ -344,7 +344,6 @@
   "sidebar": {
     "home": "Inicio",
     "brief": "Resumen matutino",
-    "checkins": "Check-ins",
     "arrivals": "Llegadas y salidas",
     "concierge": "Conserjería",
     "communications": "Comunicaciones",
@@ -641,14 +640,20 @@
       "waiting": "Esperando +{hours} h"
     }
   },
+  "arrivals": {
+    "heading": "Hoy · {date}",
+    "generateChasers": "Generar seguimientos",
+    "tabsLabel": "Llegadas y salidas",
+    "tabArrivals": "Llegadas ({count})",
+    "tabDepartures": "Salidas ({count})",
+    "emptyArrivals": "Hoy no hay llegadas.",
+    "emptyDepartures": "Hoy no hay salidas."
+  },
   "checkin": {
-    "title": "Seguimiento de check-in",
-    "desc": "Solicitudes de hora de llegada para huéspedes confirmados que llegan en los próximos 7 días.",
-    "pendingOne": "{count} seguimiento pendiente",
-    "pendingOther": "{count} seguimientos pendientes",
-    "generateNow": "Generar ahora",
+    "pendingOne": "{count} sigue sin hora de llegada",
+    "pendingOther": "{count} siguen sin hora de llegada",
     "approveAll": "Aprobar todos ({count})",
-    "noChasers": "No hay seguimientos pendientes. Usa «Generar ahora» para redactar solicitudes a los huéspedes que llegan en los próximos 7 días.",
+    "noChasers": "Nadie espera una solicitud de hora de llegada. Usa «Generar seguimientos» para redactar solicitudes a los huéspedes que llegan en los próximos 7 días.",
     "send": "Enviar",
     "skip": "Omitir",
     "chasePlaceholder": "Mensaje de seguimiento…",

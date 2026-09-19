@@ -63,7 +63,7 @@ const RANK: Record<TodoKind, number> = {
 /** Where the GM goes to act on an item. Locale prefix is added by the page. */
 export type TodoTarget =
   | { page: "communications"; emailId?: string }
-  | { page: "checkins" }
+  | { page: "arrivals" }
   | { page: "occupancy" }; // the 14-day strip on the dashboard itself
 
 export interface TodoItem {
@@ -183,7 +183,7 @@ export function buildTodoList(input: TodoInput): TodoItem[] {
       kind: "vip_no_note",
       rank: RANK.vip_no_note,
       vars: { guest: vip.name },
-      target: { page: "checkins" },
+      target: { page: "arrivals" },
       primary: items.length === 0,
     });
   }
@@ -196,7 +196,7 @@ export function buildTodoList(input: TodoInput): TodoItem[] {
       kind: "unconfirmed_etas",
       rank: RANK.unconfirmed_etas,
       vars: { count: input.unconfirmedEtasTomorrow },
-      target: { page: "checkins" },
+      target: { page: "arrivals" },
       primary: items.length === 0,
     });
   }

@@ -132,12 +132,11 @@ export default async function DashboardLayout({
           sectionKey: "operation",
         },
         {
-          // "Arrivals & departures" — it covers both now (§5.2). The route is
-          // still /dashboard/checkins; the rename to /dashboard/arrivals lands
-          // with the surface itself, so the key stays `checkins` too.
-          key: "checkins",
+          // "Arrivals & departures" — it covers both now, and the route says so
+          // (§5.2). /dashboard/checkins is a redirect kept for old links.
+          key: "arrivals",
           label: dict.sidebar.arrivals,
-          href: localizedHref(locale, "/dashboard/checkins"),
+          href: localizedHref(locale, "/dashboard/arrivals"),
           sectionKey: "operation",
         },
         soon("communications-in-house", {

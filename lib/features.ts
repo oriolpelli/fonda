@@ -21,7 +21,7 @@ export const FEATURES: Feature[] = [
     name: "Check-in time chasing",
     description:
       "Automatically nudge guests for their expected arrival time and keep housekeeping one step ahead.",
-    href: "/dashboard/checkins",
+    href: "/dashboard/arrivals",
   },
   {
     key: "hotel-chat",

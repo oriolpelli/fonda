@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Dictionary } from "@/app/[lang]/dictionaries";
 import { intlLocale, type Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/format";
-import { checkinsHref, communicationsHref } from "@/lib/i18n/navigation";
+import { arrivalsHref, communicationsHref } from "@/lib/i18n/navigation";
 import type { TodoItem, TodoTarget } from "@/lib/todo-rules";
 import { cn } from "@/lib/utils";
 
@@ -29,8 +29,8 @@ function href(locale: Locale, target: TodoTarget): string {
   switch (target.page) {
     case "communications":
       return communicationsHref(locale, target.emailId);
-    case "checkins":
-      return checkinsHref(locale);
+    case "arrivals":
+      return arrivalsHref(locale);
     case "occupancy":
       // The 14-day strip is on this page — scroll to it rather than navigate.
       return "#occupancy";

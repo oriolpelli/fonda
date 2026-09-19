@@ -344,7 +344,6 @@
   "sidebar": {
     "home": "Home",
     "brief": "Morning Brief",
-    "checkins": "Check-ins",
     "arrivals": "Arrivals & departures",
     "concierge": "Concierge",
     "communications": "Communications",
@@ -641,14 +640,20 @@
       "waiting": "Waiting {hours}h+"
     }
   },
+  "arrivals": {
+    "heading": "Today · {date}",
+    "generateChasers": "Generate chasers",
+    "tabsLabel": "Arrivals and departures",
+    "tabArrivals": "Arrivals ({count})",
+    "tabDepartures": "Departures ({count})",
+    "emptyArrivals": "No arrivals today.",
+    "emptyDepartures": "No departures today."
+  },
   "checkin": {
-    "title": "Check-in chasing",
-    "desc": "Arrival-time requests for confirmed guests arriving in the next 7 days.",
-    "pendingOne": "{count} pending chaser",
-    "pendingOther": "{count} pending chasers",
-    "generateNow": "Generate now",
+    "pendingOne": "{count} still needs an ETA",
+    "pendingOther": "{count} still need an ETA",
     "approveAll": "Approve all ({count})",
-    "noChasers": "No pending chasers. Use “Generate now” to draft requests for guests arriving in the next 7 days.",
+    "noChasers": "Nobody is waiting on an arrival-time request. Use “Generate chasers” to draft requests for guests arriving in the next 7 days.",
     "send": "Send",
     "skip": "Skip",
     "chasePlaceholder": "Chase message…",

@@ -344,7 +344,6 @@
   "sidebar": {
     "home": "Inici",
     "brief": "Resum matinal",
-    "checkins": "Check-ins",
     "arrivals": "Arribades i sortides",
     "concierge": "Consergeria",
     "communications": "Comunicacions",
@@ -641,14 +640,20 @@
       "waiting": "Esperant +{hours} h"
     }
   },
+  "arrivals": {
+    "heading": "Avui · {date}",
+    "generateChasers": "Genera seguiments",
+    "tabsLabel": "Arribades i sortides",
+    "tabArrivals": "Arribades ({count})",
+    "tabDepartures": "Sortides ({count})",
+    "emptyArrivals": "Avui no hi ha arribades.",
+    "emptyDepartures": "Avui no hi ha sortides."
+  },
   "checkin": {
-    "title": "Seguiment de check-in",
-    "desc": "Sol·licituds d'hora d'arribada per a hostes confirmats que arriben en els pròxims 7 dies.",
-    "pendingOne": "{count} seguiment pendent",
-    "pendingOther": "{count} seguiments pendents",
-    "generateNow": "Genera ara",
+    "pendingOne": "{count} encara no té hora d'arribada",
+    "pendingOther": "{count} encara no tenen hora d'arribada",
     "approveAll": "Aprova'ls tots ({count})",
-    "noChasers": "No hi ha cap seguiment pendent. Fes servir «Genera ara» per redactar sol·licituds als hostes que arriben en els pròxims 7 dies.",
+    "noChasers": "Ningú no espera una sol·licitud d'hora d'arribada. Fes servir «Genera seguiments» per redactar sol·licituds als hostes que arriben en els pròxims 7 dies.",
     "send": "Envia",
     "skip": "Omet",
     "chasePlaceholder": "Missatge de seguiment…",

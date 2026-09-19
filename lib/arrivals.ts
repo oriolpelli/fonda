@@ -40,6 +40,12 @@ export interface Arrival {
   reservationId: string;
   /** Display name. Null when the booking carries no guest profile. */
   name: string | null;
+  /**
+   * The guest's PMS id — the key of their record (§5.4). Null when the booking
+   * carries no profile, which is also the only case where a row has nowhere to
+   * link to.
+   */
+  customerId: string | null;
   /** Room type as a GM would say it, or null when the PMS only gave an id. */
   roomType: string | null;
   /** Expected arrival time, free text as the PMS holds it. Null = no ETA. */
@@ -53,6 +59,8 @@ export interface Arrival {
 export interface Departure {
   reservationId: string;
   name: string | null;
+  /** The guest's PMS id — see `Arrival.customerId`. */
+  customerId: string | null;
   /** Assigned room, or null when the PMS only gave an id. */
   room: string | null;
   /** Check-out instant, ISO-8601 UTC; the widget prints the hotel wall clock. */
@@ -247,6 +255,7 @@ export function buildMovements({
     .map((r) => ({
       reservationId: r.mews_id,
       name: nameOf(r.customer_mews_id),
+      customerId: r.customer_mews_id,
       roomType: readRoomType(r.raw, r.requested_category_id),
       // The captured ETA wins over whatever the booking shipped with: it is
       // the guest's own answer to the chaser (lib/checkin-chaser.ts).
@@ -262,6 +271,7 @@ export function buildMovements({
     .map((r) => ({
       reservationId: r.mews_id,
       name: nameOf(r.customer_mews_id),
+      customerId: r.customer_mews_id,
       room: readRoom(r.raw, r.assigned_space_id),
       endUtc: r.end_utc as string,
     }))
