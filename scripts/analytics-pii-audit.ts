@@ -87,6 +87,7 @@ track(HOTEL, "eta_captured", { source: "email_reply" });
 track(HOTEL, "chat_query", {
   chars: `Which room is ${GUEST_NAME} in?`.length, turns: 4, produced_draft: true,
 });
+track(HOTEL, "home_locked_widget_clicked", { key: "adr-revpar" });
 
 const goodCount = captured.length;
 
@@ -117,7 +118,7 @@ for (const { event, properties } of captured) {
 }
 
 const tripwireHeld = captured.length === goodCount;
-const ok = failures === 0 && goodCount === 8 && tripwireHeld;
-console.log(`\n${ok ? "PASS" : "FAIL"} — ${goodCount}/8 events captured, ${failures} leaks, ` +
+const ok = failures === 0 && goodCount === 9 && tripwireHeld;
+console.log(`\n${ok ? "PASS" : "FAIL"} — ${goodCount}/9 events captured, ${failures} leaks, ` +
   `tripwire ${tripwireHeld ? "dropped the bad event" : "LET IT THROUGH"}.`);
 process.exit(ok ? 0 : 1);

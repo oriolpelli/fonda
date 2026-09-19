@@ -3,6 +3,7 @@ import "server-only";
 import { PostHog } from "posthog-node";
 
 import type { EmailClassification } from "@/lib/email-processor";
+import type { HomeLockedWidgetKey } from "@/lib/roadmap";
 
 /**
  * Server-side product analytics (B12/B16 — draft-acceptance measurement).
@@ -86,6 +87,17 @@ type EventProperties = {
     turns: number;
     produced_draft: boolean;
   };
+  /**
+   * Someone clicked a locked tile in Home's customize panel — the demand
+   * signal that decides what gets built next (APP_UX_PROPOSAL.md §3.4).
+   *
+   * `key` is one of the seven tiles in `HOME_LOCKED_WIDGETS`, which is a union
+   * of string literals like every other property here: there is no way to pass
+   * a hotel's name, a guest's, or anything a user typed through this event,
+   * because the only values the type admits are seven constants in
+   * lib/roadmap.ts.
+   */
+  home_locked_widget_clicked: { key: HomeLockedWidgetKey };
 };
 
 export type AnalyticsEvent = keyof EventProperties;

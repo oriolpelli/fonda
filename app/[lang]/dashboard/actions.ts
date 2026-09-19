@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 
+import { track } from "@/lib/analytics";
 import { loadHomeLayout, saveHomeLayout, type StoredLayout } from "@/lib/home-layout";
 import type { HomeWidgetKey } from "@/lib/home-widgets";
+import { HOME_LOCKED_WIDGETS, type HomeLockedWidgetKey } from "@/lib/roadmap";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
@@ -114,4 +116,48 @@ export async function updateHomeLayout(
   // "/dashboard" matches no route and silently revalidates nothing.
   revalidatePath("/[lang]/dashboard", "page");
   return { ok: true, saved };
+}
+
+/**
+ * A locked tile in the customize panel was clicked (APP_UX_PROPOSAL.md §3.4).
+ *
+ * Nothing happens on screen — the feature does not exist yet, and a tile that
+ * opened a "we'll let you know" dialog would be asking for an email address to
+ * do nothing with. What it does is record the interest, which is the whole
+ * point of showing the roadmap here: which tiles get clicked decides what gets
+ * built next, from real demand rather than from a document.
+ *
+ * `track()` takes the hotel as its subject and never the person (lib/analytics.ts
+ * rule 3), so this measures a property's appetite for a feature, not a GM's
+ * browsing. The key is re-checked against the list here because the argument
+ * crosses the network: a client can post any string, and only these seven are
+ * allowed to reach PostHog.
+ *
+ * Returns nothing and throws nothing. An unrecognised key, a signed-out caller
+ * or a failed lookup is a dropped metric, which is the acceptable loss; the
+ * click itself was already inert.
+ */
+export async function recordLockedWidgetClick(key: string): Promise<void> {
+  if (!(HOME_LOCKED_WIDGETS as readonly string[]).includes(key)) return;
+
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: profile } = await supabase
+      .from("users")
+      .select("hotel_id")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (!profile?.hotel_id) return;
+
+    track(profile.hotel_id, "home_locked_widget_clicked", {
+      key: key as HomeLockedWidgetKey,
+    });
+  } catch {
+    // Analytics is never allowed to affect the caller's outcome.
+  }
 }

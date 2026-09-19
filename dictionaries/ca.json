@@ -379,6 +379,13 @@
   },
   "roadmap": {
     "badge": "Properament",
+    "label": {
+      "adr-revpar": "ADR i RevPAR",
+      "pickup-pace": "Reserves i ritme",
+      "review-score": "Puntuació de ressenyes",
+      "upsell-revenue": "Ingressos per upselling",
+      "labour-cost": "Cost de personal"
+    },
     "blurb": {
       "chat": "Una pàgina sencera per preguntar el que vulguis sobre el teu hotel, amb tota la conversa desada. El botó del cantó ja respon preguntes soltes.",
       "concierge": "Missatgeria per a hostes ja allotjats, inclòs WhatsApp. Fins llavors, tots els correus d'hostes són a Comunicacions, on es destaquen els que arriben aviat.",
@@ -399,7 +406,12 @@
       "financeReporting": "Informes de tancament de nit i de final de mes generats i quadrats, a punt per a la teva gestoria.",
       "chargeback": "Disputes detectades aviat i preparades amb les proves per barallar-les, per guanyar-ne més.",
       "aiManagement": "Veure i dirigir el que la IA de Fondas fa per tu: el que ha redactat, enviat i decidit.",
-      "teamActivity": "Què porta ara mateix cada lloc —recepció, back office— i quanta feina els treu Fondas."
+      "teamActivity": "Què porta ara mateix cada lloc —recepció, back office— i quanta feina els treu Fondas.",
+      "adr-revpar": "La teva tarifa mitjana i els teus ingressos per habitació disponible, aquesta nit i el que va de mes, al costat de l'ocupació que ja llegeixes cada matí.",
+      "pickup-pace": "Quantes nits s'han reservat des d'ahir, i si vas per davant d'on eres en aquest mateix punt de l'any passat.",
+      "review-score": "La teva puntuació a Booking, Google i TripAdvisor en una sola línia, i cap a on s'ha mogut aquesta setmana.",
+      "upsell-revenue": "El que han deixat de debò les millores d'habitació, les entrades anticipades i els extres aquest mes, oferta per oferta.",
+      "labour-cost": "Hores i cost de personal en relació amb les habitacions que has venut realment, torn a torn."
     }
   },
   "communications": {
@@ -447,6 +459,24 @@
       },
       "sync-health": {
         "title": "Estat de la sincronització"
+      }
+    },
+    "customize": {
+      "open": "Personalitza",
+      "title": "Personalitza l'inici",
+      "intro": "Tria què veus cada matí, i en quin ordre. «Avui et necessita» sempre va primer.",
+      "close": "Tanca",
+      "pinned": "Sempre primer",
+      "reorder": "Reordena {title}",
+      "comingSoon": "Properament",
+      "saving": "Desant…",
+      "saveFailed": "No s'ha pogut desar la teva disposició. Torna-ho a provar.",
+      "announce": {
+        "instructions": "Prem la barra espaiadora per agafar un bloc, les fletxes per moure'l, la barra espaiadora un altre cop per deixar-lo anar o escapada per cancel·lar.",
+        "lifted": "Has agafat {title}. És a la posició {position} de {total}.",
+        "moved": "{title} s'ha mogut a la posició {position} de {total}.",
+        "dropped": "{title} s'ha deixat anar a la posició {position} de {total}.",
+        "cancelled": "S'ha cancel·lat el moviment de {title}. Torna a la posició {position} de {total}."
       }
     },
     "needsYouCount": "{count} coses",

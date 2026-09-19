@@ -379,6 +379,13 @@
   },
   "roadmap": {
     "badge": "Coming soon",
+    "label": {
+      "adr-revpar": "ADR & RevPAR",
+      "pickup-pace": "Pickup & pace",
+      "review-score": "Review score",
+      "upsell-revenue": "Upsell revenue",
+      "labour-cost": "Labour cost"
+    },
     "blurb": {
       "chat": "A full page for asking your hotel anything, with the whole conversation kept. The button in the corner already answers one-off questions.",
       "concierge": "Messaging for guests who are already in-house, WhatsApp included. Until then, every guest email sits in Communications, where arriving guests are flagged for you.",
@@ -399,7 +406,12 @@
       "financeReporting": "Night-audit and month-end reports generated and reconciled, ready to hand to your accountant.",
       "chargeback": "Disputes caught early and packaged with the evidence to fight them, so you win more of them.",
       "aiManagement": "See and steer what Fondas' AI is doing on your behalf — what it drafted, sent and decided.",
-      "teamActivity": "What each seat — reception, back office — is handling right now, and how much Fondas is taking off their plate."
+      "teamActivity": "What each seat — reception, back office — is handling right now, and how much Fondas is taking off their plate.",
+      "adr-revpar": "Your average rate and revenue per available room, tonight and month to date, beside the occupancy you already read every morning.",
+      "pickup-pace": "How many nights were booked since yesterday, and whether you are ahead of where you stood at this point last year.",
+      "review-score": "Your score across Booking, Google and TripAdvisor on one line, and which way it moved this week.",
+      "upsell-revenue": "What upgrades, early check-ins and extras actually earned this month, offer by offer.",
+      "labour-cost": "Hours and labour cost against the rooms you really sold, shift by shift."
     }
   },
   "communications": {
@@ -447,6 +459,24 @@
       },
       "sync-health": {
         "title": "Sync health"
+      }
+    },
+    "customize": {
+      "open": "Customize",
+      "title": "Customize Home",
+      "intro": "Choose what you see every morning, and in what order. Needs you today always comes first.",
+      "close": "Close",
+      "pinned": "Always first",
+      "reorder": "Reorder {title}",
+      "comingSoon": "Coming soon",
+      "saving": "Saving…",
+      "saveFailed": "Couldn't save your layout. Try again.",
+      "announce": {
+        "instructions": "Press the space bar to pick up a widget, the arrow keys to move it, the space bar again to drop it, or escape to cancel.",
+        "lifted": "Picked up {title}. It is in position {position} of {total}.",
+        "moved": "{title} moved to position {position} of {total}.",
+        "dropped": "{title} dropped at position {position} of {total}.",
+        "cancelled": "Moving {title} was cancelled. It is back in position {position} of {total}."
       }
     },
     "needsYouCount": "{count} things",

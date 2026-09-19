@@ -2,6 +2,7 @@ import * as Sentry from "@sentry/nextjs";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { FirstRunState } from "@/components/dashboard/first-run-state";
+import { HomeCustomizePanel } from "@/components/dashboard/home-customize-panel";
 import type { Stat } from "@/components/dashboard/stat-row";
 import { ArrivalsWidget } from "@/components/dashboard/widgets/arrivals-widget";
 import { BriefWidget } from "@/components/dashboard/widgets/brief-widget";
@@ -81,10 +82,7 @@ export default async function DashboardPage({
     month: "long",
   }).format(new Date());
 
-  // No header action. Each widget now carries its own title, so a page-level
-  // button would be the only control on the page with nothing beneath it; the
-  // Customize button §3.4 describes lands with the panel, not before it.
-  const header = (
+  const greetingBlock = (
     <div className="flex flex-col gap-1">
       <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
         {t(dict.home.goodMorning, { name: greeting })}
@@ -100,7 +98,10 @@ export default async function DashboardPage({
   if (!snapshot.connected) {
     return (
       <div className="flex flex-col gap-8">
-        {header}
+        {/* No Customize here. Before the first sync there are no widgets to
+            pick between — the only thing Home can offer is the one action that
+            fixes that. */}
+        {greetingBlock}
         <FirstRunState
           title={dict.home.presyncTitle}
           body={dict.home.presyncBody}
@@ -299,7 +300,13 @@ export default async function DashboardPage({
 
   return (
     <div className="flex flex-col gap-8">
-      {header}
+      {/* Customize sits on the greeting row, right-aligned and quiet
+          (APP_UX_PROPOSAL.md §3.4) — the page's one header action, and a ghost
+          button because it is secondary to everything below it. */}
+      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+        {greetingBlock}
+        <HomeCustomizePanel layout={layout} />
+      </div>
 
       {/* One grid for the whole page: full-width widgets span both columns, so
           a full/half/half run lays out without the page having to split itself

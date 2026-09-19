@@ -379,6 +379,13 @@
   },
   "roadmap": {
     "badge": "Próximamente",
+    "label": {
+      "adr-revpar": "ADR y RevPAR",
+      "pickup-pace": "Reservas y ritmo",
+      "review-score": "Puntuación de reseñas",
+      "upsell-revenue": "Ingresos por upselling",
+      "labour-cost": "Coste de personal"
+    },
     "blurb": {
       "chat": "Una página entera para preguntar lo que quieras sobre tu hotel, con toda la conversación guardada. El botón de la esquina ya responde preguntas sueltas.",
       "concierge": "Mensajería para huéspedes ya alojados, incluido WhatsApp. Hasta entonces, todos los correos de huéspedes están en Comunicaciones, donde se destacan los que llegan pronto.",
@@ -399,7 +406,12 @@
       "financeReporting": "Informes de cierre de noche y de fin de mes generados y cuadrados, listos para tu gestoría.",
       "chargeback": "Disputas detectadas pronto y preparadas con las pruebas para pelearlas, para ganar más.",
       "aiManagement": "Ver y dirigir lo que la IA de Fondas hace por ti: lo que ha redactado, enviado y decidido.",
-      "teamActivity": "Qué lleva ahora mismo cada puesto —recepción, back office— y cuánto trabajo les quita Fondas."
+      "teamActivity": "Qué lleva ahora mismo cada puesto —recepción, back office— y cuánto trabajo les quita Fondas.",
+      "adr-revpar": "Tu tarifa media y tus ingresos por habitación disponible, esta noche y en lo que va de mes, junto a la ocupación que ya lees cada mañana.",
+      "pickup-pace": "Cuántas noches se han reservado desde ayer, y si vas por delante de donde estabas en este mismo punto del año pasado.",
+      "review-score": "Tu puntuación en Booking, Google y TripAdvisor en una sola línea, y hacia dónde se ha movido esta semana.",
+      "upsell-revenue": "Lo que han dejado de verdad las mejoras de habitación, las entradas anticipadas y los extras este mes, oferta por oferta.",
+      "labour-cost": "Horas y coste de personal frente a las habitaciones que has vendido realmente, turno a turno."
     }
   },
   "communications": {
@@ -447,6 +459,24 @@
       },
       "sync-health": {
         "title": "Estado de la sincronización"
+      }
+    },
+    "customize": {
+      "open": "Personalizar",
+      "title": "Personalizar el inicio",
+      "intro": "Elige qué ves cada mañana, y en qué orden. «Hoy te necesita» siempre va primero.",
+      "close": "Cerrar",
+      "pinned": "Siempre primero",
+      "reorder": "Reordenar {title}",
+      "comingSoon": "Próximamente",
+      "saving": "Guardando…",
+      "saveFailed": "No se ha podido guardar tu disposición. Inténtalo de nuevo.",
+      "announce": {
+        "instructions": "Pulsa la barra espaciadora para coger un bloque, las flechas para moverlo, la barra espaciadora otra vez para soltarlo o escape para cancelar.",
+        "lifted": "Has cogido {title}. Está en la posición {position} de {total}.",
+        "moved": "{title} se ha movido a la posición {position} de {total}.",
+        "dropped": "{title} se ha soltado en la posición {position} de {total}.",
+        "cancelled": "Se ha cancelado el movimiento de {title}. Vuelve a la posición {position} de {total}."
       }
     },
     "needsYouCount": "{count} cosas",

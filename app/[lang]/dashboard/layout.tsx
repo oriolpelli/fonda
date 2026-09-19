@@ -79,6 +79,14 @@ export default async function DashboardLayout({
     } = {}
   ): NavItem => {
     const feature = roadmapFeature(key);
+    // A copy-only row (a future Home widget, not a future page) has no route to
+    // link to. Loud rather than `href="undefined"`: it can only ever be a typo
+    // in the tree below, and it is a build-time one.
+    if (!feature.route) {
+      throw new Error(
+        `Roadmap row "${key}" has no route — it is a widget row, not a nav section.`
+      );
+    }
     return {
       key,
       label: label ?? feature.label(dict),

@@ -34,8 +34,16 @@ export interface RoadmapFeature {
    * components/dashboard/sidebar.tsx) and as the empty-state icon key.
    */
   key: string;
-  /** Route below the locale prefix, e.g. "/dashboard/reputation". */
-  route: string;
+  /**
+   * Route below the locale prefix, e.g. "/dashboard/reputation".
+   *
+   * Absent for a **copy-only row**: a future *Home widget* rather than a future
+   * page (see `HOME_LOCKED_WIDGETS` below). Those rows exist so the customize
+   * panel's locked tiles have a label and a blurb in three languages; there is
+   * no page to link to and there never will be, so inventing a route for them
+   * would only invite someone to wire a nav row at a URL that 404s.
+   */
+  route?: string;
   status: FeatureStatus;
   /** Sidebar label and page title. */
   label: (dict: Dictionary) => string;
@@ -223,6 +231,48 @@ export const ROADMAP = [
     blurb: (dict: Dictionary) => dict.roadmap.blurb.teamActivity,
   },
 
+  // --- Future Home widgets (APP_UX_PROPOSAL.md §3.4) ------------------------
+  //
+  // No page, no nav row and no route: these are the locked tiles at the foot of
+  // Home's customize panel, and a locked tile is a *widget* someone will one day
+  // tick on — not a section they can navigate to. They are here for the same
+  // reason the parked eight are: this file owns roadmap copy in three languages,
+  // and the panel is where the roadmap is sold from now on.
+  //
+  // `HOME_LOCKED_WIDGETS` below is the list the panel actually renders; two of
+  // its seven (ota-parity, housekeeping) are parked *sections* above that happen
+  // to make good widgets too, so they are reused rather than duplicated.
+  {
+    key: "adr-revpar",
+    status: "coming-soon",
+    label: (dict: Dictionary) => dict.roadmap.label["adr-revpar"],
+    blurb: (dict: Dictionary) => dict.roadmap.blurb["adr-revpar"],
+  },
+  {
+    key: "pickup-pace",
+    status: "coming-soon",
+    label: (dict: Dictionary) => dict.roadmap.label["pickup-pace"],
+    blurb: (dict: Dictionary) => dict.roadmap.blurb["pickup-pace"],
+  },
+  {
+    key: "review-score",
+    status: "coming-soon",
+    label: (dict: Dictionary) => dict.roadmap.label["review-score"],
+    blurb: (dict: Dictionary) => dict.roadmap.blurb["review-score"],
+  },
+  {
+    key: "upsell-revenue",
+    status: "coming-soon",
+    label: (dict: Dictionary) => dict.roadmap.label["upsell-revenue"],
+    blurb: (dict: Dictionary) => dict.roadmap.blurb["upsell-revenue"],
+  },
+  {
+    key: "labour-cost",
+    status: "coming-soon",
+    label: (dict: Dictionary) => dict.roadmap.label["labour-cost"],
+    blurb: (dict: Dictionary) => dict.roadmap.blurb["labour-cost"],
+  },
+
   // --- How to add a future roadmap feature ---------------------------------
   //
   // The nav is a two-pillar tree, so a new feature is a *sub-page of a pillar*
@@ -263,6 +313,32 @@ export const ROADMAP = [
 
 /** Keys of the rows above — a typo in a page or nav lookup won't compile. */
 export type RoadmapKey = (typeof ROADMAP)[number]["key"];
+
+/**
+ * The locked tiles at the foot of Home's customize panel, in the order they are
+ * drawn (APP_UX_PROPOSAL.md §3.4).
+ *
+ * A GM meets each of these at the moment they are deciding what they want to
+ * see every morning, which is both the honest place to show an unbuilt feature
+ * and the one place a click on it means something: the panel logs it
+ * (`home_locked_widget_clicked`), so what gets built next is settled by demand
+ * rather than by this file.
+ *
+ * `satisfies readonly RoadmapKey[]` is the guard that matters — a tile can only
+ * name a key that has a row above, so a tile can never render blank.
+ */
+export const HOME_LOCKED_WIDGETS = [
+  "adr-revpar",
+  "pickup-pace",
+  "ota-parity",
+  "review-score",
+  "upsell-revenue",
+  "housekeeping",
+  "labour-cost",
+] as const satisfies readonly RoadmapKey[];
+
+/** One of the seven tiles above. Narrow on purpose: it is an analytics payload. */
+export type HomeLockedWidgetKey = (typeof HOME_LOCKED_WIDGETS)[number];
 
 /** The row for one key. Throws only if a row was deleted without its page. */
 export function roadmapFeature(key: RoadmapKey): RoadmapFeature {
