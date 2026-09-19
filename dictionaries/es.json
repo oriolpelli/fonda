@@ -1083,5 +1083,21 @@
     "i3Desc": "Donde de verdad lo vas a leer a las 6:45.",
     "i4Title": "Outlook",
     "i4Desc": "Para los hoteles que no están en Gmail."
+  },
+  "guestContext": {
+    "stay": "Estancia",
+    "facts": "Datos",
+    "nights": "{count} noches",
+    "nightsOne": "1 noche",
+    "roomType": "Tipo de habitación",
+    "adults": "Adultos",
+    "children": "Niños",
+    "nationality": "Nacionalidad",
+    "language": "Idioma",
+    "returningOne": "Repite · 1 estancia anterior",
+    "returningOther": "Repite · {count} estancias anteriores",
+    "notMatched": "Sin reserva asociada",
+    "openRecord": "Abrir ficha del huésped",
+    "label": "Contexto del huésped"
   }
 }

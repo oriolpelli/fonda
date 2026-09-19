@@ -1083,5 +1083,21 @@
     "i3Desc": "Where you'll actually read it at 6:45.",
     "i4Title": "Outlook",
     "i4Desc": "For the hotels that aren't on Gmail."
+  },
+  "guestContext": {
+    "stay": "Stay",
+    "facts": "Facts",
+    "nights": "{count} nights",
+    "nightsOne": "1 night",
+    "roomType": "Room type",
+    "adults": "Adults",
+    "children": "Children",
+    "nationality": "Nationality",
+    "language": "Language",
+    "returningOne": "Returning · 1 previous stay",
+    "returningOther": "Returning · {count} previous stays",
+    "notMatched": "Not matched to a booking",
+    "openRecord": "Open guest record",
+    "label": "Guest context"
   }
 }

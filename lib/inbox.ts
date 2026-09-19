@@ -69,6 +69,19 @@ export interface InboxEmail {
    * a stored phase is wrong the morning after a guest checks out.
    */
   stayPhase: StayPhase;
+  /**
+   * Which guest-context pane this message shows (APP_UX_PROPOSAL.md §5.3).
+   *
+   * Opaque on purpose, and deliberately NOT the guest's details: the pane is
+   * rendered on the server and handed to the client inbox as a slot, so this
+   * is the only thing about the guest that has to cross the boundary — an id
+   * the client already holds via `guestHref`, or a per-email key when no
+   * booking matched.
+   *
+   * Keyed by GUEST rather than by message so ten emails from one guest share
+   * one rendered pane instead of ten identical ones.
+   */
+  contextKey: string;
   /** Derived per read — see lib/email-urgency.ts. */
   urgency: Urgency;
 }
@@ -293,6 +306,7 @@ export async function withGuestContext(
       // Computed from the dates just resolved, so a message follows its guest
       // across the two windows as the stay moves, with nothing rewritten.
       stayPhase: stayPhaseFor(arrival, departure, today),
+      contextKey: customerId ? `c:${customerId}` : `e:${row.id}`,
       urgency: computeUrgency({
         classification: row.classification,
         status: row.status,

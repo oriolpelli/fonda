@@ -1083,5 +1083,21 @@
     "i3Desc": "On de debò el llegiràs a les 6:45.",
     "i4Title": "Outlook",
     "i4Desc": "Per als hotels que no són a Gmail."
+  },
+  "guestContext": {
+    "stay": "Estada",
+    "facts": "Dades",
+    "nights": "{count} nits",
+    "nightsOne": "1 nit",
+    "roomType": "Tipus d'habitació",
+    "adults": "Adults",
+    "children": "Nens",
+    "nationality": "Nacionalitat",
+    "language": "Idioma",
+    "returningOne": "Repeteix · 1 estada anterior",
+    "returningOther": "Repeteix · {count} estades anteriors",
+    "notMatched": "Sense reserva associada",
+    "openRecord": "Obrir fitxa de l'hoste",
+    "label": "Context de l'hoste"
   }
 }

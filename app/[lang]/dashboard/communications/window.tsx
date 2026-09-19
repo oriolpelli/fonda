@@ -5,7 +5,9 @@ import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { EmailInbox } from "@/components/dashboard/email-inbox";
 import { FirstRunState } from "@/components/dashboard/first-run-state";
 import { InboxStats } from "@/components/dashboard/inbox-stats";
+import { GuestContextPanel } from "@/components/dashboard/guest-context-panel";
 import { WhatsAppConnectButton } from "@/components/dashboard/whatsapp-connect-button";
+import { loadGuestContexts } from "@/lib/guest-context";
 import { loadInbox, type InboxEmail } from "@/lib/inbox";
 import { createClient } from "@/lib/supabase/server";
 // Server-readable sort contract — deliberately NOT imported from the client
@@ -122,6 +124,27 @@ export async function CommunicationsWindow({
       ? "all"
       : rememberedQueue;
 
+  /**
+   * The guest-context panes, rendered here on the server and handed to the
+   * inbox as slots (§5.3). Built from THIS window's filtered list, and keyed by
+   * guest, so a conversation of ten messages costs one pane.
+   *
+   * This is the whole reason the pane is a Server Component: the nationality,
+   * language and party size it shows never enter the client payload.
+   */
+  const contexts = await loadGuestContexts(emails);
+  const contextPanes = Object.fromEntries(
+    [...contexts.values()].map((context) => [
+      context.key,
+      <GuestContextPanel
+        key={context.key}
+        context={context}
+        dict={dict}
+        locale={locale}
+      />,
+    ])
+  );
+
   const isInHouse = windowKey === "in_house";
   const title = isInHouse
     ? dict.communications.inHouseTitle
@@ -208,6 +231,7 @@ export async function CommunicationsWindow({
           initialSelectedId={initialSelectedId}
           today={today}
           timeZone={timeZone}
+          contextPanes={contextPanes}
         />
       )}
     </div>

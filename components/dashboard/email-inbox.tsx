@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -62,6 +63,8 @@ export interface InboxEmail {
   booking_ref: string | null;
   arrival: string | null;
   departure: string | null;
+  /** Which guest-context pane this row shows — see lib/inbox.ts. Opaque. */
+  contextKey: string;
   urgency: Urgency;
 }
 
@@ -119,6 +122,7 @@ export function EmailInbox({
   initialSelectedId,
   today,
   timeZone,
+  contextPanes,
 }: {
   emails: InboxEmail[];
   emptyMessage: string;
@@ -132,6 +136,17 @@ export function EmailInbox({
   today: string;
   /** The hotel's IANA timezone, for dating `sent_at` the way the hotel does. */
   timeZone: string;
+  /**
+   * Guest-context panes, already rendered on the server, keyed by
+   * `InboxEmail.contextKey` (APP_UX_PROPOSAL.md §5.3).
+   *
+   * Server Components handed in as slots rather than data. It is why this
+   * component can show a guest's nationality, language and party size without
+   * any of it crossing the `"use client"` boundary at the top of this file —
+   * the only thing that crosses is the opaque key. Keyed by GUEST, so a
+   * conversation of ten messages reuses one pane.
+   */
+  contextPanes?: Record<string, ReactNode>;
 }) {
   const router = useRouter();
   const { dict, locale } = useDictionary();
@@ -361,6 +376,12 @@ export function EmailInbox({
 
   const selectedContext = selected ? bookingContext(selected) : null;
 
+  // The pane for whoever is open. Absent when nothing is selected, and absent
+  // on every width below `xl` because the column itself is not rendered there.
+  const contextPane = selected
+    ? (contextPanes?.[selected.contextKey] ?? null)
+    : null;
+
   // Nothing in the inbox at all: the whole surface is the empty state, rather
   // than an empty list sitting next to an empty reading pane. Note this is
   // `emails`, not `sorted` — an empty QUEUE keeps its segmented control, since
@@ -489,7 +510,17 @@ export function EmailInbox({
       {/* minmax(0,1fr), not 1fr: a plain 1fr track takes its minimum from the
           pane's min-content, and a long subject line would then widen the
           whole page instead of being truncated. */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
+      {/* Three columns from `xl`: list · thread · context. Below that the pane
+          does not render AT ALL — not squeezed, not a drawer. At 1280 the
+          sidebar has already taken 240px, and a 280px pane on top of a 320px
+          list would leave the message itself the narrowest column on screen,
+          which inverts the whole point of the layout. */}
+      <div
+        className={cn(
+          "grid grid-cols-1 gap-4 lg:grid-cols-[320px_minmax(0,1fr)]",
+          contextPane && "xl:grid-cols-[320px_minmax(0,1fr)_280px]"
+        )}
+      >
         {/* Left: list. On a phone it is the whole page until you tap a row, and
             scrolls with the page rather than inside its own 70vh well. */}
         <div
@@ -687,6 +718,16 @@ export function EmailInbox({
             </p>
           )}
         </div>
+
+        {/* Third column: who you are talking to. Rendered on the server and
+            handed in as a slot — see `contextPanes`. `hidden xl:flex` rather
+            than a conditional render so the grid track and the pane appear
+            together; the track only exists at `xl` too. */}
+        {contextPane ? (
+          <div className="hidden overflow-hidden rounded-[16px] bg-card xl:flex">
+            {contextPane}
+          </div>
+        ) : null}
       </div>
     </div>
   );
