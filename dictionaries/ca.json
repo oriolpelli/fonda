@@ -716,7 +716,15 @@
     "suggestion2": "Tinc hostes VIP aquesta setmana?",
     "suggestion3": "Quins dies tenen baixa ocupació en els pròxims 14 dies?",
     "suggestion4": "Hi ha hostes sense hora d'arribada?",
-    "suggestion5": "Quants correus necessiten la meva atenció?"
+    "suggestion5": "Quants correus necessiten la meva atenció?",
+    "threads": "Converses",
+    "newConversation": "Nova conversa",
+    "threadsEmpty": "Encara no hi ha converses.",
+    "untitled": "Sense títol",
+    "openThreads": "Mostra les converses",
+    "closeThreads": "Amaga les converses",
+    "restoredNotice": "Els noms de converses anteriors apareixen abreujats.",
+    "continueInChat": "Continua al xat"
   },
   "settings": {
     "sheetTitle": "Full de Google",

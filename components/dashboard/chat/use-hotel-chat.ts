@@ -41,14 +41,32 @@ export interface HotelChat {
   messages: ChatMessage[];
   streaming: boolean;
   send: (text: string) => Promise<void>;
-  /** Drops the transcript. History is only ever kept for the open session. */
+  /**
+   * Starts a NEW conversation. Since migration 0023 this no longer throws the
+   * previous one away — it is already in `chat_threads` and will be in the
+   * thread list; this just stops writing into it.
+   */
   reset: () => void;
+  /**
+   * The conversation being written to, once the server has named it. Null
+   * before the first turn. The docked bar hands this to "Continue in chat" so
+   * the full page picks up the same conversation rather than starting over.
+   */
+  threadId: string | null;
 }
 
-export function useHotelChat(): HotelChat {
+export function useHotelChat(
+  /** Hydrated transcript and thread, when opening an existing conversation. */
+  initial?: { threadId: string | null; messages: ChatMessage[] }
+): HotelChat {
   const { dict } = useDictionary();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(
+    initial?.messages ?? []
+  );
   const [streaming, setStreaming] = useState(false);
+  const [threadId, setThreadId] = useState<string | null>(
+    initial?.threadId ?? null
+  );
 
   const send = useCallback(
     async (text: string) => {
@@ -71,11 +89,17 @@ export function useHotelChat(): HotelChat {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             messages: history.map((m) => ({ role: m.role, content: m.content })),
+            threadId,
           }),
         });
         if (!res.ok || !res.body) {
           throw new Error(`Request failed (${res.status}).`);
         }
+
+        // On a header rather than in the body: the body is a text stream that
+        // is still arriving, and the next turn needs the id before it ends.
+        const assigned = res.headers.get("X-Fondas-Thread-Id");
+        if (assigned) setThreadId(assigned);
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
@@ -123,10 +147,15 @@ export function useHotelChat(): HotelChat {
         setStreaming(false);
       }
     },
-    [dict, messages, streaming]
+    [dict, messages, streaming, threadId]
   );
 
-  const reset = useCallback(() => setMessages([]), []);
+  const reset = useCallback(() => {
+    setMessages([]);
+    // The previous conversation is stored; dropping the id starts a new one on
+    // the next send rather than appending to what you just left.
+    setThreadId(null);
+  }, []);
 
-  return { messages, streaming, send, reset };
+  return { messages, streaming, send, reset, threadId };
 }

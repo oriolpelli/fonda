@@ -716,7 +716,15 @@
     "suggestion2": "Do I have any VIP guests this week?",
     "suggestion3": "Which dates have low occupancy in the next 14 days?",
     "suggestion4": "Any guests missing an arrival time?",
-    "suggestion5": "How many emails need my attention?"
+    "suggestion5": "How many emails need my attention?",
+    "threads": "Conversations",
+    "newConversation": "New conversation",
+    "threadsEmpty": "No conversations yet.",
+    "untitled": "Untitled",
+    "openThreads": "Show conversations",
+    "closeThreads": "Hide conversations",
+    "restoredNotice": "Names in past conversations are shortened.",
+    "continueInChat": "Continue in chat"
   },
   "settings": {
     "sheetTitle": "Google Sheet",

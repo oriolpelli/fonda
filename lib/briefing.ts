@@ -4,6 +4,7 @@ import Anthropic from "@anthropic-ai/sdk";
 
 import { track } from "@/lib/analytics";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
+import { pseudoName } from "@/lib/pseudonymise";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Json } from "@/types/database";
 
@@ -116,12 +117,6 @@ function addDays(dateStr: string, days: number): string {
 // Pseudonymisation + best-effort raw extraction
 // ---------------------------------------------------------------------------
 
-/** "John Smith" → "John S." — surnames reduced to an initial before the LLM. */
-function pseudoName(first?: string | null, last?: string | null): string {
-  const f = (first ?? "").trim();
-  const initial = (last ?? "").trim() ? `${last!.trim()[0].toUpperCase()}.` : "";
-  return [f, initial].filter(Boolean).join(" ") || "Guest";
-}
 
 function asObject(raw: Json): Record<string, unknown> | null {
   return raw && typeof raw === "object" && !Array.isArray(raw)

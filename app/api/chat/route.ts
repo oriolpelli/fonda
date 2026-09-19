@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { flushAnalytics, track } from "@/lib/analytics";
 import { buildHotelContext } from "@/lib/hotel-context";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
+import { reduceSurnames, type NameToReduce } from "@/lib/pseudonymise";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -29,6 +30,61 @@ interface ChatMessage {
   content: string;
 }
 
+/** How wide a window of guests a typed name is likely to come from. */
+const NAME_WINDOW_DAYS = 30;
+
+/**
+ * The guests whose full names might appear in a chat message.
+ *
+ * Deliberately NOT every customer the hotel has ever had. A GM types the name
+ * of somebody arriving, staying, or just gone, so the list is scoped to
+ * reservations within a month either side of today — tens of rows rather than
+ * the thousands 24 months of retention holds. This runs AFTER the answer has
+ * streamed, so its cost is not in anybody's latency.
+ *
+ * Fails soft to an empty list: pseudonymisation that cannot find the names is a
+ * weaker guarantee, but a chat turn that 500s because a lookup failed is worse,
+ * and the turn is already sent by the time this runs.
+ */
+async function guestNamesNearToday(
+  admin: ReturnType<typeof createAdminClient>,
+  hotelId: string
+): Promise<NameToReduce[]> {
+  try {
+    const now = Date.now();
+    const from = new Date(now - NAME_WINDOW_DAYS * 86_400_000).toISOString();
+    const to = new Date(now + NAME_WINDOW_DAYS * 86_400_000).toISOString();
+
+    const { data: reservations } = await admin
+      .from("reservations")
+      .select("customer_mews_id")
+      .eq("hotel_id", hotelId)
+      .gte("start_utc", from)
+      .lte("start_utc", to)
+      .limit(500);
+
+    const ids = [
+      ...new Set(
+        (reservations ?? []).map((r) => r.customer_mews_id).filter(Boolean)
+      ),
+    ] as string[];
+    if (ids.length === 0) return [];
+
+    const { data: customers } = await admin
+      .from("customers")
+      .select("first_name, last_name")
+      .eq("hotel_id", hotelId)
+      .in("mews_id", ids);
+
+    return (customers ?? []).map((c) => ({
+      first: c.first_name,
+      last: c.last_name,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export async function POST(request: Request) {
   // Resolve the hotel from the session — never trust a client-supplied id.
   const supabase = await createClient();
@@ -50,6 +106,7 @@ export async function POST(request: Request) {
 
   const body = (await request.json().catch(() => null)) as {
     messages?: ChatMessage[];
+    threadId?: string;
   } | null;
   const messages = (body?.messages ?? []).filter(
     (m): m is ChatMessage =>
@@ -85,6 +142,41 @@ export async function POST(request: Request) {
   const client = new Anthropic();
   const encoder = new TextEncoder();
   const admin = createAdminClient();
+
+  /**
+   * The conversation this turn belongs to, created on the first message.
+   *
+   * A client-supplied id is re-checked against this user before it is trusted —
+   * it crosses the network, and the admin client bypasses RLS, so the policy in
+   * migration 0023 cannot be what stops someone writing into a colleague's
+   * thread. An id that does not check out is discarded and a new thread starts,
+   * rather than erroring: the answer has to go out either way.
+   */
+  let threadId: string | null = null;
+  if (body?.threadId) {
+    const { data: owned } = await admin
+      .from("chat_threads")
+      .select("id")
+      .eq("id", body.threadId)
+      .eq("user_id", user.id)
+      .eq("hotel_id", hotelId)
+      .maybeSingle();
+    threadId = owned?.id ?? null;
+  }
+  if (!threadId && lastUser) {
+    const { data: created } = await admin
+      .from("chat_threads")
+      .insert({
+        hotel_id: hotelId,
+        user_id: user.id,
+        // The first thing you asked, which is what you will recognise it by.
+        // Stored pseudonymised like everything else that lands in a table.
+        title: lastUser.content.trim().slice(0, 80) || null,
+      })
+      .select("id")
+      .single();
+    threadId = created?.id ?? null;
+  }
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -143,18 +235,49 @@ export async function POST(request: Request) {
         });
         await flushAnalytics();
 
-        // Log the turn (pseudonymised context → reduced PII).
+        // Log the turn — PSEUDONYMISED AT REST (§11 decision 6, point 2).
+        //
+        // This used to insert `lastUser.content` verbatim, on the reasoning
+        // that the CONTEXT fed to the model was already pseudonymised. That
+        // covered the assistant's answer and missed the obvious half: the
+        // question. "What room is María Villanueva in?" put a guest's full name
+        // into the table in plaintext, typed by the GM rather than supplied by
+        // us. Both halves go through the reducer now.
+        //
+        // The live request above still carried real names, and the GM still saw
+        // real names on screen. Only the durable copy is reduced.
         if (lastUser || assistantText) {
-          await admin.from("chat_logs").insert(
-            [
-              lastUser
-                ? { hotel_id: hotelId, role: "user", content: lastUser.content }
-                : null,
-              assistantText
-                ? { hotel_id: hotelId, role: "assistant", content: assistantText }
-                : null,
-            ].filter((row) => row !== null)
-          );
+          const names = await guestNamesNearToday(admin, hotelId);
+          const rows = [
+            lastUser
+              ? {
+                  hotel_id: hotelId,
+                  thread_id: threadId,
+                  user_id: user.id,
+                  role: "user",
+                  content: reduceSurnames(lastUser.content, names),
+                }
+              : null,
+            assistantText
+              ? {
+                  hotel_id: hotelId,
+                  thread_id: threadId,
+                  user_id: user.id,
+                  role: "assistant",
+                  content: reduceSurnames(assistantText, names),
+                }
+              : null,
+          ].filter((row) => row !== null);
+          await admin.from("chat_logs").insert(rows);
+
+          // Sorts the thread list, so it has to move on every turn and not
+          // only on the first.
+          if (threadId) {
+            await admin
+              .from("chat_threads")
+              .update({ last_message_at: new Date().toISOString() })
+              .eq("id", threadId);
+          }
         }
         controller.close();
       }
@@ -165,6 +288,10 @@ export async function POST(request: Request) {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-store",
+      // The body is a text stream, so the thread id rides on a header: the
+      // client needs it before the stream finishes in order to send the next
+      // turn into the same conversation.
+      ...(threadId ? { "X-Fondas-Thread-Id": threadId } : {}),
     },
   });
 }

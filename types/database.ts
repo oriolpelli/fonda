@@ -538,8 +538,12 @@ export type Database = {
           id: string;
           hotel_id: string;
           role: string;
+          /** Pseudonymised at rest — see lib/pseudonymise.ts. */
           content: string;
           created_at: string;
+          /** Null for every row written before migration 0023. */
+          thread_id: string | null;
+          user_id: string | null;
         };
         Insert: {
           id?: string;
@@ -547,6 +551,8 @@ export type Database = {
           role: string;
           content: string;
           created_at?: string;
+          thread_id?: string | null;
+          user_id?: string | null;
         };
         Update: {
           id?: string;
@@ -554,6 +560,8 @@ export type Database = {
           role?: string;
           content?: string;
           created_at?: string;
+          thread_id?: string | null;
+          user_id?: string | null;
         };
         Relationships: [
           {
@@ -561,6 +569,48 @@ export type Database = {
             columns: ["hotel_id"];
             isOneToOne: false;
             referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      chat_threads: {
+        Row: {
+          id: string;
+          hotel_id: string;
+          user_id: string;
+          title: string | null;
+          created_at: string;
+          last_message_at: string;
+        };
+        Insert: {
+          id?: string;
+          hotel_id: string;
+          user_id: string;
+          title?: string | null;
+          created_at?: string;
+          last_message_at?: string;
+        };
+        Update: {
+          id?: string;
+          hotel_id?: string;
+          user_id?: string;
+          title?: string | null;
+          created_at?: string;
+          last_message_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "chat_threads_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "chat_threads_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
             referencedColumns: ["id"];
           },
         ];

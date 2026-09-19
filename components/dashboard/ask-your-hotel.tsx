@@ -2,11 +2,12 @@
 
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowUp, Sparkles, X } from "lucide-react";
+import { ArrowUp, ArrowUpRight, Sparkles, X } from "lucide-react";
 
 import { ChatComposer } from "@/components/dashboard/chat/chat-composer";
 import { ChatThread } from "@/components/dashboard/chat/chat-thread";
 import { useHotelChat } from "@/components/dashboard/chat/use-hotel-chat";
+import { LocaleLink } from "@/components/i18n/locale-link";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import { stripLocale } from "@/lib/i18n/navigation";
@@ -33,7 +34,7 @@ export function AskYourHotel({ userEmail }: { userEmail: string }) {
   const { dict } = useDictionary();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const { messages, streaming, send, reset } = useHotelChat();
+  const { messages, streaming, send, reset, threadId } = useHotelChat();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
 
@@ -112,6 +113,29 @@ export function AskYourHotel({ userEmail }: { userEmail: string }) {
               {dict.askYourHotel.empty}
             </p>
           )}
+
+          {/* The hand-off (APP_UX_PROPOSAL.md §4.1). Only once the server has
+              named the conversation — before the first turn there is no thread
+              to continue, and a link that silently started a fresh one would
+              lose the exchange the GM is looking at. Carrying `?thread=` means
+              the full page hydrates the same transcript rather than replaying
+              it from client memory, so the hand-off survives a new tab. */}
+          {threadId && messages.length > 0 ? (
+            <div className="px-5 pb-1">
+              <LocaleLink
+                href={`/dashboard/chat?thread=${threadId}`}
+                onClick={close}
+                className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--fonda-text-2)] transition-colors hover:text-foreground"
+              >
+                {dict.askYourHotel.continueInChat}
+                <ArrowUpRight
+                  aria-hidden="true"
+                  strokeWidth={1.5}
+                  className="size-3.5"
+                />
+              </LocaleLink>
+            </div>
+          ) : null}
 
           <div className="px-4 pb-4">
             <ChatComposer

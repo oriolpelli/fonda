@@ -716,7 +716,15 @@
     "suggestion2": "¿Tengo huéspedes VIP esta semana?",
     "suggestion3": "¿Qué días tienen baja ocupación en los próximos 14 días?",
     "suggestion4": "¿Hay huéspedes sin hora de llegada?",
-    "suggestion5": "¿Cuántos correos necesitan mi atención?"
+    "suggestion5": "¿Cuántos correos necesitan mi atención?",
+    "threads": "Conversaciones",
+    "newConversation": "Nueva conversación",
+    "threadsEmpty": "Aún no hay conversaciones.",
+    "untitled": "Sin título",
+    "openThreads": "Mostrar conversaciones",
+    "closeThreads": "Ocultar conversaciones",
+    "restoredNotice": "Los nombres de conversaciones anteriores aparecen abreviados.",
+    "continueInChat": "Continuar en el chat"
   },
   "settings": {
     "sheetTitle": "Hoja de Google",

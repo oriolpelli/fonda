@@ -2,8 +2,13 @@
 
 import { ChatComposer } from "@/components/dashboard/chat/chat-composer";
 import { ChatThread } from "@/components/dashboard/chat/chat-thread";
-import { useHotelChat } from "@/components/dashboard/chat/use-hotel-chat";
+import { ChatThreadList } from "@/components/dashboard/chat/chat-thread-list";
+import {
+  useHotelChat,
+  type ChatMessage,
+} from "@/components/dashboard/chat/use-hotel-chat";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
+import type { ChatThreadSummary } from "@/lib/chat-threads";
 
 /**
  * The full chat page (§8.5, option 1) — chat as a first-class surface rather
@@ -13,13 +18,30 @@ import { useDictionary } from "@/components/i18n/dictionary-provider";
  * whole job before you type is to invite the question. Once a conversation
  * exists the transcript takes the column and the composer docks to the bottom.
  */
-export function ChatSurface({ userEmail }: { userEmail: string }) {
+export function ChatSurface({
+  userEmail,
+  threads,
+  threadId,
+  initialMessages,
+}: {
+  userEmail: string;
+  threads: ChatThreadSummary[];
+  /** The conversation named by `?thread=`, if it resolved to one of ours. */
+  threadId: string | null;
+  /** Its transcript, already pseudonymised — see lib/chat-threads.ts. */
+  initialMessages: ChatMessage[];
+}) {
   const { dict } = useDictionary();
-  const { messages, streaming, send } = useHotelChat();
+  const { messages, streaming, send } = useHotelChat({
+    threadId,
+    messages: initialMessages,
+  });
   const blank = messages.length === 0;
+  // True for a conversation loaded from the database rather than had just now.
+  // What it changes is one line of copy — see the notice below.
+  const restored = initialMessages.length > 0;
 
-  if (blank) {
-    return (
+  const body = blank ? (
       // `flex-1` so the block centres in the whole content column rather than
       // hugging the top of it — the air around the composer is the point.
       <div className="flex min-h-[62vh] flex-1 flex-col items-center justify-center gap-8 py-10">
@@ -40,15 +62,21 @@ export function ChatSurface({ userEmail }: { userEmail: string }) {
           <StarterQuestions onPick={send} />
         </div>
       </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-1 flex-col">
+  ) : (
+    <div className="flex min-w-0 flex-1 flex-col">
       {/* The heading did its work in the blank state; once the conversation is
           on screen the transcript is the page, so the title goes SR-only
           rather than sitting above every answer. */}
       <h1 className="sr-only">{dict.askYourHotel.title}</h1>
+      {/* Says once, quietly, why yesterday's conversation reads differently
+          from today's: what is stored has guest surnames reduced to an initial
+          (§11 decision 6), and there is no un-reduced copy to restore from. A
+          GM noticing that on their own would reasonably think it a bug. */}
+      {restored ? (
+        <p className="pb-4 font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
+          {dict.askYourHotel.restoredNotice}
+        </p>
+      ) : null}
       <ChatThread
         messages={messages}
         streaming={streaming}
@@ -61,6 +89,13 @@ export function ChatSurface({ userEmail }: { userEmail: string }) {
       <div className="sticky bottom-0 z-10 -mx-1 mt-auto bg-[var(--fonda-bg)] px-1 pb-4 pt-3">
         <ChatComposer onSend={send} streaming={streaming} blank={false} />
       </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:gap-6">
+      <ChatThreadList threads={threads} />
+      {body}
     </div>
   );
 }
