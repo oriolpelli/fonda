@@ -32,13 +32,35 @@ import { cn } from "@/lib/utils";
 // LIVE_INTEGRATIONS are built and connectable today — a hotel can sign up this
 // afternoon and link one. Anything here must be true in the product.
 //
-// ON_REQUEST_INTEGRATIONS are ones we'd build for a specific hotel during
-// onboarding. They're rendered in a lighter chip under their own "On request"
-// label so they read as "we can", never as "already connected". Moving a name
-// from the second list to the first is a claim — only do it once the
+// ON_REQUEST_INTEGRATIONS are ones we would build for a specific hotel during
+// onboarding. They render in a recessed outline chip under their own "We'll
+// build" label so they read as "we can", never as "already connected". Moving
+// a name from the second list to the first is a CLAIM — only do it once the
 // connection actually works in the app.
+//
+// WHY THE SECOND LIST IS LONG, AND WHY THE FIRST ONE IS NOT PADDED.
+// Three live names on their own read as a boundary: "works with these, sorry."
+// The fix for that is not a bigger number on the first list — a connection
+// count we cannot evidence is the one claim on this site a prospect's IT
+// person can disprove in a minute, and it would sit two clicks from /trust.
+// The fix is to widen what we will BUILD and to lead with how fast we build
+// it, which is both the honest position and the stronger one: an unknown
+// vendor claiming "100+ integrations" is generic SaaS noise, while "name your
+// PMS and it is connected before your pilot starts" is specific, unusual, and
+// checkable — the hotel finds out whether it is true within the week.
+//
+// Every name below is a system we would genuinely take on. Do not add one we
+// would not, and do not reorder them into the live list to make the row look
+// fuller.
 const LIVE_INTEGRATIONS = ["MEWS", "Apaleo", "Gmail"];
-const ON_REQUEST_INTEGRATIONS = ["Outlook"] as const;
+const ON_REQUEST_INTEGRATIONS = [
+  "Outlook",
+  "Cloudbeds",
+  "Oracle OPERA",
+  "protel",
+  "Guestline",
+  "SiteMinder",
+] as const;
 
 function Eyebrow({
   children,
@@ -639,15 +661,18 @@ export default async function Home({
                 </span>
               ))}
             </div>
-            {/* The one line that says what is connected today and what happens
-                if a hotel runs something else. Deliberately unnumbered — no
-                connection count until it is one a hotel could verify. */}
+            {/* Frames the live chips above as a starting point rather than a
+                boundary. Still deliberately unnumbered — no connection count
+                until it is one a hotel could verify. */}
             <p className="max-w-[68ch] text-center text-[13px] leading-[1.6] text-muted-foreground">
               {dict.trust.connectLine}
             </p>
-            {/* One line, and every clause in it has to stay true: what runs
-                today, what we'd build, and the scale cue. No connection count —
-                we don't have a number a hotel could verify. */}
+            {/* The speed claim, which is the actual differentiator and the
+                thing this section now leads on. Every clause has to stay
+                TRUE and every one of them is falsifiable by the reader, which
+                is the point: "days, not quarters" and "we ship every week" are
+                claims a hotel discovers the truth of during its own pilot. If
+                a connection ever starts taking a month, this line changes. */}
             <p className="max-w-[68ch] text-center text-[13px] leading-[1.6] text-muted-foreground">
               {dict.trust.adaptNote}
             </p>

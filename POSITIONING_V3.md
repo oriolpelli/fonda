@@ -106,7 +106,15 @@ So: **narrow who we email, wide who the page talks to.** Concretely, on the site
 
 **The four parts are the four live surfaces, verified against the code on 17 Sep.** `lib/roadmap.ts` states it outright — *"The four surfaces that were live from day one (dashboard, brief, check-ins, communications)"* — and marks `chat` as `live`. **Analytics is not one of them**: `app/[lang]/dashboard/analytics/page.tsx` renders `<ComingSoon />` and `lib/roadmap.ts` has it `coming-soon`, superseded by a Revenue dashboard that is also a stub. Analytics belongs in the "Ya en camino" band (`SITE_REDESIGN_V3.md` §3.5), not the hero.
 
-**On "100+ connections".** Not yet, and the comment above `LIVE_INTEGRATIONS` in `page.tsx` is the reason: *"Moving a name from the second list to the first is a claim — only do it once the connection actually works in the app."* The real asset is the speed of building a connection during onboarding, and it says more than a number a GM can disprove in one question. It lives in band 2 as *"MEWS, Apaleo y Gmail, conectados hoy. ¿Usas otra cosa? La conectamos durante el alta."* When a count is genuinely earned, that band is where it goes.
+**On "100+ connections".** Not yet, and the comment above `LIVE_INTEGRATIONS` in `page.tsx` is the reason: *"Moving a name from the second list to the first is a claim — only do it once the connection actually works in the app."* The real asset is the speed of building a connection during onboarding, and it says more than a number a GM can disprove in one question. When a count is genuinely earned, band 2 is where it goes.
+
+> **Executed properly, 19 Sep 2026.** The band above was still written defensively — three live names, then an apology (*"¿Usas otra cosa? La conectamos durante el alta"*). Three names alone read as a **boundary**, which is the thing the decision above was trying to avoid and did not actually fix.
+>
+> The fix is not a bigger number on the live list. It is to **widen what we will build and lead with how fast we build it**, which is simultaneously the honest position and the stronger one. An unknown vendor claiming "100+ integrations" is generic SaaS noise that nobody believes and IT can disprove in a minute; *"name your PMS and it is connected before your pilot starts"* is specific, unusual, and **checkable** — the hotel finds out whether it is true within the week, which is exactly the kind of claim we want to be making while we have no logos.
+>
+> What changed on the page: the live row is now labelled **"Connected today"** rather than "Works with" (a snapshot, not a limit); the on-request row is labelled **"We'll build"** and carries Outlook, Cloudbeds, Oracle OPERA, protel, Guestline and SiteMinder plus *"Anything with an API"*, all in the recessed chip so none can be mistaken for live; and the closing line is the speed claim — *"Days, not quarters — we've turned one around in a day. If it has an API, we'll connect it, and we ship every week."*
+>
+> **Every clause there is falsifiable by the reader, on purpose.** If a connection ever starts taking a month, that line has to change. The live list is still three, and padding it remains the one thing not to do.
 
 ### 1.1 Why this line
 

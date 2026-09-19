@@ -80,12 +80,12 @@
     "draftBody": "Good evening Elena — yes, the lift reaches the roof terrace and there are no steps at the top; breakfast is served there from 7:30. The Garden Suite is on the courtyard level too, so it is step-free all the way to reception. We'll have everything ready for Tuesday. Warm regards, {hotel}"
   },
   "trust": {
-    "worksWith": "Works with",
-    "onRequest": "On request",
-    "customPms": "Custom PMS",
-    "adaptNote": "Runs on MEWS, Apaleo and Gmail today — plus Outlook and custom PMS integrations we build on request. Different stack? We'll adapt to almost any PMS or inbox.",
+    "worksWith": "Connected today",
+    "onRequest": "We'll build",
+    "customPms": "Anything with an API",
+    "adaptNote": "Tell us what you run and we build the connection while you're being onboarded. Days, not quarters — we've turned one around in a day. If it has an API, we'll connect it, and we ship every week.",
     "onboardingNote": "Now onboarding our first hotels.",
-    "connectLine": "MEWS, Apaleo and Gmail, connected today. Using something else? We build the connection during onboarding."
+    "connectLine": "The ones hotels asked for first — not the limit."
   },
   "features": {
     "briefing": {

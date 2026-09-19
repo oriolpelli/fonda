@@ -80,12 +80,12 @@
     "draftBody": "Buenas noches, Elena: sí, el ascensor llega a la terraza y arriba no hay escalones; el desayuno se sirve allí desde las 7:30. La Suite Jardín está además en la planta del patio, así que no hay ni un escalón hasta recepción. Lo tendremos todo listo para el martes. Un saludo, {hotel}"
   },
   "trust": {
-    "worksWith": "Compatible con",
-    "onRequest": "Bajo petición",
-    "customPms": "PMS a medida",
-    "adaptNote": "Hoy funciona con MEWS, Apaleo y Gmail, además de integraciones con Outlook y PMS a medida que desarrollamos bajo petición. ¿Otro sistema? Nos adaptamos a casi cualquier PMS o bandeja de entrada.",
+    "worksWith": "Conectado hoy",
+    "onRequest": "Lo construimos",
+    "customPms": "Cualquier cosa con API",
+    "adaptNote": "Dinos qué usas y construimos la conexión mientras te damos de alta. Días, no trimestres: una la resolvimos en un día. Si tiene API, la conectamos, y publicamos cada semana.",
     "onboardingNote": "Estamos incorporando nuestros primeros hoteles.",
-    "connectLine": "MEWS, Apaleo y Gmail, conectados hoy. ¿Usas otra cosa? La conectamos durante el alta."
+    "connectLine": "Los que nos pidieron primero, no el límite."
   },
   "features": {
     "briefing": {
