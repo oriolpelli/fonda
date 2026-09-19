@@ -80,12 +80,12 @@
     "draftBody": "Good evening Elena — yes, the lift reaches the roof terrace and there are no steps at the top; breakfast is served there from 7:30. The Garden Suite is on the courtyard level too, so it is step-free all the way to reception. We'll have everything ready for Tuesday. Warm regards, {hotel}"
   },
   "trust": {
-    "worksWith": "Connected today",
-    "onRequest": "We'll build",
-    "customPms": "Anything with an API",
-    "adaptNote": "Tell us what you run and we build the connection while you're being onboarded. Days, not quarters — we've turned one around in a day. If it has an API, we'll connect it, and we ship every week.",
+    "worksWith": "Live today",
+    "onRequest": "Name it, we'll build it",
+    "customPms": "Whatever you run",
+    "adaptNote": "Don't see yours? Tell us, and it's connected before your pilot starts. Days, not quarters — the enterprise lot would still be scheduling the kick-off call. We ship every week, and you'll watch us do it.",
     "onboardingNote": "Now onboarding our first hotels.",
-    "connectLine": "The ones hotels asked for first — not the limit."
+    "connectLine": "Three is where we started, not where we stop."
   },
   "features": {
     "briefing": {

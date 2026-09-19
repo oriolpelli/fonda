@@ -80,12 +80,12 @@
     "draftBody": "Buenas noches, Elena: sí, el ascensor llega a la terraza y arriba no hay escalones; el desayuno se sirve allí desde las 7:30. La Suite Jardín está además en la planta del patio, así que no hay ni un escalón hasta recepción. Lo tendremos todo listo para el martes. Un saludo, {hotel}"
   },
   "trust": {
-    "worksWith": "Conectado hoy",
-    "onRequest": "Lo construimos",
-    "customPms": "Cualquier cosa con API",
-    "adaptNote": "Dinos qué usas y construimos la conexión mientras te damos de alta. Días, no trimestres: una la resolvimos en un día. Si tiene API, la conectamos, y publicamos cada semana.",
+    "worksWith": "En marcha hoy",
+    "onRequest": "Dinos cuál y lo construimos",
+    "customPms": "Lo que uséis",
+    "adaptNote": "¿No está el tuyo? Dínoslo y lo tendrás conectado antes de empezar el piloto. Días, no trimestres: los de siempre aún estarían cuadrando la reunión de arranque. Publicamos cada semana, y lo verás.",
     "onboardingNote": "Estamos incorporando nuestros primeros hoteles.",
-    "connectLine": "Los que nos pidieron primero, no el límite."
+    "connectLine": "Tres es por donde empezamos, no donde paramos."
   },
   "features": {
     "briefing": {

@@ -668,11 +668,28 @@ export default async function Home({
               {dict.trust.connectLine}
             </p>
             {/* The speed claim, which is the actual differentiator and the
-                thing this section now leads on. Every clause has to stay
-                TRUE and every one of them is falsifiable by the reader, which
-                is the point: "days, not quarters" and "we ship every week" are
-                claims a hotel discovers the truth of during its own pilot. If
-                a connection ever starts taking a month, this line changes. */}
+                thing this section leads on.
+                
+                IT IS DELIBERATELY CHEEKY, and the target of the cheek matters.
+                The villain is the enterprise SALES CYCLE — the scoping call,
+                the quarter-long timeline — never a competitor's product. A
+                prospect may well be running Oracle OPERA and be perfectly
+                happy with it; nobody is happy with how long it took to get
+                connected. Punching at the process is safe and lands. Punching
+                at the software a reader chose is a way to lose that reader.
+                Do not name a competitor here.
+
+                EVERY CLAUSE IS A FORWARD COMMITMENT, not a past achievement.
+                "It's connected before your pilot starts" is a promise we
+                control and can keep; an earlier draft said "we've turned one
+                around in a day", which was a claim about history we could not
+                evidence — exactly the failure mode the connection count was
+                rejected for. The difference matters: a promise that turns out
+                false costs a pilot, a past claim that turns out false costs
+                the trust the whole site is built on.
+
+                Falsifiable on purpose. If a connection ever starts taking a
+                month, this line changes. */}
             <p className="max-w-[68ch] text-center text-[13px] leading-[1.6] text-muted-foreground">
               {dict.trust.adaptNote}
             </p>

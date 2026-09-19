@@ -114,7 +114,11 @@ So: **narrow who we email, wide who the page talks to.** Concretely, on the site
 >
 > What changed on the page: the live row is now labelled **"Connected today"** rather than "Works with" (a snapshot, not a limit); the on-request row is labelled **"We'll build"** and carries Outlook, Cloudbeds, Oracle OPERA, protel, Guestline and SiteMinder plus *"Anything with an API"*, all in the recessed chip so none can be mistaken for live; and the closing line is the speed claim — *"Days, not quarters — we've turned one around in a day. If it has an API, we'll connect it, and we ship every week."*
 >
-> **Every clause there is falsifiable by the reader, on purpose.** If a connection ever starts taking a month, that line has to change. The live list is still three, and padding it remains the one thing not to do.
+> **The tone is deliberately cheeky, and the target of the cheek is chosen.** The villain is the enterprise *sales cycle* — the scoping call, the quarter-long timeline — never a competitor's product. A prospect may be running Oracle OPERA and be perfectly happy with it; nobody is happy with how long it took to get connected. Punching at the process lands. Punching at the software a reader already chose loses that reader. **Do not name a competitor in this band.**
+>
+> **Every clause is a FORWARD COMMITMENT, not a past achievement.** The first draft of this said *"we've turned one around in a day"* — a claim about history with nothing behind it, which is the exact failure mode the connection count was rejected for. *"It's connected before your pilot starts"* is a promise we control and can keep. The difference is not pedantry: a promise that turns out false costs one pilot; a past claim that turns out false costs the trust the rest of the site is built on, and `/trust` is two clicks away.
+>
+> **Every clause is falsifiable by the reader, on purpose.** If a connection ever starts taking a month, the line has to change. The live list is still three, and padding it remains the one thing not to do.
 
 ### 1.1 Why this line
 

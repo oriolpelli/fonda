@@ -80,12 +80,12 @@
     "draftBody": "Bona nit, Elena: sí, l'ascensor arriba a la terrassa i a dalt no hi ha escalons; l'esmorzar se serveix allà des de les 7:30. La Suite Jardí és, a més, a la planta del pati, així que no hi ha ni un escaló fins a recepció. Ho tindrem tot a punt per dimarts. Una salutació, {hotel}"
   },
   "trust": {
-    "worksWith": "Connectat avui",
-    "onRequest": "El construïm",
-    "customPms": "Qualsevol cosa amb API",
-    "adaptNote": "Digues-nos què fas servir i construïm la connexió mentre et donem d'alta. Dies, no trimestres: una la vam resoldre en un dia. Si té API, la connectem, i publiquem cada setmana.",
+    "worksWith": "En marxa avui",
+    "onRequest": "Digues-nos quin i el construïm",
+    "customPms": "El que feu servir",
+    "adaptNote": "No hi és el teu? Digues-nos-ho i el tindràs connectat abans de començar el pilot. Dies, no trimestres: els de sempre encara estarien quadrant la reunió d'arrencada. Publiquem cada setmana, i ho veuràs.",
     "onboardingNote": "Estem incorporant els nostres primers hotels.",
-    "connectLine": "Els que ens van demanar primer, no el límit."
+    "connectLine": "Tres és per on vam començar, no on parem."
   },
   "features": {
     "briefing": {
