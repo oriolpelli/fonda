@@ -1792,7 +1792,11 @@ the values and the comments that explain them:
 
   --fonda-bg:        #ffffff   (was #eeeeee — the page is the CANVAS now)
   --fonda-surface:   #f6f3ee   (was #ffffff — "card" now means WELL)
-  --fonda-surface-2: #efebe3   (was #f6f3ee — a well nested inside a well)
+  --fonda-surface-2: #ece7dd   (was #f6f3ee — a well nested inside a well.
+                                NOT #efebe3, the obvious choice: that is only a
+                                1.07:1 step off the well and the ladder limps.
+                                #ece7dd makes canvas→well and well→nested both
+                                1.11:1, so every step is the same size of move.)
   --fonda-inset:     #e4e0d7   (unchanged — pressed states, active nav fill)
   --fonda-white:     #ffffff   (unchanged — modals, popovers, dropdowns)
 
@@ -1836,12 +1840,27 @@ hairline instead:
     --fonda-surface on the canvas. Pick whichever the surrounding context is;
     if a skeleton has no context, use --fonda-surface.
 
-Then re-verify contrast and write the measured numbers into the comments, the
-way the existing token comments do it. Check --fonda-text-2, --fonda-text-3 and
---destructive against BOTH #ffffff and #f6f3ee. My arithmetic says all three
-improve (text-3 goes to 5.56:1 on canvas and 5.03:1 in a well; destructive to
-5.40:1 / 4.89:1) — confirm it rather than trusting me, and if anything reads
-under 4.5:1 darken the token and say by how much.
+Then contrast. Check --fonda-text, --fonda-text-2, --fonda-text-3 and
+--destructive against ALL FOUR of #ffffff, #f6f3ee, #ece7dd and #e4e0d7, and
+write the measured numbers into the token comments the way the existing ones do
+it. Confirm these rather than trusting them:
+
+  --fonda-text-3  5.56:1 canvas · 5.02:1 well · 4.51:1 nested · 4.22:1 inset ✗
+  --destructive   5.40:1 canvas · 4.88:1 well · 4.38:1 nested ✗ · 4.10:1 inset ✗
+
+Everything improves against v3 on the canvas and in a well. The two ✗ cells are
+real and they are the point of this step — they were latent in v3 too, since
+--fonda-inset has been the active nav fill all along. Encode them as rules in
+the comments, and do not fix them by lightening a fill or darkening text-3:
+
+  1. --fonda-text-3 is never used on --fonda-inset. The muted things that ride
+     on an active nav row — badge counts, SoonMarker — step up to
+     --fonda-text-2 (5.83:1) when that row is active. D2 implements this; here,
+     just write the rule down.
+  2. --destructive renders on the canvas or a first-level well only, never on a
+     nested well or an inset.
+
+If any OTHER cell reads under 4.5:1, darken that token and tell me by how much.
 
 Do not touch the sidebar in this phase — it is D2. Do not touch the chat — it
 is D3. Do not touch any marketing component — it is D4.
@@ -1945,8 +1964,13 @@ ROW TREATMENT:
   tell the rail used.
 
   Badges: a count in Geist Mono 11px pushed to the row's right edge,
-  --fonda-text-3. An alert badge goes solid: --fonda-ink fill, white digits,
-  radius full. Keep the existing NavBadge type and its srLabel.
+  --fonda-text-3 — EXCEPT on the active row, where it steps up to
+  --fonda-text-2. --fonda-text-3 on --fonda-inset is 4.22:1 and fails AA; this
+  is the one place in the product where a muted token lands on the darkest
+  surface, so handle it explicitly rather than hoping nobody reads a count on
+  the page they are already on. Same rule for SoonMarker on an active row.
+  An alert badge goes solid: --fonda-ink fill, white digits, radius full. Keep
+  the existing NavBadge type and its srLabel.
 
   Coming-soon rows keep SoonMarker exactly as the docked panel renders it
   today.
@@ -1988,6 +2012,8 @@ before and after.
 - [ ] Tab order runs top to bottom and never enters an eyebrow.
 - [ ] At 375px nothing changed: same top bar, same drawer, same focus trap.
 - [ ] No navy anywhere in the column, in any state, including focus.
+- [ ] A badge count on the **active** row is still readable — that is the 4.22:1
+      cell, and it is the one a screenshot review will miss.
 - [ ] The connection dot still reflects a stale sync — set `last_synced_at` back
       a day in the dev DB and confirm the state changes.
 

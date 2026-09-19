@@ -72,11 +72,20 @@ room.
 ```
 --fonda-bg:        #ffffff   canvas (was #eeeeee)
 --fonda-surface:   #f6f3ee   WELL — what "card" now means (was #ffffff)
---fonda-surface-2: #efebe3   a well nested inside a well (was #f6f3ee)
+--fonda-surface-2: #ece7dd   a well nested inside a well (was #f6f3ee)
 --fonda-inset:     #e4e0d7   unchanged — pressed states, active nav fill
 --fonda-white:     #ffffff   unchanged — overlays only
 --fonda-chrome:    #f6f3ee   NEW — the sidebar panel ground
 ```
+
+The surface ladder is deliberately **even**: canvas → well is 1.11:1 and well →
+nested well is 1.11:1, so each step reads as the same size of move. (`#efebe3`,
+the obvious nested value, gives only 1.07:1 and the ladder visibly limps.)
+
+**Three surface levels, and that is the ceiling.** There is no token below
+`--fonda-surface-2` and there should not be one: a fourth level would have to be
+dark enough to stop reading as paper. If a design seems to need one, the answer
+is a divider or more space, not another fill.
 
 A well is separated by its **radius and its fill**, never by a shadow. §6's
 "whisper shadow" was load-bearing only because a white card on a grey page has
@@ -96,15 +105,31 @@ like paper on a desk; a neutral one reads like a wireframe.
 **Contrast improves, which is the tell that this reading is the right one.**
 Every muted token had been squeezed when the page went off-white in v3:
 
-| Token | v3 on `#eeeeee` | v4 on `#ffffff` | v4 in a well `#f6f3ee` |
-|---|---|---|---|
-| `--fonda-text-3` `#6c685e` | 4.79:1 | **5.56:1** | **5.03:1** |
-| `--fonda-text-2` `#56534b` | 6.62:1 | **7.68:1** | **6.93:1** |
-| `--destructive` `#bc3e39` | 4.66:1 | **5.40:1** | **4.89:1** |
+| Token | v3 page `#eeeeee` | canvas `#ffffff` | well `#f6f3ee` | nested `#ece7dd` | inset `#e4e0d7` |
+|---|---|---|---|---|---|
+| `--fonda-text` `#1c1a16` | 14.97:1 | **17.37:1** | 15.70:1 | 14.29:1 | 13.19:1 |
+| `--fonda-text-2` `#56534b` | 6.62:1 | **7.68:1** | 6.94:1 | 6.23:1 | 5.83:1 |
+| `--fonda-text-3` `#6c685e` | 4.79:1 | **5.56:1** | 5.02:1 | 4.51:1 | **4.22:1 ✗** |
+| `--destructive` `#bc3e39` | 4.66:1 | **5.40:1** | 4.88:1 | **4.38:1 ✗** | **4.10:1 ✗** |
 
-§3.3's headroom problem is gone. Do not take this as licence to lighten
-`--fonda-text-3` back toward `#7a766c` — it now has margin, and margin is what
-lets a well sit on a well without the third level failing.
+§3.3's headroom problem is gone on the canvas and in a well. Do not take that as
+licence to lighten `--fonda-text-3` back toward `#7a766c` — the margin it gained
+is what pays for the third surface level.
+
+**Two rules fall out of the last two columns, and they are load-bearing:**
+
+1. **`--fonda-text-3` is not allowed on `--fonda-inset`** (4.22:1). The inset is
+   the active nav fill, so the muted things that ride on a nav row — a badge
+   count, a "Coming soon" marker — step up to `--fonda-text-2` (5.83:1) **when
+   that row is active**. This is not a rounding-error failure; it is the one
+   place in the product where a muted token lands on the darkest surface.
+2. **`--destructive` renders on the canvas or a first-level well, never on a
+   nested well or an inset** (4.38:1 / 4.10:1). Error copy belongs at the top of
+   a card, not three fills deep. If an error genuinely must appear inside a
+   nested well, it goes there as `--fonda-text` plus an icon, not as red text.
+
+Both were latent in v3 — the inset has been the active-nav fill since §5.2 — and
+both are fixed by D1/D2 rather than inherited.
 
 **2. The rail is a labelled sidebar.** Decision 1 and §5 specify a ~64px
 icon-only rail with hover-label flyouts; the two amendments stacked on §5 then
