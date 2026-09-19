@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 
 import { flushAnalytics, track } from "@/lib/analytics";
+import { sourcesFor } from "@/lib/chat-sources";
 import { buildHotelContext } from "@/lib/hotel-context";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { reduceSurnames, type NameToReduce } from "@/lib/pseudonymise";
@@ -138,6 +139,17 @@ export async function POST(request: Request) {
     `Speak in ${language}.` +
     (profileBlock ? `\n\n${profileBlock}` : "") +
     `\n\nHOTEL DATA (JSON):\n${JSON.stringify(context)}`;
+
+  /**
+   * Which blocks of the hotel's data were put in front of the model
+   * (APP_UX_PROPOSAL.md §4.4). Derived from the assembled context, not asked
+   * of the model: "what did you use?" is introspection it cannot do reliably,
+   * and a guess dressed as provenance is worse than none.
+   *
+   * Keys, not prose — the chat thread looks the label up in the dictionary, so
+   * the chips translate and a source name can never carry guest data.
+   */
+  const sources = sourcesFor(context, Boolean(profileBlock));
 
   const client = new Anthropic();
   const encoder = new TextEncoder();
@@ -288,10 +300,13 @@ export async function POST(request: Request) {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-store",
-      // The body is a text stream, so the thread id rides on a header: the
-      // client needs it before the stream finishes in order to send the next
-      // turn into the same conversation.
+      // The body is a text stream, so both of these ride on headers: the
+      // client needs the thread id before the stream finishes in order to send
+      // the next turn into the same conversation, and the sources are known
+      // before the first token so the chips can render with the answer rather
+      // than appearing after it.
       ...(threadId ? { "X-Fondas-Thread-Id": threadId } : {}),
+      "X-Fondas-Sources": sources.join(","),
     },
   });
 }

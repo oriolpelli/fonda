@@ -84,7 +84,7 @@ export default async function SampleBriefPage({
             </p>
           </div>
 
-          <BriefingArticle content={sample.content} dict={dict} />
+          <BriefingArticle content={sample.content} dict={dict} locale={locale} />
 
           {/* "What Fondas did overnight" — same section style as the article */}
           <section className="border-t border-border pt-6">

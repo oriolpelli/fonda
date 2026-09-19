@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 
 import { useDictionary } from "@/components/i18n/dictionary-provider";
+import { isSourceKey, type SourceKey } from "@/lib/chat-sources";
 import { t } from "@/lib/i18n/format";
 
 /**
@@ -35,6 +36,13 @@ export interface ChatMessage {
   draftAt?: number;
   /** Which status line this assistant turn shows while it works (§8.2). */
   intent?: ChatIntent;
+  /**
+   * What this answer was built from (§4.4). Keys, resolved to labels at render
+   * time. Absent on a turn restored from the database: the sources described
+   * the context of the moment the answer was made, and reconstructing them a
+   * week later would be inventing provenance.
+   */
+  sources?: SourceKey[];
 }
 
 export interface HotelChat {
@@ -101,6 +109,10 @@ export function useHotelChat(
         const assigned = res.headers.get("X-Fondas-Thread-Id");
         if (assigned) setThreadId(assigned);
 
+        const sources = (res.headers.get("X-Fondas-Sources") ?? "")
+          .split(",")
+          .filter(isSourceKey);
+
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let acc = "";
@@ -123,6 +135,7 @@ export function useHotelChat(
               ...current,
               role: "assistant",
               content,
+              sources,
               draftId,
               // Stamped once, on the read where the draft first appears, so the
               // card's timestamp doesn't tick with every later chunk.

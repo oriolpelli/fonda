@@ -586,6 +586,14 @@
       "invalidLanguage": "Choose a language for the brief.",
       "noHotel": "We couldn't find your hotel. Sign in again and retry.",
       "saveFailed": "Couldn't save your delivery settings. Try again."
+    },
+    "provenance": {
+      "fromPms": "from your PMS",
+      "syncedAt": "synced {time}",
+      "fromGmail": "from Gmail",
+      "fromSettings": "House settings",
+      "draftProvenance": "Drafted from this thread and your house tone",
+      "draftEdited": "edited"
     }
   },
   "emails": {
@@ -723,7 +731,18 @@
     "openThreads": "Show conversations",
     "closeThreads": "Hide conversations",
     "restoredNotice": "Names in past conversations are shortened.",
-    "continueInChat": "Continue in chat"
+    "continueInChat": "Continue in chat",
+    "sources": {
+      "arrivals": "Today's arrivals",
+      "departures": "Today's departures",
+      "inHouse": "In-house guests",
+      "occupancy": "Occupancy",
+      "inbox": "Inbox",
+      "vip": "VIP arrivals",
+      "requests": "Special requests",
+      "housePolicies": "House policies",
+      "hotelData": "Hotel data"
+    }
   },
   "settings": {
     "sheetTitle": "Google Sheet",

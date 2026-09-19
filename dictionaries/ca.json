@@ -586,6 +586,14 @@
       "invalidLanguage": "Tria un idioma per al resum.",
       "noHotel": "No hem trobat el teu hotel. Torna a iniciar la sessió i prova-ho de nou.",
       "saveFailed": "No s'han pogut desar els ajustos d'enviament. Torna-ho a provar."
+    },
+    "provenance": {
+      "fromPms": "del teu PMS",
+      "syncedAt": "sincronitzat {time}",
+      "fromGmail": "de Gmail",
+      "fromSettings": "Configuració de la casa",
+      "draftProvenance": "Redactat a partir d'aquest fil i del to de la teva casa",
+      "draftEdited": "editat"
     }
   },
   "emails": {
@@ -723,7 +731,18 @@
     "openThreads": "Mostra les converses",
     "closeThreads": "Amaga les converses",
     "restoredNotice": "Els noms de converses anteriors apareixen abreujats.",
-    "continueInChat": "Continua al xat"
+    "continueInChat": "Continua al xat",
+    "sources": {
+      "arrivals": "Arribades d'avui",
+      "departures": "Sortides d'avui",
+      "inHouse": "Hostes allotjats",
+      "occupancy": "Ocupació",
+      "inbox": "Safata d'entrada",
+      "vip": "Arribades VIP",
+      "requests": "Peticions especials",
+      "housePolicies": "Normes de la casa",
+      "hotelData": "Dades de l'hotel"
+    }
   },
   "settings": {
     "sheetTitle": "Full de Google",

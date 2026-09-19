@@ -7,12 +7,12 @@ import {
   Hotel,
   Mail,
   Sparkles,
-  type LucideIcon,
 } from "lucide-react";
 
 import type { ChatMessage } from "@/components/dashboard/chat/use-hotel-chat";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { LocaleLink } from "@/components/i18n/locale-link";
+import { SourceChip } from "@/components/dashboard/source-chip";
 import { Card } from "@/components/ui/card";
 import type { Dictionary } from "@/app/[lang]/dictionaries";
 import type { Locale } from "@/lib/i18n/config";
@@ -27,43 +27,6 @@ import { cn } from "@/lib/utils";
  * things that make it read as grounded rather than generated: a source chip
  * naming the data it was built from, and a quiet status line while it works.
  */
-
-/**
- * A small rounded chip naming a piece of context the answer was built from
- * (§8.2). Neutral by construction — chips are chrome, and chrome is colorless.
- */
-function SourceChip({
-  icon: Icon,
-  label,
-  nested,
-}: {
-  icon: LucideIcon;
-  label: string;
-  /** True inside the docked bar, whose panel is itself a well. */
-  nested?: boolean;
-}) {
-  return (
-    <span
-      className={cn(
-        // A chip is one step DOWN from whatever it sits on, which is why it
-        // needs to know. v4 inverted the ground (§0.1), and `bg-card` stopped
-        // meaning "white" and started meaning "the well fill" — so inside the
-        // docked bar, whose panel is a well, the chip's fill became exactly the
-        // colour behind it and the chip disappeared. Its hairline did not save
-        // it either: --fonda-border is 1.02:1 against a well.
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] leading-none text-[var(--fonda-text-2)] ring-1 ring-[var(--fonda-border-2)]",
-        nested ? "bg-surface-2" : "bg-card"
-      )}
-    >
-      <Icon
-        aria-hidden="true"
-        className="size-3.5 text-[var(--fonda-text-3)]"
-        strokeWidth={1.5}
-      />
-      {label}
-    </span>
-  );
-}
 
 /**
  * The working line: a soft pulsing dot and a plain-language description of what
@@ -202,6 +165,7 @@ function AssistantTurn({
   nested: boolean;
   onNavigate?: () => void;
 }) {
+  const sourceLabels = dict.askYourHotel.sources as Record<string, string>;
   const status = working
     ? message.intent === "draft"
       ? dict.askYourHotel.statusDrafting
@@ -215,14 +179,19 @@ function AssistantTurn({
         className="absolute left-0 top-[3px] size-[14px] text-[var(--fonda-text-3)]"
         strokeWidth={1.5}
       />
-      {/* Every answer is built from the hotel's own cached data — the chip says
-          so on every turn because it is true on every turn. */}
+      {/* What this answer was built from (§4.4). Specific where the context
+          had something specific in it, and the generic chip only when nothing
+          did — a chip that appeared on every answer saying the same thing
+          would be decoration, which is the failure §7.4 warns about. */}
       <div className="flex flex-wrap items-center gap-2">
-        <SourceChip
-          icon={Hotel}
-          label={dict.askYourHotel.sourceHotelData}
-          nested={nested}
-        />
+        {(message.sources ?? ["hotelData"]).map((key) => (
+          <SourceChip
+            key={key}
+            icon={Hotel}
+            label={sourceLabels[key] ?? dict.askYourHotel.sourceHotelData}
+            nested={nested}
+          />
+        ))}
         <StatusLine label={status} working={working} />
       </div>
       {message.content ? (

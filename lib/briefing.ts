@@ -33,6 +33,29 @@ export interface BriefingContent {
   arrivals: string;
   emails: string;
   rate_alert: string;
+  /**
+   * What each section was built from (APP_UX_PROPOSAL.md §7.4).
+   *
+   * ADDITIVE AND OPTIONAL, which is the whole design. Briefs are stored as
+   * JSON and every brief already written lacks this field; a required one
+   * would either break the history page or need a backfill that invented
+   * provenance for briefs nobody recorded it for. Old briefs render no chips,
+   * which is the honest outcome — we genuinely do not know what they were
+   * built from.
+   *
+   * Recorded at GENERATION time, not derived at read time, for the same
+   * reason: "synced 06:40" is a fact about the morning the brief was made.
+   */
+  provenance?: BriefingProvenance;
+}
+
+export interface BriefingProvenance {
+  /** IANA-free ISO timestamp of the PMS sync the brief was built on. */
+  syncedAt: string | null;
+  /** True when the overnight-email section had mail to summarise. */
+  usedInbox: boolean;
+  /** True when house settings shaped the wording. */
+  usedHouseSettings: boolean;
 }
 
 const BRIEFING_SCHEMA = {
@@ -164,7 +187,7 @@ export async function generateBriefing(
 
   const { data: hotel, error: hotelError } = await admin
     .from("hotels")
-    .select("id, name, timezone, rooms_count")
+    .select("id, name, timezone, rooms_count, last_synced_at")
     .eq("id", hotelId)
     .single();
   if (hotelError || !hotel) {
@@ -326,6 +349,15 @@ export async function generateBriefing(
     throw new Error("Claude returned no briefing content.");
   }
   const content = JSON.parse(textBlock.text) as BriefingContent;
+
+  // Stamped here rather than inferred when the brief is read: "synced 06:40"
+  // describes the morning this brief was made, and by the time anyone opens
+  // the history page the PMS has synced a hundred times since.
+  content.provenance = {
+    syncedAt: hotel.last_synced_at ?? null,
+    usedInbox: (emails ?? []).length > 0,
+    usedHouseSettings: Boolean(settings?.gm_name || settings?.positioning_vibe),
+  };
 
   const { error: saveError } = await admin.from("briefings").insert({
     hotel_id: hotelId,

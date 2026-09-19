@@ -586,6 +586,14 @@
       "invalidLanguage": "Elige un idioma para el resumen.",
       "noHotel": "No hemos encontrado tu hotel. Vuelve a iniciar sesión e inténtalo de nuevo.",
       "saveFailed": "No se han podido guardar los ajustes de entrega. Inténtalo de nuevo."
+    },
+    "provenance": {
+      "fromPms": "de tu PMS",
+      "syncedAt": "sincronizado {time}",
+      "fromGmail": "de Gmail",
+      "fromSettings": "Ajustes de la casa",
+      "draftProvenance": "Redactado a partir de este hilo y del tono de tu casa",
+      "draftEdited": "editado"
     }
   },
   "emails": {
@@ -723,7 +731,18 @@
     "openThreads": "Mostrar conversaciones",
     "closeThreads": "Ocultar conversaciones",
     "restoredNotice": "Los nombres de conversaciones anteriores aparecen abreviados.",
-    "continueInChat": "Continuar en el chat"
+    "continueInChat": "Continuar en el chat",
+    "sources": {
+      "arrivals": "Llegadas de hoy",
+      "departures": "Salidas de hoy",
+      "inHouse": "Huéspedes alojados",
+      "occupancy": "Ocupación",
+      "inbox": "Bandeja de entrada",
+      "vip": "Llegadas VIP",
+      "requests": "Peticiones especiales",
+      "housePolicies": "Normas de la casa",
+      "hotelData": "Datos del hotel"
+    }
   },
   "settings": {
     "sheetTitle": "Hoja de Google",

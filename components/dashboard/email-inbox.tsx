@@ -688,6 +688,24 @@ export function EmailInbox({
                     className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]"
                     placeholder={dict.emails.replyPlaceholder}
                   />
+                  {/* A LINE, not a chip (§7.4). The brief's sections get chips
+                      because a chip sits in a heading row and reads as a label;
+                      a chip under a draft would sit beside the Send button and
+                      start to rattle, which is precisely what §7.4 warns
+                      about. One quiet mono line, once, under the thing it
+                      describes.
+
+                      No "· edited" marker: draft_edit_events records a bucket
+                      and a similarity score per HOTEL, with no link to an
+                      email — deliberately, since it is an analytics table and
+                      linking it to a message would make it guest-adjacent. So
+                      there is no honest way to say whether THIS draft was
+                      edited. See decision P-8. */}
+                  {selected.draft_reply ? (
+                    <p className="font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
+                      {dict.briefing.provenance.draftProvenance}
+                    </p>
+                  ) : null}
                   <div className="flex flex-wrap gap-2">
                     <Button onClick={handleSend} disabled={pending}>
                       {pending ? dict.emails.sending : dict.emails.send}

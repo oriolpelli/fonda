@@ -148,7 +148,7 @@ export default async function BriefingPage({
           the truth. */}
       {briefing ? (
         <>
-          <BriefingArticle content={briefing} dict={dict} />
+          <BriefingArticle content={briefing} dict={dict} locale={locale} />
 
           {/* Nothing at all when nothing has landed — no heading, no empty
               state. An empty "Since the brief" would say the brief is stale in

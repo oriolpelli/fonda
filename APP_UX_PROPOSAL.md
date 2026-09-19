@@ -553,6 +553,8 @@ Each phase is independently shippable and independently reviewable. Phases 1–3
 
 | 9 | P-7 · `done_today` and ignored mail | **Decided 19 Sep** — see below |
 
+| 10 | P-8 · No "· edited" marker on drafts | **Decided 19 Sep** — see below |
+
 ### 6 · The guest-data position
 
 **Decided:**
@@ -599,6 +601,30 @@ have not replied) and Done today (you dealt with it). That overlap is intended �
 include ignored-today and `all` becomes optional rather than load-bearing. It is
 the right long-term fix and was not worth blocking the queue framing on. Tracked
 in `ROADMAP.md` §3.2.
+
+### 10 · P-8 · Why a draft carries no "· edited" marker *(19 September)*
+
+§7.4 asks for a provenance line under each draft reply — "Drafted from this
+thread and your house tone" — **plus "· edited" when `draft_edit_events` shows
+the GM changed it.** The line is built. The marker is not, and cannot be.
+
+`draft_edit_events` records `hotel_id`, `surface`, `edit_bucket`,
+`similarity_pct` and `bulk`. **It has no email id.** That is not an oversight to
+patch: it is an analytics table, and giving it a foreign key to a specific
+guest's message is exactly the link that would turn an aggregate into something
+guest-adjacent — which `lib/analytics.ts`'s rules exist to prevent.
+
+**Decided:** ship the line, drop the marker. The alternatives were both worse
+than a missing word. Adding the email id makes an analytics table hold a
+pointer to guest correspondence. Diffing `draft_reply` against the sent body at
+read time re-derives an answer we already compute at send time, on every render
+of every message, to add three characters.
+
+**If the marker is wanted later**, the cheap version is a boolean
+`emails.draft_edited` written by `sendReply` when it already computes the
+similarity — one column on a table that legitimately holds message state, and
+no new link from analytics to guests. Tracked in `ROADMAP.md` §3.2 alongside
+the `emails.updated_at` item, which the same migration could carry.
 
 ### 8 · P-6 · The rail becomes a labelled sidebar *(19 September)*
 

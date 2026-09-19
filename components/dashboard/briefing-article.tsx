@@ -1,5 +1,8 @@
 import type { Dictionary } from "@/app/[lang]/dictionaries";
+import { SourceChip } from "@/components/dashboard/source-chip";
 import type { BriefingContent } from "@/lib/briefing";
+import { intlLocale, type Locale } from "@/lib/i18n/config";
+import { t } from "@/lib/i18n/format";
 
 /**
  * Renders briefing prose: blank-line-separated paragraphs.
@@ -25,12 +28,24 @@ function Prose({ text }: { text: string }) {
   );
 }
 
-function Section({ title, text }: { title: string; text: string }) {
+function Section({
+  title,
+  text,
+  source,
+}: {
+  title: string;
+  text: string;
+  /** One chip, or none. §7.4's whole instruction here is restraint. */
+  source?: string | null;
+}) {
   return (
     <section className="border-t border-border pt-6">
-      <h2 className="mb-3 font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-        {title}
-      </h2>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+          {title}
+        </h2>
+        {source ? <SourceChip label={source} /> : null}
+      </div>
       <Prose text={text} />
     </section>
   );
@@ -43,16 +58,50 @@ function Section({ title, text }: { title: string; text: string }) {
 export function BriefingArticle({
   content,
   dict,
+  locale,
 }: {
   content: BriefingContent;
   dict: Dictionary;
+  locale: Locale;
 }) {
+  /**
+   * Provenance is optional and absent on every brief written before it
+   * existed. An old brief renders no chips, which is the honest outcome — we
+   * genuinely do not know what it was built from, and a backfilled guess would
+   * be worse than a blank.
+   */
+  const p = content.provenance;
+  const copy = dict.briefing.provenance;
+
+  const pmsChip = p
+    ? p.syncedAt
+      ? `${copy.fromPms} · ${t(copy.syncedAt, {
+          time: new Intl.DateTimeFormat(intlLocale[locale], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }).format(new Date(p.syncedAt)),
+        })}`
+      : copy.fromPms
+    : null;
+
   return (
     <article className="flex flex-col gap-8">
       <Prose text={content.summary} />
-      <Section title={dict.briefing.arrivals} text={content.arrivals} />
-      <Section title={dict.briefing.overnightEmail} text={content.emails} />
-      <Section title={dict.briefing.rateAlert} text={content.rate_alert} />
+      <Section
+        title={dict.briefing.arrivals}
+        text={content.arrivals}
+        source={pmsChip}
+      />
+      <Section
+        title={dict.briefing.overnightEmail}
+        text={content.emails}
+        source={p?.usedInbox ? copy.fromGmail : null}
+      />
+      <Section
+        title={dict.briefing.rateAlert}
+        text={content.rate_alert}
+        source={pmsChip}
+      />
     </article>
   );
 }

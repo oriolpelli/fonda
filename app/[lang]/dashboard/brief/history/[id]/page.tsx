@@ -82,7 +82,7 @@ export default async function BriefingHistoryDetailPage({
         />
       </div>
 
-      <BriefingArticle content={briefing} dict={dict} />
+      <BriefingArticle content={briefing} dict={dict} locale={locale} />
     </div>
   );
 }
