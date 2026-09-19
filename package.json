@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "reliability-check": "tsx --conditions=react-server scripts/reliability-check.ts",
+    "verify-migrations": "tsx scripts/verify-migrations.ts",
     "analytics-pii-audit": "tsx --conditions=react-server scripts/analytics-pii-audit.ts",
     "seed-test-guests": "tsx scripts/seed-test-guests.ts"
   },
