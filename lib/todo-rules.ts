@@ -86,12 +86,27 @@ export interface TodoEmail {
   guest_name: string | null;
   from_email: string | null;
   urgency: Urgency;
+  /**
+   * When the message arrived, ISO-8601 UTC — the email row's `created_at`.
+   * Only the `since` filter reads it; the ranking is unaffected.
+   */
+  receivedAt: string;
 }
 
 export interface TodoInput {
   emails: TodoEmail[];
-  /** VIPs arriving today with no note on the booking. */
-  vipArrivalsWithoutNote: { reservationId: string; name: string }[];
+  /**
+   * VIPs arriving today with no note on the booking. `updatedAt` is MEWS's
+   * `UpdatedUtc` (last *modified*, and null for non-MEWS sources) — the only
+   * event-ish instant a reservation carries. `synced_at` is deliberately not
+   * used: lib/mews-sync.ts stamps it on every row on every sync, so under
+   * `since` every reservation would read as new after each sync.
+   */
+  vipArrivalsWithoutNote: {
+    reservationId: string;
+    name: string;
+    updatedAt: string | null;
+  }[];
   /** Confirmed arrivals tomorrow with no arrival time on file. */
   unconfirmedEtasTomorrow: number;
   /** Tonight and the next 13 nights. */
@@ -100,6 +115,21 @@ export interface TodoInput {
   rooms: number;
   /** Whether a PMS sync has ever completed. */
   hasSyncedData: boolean;
+  /**
+   * "Only things newer than this instant" — the Morning Brief's "Since the
+   * brief" block passes the brief's `generated_at` (APP_UX_PROPOSAL.md §5.1).
+   *
+   * A plain UTC instant comparison, NOT a hotel-local day question: `hotelToday`
+   * answers "does this arrive today?", which is a different thing from "is this
+   * newer than that?".
+   *
+   * It narrows each rule's *source collection*, before the caps below apply, so
+   * a complaint that landed after the brief can't be pushed out by two older
+   * complaints the brief already covered. Rules with no event instant of their
+   * own — `unconfirmed_etas` and `low_occupancy`, both aggregates — are skipped
+   * entirely rather than given an invented time.
+   */
+  since?: Date;
 }
 
 /** Whoever sent the email, in the order a human would recognise them. */
@@ -116,9 +146,24 @@ function senderLabel(email: TodoEmail): string {
 export function buildTodoList(input: TodoInput): TodoItem[] {
   const items: TodoItem[] = [];
 
+  // The `since` window, applied to the sources rather than to the result — see
+  // TodoInput.since. A VIP with no `updatedAt` contributes nothing here: there
+  // is no honest way to say whether it is newer than the brief.
+  const after = input.since?.getTime();
+  const emails =
+    after === undefined
+      ? input.emails
+      : input.emails.filter((e) => Date.parse(e.receivedAt) > after);
+  const vips =
+    after === undefined
+      ? input.vipArrivalsWithoutNote
+      : input.vipArrivalsWithoutNote.filter(
+          (v) => v.updatedAt !== null && Date.parse(v.updatedAt) > after
+        );
+
   // 0 — Unanswered complaints. Always first: a complaint left overnight is the
   //     one thing on this page that can cost a review.
-  const complaints = input.emails.filter((e) => e.urgency.kind === "complaint");
+  const complaints = emails.filter((e) => e.urgency.kind === "complaint");
   for (const email of complaints.slice(0, PER_RULE_CAP)) {
     items.push({
       id: `complaint:${email.id}`,
@@ -132,7 +177,7 @@ export function buildTodoList(input: TodoInput): TodoItem[] {
 
   // 1 — A VIP arriving today that nobody has written a note for. Fixable in the
   //     minutes before they walk in, and invisible once they have.
-  for (const vip of input.vipArrivalsWithoutNote.slice(0, PER_RULE_CAP)) {
+  for (const vip of vips.slice(0, PER_RULE_CAP)) {
     items.push({
       id: `vip:${vip.reservationId}`,
       kind: "vip_no_note",
@@ -143,8 +188,9 @@ export function buildTodoList(input: TodoInput): TodoItem[] {
     });
   }
 
-  // 2 — Tomorrow's desk can't be planned without arrival times.
-  if (input.unconfirmedEtasTomorrow > UNCONFIRMED_ETA_THRESHOLD) {
+  // 2 — Tomorrow's desk can't be planned without arrival times. An aggregate,
+  //     so it has no instant to compare and sits out the `since` window.
+  if (after === undefined && input.unconfirmedEtasTomorrow > UNCONFIRMED_ETA_THRESHOLD) {
     items.push({
       id: "etas:tomorrow",
       kind: "unconfirmed_etas",
@@ -158,7 +204,7 @@ export function buildTodoList(input: TodoInput): TodoItem[] {
   // 3 — Guest mail going stale. One item for the longest wait, mentioning how
   //     many others are behind it, rather than one line per email — the inbox
   //     is where you work through them.
-  const waiting = input.emails
+  const waiting = emails
     .filter((e) => e.urgency.kind === "waiting")
     .sort((a, b) => (b.urgency.hoursWaiting ?? 0) - (a.urgency.hoursWaiting ?? 0));
   const oldest = waiting[0];
@@ -184,7 +230,10 @@ export function buildTodoList(input: TodoInput): TodoItem[] {
   //     Skipped entirely when the hotel has no room count or has never synced —
   //     both make occupancy read as 0%, which would fire this rule every day
   //     for a hotel that simply hasn't finished setting up.
-  if (input.rooms > 0 && input.hasSyncedData) {
+  //
+  //     Also an aggregate over a fortnight, so like the ETA rule it sits out
+  //     the `since` window.
+  if (after === undefined && input.rooms > 0 && input.hasSyncedData) {
     const soft = input.outlook
       .filter((d) => d.occupancyPct < LOW_OCCUPANCY_PCT)
       .sort((a, b) => a.occupancyPct - b.occupancyPct || a.date.localeCompare(b.date));

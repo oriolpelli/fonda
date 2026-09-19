@@ -8,11 +8,16 @@ import { BriefingGenerating } from "@/components/dashboard/briefing-generating";
 import { BriefingRefreshButton } from "@/components/dashboard/briefing-refresh-button";
 import { BriefDeliverySettingsForm } from "@/components/dashboard/brief-delivery-settings-form";
 import { FirstRunState } from "@/components/dashboard/first-run-state";
+import { TodoList } from "@/components/dashboard/todo-list";
 import { Button } from "@/components/ui/button";
 import { loadTodaysBriefing } from "@/lib/briefing-latest";
+import { loadDashboardSnapshot } from "@/lib/dashboard-snapshot";
+import { byUrgency } from "@/lib/email-urgency";
 import { intlLocale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
+import { loadInbox } from "@/lib/inbox";
 import { createClient } from "@/lib/supabase/server";
+import { buildTodoList, type TodoItem } from "@/lib/todo-rules";
 
 export async function generateMetadata({
   params,
@@ -30,15 +35,6 @@ function formatLongDate(intl: string, tz: string, d: Date): string {
     day: "numeric",
     month: "long",
     year: "numeric",
-  }).format(d);
-}
-
-function formatShortDate(intl: string, tz: string, d: Date): string {
-  return new Intl.DateTimeFormat(intl, {
-    timeZone: tz,
-    weekday: "short",
-    day: "numeric",
-    month: "short",
   }).format(d);
 }
 
@@ -65,16 +61,46 @@ export default async function BriefingPage({
 
   // Shared with the dashboard's summary card (lib/briefing-latest.ts), so the
   // teaser and this page can never disagree about whether a brief exists.
-  const briefing = (await loadTodaysBriefing(tz))?.content ?? null;
+  const today = await loadTodaysBriefing(tz);
+  const briefing = today?.content ?? null;
 
-  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-  const { data: history } = await supabase
+  // "Since the brief" (APP_UX_PROPOSAL.md §5.1) — the brief is a 07:00
+  // snapshot, and this keeps the page true at 14:00. Same rules as Home, run
+  // with a `since` window, which leaves exactly the two rules that carry an
+  // event instant: an unanswered complaint that arrived after the brief, and a
+  // VIP arrival booked or changed after it.
+  //
+  // Only loaded when there is a brief to be "since" — a hotel mid-onboarding
+  // never pays for these two reads.
+  let sinceTheBrief: TodoItem[] = [];
+  if (today) {
+    const [snapshot, inbox] = await Promise.all([
+      loadDashboardSnapshot(),
+      loadInbox(),
+    ]);
+    sinceTheBrief = buildTodoList({
+      emails: inbox.emails
+        .filter((email) => email.urgency.kind !== "handled")
+        .sort(byUrgency)
+        .map((email) => ({ ...email, receivedAt: email.created_at })),
+      vipArrivalsWithoutNote: snapshot.vipArrivalsWithoutNote,
+      unconfirmedEtasTomorrow: snapshot.unconfirmedEtasTomorrow,
+      outlook: snapshot.outlook,
+      rooms: snapshot.rooms,
+      hasSyncedData: snapshot.hasSyncedData,
+      since: new Date(today.generatedAt),
+    });
+  }
+
+  // Only whether there is a history, not the history itself — the list lives at
+  // /dashboard/brief/history now, and the hero link shouldn't point at an empty
+  // page on a hotel's first morning.
+  const { data: firstBrief } = await supabase
     .from("briefings")
-    .select("id, generated_at")
+    .select("id")
     .not("content_json->>summary", "is", null)
-    .gte("generated_at", thirtyDaysAgo.toISOString())
-    .order("generated_at", { ascending: false })
-    .limit(30);
+    .limit(1)
+    .maybeSingle();
 
   const quickActions = [
     { label: dict.briefing.reviewEmails, href: "/dashboard/communications" },
@@ -90,8 +116,23 @@ export default async function BriefingPage({
         title={dict.briefing.title}
         subtitle={hotel?.name ?? dict.briefing.fallbackHotel}
         action={
-          briefing ? (
-            <BriefingRefreshButton className="border-[var(--fonda-text-inv)]/40 bg-transparent text-[var(--fonda-text-inv)] hover:border-[var(--fonda-text-inv)]" />
+          briefing || firstBrief ? (
+            <div className="flex items-center gap-5">
+              {/* The in-app text-link treatment (button.tsx's own note: a plain
+                  link, underlined, no navy) — in the hero's inverse ink, because
+                  §7.2 allows white text only on a gradient. */}
+              {firstBrief ? (
+                <Link
+                  href={localizedHref(locale, "/dashboard/brief/history")}
+                  className="text-sm underline underline-offset-4 text-[var(--fonda-text-inv)]"
+                >
+                  {dict.briefing.pastBriefs}
+                </Link>
+              ) : null}
+              {briefing ? (
+                <BriefingRefreshButton className="border-[var(--fonda-text-inv)]/40 bg-transparent text-[var(--fonda-text-inv)] hover:border-[var(--fonda-text-inv)]" />
+              ) : null}
+            </div>
           ) : null
         }
       />
@@ -104,6 +145,25 @@ export default async function BriefingPage({
       {briefing ? (
         <>
           <BriefingArticle content={briefing} dict={dict} />
+
+          {/* Nothing at all when nothing has landed — no heading, no empty
+              state. An empty "Since the brief" would say the brief is stale in
+              the one case where it isn't. */}
+          {sinceTheBrief.length > 0 ? (
+            <section className="flex flex-col gap-3 border-t border-border pt-6">
+              <h2 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+                {dict.briefing.sinceTitle}
+              </h2>
+              {/* showPrimary={false}: the sunrise hero is this page's one
+                  accent (§7.2), so no row leads by darkness here. */}
+              <TodoList
+                dict={dict}
+                locale={locale}
+                items={sinceTheBrief}
+                showPrimary={false}
+              />
+            </section>
+          ) : null}
 
           <div className="flex flex-wrap gap-3 border-t border-border pt-6">
             {quickActions.map((action) => (
@@ -141,29 +201,6 @@ export default async function BriefingPage({
         language={settings?.briefing_language ?? "en"}
         timezone={tz}
       />
-
-      {history && history.length > 0 ? (
-        <section className="flex flex-col gap-3 border-t border-border pt-6">
-          <h2 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-            {dict.briefing.historyTitle}
-          </h2>
-          <ul className="flex flex-col divide-y divide-border">
-            {history.map((row) => (
-              <li key={row.id} className="flex items-center justify-between py-2.5">
-                <span className="text-sm text-foreground/80">
-                  {formatShortDate(intlLocale[locale], tz, new Date(row.generated_at))}
-                </span>
-                <Link
-                  href={localizedHref(locale, `/dashboard/brief/history/${row.id}`)}
-                  className="text-sm font-medium text-primary hover:underline"
-                >
-                  {dict.briefing.openBrief}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
     </div>
   );
 }

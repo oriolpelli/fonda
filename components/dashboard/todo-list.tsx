@@ -78,10 +78,18 @@ export function TodoList({
   dict,
   locale,
   items,
+  showPrimary = true,
 }: {
   dict: Dictionary;
   locale: Locale;
   items: TodoItem[];
+  /**
+   * Whether the list's first item may lead by darkness. False on the Morning
+   * Brief's "Since the brief" block (APP_UX_PROPOSAL.md §5.1): the gradient
+   * hero already owns that page's one accent, and `buildTodoList` marks a
+   * primary item regardless of where its output is rendered.
+   */
+  showPrimary?: boolean;
 }) {
   return (
     // overflow-hidden so a row's hover fill is clipped by the card's 18px
@@ -101,7 +109,7 @@ export function TodoList({
                   // Ink, not navy (§10): chrome is colourless in v3, and the
                   // page's one accent belongs to the occupancy strip. The
                   // primary item still leads by darkness.
-                  item.primary
+                  item.primary && showPrimary
                     ? "bg-[var(--fonda-text)]"
                     : "bg-[var(--fonda-text-3)]"
                 )}

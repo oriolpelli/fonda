@@ -157,7 +157,9 @@ export default async function DashboardPage({
   ]);
 
   const todos = buildTodoList({
-    emails: unanswered,
+    // `receivedAt` is only read by the brief's "since" filter, but the rules
+    // take one email shape, so Home feeds it too.
+    emails: unanswered.map((email) => ({ ...email, receivedAt: email.created_at })),
     vipArrivalsWithoutNote: snapshot.vipArrivalsWithoutNote,
     unconfirmedEtasTomorrow: snapshot.unconfirmedEtasTomorrow,
     outlook: snapshot.outlook,

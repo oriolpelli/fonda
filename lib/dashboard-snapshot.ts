@@ -48,6 +48,14 @@ export interface VipArrival {
   /** Reservation id, so the item can link somewhere specific later. */
   reservationId: string;
   name: string;
+  /**
+   * MEWS's `UpdatedUtc` — when the booking was last *modified*, not created,
+   * and null for any source that isn't MEWS. The nearest thing a reservation
+   * has to an event instant, which is what the brief's "since" filter needs
+   * (lib/todo-rules.ts). `synced_at` is not an alternative: it changes on
+   * every sync.
+   */
+  updatedAt: string | null;
 }
 
 export interface DashboardSnapshot {
@@ -88,6 +96,7 @@ interface ReservationRow {
   end_utc: string | null;
   customer_mews_id: string | null;
   arrival_time: string | null;
+  mews_updated_utc: string | null;
   raw: Json;
 }
 
@@ -174,7 +183,7 @@ export async function loadDashboardSnapshot(): Promise<DashboardSnapshot> {
     supabase
       .from("reservations")
       .select(
-        "mews_id, state, start_utc, end_utc, customer_mews_id, arrival_time, raw"
+        "mews_id, state, start_utc, end_utc, customer_mews_id, arrival_time, mews_updated_utc, raw"
       )
       .eq("hotel_id", hotel.id)
       .lt("start_utc", windowEnd)
@@ -236,6 +245,7 @@ export async function loadDashboardSnapshot(): Promise<DashboardSnapshot> {
     })
     .map(({ reservation }) => ({
       reservationId: reservation.mews_id,
+      updatedAt: reservation.mews_updated_utc,
       name:
         fullName(
           reservation.customer_mews_id
