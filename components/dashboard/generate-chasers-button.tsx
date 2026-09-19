@@ -3,7 +3,11 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { generateChasers } from "@/app/[lang]/dashboard/arrivals/actions";
+import {
+  generateChasers,
+  type GenerateChasersError,
+} from "@/app/[lang]/dashboard/arrivals/actions";
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -18,11 +22,17 @@ import { Button } from "@/components/ui/button";
  * Errors are shown as text under the button rather than thrown: a failed
  * generation is usually a missing key or an unreachable model, and the rest of
  * the day's arrivals are still worth reading.
+ *
+ * The action reports a code, not a sentence — it has no locale to write one in
+ * (see `GenerateChasersError`). The wording is chosen here, where the dictionary
+ * is, so an es/ca session gets its own language and no vendor error text ever
+ * reaches the screen.
  */
 export function GenerateChasersButton({ label }: { label: string }) {
+  const { dict } = useDictionary();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<GenerateChasersError | null>(null);
 
   function run() {
     setError(null);
@@ -43,7 +53,7 @@ export function GenerateChasersButton({ label }: { label: string }) {
       </Button>
       {error ? (
         <p role="alert" className="text-sm font-medium text-destructive">
-          {error}
+          {dict.arrivals.chaserErrors[error]}
         </p>
       ) : null}
     </div>

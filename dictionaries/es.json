@@ -647,7 +647,11 @@
     "tabArrivals": "Llegadas ({count})",
     "tabDepartures": "Salidas ({count})",
     "emptyArrivals": "Hoy no hay llegadas.",
-    "emptyDepartures": "Hoy no hay salidas."
+    "emptyDepartures": "Hoy no hay salidas.",
+    "chaserErrors": {
+      "noHotel": "No hemos encontrado tu hotel. Vuelve a iniciar sesión e inténtalo de nuevo.",
+      "generateFailed": "No se han podido generar los seguimientos. Inténtalo de nuevo en un momento."
+    }
   },
   "checkin": {
     "pendingOne": "{count} sigue sin hora de llegada",

@@ -53,10 +53,19 @@ function ChaserItem({
     : "—";
 
   return (
-    <Card>
+    // min-w-0 because this is a grid item and the draft below is a <textarea>,
+    // whose intrinsic min-content width (cols defaults to 20) is ~428px. A grid
+    // item's default `min-width: auto` floors the track at that, so at 375 the
+    // card pushed the page 121px wide however narrow the column was — `w-full`
+    // on the textarea sets width, not min-width, so it can't pull it back.
+    <Card className="min-w-0">
       <CardHeader>
         <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-base">
-          <span>{chaser.guestName}</span>
+          {/* min-w-0 + break-words because this is a flex child and the name
+              falls back to the guest's email when a booking carries no profile
+              (see loadChaserCards). An address has no break opportunity, so a
+              long one ran straight out of the card at 375. */}
+          <span className="min-w-0 break-words">{chaser.guestName}</span>
           <span className="text-sm font-normal text-muted-foreground">
             {t(dict.checkin.arrives, { date: arrival })}
             {chaser.roomType ? ` · ${chaser.roomType}` : ""}

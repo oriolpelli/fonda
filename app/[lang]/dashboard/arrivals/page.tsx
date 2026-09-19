@@ -134,18 +134,22 @@ export default async function ArrivalsPage({
       <Tabs dict={dict} locale={locale} selected={tab} counts={counts} />
 
       {tab === "arrivals" ? (
-        arrivalRows.length === 0 ? (
-          <EmptyState icon="arrivals" message={dict.arrivals.emptyArrivals} />
-        ) : (
-          <div className="flex flex-col gap-6">
-            {/* The queue first: the arrivals still missing an ETA, each with a
-                draft waiting to go. Rendered only when there is something in
-                it — the grid's own empty state belongs to the old page, where
-                chasers were all there was. */}
-            {cards.length > 0 ? <CheckinChasers chasers={cards} /> : null}
+        <div className="flex flex-col gap-6">
+          {/* The queue first: the arrivals still missing an ETA, each with a
+              draft waiting to go. Rendered whenever there is something in it —
+              never gated on today's list, because the two cover different days.
+              `lib/checkin-chaser.ts` chases tomorrow through +7, so a hotel with
+              nothing arriving today can still have a full queue, and hiding it
+              behind "No arrivals today" would bury the only work on the page.
+              The grid's own empty state belongs to the old page, where chasers
+              were all there was. */}
+          {cards.length > 0 ? <CheckinChasers chasers={cards} /> : null}
+          {arrivalRows.length === 0 ? (
+            <EmptyState icon="arrivals" message={dict.arrivals.emptyArrivals} />
+          ) : (
             <WidgetList rows={arrivalRows} />
-          </div>
-        )
+          )}
+        </div>
       ) : departureRows.length === 0 ? (
         <EmptyState icon="arrivals" message={dict.arrivals.emptyDepartures} />
       ) : (

@@ -647,7 +647,11 @@
     "tabArrivals": "Arrivals ({count})",
     "tabDepartures": "Departures ({count})",
     "emptyArrivals": "No arrivals today.",
-    "emptyDepartures": "No departures today."
+    "emptyDepartures": "No departures today.",
+    "chaserErrors": {
+      "noHotel": "We couldn't find your hotel. Sign in again and retry.",
+      "generateFailed": "Couldn't generate the chasers. Try again in a moment."
+    }
   },
   "checkin": {
     "pendingOne": "{count} still needs an ETA",

@@ -54,20 +54,39 @@ async function sendOne(
     .eq("id", chaser.id);
 }
 
+/**
+ * Why a code and not a sentence: this action runs on the server, where there is
+ * no locale — `[lang]` is the caller's, not ours — so any string built here is
+ * English by construction and an es/ca session would read it in the wrong
+ * language. `runCheckinChaser` also throws model and Gmail errors whose
+ * messages are vendor text, which has no business on screen in guest-facing
+ * software. The client owns the wording (`dict.arrivals.chaserErrors`); the
+ * real reason goes to the server console, where support can find it. Same split
+ * as the brief's delivery settings (app/[lang]/dashboard/brief/actions.ts).
+ */
+export type GenerateChasersError = "noHotel" | "generateFailed";
+
 /** Generates today's chaser drafts on demand. */
-export async function generateChasers(): Promise<{ created: number; error?: string }> {
+export async function generateChasers(): Promise<{
+  created: number;
+  error?: GenerateChasersError;
+}> {
   let hotelId: string;
   try {
     hotelId = await requireHotelId();
   } catch (err) {
-    return { created: 0, error: (err as Error).message };
+    // "Not authenticated" and "no hotel" are the same dead end for the user and
+    // neither is actionable on this page, so they collapse to one message.
+    console.error("[arrivals] generate chasers: no hotel for session:", err);
+    return { created: 0, error: "noHotel" };
   }
   try {
     const created = await runCheckinChaser(hotelId);
     revalidatePath("/dashboard/arrivals");
     return { created };
   } catch (err) {
-    return { created: 0, error: (err as Error).message };
+    console.error("[arrivals] generate chasers failed:", err);
+    return { created: 0, error: "generateFailed" };
   }
 }
 

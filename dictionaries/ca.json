@@ -647,7 +647,11 @@
     "tabArrivals": "Arribades ({count})",
     "tabDepartures": "Sortides ({count})",
     "emptyArrivals": "Avui no hi ha arribades.",
-    "emptyDepartures": "Avui no hi ha sortides."
+    "emptyDepartures": "Avui no hi ha sortides.",
+    "chaserErrors": {
+      "noHotel": "No hem trobat el teu hotel. Torna a iniciar la sessió i torna-ho a provar.",
+      "generateFailed": "No s'han pogut generar els seguiments. Torna-ho a provar d'aquí a un moment."
+    }
   },
   "checkin": {
     "pendingOne": "{count} encara no té hora d'arribada",

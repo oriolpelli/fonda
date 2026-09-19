@@ -76,10 +76,20 @@ export async function updateSession(request: NextRequest) {
   const isAuthRoute = rest === "/login" || rest === "/signup";
 
   // Unauthenticated users hitting a protected route → locale-prefixed /login.
+  //
+  // `redirectTo` carries the query string as well as the path. The deep links
+  // that get bounced through here are query-bearing by definition —
+  // `/dashboard/communications?email=<id>` from a brief or a chat hand-off
+  // (APP_UX_PROPOSAL.md §2.5), `/dashboard/arrivals?tab=departures` from Home's
+  // departures widget — so dropping the search would land them on the right
+  // page with the wrong message, or the wrong tab. The search is also cleared
+  // off the login URL first: cloning kept the original params, which put a
+  // stray `?email=`/`?tab=` on /login where nothing reads them.
   if (!user && isProtected) {
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}/login`;
-    url.searchParams.set("redirectTo", pathname);
+    url.search = "";
+    url.searchParams.set("redirectTo", `${pathname}${request.nextUrl.search}`);
     return NextResponse.redirect(url);
   }
 
