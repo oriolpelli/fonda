@@ -44,7 +44,7 @@ export default async function DashboardLayout({
 
   const { data: hotel } = await supabase
     .from("hotels")
-    .select("pms_connected, last_synced_at")
+    .select("name, pms_connected, last_synced_at")
     .eq("id", profile.hotel_id)
     .single();
 
@@ -217,6 +217,10 @@ export default async function DashboardLayout({
         navItems={navItems}
         settingsItem={settingsItem}
         groupLabels={groupLabels}
+        // The property's own name heads the sidebar (P-6). Falls back to the
+        // product name rather than rendering an empty row for a hotel that has
+        // not filled its settings in yet.
+        hotelName={hotel?.name?.trim() || "Fondas"}
         dashboardHref={localizedHref(locale, "/dashboard")}
         connectionState={connectionState}
         connectionLabels={{
@@ -233,14 +237,15 @@ export default async function DashboardLayout({
         openLabel={dict.nav.openMenu}
         closeLabel={dict.nav.closeMenu}
       />
-      {/* pt-14 clears the fixed mobile top bar; pl-16 the desktop icon rail.
+      {/* pt-14 clears the fixed mobile top bar; pl-60 the desktop sidebar,
+          which replaced the 64px icon rail in P-6.
 
           min-w-0 is load-bearing: a flex item defaults to `min-width: auto`,
           so this column refused to shrink below the widest thing inside it —
           the dashboard's 14-night strip — and pushed the entire page sideways
           on a phone. Zeroing the minimum lets the column match the viewport
           and leaves each scroll container to handle its own overflow. */}
-      <div className="flex min-w-0 flex-1 flex-col pt-14 md:pl-16 md:pt-0">
+      <div className="flex min-w-0 flex-1 flex-col pt-14 md:pl-60 md:pt-0">
         {/* Column, not a plain block, so the docked "Ask your hotel" bar below
             can take the remaining height with `mt-auto` and sit at the foot of
             the column on short pages as well as long ones. */}

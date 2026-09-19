@@ -58,3 +58,7 @@ _to_delete/
 
 # Local Claude Code tool config (per-machine settings, not project source).
 .claude/
+
+# Build-gate tarball: the cloud sandbox can't build against macOS node_modules,
+# so the working tree is archived here and rebuilt elsewhere. Never committed.
+.fonda-src.tar

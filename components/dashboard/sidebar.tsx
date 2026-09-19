@@ -190,116 +190,16 @@ const ICONS: Record<string, LucideIcon> = {
   "team-activity": UserCog,
 };
 
-/**
- * Where the rail's one hairline goes: immediately above the first section that
- * owns a panel (APP_UX_PROPOSAL.md §2.1).
- *
- * The divider is load-bearing rather than decorative — it says *these two are
- * places you are always in* (Home, Ask) and *these two are where the product's
- * surface area lives* (Operation, Commercial). Derived from the tree instead of
- * hard-coded against a key, so renaming a pillar can't strand it in the wrong
- * place; -1 when the tree opens with a section, which suppresses it entirely.
- */
+
+
+
+
+/** Index of the first section that owns children — where the pillars begin. */
 function firstSectionIndexOf(items: NavItem[]) {
   return items.findIndex((item) => Boolean(item.children?.length));
 }
 
-/** Shared shell for every control in the rail — 40px hit target, soft corners. */
-const RAIL_ITEM =
-  "group relative inline-flex size-10 shrink-0 items-center justify-center rounded-[10px] transition-colors duration-[180ms]";
 
-/**
- * Rail states are MONOCHROME (§5.2). The active tell is weight and darkness —
- * a solid warm near-black icon on a greige inset — never a hue. No accent tint,
- * no coloured left bar.
- *
- * Measured: --fonda-text on --fonda-inset is 13.06:1; --fonda-text-3 on the
- * --fonda-bg ground is 4.79:1. Both clear AA comfortably.
- */
-function railStateClass(active: boolean) {
-  return active
-    ? "bg-[var(--fonda-inset)] text-foreground"
-    : "text-[var(--fonda-text-3)] hover:bg-[var(--fonda-surface-2)] hover:text-foreground";
-}
-
-/**
- * The hover/focus label that stands in for the text the rail no longer shows —
- * a dark pill to the right of the icon (§5.3).
- *
- * `aria-hidden` on purpose: the control's accessible name already comes from
- * its `aria-label`, so exposing the pill too would announce it twice. There is
- * deliberately no `title` either — the native tooltip fires a second, competing
- * bubble on top of this one.
- *
- * The 150ms delay is set only inside the `group-hover:` state, so the pill waits
- * to appear but leaves instantly. `prefers-reduced-motion` collapses the
- * duration through the global rule in globals.css.
- */
-function FlyoutLabel({ label }: { label: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-[8px] bg-[var(--fonda-ink)] px-2.5 py-1.5 text-[13px] font-medium leading-none text-[var(--fonda-text-inv)] opacity-0 shadow-card transition duration-150 group-hover:translate-x-0 group-hover:opacity-100 group-hover:delay-150 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
-    >
-      {label}
-    </span>
-  );
-}
-
-/** The visible label: unbuilt items carry their "Coming soon" wording inline. */
-function visibleLabel(item: NavItem) {
-  return item.comingSoon && item.comingSoonLabel
-    ? `${item.label} · ${item.comingSoonLabel}`
-    : item.label;
-}
-
-/**
- * The count chip, tucked into the icon's top-right corner.
- *
- * The neutral fill (`--fonda-inset`) is all but identical to the rail ground, so
- * the chip's *shape* only reads because of the hairline ring; on an active item
- * — whose own fill is that same inset — it flips to white so it doesn't vanish.
- * An alert goes solid ink, which needs no help.
- */
-function CountBadge({ badge, active }: { badge: NavBadge; active: boolean }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={cn(
-        "absolute -right-0.5 -top-0.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 font-mono text-[10px] font-medium leading-none tabular-nums ring-1",
-        badge.alert
-          ? "bg-[var(--fonda-ink)] text-[var(--fonda-text-inv)] ring-[var(--fonda-ink)]"
-          : active
-            ? "bg-[var(--fonda-surface)] text-[var(--fonda-text)] ring-[var(--fonda-border-2)]"
-            : "bg-[var(--fonda-inset)] text-[var(--fonda-text)] ring-[var(--fonda-border-2)]"
-      )}
-    >
-      {badge.count}
-    </span>
-  );
-}
-
-/**
- * The corner marker for an unbuilt section on the rail (NAV_REORG_SPEC.md
- * §9.6): a small muted sparkle, the same glyph the panel's coming-soon rows
- * carry, so the marker reads the same rail-and-panel.
- *
- * Not a dimmed icon: `--fonda-text-3` at reduced opacity falls under the 3:1
- * minimum for non-text contrast. Decorative here — the "Coming soon" wording is
- * already folded into the item's accessible name by `visibleLabel`.
- *
- * Nudged in a notch from the 5px dot this replaces (`right-1.5 top-1.5`), since
- * the glyph is wider and would otherwise sit on the section icon's shoulder.
- */
-function SoonMarker() {
-  return (
-    <Sparkles
-      aria-hidden="true"
-      strokeWidth={1.5}
-      className="absolute right-1 top-1 size-3 text-[var(--fonda-text-3)]"
-    />
-  );
-}
 
 /**
  * The quiet mono "Coming soon" chip carried by labelled rows — the drawer, the
@@ -331,7 +231,7 @@ function SoonChip({
   );
 }
 
-/** The count chip on a labelled row (the icon rail uses `CountBadge`). */
+/** The count chip on a labelled row. */
 function RowBadge({
   badge,
   className,
@@ -450,6 +350,31 @@ function PanelLink({
 }
 
 /**
+ * A pillar's heading in the sidebar — Operation, Commercial.
+ *
+ * The whole of decision P-6 is in the element type. Through v3 a pillar was a
+ * *button*: a 64px rail cannot show a label, so the label lived in a docked
+ * panel and the icon had to open it — which meant hover preview, click to pin,
+ * click again to close, Escape, outside-pointer dismiss, and a rule that the
+ * section itself must not navigate. A labelled sidebar shows the children
+ * outright, so the pillar has nothing left to do but name them.
+ *
+ * So: a `<p>`. Not focusable, no hover state, no cursor change, nothing to
+ * dismiss. The "pillars are deliberately unrouted" decision now holds by
+ * construction rather than by enforcement — a heading cannot navigate.
+ *
+ * `aria-hidden` is deliberately NOT set: the text is a real heading for the
+ * rows under it, and screen readers should read it as they pass.
+ */
+function SectionEyebrow({ label }: { label: string }) {
+  return (
+    <p className="px-2.5 pb-1 pt-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--fonda-text-3)]">
+      {label}
+    </p>
+  );
+}
+
+/**
  * The header for a labelled sub-group inside a panel (APP_UX_PROPOSAL.md §2.3):
  * the panel's own mono eyebrow treatment, one step quieter — 10px against the
  * header's 11px, and no `font-medium` — so the group reads as a level below the
@@ -486,6 +411,7 @@ function GroupEyebrow({ label }: { label: string }) {
  */
 function PanelRows({
   items,
+  sectionKey,
   groupLabels,
   isActive,
   onNavigate,
@@ -493,6 +419,19 @@ function PanelRows({
   rowClassName,
 }: {
   items: NavItem[];
+  /**
+   * The key of the section these rows belong to, used to settle which copy of
+   * a shared row lights (APP_UX_PROPOSAL.md §2.2).
+   *
+   * Reputation renders under BOTH pillars, pointing at the same route. Under
+   * the docked panels this never mattered: one panel was open at a time, so
+   * the two copies were never on screen together and `isActive(href)` lighting
+   * both was invisible. The labelled sidebar shows every pillar at once, so
+   * the rule that used to govern which rail *icon* lit now has to govern which
+   * *row* does — otherwise /dashboard/reputation lights two rows, and a lit row
+   * stops meaning "you are here".
+   */
+  sectionKey: string;
   /** Group label by `NavItem.group` — see `SidebarProps.groupLabels`. */
   groupLabels: Record<string, string>;
   isActive: (href: string) => boolean;
@@ -513,7 +452,11 @@ function PanelRows({
             {opensGroup && label ? <GroupEyebrow label={label} /> : null}
             <PanelLink
               item={item}
-              active={isActive(item.href)}
+              active={
+                isActive(item.href) &&
+                (!item.canonicalSectionKey ||
+                  item.canonicalSectionKey === sectionKey)
+              }
               onNavigate={onNavigate}
               marker={marker}
               className={cn(
@@ -531,199 +474,8 @@ function PanelRows({
   );
 }
 
-/** One icon-only rail item. Desktop rail only — the drawer uses `DrawerLink`. */
-function RailLink({ item, active }: { item: NavItem; active: boolean }) {
-  const Icon = ICONS[item.key] ?? Settings;
-  const label = visibleLabel(item);
-  const badge = item.badge && item.badge.count > 0 ? item.badge : null;
 
-  // An aria-label on the link replaces its contents as the accessible name, so
-  // the badge has to be folded in here — otherwise the count goes unannounced.
-  const accessibleName = badge ? `${label}, ${badge.srLabel}` : label;
 
-  return (
-    <Link
-      href={item.href}
-      aria-label={accessibleName}
-      aria-current={active ? "page" : undefined}
-      className={cn(RAIL_ITEM, railStateClass(active))}
-    >
-      <Icon className="size-5" strokeWidth={1.5} />
-      {item.comingSoon ? <SoonMarker /> : null}
-      {badge ? <CountBadge badge={badge} active={active} /> : null}
-      <FlyoutLabel label={label} />
-    </Link>
-  );
-}
-
-/**
- * The count a section shows while its panel is shut.
- *
- * Nesting Communications under Front Desk would otherwise hide the "messages
- * waiting" count behind a click, which is the one number the rail exists to
- * put in front of you. Surfaced only when exactly one child is carrying a
- * count: two would have to be summed, and there is no honest screen-reader
- * wording for a sum that the server didn't pluralize.
- */
-function sectionBadge(item: NavItem): NavBadge | null {
-  const counted = (item.children ?? []).filter(
-    (child) => child.badge && child.badge.count > 0
-  );
-  return counted.length === 1 ? (counted[0].badge ?? null) : null;
-}
-
-/**
- * A rail icon that owns a submenu panel (NAV_REORG_SPEC.md §2): a ~220px
- * labelled column docked immediately right of the rail, listing this section's
- * sub-pages.
- *
- * The trigger is a button, not a link — the section itself has no page of its
- * own to go to; `/dashboard/revenue` and friends are reached through the
- * "Dashboard" child inside the panel.
- *
- * A disclosure, not an ARIA `menu` — same reasoning as `AccountMenu` below:
- * `aria-expanded` + `aria-controls`, the panel always in the DOM (just
- * `hidden`) so `aria-controls` never dangles, Escape returns focus to the
- * trigger, an outside pointer dismisses it.
- *
- * Hover previews, click pins (§2). The wrapper spans the rail's full width so
- * the pointer can cross the gap between icon and panel without leaving it —
- * and the panel is a DOM descendant, so moving onto it never fires
- * `mouseleave` even though it sits outside the wrapper geometrically.
- */
-function RailSection({
-  item,
-  active,
-  open,
-  onHover,
-  onLeave,
-  onToggle,
-  onClose,
-  isActive,
-  groupLabels,
-}: {
-  item: NavItem;
-  /** Lit for the whole time the route is anywhere inside this section. */
-  active: boolean;
-  open: boolean;
-  onHover: (key: string) => void;
-  onLeave: (key: string) => void;
-  onToggle: (key: string) => void;
-  onClose: () => void;
-  isActive: (href: string) => boolean;
-  /** Group label by `NavItem.group` — see `SidebarProps.groupLabels`. */
-  groupLabels: Record<string, string>;
-}) {
-  const Icon = ICONS[item.key] ?? Settings;
-  const label = visibleLabel(item);
-  const badge = sectionBadge(item);
-  const panelId = useId();
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLElement>(null);
-
-  // An aria-label replaces the control's contents as its accessible name, so
-  // the count has to be folded in — otherwise it goes unannounced.
-  const accessibleName = badge ? `${label}, ${badge.srLabel}` : label;
-
-  /** Collapse and hand focus back to the trigger. */
-  const dismiss = useCallback(() => {
-    onClose();
-    triggerRef.current?.focus();
-  }, [onClose]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        dismiss();
-      }
-    }
-
-    function onPointerDown(event: PointerEvent) {
-      const target = event.target as Node | null;
-      if (!target) return;
-      // The trigger is excluded deliberately: it runs its own toggle on click,
-      // and closing here first would let that click reopen the panel.
-      if (triggerRef.current?.contains(target)) return;
-      if (panelRef.current?.contains(target)) return;
-      // Not `dismiss()`: focus belongs wherever the user just clicked.
-      onClose();
-    }
-
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("pointerdown", onPointerDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("pointerdown", onPointerDown);
-    };
-  }, [open, dismiss, onClose]);
-
-  return (
-    <div
-      className="relative flex w-full justify-center"
-      onMouseEnter={() => onHover(item.key)}
-      onMouseLeave={() => onLeave(item.key)}
-    >
-      <button
-        ref={triggerRef}
-        type="button"
-        aria-label={accessibleName}
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => onToggle(item.key)}
-        // Focus ring comes from the shared :focus-visible rule in globals.css.
-        className={cn(RAIL_ITEM, railStateClass(active || open))}
-      >
-        <Icon className="size-5" strokeWidth={1.5} />
-        {item.comingSoon ? <SoonMarker /> : null}
-        {badge ? <CountBadge badge={badge} active={active || open} /> : null}
-        {/* Suppressed while open — the panel already names the section, and
-            the pill would sit on top of it. */}
-        {open ? null : <FlyoutLabel label={label} />}
-      </button>
-
-      {/* Part of the ground, not a card on it (§9.1): the same `--fonda-bg` as
-          the rail, no shadow, one hairline on the right edge — rail and panel
-          read as one continuous nav zone rather than a popover that floated in.
-
-          Always mounted so it can animate (§9.4). `inert` when closed is what
-          keeps it honest: out of the tab order and out of the a11y tree, the
-          same discipline the mobile drawer uses, so `aria-controls` still
-          points at real markup. `pointer-events-none` stops the invisible
-          column swallowing clicks meant for the page underneath.
-
-          `prefers-reduced-motion` collapses the transition through the global
-          rule in globals.css. */}
-      <nav
-        ref={panelRef}
-        id={panelId}
-        inert={!open}
-        aria-hidden={!open}
-        aria-label={item.label}
-        className={cn(
-          "fixed inset-y-0 left-16 z-30 flex w-[220px] flex-col gap-1 overflow-y-auto border-r border-[var(--fonda-border)] bg-[var(--fonda-bg)] px-3 py-4 transition-[opacity,transform] duration-150 ease-out",
-          open
-            ? "translate-x-0 opacity-100"
-            : "pointer-events-none -translate-x-1 opacity-0"
-        )}
-      >
-        <p className="px-3 pb-2 pt-1 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-          {item.label}
-        </p>
-        <PanelRows
-          items={item.children ?? []}
-          groupLabels={groupLabels}
-          isActive={isActive}
-          // Following a link to the page you are already on can't change the
-          // pathname, so close here too.
-          onNavigate={onClose}
-        />
-      </nav>
-    </div>
-  );
-}
 
 /** The Fonda mark: a solid ink square, no wordmark text (§5.1). */
 function FondaMark({ href }: { href: string }) {
@@ -744,9 +496,14 @@ function FondaMark({ href }: { href: string }) {
 }
 
 /**
- * Everything the slim rail can't hold, gathered behind the bottom avatar (§5.4):
- * the connection status, the language switcher, the signed-in address, and
- * sign-out.
+ * The account row at the foot of the sidebar: who is signed in, the language
+ * switcher, and sign-out.
+ *
+ * v4 — it is a full-width labelled row now, not a 40px avatar button, and the
+ * popover opens UPWARDS from it rather than sideways out of a 64px rail. The
+ * connection status moved out: the rail had nowhere to put it, so it hid in
+ * here; a 240px sidebar can simply show it, and a sync that has gone stale is
+ * not something to bury behind a click.
  *
  * A disclosure, not an ARIA `menu` — it holds a form and a button group, not a
  * list of menu items. Same contract as `components/marketing/mobile-nav.tsx`:
@@ -759,8 +516,6 @@ function FondaMark({ href }: { href: string }) {
  */
 function AccountMenu({
   accountLabel,
-  connectionState,
-  connectionLabels,
   userEmail,
   signOutAction,
   signOutLabel,
@@ -768,8 +523,6 @@ function AccountMenu({
 }: Pick<
   SidebarProps,
   | "accountLabel"
-  | "connectionState"
-  | "connectionLabels"
   | "userEmail"
   | "signOutAction"
   | "signOutLabel"
@@ -833,16 +586,23 @@ function AccountMenu({
         aria-controls={panelId}
         onClick={() => (open ? dismiss() : setOpenFor(pathname))}
         // Focus ring comes from the shared :focus-visible rule in globals.css.
-        className={cn(RAIL_ITEM, "text-[var(--fonda-text)]")}
+        className="group flex w-full items-center gap-2.5 rounded-[8px] px-2.5 py-[7px] text-left text-[13px] font-medium text-[var(--fonda-text-2)] transition-colors hover:bg-[color-mix(in_srgb,var(--fonda-inset)_60%,transparent)] hover:text-foreground"
       >
         <span
           aria-hidden="true"
-          className="inline-flex size-8 items-center justify-center rounded-full bg-[var(--fonda-inset)] font-mono text-[12px] font-medium leading-none"
+          className="inline-flex size-[22px] shrink-0 items-center justify-center rounded-full bg-[var(--fonda-inset)] font-mono text-[11px] font-medium leading-none text-[var(--fonda-text)]"
         >
           {initial}
         </span>
-        {/* Suppressed while open — the panel already says who you are. */}
-        {open ? null : <FlyoutLabel label={accountLabel} />}
+        <span className="min-w-0 flex-1 truncate">{userEmail}</span>
+        <ChevronDown
+          aria-hidden="true"
+          strokeWidth={1.5}
+          className={cn(
+            "size-[14px] shrink-0 text-[var(--fonda-text-3)] transition-transform duration-150",
+            open && "rotate-180"
+          )}
+        />
       </button>
 
       <div
@@ -850,16 +610,19 @@ function AccountMenu({
         id={panelId}
         hidden={!open}
         className={cn(
-          "absolute bottom-0 left-full z-50 ml-2 w-64 rounded-[12px] bg-[var(--fonda-white)] p-3 shadow-card ring-1 ring-[var(--fonda-border)]",
+          // Opens UPWARDS, spanning the sidebar's own width: there is no rail
+          // edge to fly out of any more, and a popover that escaped a 240px
+          // column sideways would hang over the canvas for no reason. Still an
+          // overlay, so it keeps --fonda-white and a shadow (§0.1).
+          "absolute bottom-full left-0 right-0 z-50 mb-2 rounded-[12px] bg-[var(--fonda-white)] p-3 shadow-card ring-1 ring-[var(--fonda-border)]",
           !open && "hidden"
         )}
       >
-        <p className="truncate px-1 text-[13px] font-medium text-[var(--fonda-text-2)]">
+        {/* The full address. The trigger truncates it, and on a 240px column a
+            work email usually is truncated, so this is not a repeat. */}
+        <p className="break-all px-1 text-[13px] font-medium text-[var(--fonda-text-2)]">
           {userEmail}
         </p>
-        <div className="mt-2 px-1">
-          <ConnectionStatus state={connectionState} labels={connectionLabels} />
-        </div>
 
         <div className="my-3 h-px bg-[var(--fonda-border)]" />
 
@@ -999,6 +762,7 @@ function DrawerGroup({
       >
         <PanelRows
           items={item.children ?? []}
+          sectionKey={item.key}
           groupLabels={groupLabels}
           isActive={isActive}
           onNavigate={onNavigate}
@@ -1028,6 +792,13 @@ interface SidebarProps {
    * the icons can't cross out of one.
    */
   groupLabels: Record<string, string>;
+  /**
+   * The property's own name, shown in the sidebar's top row (P-6).
+   *
+   * Falls back to the product name upstream rather than here, so the row is
+   * never blank for a hotel that has not filled its settings in.
+   */
+  hotelName: string;
   dashboardHref: string;
   connectionState: ConnectionState;
   connectionLabels: Record<ConnectionState, string>;
@@ -1196,6 +967,7 @@ export function Sidebar({
   navItems,
   settingsItem,
   groupLabels,
+  hotelName,
   dashboardHref,
   connectionState,
   connectionLabels,
@@ -1220,50 +992,11 @@ export function Sidebar({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
 
-  // Which section's submenu panel is showing, and whether a click pinned it or
-  // a hover is only previewing it. `route` applies the same open-for-one-route
-  // trick the drawer uses: any navigation closes the panel for free.
-  const [section, setSection] = useState<{
-    key: string;
-    pinned: boolean;
-    route: string;
-  } | null>(null);
-  const openSection = section?.route === pathname ? section.key : null;
-
-  const firstSectionIndex = firstSectionIndexOf(navItems);
-
-  /** Hover preview. A pinned panel wins — hovering elsewhere won't steal it. */
-  const hoverSection = useCallback(
-    (key: string) => {
-      setSection((prev) =>
-        prev?.pinned && prev.route === pathname
-          ? prev
-          : { key, pinned: false, route: pathname }
-      );
-    },
-    [pathname]
-  );
-
-  /** Leaving the icon (and its panel) drops a preview, never a pinned panel. */
-  const unhoverSection = useCallback((key: string) => {
-    setSection((prev) =>
-      prev && !prev.pinned && prev.key === key ? null : prev
-    );
-  }, []);
-
-  /** Click pins; clicking the pinned section again closes it. */
-  const toggleSection = useCallback(
-    (key: string) => {
-      setSection((prev) =>
-        prev?.key === key && prev.pinned && prev.route === pathname
-          ? null
-          : { key, pinned: true, route: pathname }
-      );
-    },
-    [pathname]
-  );
-
-  const closeSection = useCallback(() => setSection(null), []);
+  // v4 (P-6): the section hover/pin/dismiss state machine that lived here is
+  // gone. It existed to show labels a 64px rail could not, and the sidebar
+  // shows them outright — so there is nothing to open, nothing to pin, and
+  // nothing to dismiss. `firstSectionIndex` survives for the mobile drawer,
+  // which still draws a divider where the pillars begin.
 
   const isActive = useCallback(
     (href: string) => {
@@ -1391,66 +1124,75 @@ export function Sidebar({
 
   return (
     <>
-      {/* Desktop: the permanent icon rail. */}
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-16 flex-col items-center gap-1 bg-[var(--fonda-bg)] py-4 md:flex">
-        <FondaMark href={dashboardHref} />
+      {/* Desktop: the permanent labelled sidebar (P-6). */}
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-60 flex-col bg-[var(--fonda-chrome)] md:flex">
+        {/* The hotel row. Static by design: this is where a property switcher
+            goes when Fondas is multi-property, and shipping a control that
+            cannot switch anything would be a promise the product does not keep.
+            TODO(multi-property): make this a combobox over the user's hotels. */}
+        <div className="flex h-[52px] shrink-0 items-center gap-2.5 px-3.5">
+          <FondaMark href={dashboardHref} />
+          <span className="min-w-0 flex-1 truncate text-[14px] font-medium text-[var(--fonda-text)]">
+            {hotelName}
+          </span>
+        </div>
 
-        {/* Deliberately NOT scrollable. `overflow-y: auto` forces `overflow-x`
-            to compute to `auto` as well, which would clip the flyout labels at
-            the rail's 64px edge.
-
-            This used to carry a budget of roughly a dozen 40px items, on the
-            assumption the rail grew with the product. It doesn't: the rail is
-            five icons — Home, Ask, Operation, Commercial, Settings — and
-            APP_UX_PROPOSAL.md §12 makes that a rule rather than a count. "Every
-            future feature wants to be a sixth. They go in a panel." So a new
-            surface is a row inside Operation or Commercial, and this stack has
-            no way to outgrow a 768px viewport. If the rule is ever broken
-            anyway, the fix is a scroll container with the flyout portalled out
-            of it — not silently re-adding overflow here. */}
-        {/* `w-full` so a section's hover wrapper spans the rail's whole 64px:
-            the pointer then crosses from the icon to the docked panel without
-            ever leaving the element that opened it, and the preview doesn't
-            flicker shut in the gap. Items stay centred via `items-center`. */}
+        {/* Scrollable, unlike the rail — which could not scroll without
+            `overflow-x` clipping its flyout labels. There are no flyouts now,
+            and the column has to survive a pillar growing a sixth row on a
+            768px-tall laptop. The hotel row above and the foot block below are
+            `shrink-0`, so only the nav moves. */}
         <nav
           aria-label={menuLabel}
-          className="mt-4 flex w-full flex-col items-center gap-1"
+          className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-2.5 pb-3"
         >
-          {navItems.map((item, index) => (
-            <Fragment key={item.key}>
-              {/* The rail's one structural divider, and the only new chrome the
-                  two-pillar rail adds (§2.1). One element, no label: it is a
-                  change of register, not a heading. */}
-              {index === firstSectionIndex && index > 0 ? (
-                <div className="mx-3 my-2 h-px bg-[var(--fonda-border)]" />
-              ) : null}
-              {item.children?.length ? (
-                <RailSection
-                  item={item}
-                  active={isSectionActive(item)}
-                  open={openSection === item.key}
-                  onHover={hoverSection}
-                  onLeave={unhoverSection}
-                  onToggle={toggleSection}
-                  onClose={closeSection}
-                  isActive={isActive}
+          {navItems.map((item) =>
+            item.children?.length ? (
+              // A pillar: a heading, then its rows inline. No divider — the
+              // eyebrow's own space is the change of register the rail needed
+              // a hairline for.
+              <Fragment key={item.key}>
+                <SectionEyebrow label={item.label} />
+                <PanelRows
+                  items={item.children}
+                  sectionKey={item.key}
                   groupLabels={groupLabels}
+                  isActive={isActive}
+                  marker="chip"
                 />
-              ) : (
-                // A direct link — Home and Ask, the two places you are always
-                // in. Clicking just navigates, no panel.
-                <RailLink item={item} active={isActive(item.href)} />
-              )}
-            </Fragment>
-          ))}
+              </Fragment>
+            ) : (
+              // A direct link — Home and Ask, the two places you are always in.
+              // Rendered in tree order rather than promoted: the order is the
+              // server's data, and re-sorting it here would put the sidebar and
+              // the drawer one refactor away from disagreeing.
+              <PanelLink
+                key={item.key}
+                item={item}
+                active={isActive(item.href)}
+                marker="chip"
+              />
+            )
+          )}
         </nav>
 
-        <div className="mt-auto flex flex-col items-center gap-1 pt-4">
-          <RailLink item={settingsItem} active={isActive(settingsItem.href)} />
+        <div className="shrink-0 px-2.5 pb-3 pt-2">
+          {/* Out of the account popover and onto the page (§5.4 reversed): the
+              rail hid this because it had nowhere to put it, and a sync that
+              has gone stale is not something to bury behind a click. */}
+          <div className="px-2.5 pb-2">
+            <ConnectionStatus
+              state={connectionState}
+              labels={connectionLabels}
+            />
+          </div>
+          <PanelLink
+            item={settingsItem}
+            active={isActive(settingsItem.href)}
+            marker="chip"
+          />
           <AccountMenu
             accountLabel={accountLabel}
-            connectionState={connectionState}
-            connectionLabels={connectionLabels}
             userEmail={userEmail}
             signOutAction={signOutAction}
             signOutLabel={signOutLabel}
