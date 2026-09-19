@@ -174,7 +174,13 @@ export default async function DashboardLayout({
             ),
           },
         },
-        soon("guests", { sectionKey: "operation" }),
+        {
+          // Live as of W-then (§5.4) — no longer a roadmap stub.
+          key: "guests",
+          label: dict.sidebar.guests,
+          href: localizedHref(locale, "/dashboard/guests"),
+          sectionKey: "operation",
+        },
         // Shared with Commercial, and Operation owns the active state — see
         // `NavItem.canonicalSectionKey`. Both copies say so.
         soon("reputation", {

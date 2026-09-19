@@ -573,6 +573,52 @@ export type Database = {
           },
         ];
       };
+      guest_profiles: {
+        Row: {
+          hotel_id: string;
+          customer_mews_id: string;
+          trip_purpose: string | null;
+          occasion: string | null;
+          /** [{ text, source, at }] — see lib/guests.ts GuestPreference. */
+          preferences: Json;
+          /** Staff-written. Inference never writes this column. */
+          notes: string | null;
+          inferred_at: string | null;
+          last_stay_end: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          hotel_id: string;
+          customer_mews_id: string;
+          trip_purpose?: string | null;
+          occasion?: string | null;
+          preferences?: Json;
+          notes?: string | null;
+          inferred_at?: string | null;
+          last_stay_end?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          hotel_id?: string;
+          customer_mews_id?: string;
+          trip_purpose?: string | null;
+          occasion?: string | null;
+          preferences?: Json;
+          notes?: string | null;
+          inferred_at?: string | null;
+          last_stay_end?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "guest_profiles_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       chat_threads: {
         Row: {
           id: string;

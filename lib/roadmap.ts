@@ -99,14 +99,6 @@ export const ROADMAP = [
     label: (dict: Dictionary) => dict.sidebar.reputation,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.reputation,
   },
-  {
-    // The Guest Experience surface (APP_UX_PROPOSAL.md §5.4).
-    key: "guests",
-    route: "/dashboard/guests",
-    status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.guests,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.guests,
-  },
 
   // --- Commercial, the second pillar (APP_UX_PROPOSAL.md §2.2) -------------
   {

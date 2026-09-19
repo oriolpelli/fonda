@@ -386,7 +386,6 @@
     },
     "blurb": {
       "chat": "Una pàgina sencera per preguntar el que vulguis sobre el teu hotel, amb tota la conversa desada. El botó del cantó ja respon preguntes soltes.",
-      "guests": "Cada hoste en un sol lloc: qui és, què va demanar l'última vegada i què convé tenir a punt abans que arribi.",
       "frontDeskInfo": "Dades de la casa, polítiques i notes de torn en un sol lloc, perquè a recepció tothom respongui igual.",
       "reputation": "Les ressenyes de Booking, Google i TripAdvisor llegides i agrupades per temes, per veure què mou la teva nota.",
       "revenueManagement": "Una tarifa recomanada per a cada dia, a partir del teu ritme de reserves, el teu comp set i el calendari.",
@@ -1037,6 +1036,8 @@
     "storesB1": "Les reserves i les fitxes d'hoste que sincronitzem del teu PMS.",
     "storesB2": "Els correus d'hoste que llegim i els esborranys que escrivim, fins que els envies o els descartes.",
     "storesB3": "Les credencials de les teves connexions, xifrades.",
+    "storesB4": "Fitxes d'hoste — el que hem deduït d'un hoste que repeteix i qualsevol nota que hagi escrit el teu equip. Es conserven 24 mesos després de la seva darrera estada i després s'eliminen.",
+    "storesB5": "Transcripcions del xat, amb els cognoms dels hostes reduïts a una inicial abans de desar-les. A la pantalla veus el nom complet; la còpia desada, no.",
     "storesNote": "Cada hotel viu en el seu propi espai, aïllat a la base de dades amb seguretat a nivell de fila: un allotjament no pot veure les dades d'un altre, ni per error.",
     "whereTitle": "On està allotjat",
     "whereBody": "A la Unió Europea. La base de dades on viuen les teves reserves, els teus hostes i els teus correus està allotjada en servidors europeus i xifrada en repòs.",
@@ -1107,5 +1108,47 @@
     "notMatched": "Sense reserva associada",
     "openRecord": "Obrir fitxa de l'hoste",
     "label": "Context de l'hoste"
+  },
+  "guests": {
+    "eyebrow": "Experiència de l'hoste",
+    "title": "Hostes",
+    "search": "Cerca per nom o correu",
+    "viewInHouse": "Allotjats i per arribar",
+    "viewAll": "Tots",
+    "empty": "Ningú allotjat ni per arribar.",
+    "emptyAll": "Encara no hi ha hostes.",
+    "emptySearch": "Cap hoste coincideix amb la cerca.",
+    "notFound": "Aquesta fitxa d'hoste no està disponible.",
+    "tagsTitle": "Etiquetes",
+    "purposeLabel": "Motiu del viatge",
+    "occasionLabel": "Ocasió",
+    "notesTitle": "Notes",
+    "notesPlaceholder": "El que ha de saber recepció. Aquí només hi escriuen persones.",
+    "notesSave": "Desa",
+    "notesSaved": "Desat",
+    "preferencesTitle": "Preferències",
+    "timelineTitle": "Historial",
+    "timelineEmpty": "Encara no hi ha res registrat.",
+    "sourceStaff": "Afegit per l'equip",
+    "sourceEmail": "Deduït del correu",
+    "sourceReservation": "Deduït de la reserva",
+    "clear": "Esborra",
+    "none": "Sense definir",
+    "kindEmail": "Correu",
+    "kindChaser": "Petició d'hora d'arribada",
+    "kindStay": "Estada",
+    "purpose": {
+      "leisure": "Lleure",
+      "business": "Negocis",
+      "family": "Família",
+      "romantic": "Romàntic",
+      "group": "Grup",
+      "unknown": "Desconegut"
+    },
+    "occasion": {
+      "birthday": "Aniversari",
+      "anniversary": "Aniversari de casament",
+      "honeymoon": "Lluna de mel"
+    }
   }
 }

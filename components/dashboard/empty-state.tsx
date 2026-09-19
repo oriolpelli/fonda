@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  BookUser,
   Bot,
   Clock,
   ConciergeBell,
@@ -22,6 +23,7 @@ export type EmptyStateIcon =
   | "chat"
   | "arrivals"
   | "emails"
+  | "guests"
   // A handful of the roadmap sections carry their own glyph, so a demo that
   // walks the nav isn't twenty-one identical clocks. The rest deliberately
   // don't — the fallback is the point, not a gap to fill in.
@@ -43,6 +45,7 @@ const ICONS: Record<EmptyStateIcon, LucideIcon> = {
   chat: MessageSquare,
   arrivals: DoorOpen,
   emails: Inbox,
+  guests: BookUser,
   reputation: Star,
   revenue: TrendingUp,
   "upsell-ai": Sparkles,

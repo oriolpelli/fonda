@@ -27,8 +27,14 @@ import type { Dictionary } from "@/app/[lang]/dictionaries";
  * a guest lives on the guest record.
  */
 
-/** A fact row, rendered only when there is a value. Never a "—". */
-function Fact({ label, value }: { label: string; value: string | null }) {
+/**
+ * A fact row, rendered only when there is a value. Never a "—".
+ *
+ * Exported because the guest record's left column is the same anatomy with two
+ * more sections on it (§5.4); a second copy of these two primitives would drift
+ * from this one within a week.
+ */
+export function Fact({ label, value }: { label: string; value: string | null }) {
   if (!value) return null;
   return (
     <div className="flex items-baseline justify-between gap-3 py-1">
@@ -42,7 +48,7 @@ function Fact({ label, value }: { label: string; value: string | null }) {
   );
 }
 
-function Section({
+export function Section({
   title,
   children,
 }: {

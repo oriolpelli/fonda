@@ -386,7 +386,6 @@
     },
     "blurb": {
       "chat": "A full page for asking your hotel anything, with the whole conversation kept. The button in the corner already answers one-off questions.",
-      "guests": "Every guest in one place — who they are, what they asked for last time, and what to have ready before they arrive.",
       "frontDeskInfo": "House facts, policies and shift notes in one place, so anyone on the desk answers the same way.",
       "reputation": "Reviews across Booking, Google and TripAdvisor read and themed for you, so you see what's moving your score.",
       "revenueManagement": "A recommended rate for every day, built from your pace, your comp set and the calendar.",
@@ -1037,6 +1036,8 @@
     "storesB1": "The bookings and guest profiles we sync from your PMS.",
     "storesB2": "The guest emails we read and the drafts we write, until you send or discard them.",
     "storesB3": "Your connection credentials, encrypted.",
+    "storesB4": "Guest profiles — what we've worked out about a returning guest, and any note your team has written. Kept for 24 months after their last stay, then deleted.",
+    "storesB5": "Chat transcripts, with guest surnames shortened to an initial before they're stored. The answer on your screen shows the full name; the stored copy doesn't.",
     "storesNote": "Each hotel lives in its own space, isolated in the database by row-level security: one property cannot see another's data, not even by accident.",
     "whereTitle": "Where it is hosted",
     "whereBody": "In the European Union. The database holding your bookings, your guests and your emails sits on European servers and is encrypted at rest.",
@@ -1107,5 +1108,47 @@
     "notMatched": "Not matched to a booking",
     "openRecord": "Open guest record",
     "label": "Guest context"
+  },
+  "guests": {
+    "eyebrow": "Guest experience",
+    "title": "Guests",
+    "search": "Search by name or email",
+    "viewInHouse": "In house & arriving",
+    "viewAll": "All",
+    "empty": "Nobody in house or arriving.",
+    "emptyAll": "No guests yet.",
+    "emptySearch": "No guests match that search.",
+    "notFound": "That guest record isn't available.",
+    "tagsTitle": "Tags",
+    "purposeLabel": "Trip purpose",
+    "occasionLabel": "Occasion",
+    "notesTitle": "Notes",
+    "notesPlaceholder": "What the desk should know. Only people write here.",
+    "notesSave": "Save",
+    "notesSaved": "Saved",
+    "preferencesTitle": "Preferences",
+    "timelineTitle": "History",
+    "timelineEmpty": "Nothing recorded yet.",
+    "sourceStaff": "Added by staff",
+    "sourceEmail": "Inferred from email",
+    "sourceReservation": "Inferred from the booking",
+    "clear": "Clear",
+    "none": "Not set",
+    "kindEmail": "Email",
+    "kindChaser": "Arrival-time request",
+    "kindStay": "Stay",
+    "purpose": {
+      "leisure": "Leisure",
+      "business": "Business",
+      "family": "Family",
+      "romantic": "Romantic",
+      "group": "Group",
+      "unknown": "Unknown"
+    },
+    "occasion": {
+      "birthday": "Birthday",
+      "anniversary": "Anniversary",
+      "honeymoon": "Honeymoon"
+    }
   }
 }

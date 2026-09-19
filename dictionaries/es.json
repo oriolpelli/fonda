@@ -386,7 +386,6 @@
     },
     "blurb": {
       "chat": "Una página entera para preguntar lo que quieras sobre tu hotel, con toda la conversación guardada. El botón de la esquina ya responde preguntas sueltas.",
-      "guests": "Cada huésped en un solo sitio: quién es, qué pidió la última vez y qué conviene tener listo antes de que llegue.",
       "frontDeskInfo": "Datos de la casa, políticas y notas de turno en un solo sitio, para que en recepción todos respondan igual.",
       "reputation": "Las reseñas de Booking, Google y TripAdvisor leídas y agrupadas por temas, para ver qué mueve tu nota.",
       "revenueManagement": "Una tarifa recomendada para cada día, a partir de tu ritmo de reservas, tu comp set y el calendario.",
@@ -1037,6 +1036,8 @@
     "storesB1": "Las reservas y las fichas de huésped que sincronizamos de tu PMS.",
     "storesB2": "Los correos de huésped que leemos y los borradores que escribimos, hasta que los envías o los descartas.",
     "storesB3": "Las credenciales de tus conexiones, cifradas.",
+    "storesB4": "Fichas de huésped — lo que hemos deducido de un huésped que repite y cualquier nota que haya escrito tu equipo. Se conservan 24 meses después de su última estancia y luego se eliminan.",
+    "storesB5": "Transcripciones del chat, con los apellidos de los huéspedes reducidos a una inicial antes de guardarlas. En pantalla ves el nombre completo; la copia guardada, no.",
     "storesNote": "Cada hotel vive en su propio espacio, aislado en la base de datos con seguridad a nivel de fila: un alojamiento no puede ver los datos de otro, ni por error.",
     "whereTitle": "Dónde está alojado",
     "whereBody": "En la Unión Europea. La base de datos donde viven tus reservas, tus huéspedes y tus correos está alojada en servidores europeos y cifrada en reposo.",
@@ -1107,5 +1108,47 @@
     "notMatched": "Sin reserva asociada",
     "openRecord": "Abrir ficha del huésped",
     "label": "Contexto del huésped"
+  },
+  "guests": {
+    "eyebrow": "Experiencia del huésped",
+    "title": "Huéspedes",
+    "search": "Buscar por nombre o correo",
+    "viewInHouse": "Alojados y por llegar",
+    "viewAll": "Todos",
+    "empty": "Nadie alojado ni por llegar.",
+    "emptyAll": "Aún no hay huéspedes.",
+    "emptySearch": "Ningún huésped coincide con la búsqueda.",
+    "notFound": "Esa ficha de huésped no está disponible.",
+    "tagsTitle": "Etiquetas",
+    "purposeLabel": "Motivo del viaje",
+    "occasionLabel": "Ocasión",
+    "notesTitle": "Notas",
+    "notesPlaceholder": "Lo que debe saber recepción. Aquí solo escriben personas.",
+    "notesSave": "Guardar",
+    "notesSaved": "Guardado",
+    "preferencesTitle": "Preferencias",
+    "timelineTitle": "Historial",
+    "timelineEmpty": "Todavía no hay nada registrado.",
+    "sourceStaff": "Añadido por el equipo",
+    "sourceEmail": "Deducido del correo",
+    "sourceReservation": "Deducido de la reserva",
+    "clear": "Borrar",
+    "none": "Sin definir",
+    "kindEmail": "Correo",
+    "kindChaser": "Petición de hora de llegada",
+    "kindStay": "Estancia",
+    "purpose": {
+      "leisure": "Ocio",
+      "business": "Negocios",
+      "family": "Familia",
+      "romantic": "Romántico",
+      "group": "Grupo",
+      "unknown": "Desconocido"
+    },
+    "occasion": {
+      "birthday": "Cumpleaños",
+      "anniversary": "Aniversario",
+      "honeymoon": "Luna de miel"
+    }
   }
 }

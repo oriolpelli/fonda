@@ -151,7 +151,21 @@ export default async function TrustPage({
           "we use and discard" wording is false and must not appear. */}
       <Section heading={copy.storesTitle}>
         <Body>{copy.storesBody}</Body>
-        <Bullets items={[copy.storesB1, copy.storesB2, copy.storesB3]} />
+        {/* B4 and B5 are the two commitments §11 decision 6 makes, written
+            here because this is the page a hotel's DPO actually reads: guest
+            profiles are deleted 24 months after the last stay (the nightly
+            sweep in app/api/cron/retention), and chat transcripts are stored
+            with surnames shortened (lib/pseudonymise.ts). If either mechanism
+            changes, this copy is wrong and has to change with it. */}
+        <Bullets
+          items={[
+            copy.storesB1,
+            copy.storesB2,
+            copy.storesB3,
+            copy.storesB4,
+            copy.storesB5,
+          ]}
+        />
         <Body>{copy.storesNote}</Body>
       </Section>
 
