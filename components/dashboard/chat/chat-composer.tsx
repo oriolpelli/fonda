@@ -24,12 +24,22 @@ export function ChatComposer({
   /** True while the transcript is empty — suggestions show by default there. */
   blank,
   autoFocus = false,
+  nested = false,
   className,
 }: {
   onSend: (text: string) => void;
   streaming: boolean;
   blank: boolean;
   autoFocus?: boolean;
+  /**
+   * True inside the docked bar, whose panel is itself a well.
+   *
+   * The field is one step DOWN from what it sits on. v4 inverted the ground
+   * (§0.1) and `bg-card` stopped meaning "white": in the docked bar the field's
+   * fill became the colour of the panel behind it, leaving only its hairline to
+   * say where the input was.
+   */
+  nested?: boolean;
   className?: string;
 }) {
   const { dict } = useDictionary();
@@ -67,7 +77,11 @@ export function ChatComposer({
                 key={s}
                 type="button"
                 onClick={() => submit(s)}
-                className="rounded-full bg-card px-3 py-1.5 text-[13px] text-[var(--fonda-text-2)] ring-1 ring-[var(--fonda-border)] transition-colors hover:text-[var(--fonda-text)] hover:ring-[var(--fonda-border-2)]"
+                className={cn(
+                  // Same one-step-down rule as the field below.
+                  "rounded-full px-3 py-1.5 text-[13px] text-[var(--fonda-text-2)] ring-1 ring-[var(--fonda-border-2)] transition-colors hover:text-[var(--fonda-text)] hover:ring-[var(--fonda-text-3)]",
+                  nested ? "bg-surface-2" : "bg-card"
+                )}
               >
                 {s}
               </button>
@@ -79,7 +93,12 @@ export function ChatComposer({
       {/* Focus lives on the whole field, not the bare textarea — the Signal
           focus state (accent border + 3px tint ring, §9) belongs to the shape
           the eye reads as the input. */}
-      <div className="flex items-end gap-2 rounded-[14px] border border-[var(--fonda-border-2)] bg-card p-2 transition-colors duration-[180ms] focus-within:border-[var(--fonda-accent)] focus-within:ring-[3px] focus-within:ring-[var(--fonda-accent-tint)]">
+      <div
+        className={cn(
+          "flex items-end gap-2 rounded-[14px] border border-[var(--fonda-border-2)] p-2 transition-colors duration-[180ms] focus-within:border-[var(--fonda-accent)] focus-within:ring-[3px] focus-within:ring-[var(--fonda-accent-tint)]",
+          nested ? "bg-surface-2" : "bg-card"
+        )}
+      >
         <Button
           type="button"
           variant="ghost"

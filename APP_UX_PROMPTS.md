@@ -2049,19 +2049,31 @@ with these four amendments now that the ground is inverted and threads exist:
    real air around it — 24px minimum, and the canvas scrolls under it rather
    than the composer scrolling with the messages.
 
-3. The thread list Prompt 16 built moves INTO the sidebar, under a "Today"
-   eyebrow beneath the Commercial group: the five most recent threads, title
-   truncated to one line, active thread using the same active row treatment as
-   any nav row. "View all" as the last row when there are more than five. This
-   is the shape Sana uses and it is why the sidebar has a scroll region. If
-   Prompt 16 has not run yet, STOP and tell me — do not build a placeholder.
+3. ~~The thread list moves into the sidebar.~~ **CORRECTED — do not do this.**
+   This instruction was written from Sana's shape and is wrong for Fondas.
+   `APP_UX_PROPOSAL.md` §4.1 says the list is "a left column INSIDE
+   /dashboard/chat (not in the rail)", the proposal wins on *what*, and its
+   reasoning holds independently: a list of conversations grows without bound,
+   and content that grows without bound does not belong in chrome. Prompt 16
+   built it inside the page. Leave it there.
 
-4. Status lines and source chips per §8.2, with one correction: the chips are
-   Geist Mono 10.5px uppercase, --fonda-text-3, on --fonda-surface with a
-   --fonda-border-2 hairline, radius full. They sit INLINE at the end of the
-   sentence they support, not collected in a row under the message. Sana puts
-   them where the claim is, which is what makes them read as provenance rather
-   than as a footer.
+   Kept visible rather than deleted because the reasoning is the point: Sana
+   puts recents in its sidebar, so "be more like Sana" and "follow the
+   proposal" genuinely pointed in opposite directions here, and the proposal
+   won on an argument rather than on seniority.
+
+4. ~~Inline source chips.~~ **MOVED — this is Prompt 18's job**, "chat
+   grounding: specific source chips", and doing it here would mean building it
+   twice. §8.2's per-turn chip already exists and is correct; 18 is what makes
+   it specific and puts it where the claim is.
+
+   What D3 DOES own here is the material, which the inversion changed under it:
+   a chip and the composer field are each one step DOWN from the surface they
+   sit on, and `bg-card` stopped meaning "white" in v4. Inside the docked bar —
+   whose panel is itself a well — that made the chip's fill identical to the
+   panel behind it, and `--fonda-border` is 1.02:1 against a well, so the
+   hairline did not save it either. Both take a `nested` prop and step to
+   `--fonda-surface-2` with a `--fonda-border-2` ring.
 
 Remove the circular floating FAB and replace it per §8.5 option 1 — a slim
 docked "Ask your hotel" bar. Keep all streaming logic untouched.

@@ -143,6 +143,7 @@ export function AskYourHotel({ userEmail }: { userEmail: string }) {
               streaming={streaming}
               blank={messages.length === 0}
               autoFocus
+              nested
             />
           </div>
         </section>

@@ -35,12 +35,26 @@ import { cn } from "@/lib/utils";
 function SourceChip({
   icon: Icon,
   label,
+  nested,
 }: {
   icon: LucideIcon;
   label: string;
+  /** True inside the docked bar, whose panel is itself a well. */
+  nested?: boolean;
 }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-card px-2.5 py-1 text-[12px] leading-none text-[var(--fonda-text-2)] ring-1 ring-[var(--fonda-border)]">
+    <span
+      className={cn(
+        // A chip is one step DOWN from whatever it sits on, which is why it
+        // needs to know. v4 inverted the ground (§0.1), and `bg-card` stopped
+        // meaning "white" and started meaning "the well fill" — so inside the
+        // docked bar, whose panel is a well, the chip's fill became exactly the
+        // colour behind it and the chip disappeared. Its hairline did not save
+        // it either: --fonda-border is 1.02:1 against a well.
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] leading-none text-[var(--fonda-text-2)] ring-1 ring-[var(--fonda-border-2)]",
+        nested ? "bg-surface-2" : "bg-card"
+      )}
+    >
       <Icon
         aria-hidden="true"
         className="size-3.5 text-[var(--fonda-text-3)]"
@@ -204,7 +218,11 @@ function AssistantTurn({
       {/* Every answer is built from the hotel's own cached data — the chip says
           so on every turn because it is true on every turn. */}
       <div className="flex flex-wrap items-center gap-2">
-        <SourceChip icon={Hotel} label={dict.askYourHotel.sourceHotelData} />
+        <SourceChip
+          icon={Hotel}
+          label={dict.askYourHotel.sourceHotelData}
+          nested={nested}
+        />
         <StatusLine label={status} working={working} />
       </div>
       {message.content ? (
