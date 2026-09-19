@@ -18,7 +18,13 @@ import { loadTodayMovements, type TodayMovements } from "@/lib/arrivals";
 import { loadTodaysBriefing, type TodaysBriefing } from "@/lib/briefing-latest";
 import { loadDashboardSnapshot } from "@/lib/dashboard-snapshot";
 import { byUrgency } from "@/lib/email-urgency";
-import { orderedHomeWidgets, type HomeWidgetKey } from "@/lib/home-widgets";
+import {
+  defaultLayoutFor,
+  homeWidgetsForLayout,
+  loadHomeLayout,
+  type StoredLayout,
+} from "@/lib/home-layout";
+import { type HomeWidgetKey } from "@/lib/home-widgets";
 import { intlLocale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/format";
 import { localizedHref } from "@/lib/i18n/navigation";
@@ -32,10 +38,11 @@ import { buildTodoList } from "@/lib/todo-rules";
  * snapshot (APP_UX_PROPOSAL.md §3).
  *
  * This file is a *composer*, not a layout. It loads the data once and then
- * walks `lib/home-widgets.ts`, handing each declared widget the slice it needs.
- * The order and the widths live in that registry; nothing about the sequence of
- * cards is decided here any more, which is what lets a later step add a
- * Customize panel without touching this page's data loading.
+ * walks the user's resolved layout (`lib/home-layout.ts`), handing each widget
+ * it names the slice it needs. Widths come from the registry
+ * (`lib/home-widgets.ts`); order and visibility come from the user, falling
+ * back to the role defaults when they have never opened Customize. Nothing
+ * about the sequence of cards is decided here.
  *
  * The answer comes first. "Needs you today" is pinned above everything else —
  * it used to sit in the bottom-right quadrant, below a chart (§3.1), which
@@ -59,10 +66,11 @@ export default async function DashboardPage({
 }) {
   const { locale, dict } = await loadDictionary((await params).lang);
 
-  const [snapshot, inbox, gmName] = await Promise.all([
+  const [snapshot, inbox, gmName, layout] = await Promise.all([
     loadDashboardSnapshot(),
     loadInbox(),
     loadGmName(),
+    loadViewerLayout(),
   ]);
 
   const greeting = gmName || snapshot.hotelName;
@@ -281,7 +289,10 @@ export default async function DashboardPage({
     }
   }
 
-  const rendered = orderedHomeWidgets().map((def) => ({
+  // Pinned widgets first whatever the user chose, then their enabled ones in
+  // their order. Disabled widgets are skipped here but stay in the stored array
+  // so Customize can show them unchecked where they were left.
+  const rendered = homeWidgetsForLayout(layout).map((def) => ({
     def,
     node: widgetFor(def.key),
   }));
@@ -331,6 +342,35 @@ function soft<T>(load: () => Promise<T>, fallback: T): Promise<T> {
     Sentry.captureException(err, { tags: { stage: "home_widget" } });
     return fallback;
   });
+}
+
+/**
+ * The signed-in user's Home layout.
+ *
+ * This is the first thing in the product to read `users.role` (§3.5) — until
+ * now the column existed and was only written. It decides one thing and one
+ * thing only: which default order someone sees before they customise. It is
+ * NOT a permission check; every surface is still gated by RLS, and an owner and
+ * a manager see the same data, in a different order.
+ *
+ * Failures fall through to the manager defaults rather than taking Home with
+ * them, the same bargain `soft()` makes for the widgets below.
+ */
+async function loadViewerLayout(): Promise<StoredLayout> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return defaultLayoutFor("manager");
+
+  const { data: profile } = await supabase
+    .from("users")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+  const role = profile?.role ?? "manager";
+
+  return loadHomeLayout(supabase, user.id, role);
 }
 
 /** The GM's name for the greeting. Falls back to the hotel name. */

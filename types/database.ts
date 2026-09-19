@@ -669,6 +669,43 @@ export type Database = {
           },
         ];
       };
+      dashboard_layouts: {
+        Row: {
+          user_id: string;
+          hotel_id: string;
+          /** Ordered array of {key, enabled}; see lib/home-layout.ts. */
+          widgets: Json;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          hotel_id: string;
+          widgets: Json;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          hotel_id?: string;
+          widgets?: Json;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "dashboard_layouts_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: true;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "dashboard_layouts_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<never, never>;
     Functions: {
