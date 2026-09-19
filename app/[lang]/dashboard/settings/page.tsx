@@ -89,7 +89,7 @@ export default async function SettingsPage({
             <Link
               key={group.key}
               href={group.href}
-              className="group flex items-center gap-4 rounded-[18px] bg-card p-5 shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
+              className="group flex items-center gap-4 rounded-[16px] bg-card p-5"
             >
               <span
                 aria-hidden="true"

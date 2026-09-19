@@ -46,7 +46,7 @@ export function SyncHealthWidget({
       {sources.length === 0 ? (
         <WidgetEmpty icon="upcoming" message={copy.empty} />
       ) : (
-        <div className="flex flex-col overflow-hidden rounded-[18px] bg-card shadow-card">
+        <div className="flex flex-col overflow-hidden rounded-[16px] bg-card">
           <ul className="flex flex-col divide-y divide-border">
             {sources.map((source) => (
               <li

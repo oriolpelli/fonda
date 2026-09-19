@@ -2,17 +2,18 @@
 @import "tw-animate-css";
 
 /*
- * Fonda design tokens — v3 "Fonda × Sana".
- * See FONDA_SANA_REDESIGN.md (current spec; supersedes the white ground and
- * chrome-accent decisions in FONDA_DESIGN_IDENTITY.md v2 "Signal").
- * NOTE: the spec's "warm greige" ground (§3.1/§3.3, #edeae3) was corrected to
- * neutral grey #eeeeee after sampling the reference video — see --fonda-bg.
+ * Fonda design tokens — v4 "Sana, actually".
+ * See FONDA_SANA_REDESIGN.md §0.1 (the v4 amendment; it supersedes that
+ * document's own §§5, 6 and 13, and the whole of FONDA_DESIGN_IDENTITY.md v2).
  *
  * Direction: calm, quiet, editorial. Sana-inspired.
  *   - One bold grotesque typeface (Geist) for everything; no serif.
- *   - A neutral light-grey page ground; white cards FLOAT lighter on top.
- *     (v2 had this inverted — white page, grey cards — which is why cards
- *     needed hairline borders to show up at all.)
+ *   - A WHITE canvas. Warm grey WELLS group content on top of it.
+ *     v3 had this inverted — grey page, white cards floating — which was read
+ *     off video stills cropped to a single panel. Sana's canvas is the light
+ *     thing; grey is what contains. A well is separated by its RADIUS and its
+ *     FILL, never by a shadow: a drop shadow under a well is the exact
+ *     floating-AI-card tell this system exists to remove.
  *   - Chrome is COLORLESS: no navy in nav, active states, chips, or links.
  *     Active = solid warm near-black on a greige inset, never a tint.
  *   - Color is a CONTENT material: gradient hero/empty surfaces, plus the one
@@ -28,38 +29,62 @@
  *   The old Inter / Playfair imports can be removed.
  */
 :root {
-  /* ── Ground & surfaces (v3) ─────────────────────────────────────────── */
-  /* GROUND CORRECTION (supersedes FONDA_SANA_REDESIGN.md §3.1/§3.3):
-     the spec specified a warm greige #edeae3, but the reference Sana video
-     samples at RGB 238/238/238 — a NEUTRAL light grey, no warmth at all.
-     #edeae3 runs 10 pts warm on the blue channel, which reads visibly sandy
-     and does not match the source. The "greige ground" premise is retired;
-     the ground is neutral grey. Cards still float white on top of it. */
-  --fonda-bg:           #eeeeee;  /* Page ground — neutral light grey (was #fff) */
-  --fonda-surface:      #ffffff;  /* Cards/panels — float LIGHTER than the page */
-  --fonda-surface-2:    #f6f3ee;  /* Nested wells, secondary panels, hover fills */
+  /* ── Ground & surfaces (v4) ─────────────────────────────────────────── */
+  /* GROUND INVERSION (FONDA_SANA_REDESIGN.md §0.1). v3 shipped a grey #eeeeee
+     page with white cards floating on it. Checking Sana's shipped web app
+     screen by screen shows the opposite: the canvas is WHITE, and grey is what
+     GROUPS — the right-hand panel, the composer, the user's chat bubble, the
+     sidebar are all the same soft warm well sitting ON a white page.
+
+     The ladder is deliberately EVEN — each step is the same size of move:
+       canvas  #ffffff → well    #f6f3ee   1.11:1
+       well    #f6f3ee → nested  #ece7dd   1.11:1
+     #efebe3 is the obvious nested value and is wrong: 1.07:1, and the ladder
+     visibly limps.
+
+     THREE SURFACE LEVELS IS THE CEILING. There is no token below
+     --fonda-surface-2 and there should not be one — a fourth level would have
+     to be dark enough to stop reading as paper. If a layout seems to need one,
+     the answer is a divider or more space, not another fill.
+
+     The warmth does NOT move. Sana's greys are neutral (#f5f5f5, #f7f7f7);
+     ours stay warm, as §3's ground correction decided. We take Sana's
+     arrangement, not its palette — a warm well on a white canvas reads like
+     paper on a desk; a neutral one reads like a wireframe. */
+  --fonda-bg:           #ffffff;  /* Canvas — the page is the light thing (was #eeeeee) */
+  --fonda-surface:      #f6f3ee;  /* WELL — what "card" means now (was #ffffff) */
+  --fonda-surface-2:    #ece7dd;  /* A well nested inside a well (was #f6f3ee) */
   --fonda-inset:        #e4e0d7;  /* Pressed states, tracks, active-nav fill */
-  --fonda-white:        #ffffff;  /* Modals, canvas, popovers */
+  --fonda-white:        #ffffff;  /* Overlays ONLY — modals, popovers, dropdowns */
+  --fonda-chrome:       #f6f3ee;  /* The sidebar panel ground. Same value as
+                                     --fonda-surface today, named separately so
+                                     the chrome can be tuned without touching
+                                     every card in the product. */
 
   /* ── Borders — warm, barely-there (tone does the work now) ──────────── */
-  --fonda-border:       #e2ddd3;  /* Hairline — use sparingly, not as card outline */
-  --fonda-border-2:     #d4cec2;  /* Stronger (inputs, buttons) */
+  /* v4: --fonda-border is 1.22:1 against the canvas but only 1.02:1 against a
+     WELL — effectively invisible. Any divider drawn INSIDE a well must use
+     --fonda-border-2 (1.42:1 there). This is why stat-row's internal rules
+     moved in D1; if a divider disappears after this change, that is the cause. */
+  --fonda-border:       #e2ddd3;  /* Hairline on the CANVAS. Never a card outline. */
+  --fonda-border-2:     #d4cec2;  /* Dividers inside a well; inputs, buttons */
 
   /* ── Text — warm near-black ramp ────────────────────────────────────── */
   --fonda-text:         #1c1a16;  /* Primary — warm near-black (was #0a0a0a) */
   --fonda-text-2:       #56534b;  /* Secondary / descriptions */
-  /* Muted text, eyebrows, placeholders. MUST clear WCAG AA on BOTH grounds.
-     FONDA_SANA_REDESIGN.md §3.3 specifies #7a766c and offers #736f65 as the
-     fallback "if it fails your checker" — but both fail on the page ground,
-     under the spec's greige AND under the corrected neutral grey:
-       #7a766c → 3.77:1 on #edeae3 · 3.90:1 on #eeeeee  ✗ normal text
-       #736f65 → 4.17:1 on #edeae3 · 4.32:1 on #eeeeee  ✗ normal text
-     §3.3's "~4.5:1 on greige" is really its ratio on WHITE; darkening the page
-     off white ate the headroom the v2 value had. Eyebrows and footnotes are
-     readable content, not decoration, so the token is darkened until it passes
-     on the PAGE, not just on cards. #6c685e is 4.79:1 on the corrected
-     #eeeeee ground and 5.56:1 on white, and stays a clear step lighter than
-     --fonda-text-2 (6.62:1). Never lighten this past #6c685e. */
+  /* Muted text, eyebrows, placeholders. Measured on every v4 surface:
+       #6c685e → 5.56:1 canvas · 5.02:1 well · 4.51:1 nested · 4.22:1 inset
+     The ground inversion GAVE contrast back — v3 squeezed this token to 4.79:1
+     by darkening the page off white, and the canvas now returns it to 5.56:1.
+     That margin is what pays for the third surface level, so never lighten
+     this past #6c685e (v3's comment already said so, for a different reason).
+
+     ✗ RULE: --fonda-text-3 is NOT allowed on --fonda-inset (4.22:1, under AA).
+     --fonda-inset is the active-nav fill, so the muted things that ride on a
+     nav row — a badge count, a SoonMarker — step up to --fonda-text-2
+     (5.83:1 there) WHEN THAT ROW IS ACTIVE. This is the one place in the
+     product where a muted token lands on the darkest surface, and it has been
+     failing since the rail shipped; D2 is what fixes it in the markup. */
   --fonda-text-3:       #6c685e;
   --fonda-text-inv:     #ffffff;  /* Text on ink / gradient */
 
@@ -103,14 +128,22 @@
   --fonda-avatar-4: #5c6b3a;  /* olive      — 5.80:1 */
   --fonda-avatar-5: #7a5230;  /* chestnut   — 6.82:1 */
 
-  /* ── Elevation (§6) ─────────────────────────────────────────────────── */
-  /* Top-level cards are borderless, so the page→card tonal step (#eeeeee →
-     #ffffff, only 17 pts / 1.16:1) plus this shadow is ALL that separates a
-     card from the ground. It is load-bearing, not decoration — don't remove it
-     from a borderless card. Tinted with the warm ink (28 26 22 = #1c1a16)
-     rather than neutral black so the shading matches the material. */
-  --fonda-shadow-card:       0 1px 2px rgb(28 26 22 / 0.04), 0 8px 24px rgb(28 26 22 / 0.04);
-  --fonda-shadow-card-hover: 0 1px 2px rgb(28 26 22 / 0.05), 0 12px 32px rgb(28 26 22 / 0.07);
+  /* ── Elevation — OVERLAYS ONLY (v4, FONDA_SANA_REDESIGN.md §0.1) ─────── */
+  /* In v3 these were load-bearing: a white card on a grey page had no other
+     tell, so the shadow was the separation. v4 inverts that — a grey well on a
+     white canvas is separated by its radius and its fill, and a shadow under
+     one reads as a floating panel, which is the look the whole system is
+     trying to remove.
+
+     So: NEVER apply these to an in-page well. They are for things that
+     genuinely float above the page — popovers, dropdowns, dialogs, the mobile
+     drawer, and the marketing site's preview windows, which are drawings of a
+     floating app window and should keep looking like one. Softened from the v3
+     values, which were tuned to lift a card off a darker ground than we have
+     now. Tinted with the warm ink (28 26 22) rather than neutral black so the
+     shading matches the material. */
+  --fonda-shadow-card:       0 1px 2px rgb(28 26 22 / 0.04), 0 4px 16px rgb(28 26 22 / 0.06);
+  --fonda-shadow-card-hover: 0 1px 2px rgb(28 26 22 / 0.05), 0 8px 24px rgb(28 26 22 / 0.08);
 
   /* Radius scale — soft-cornered, not pill (Geist house style) */
   --radius: 0.625rem; /* 10px — buttons & inputs */
@@ -118,7 +151,7 @@
   /* shadcn semantic tokens mapped onto the Fonda palette */
   --background: var(--fonda-bg);
   --foreground: var(--fonda-text);
-  --card: var(--fonda-surface);           /* white, floating on the grey page */
+  --card: var(--fonda-surface);           /* a WELL on the white canvas (v4) */
   --card-foreground: var(--fonda-text);
   --popover: var(--fonda-white);
   --popover-foreground: var(--fonda-text);
@@ -135,19 +168,18 @@
      the real navy stays reachable only via an explicit --fonda-accent. */
   --accent: var(--fonda-inset);
   --accent-foreground: var(--fonda-text);
-  /* The error red. Darkened from v2's #c2403b in the Phase 8 sweep, closing the
-     last AA gap FONDA_SANA_REDESIGN.md §3.3 left open: #c2403b was 5.13:1 while
-     the page was white, but only 4.42:1 once the ground moved to #eeeeee — under
-     AA for normal text, and this token carries real error copy at 12–14px
-     (components/dashboard/email-inbox.tsx's action alert and
-     sync-now-button.tsx's status line both render straight onto the ground).
-     Darkened by scaling toward black, which holds the hue (2.22° → 2.29°) and
-     saturation (0.696) — it is the same red, 6 RGB points down. Measured:
-       #bc3e39 → 4.66:1 on #eeeeee · 5.40:1 on #ffffff
-     5.40:1 is also the ratio for white text ON this fill (contrast is
-     symmetric), so --destructive-foreground on a destructive button still
-     clears AA. #c03f3a would technically pass at 4.51:1; this leaves margin.
-     Never lighten past #bc3e39. */
+  /* The error red. Darkened from v2's #c2403b in the v3 Phase 8 sweep, when
+     the page moved off white and dropped it to 4.42:1. Measured on v4:
+       #bc3e39 → 5.40:1 canvas · 4.88:1 well · 4.38:1 nested · 4.10:1 inset
+     The canvas gives it real margin back, and 5.40:1 is also the ratio for
+     white text ON this fill (contrast is symmetric), so a destructive button
+     still clears AA. Never lighten past #bc3e39.
+
+     ✗ RULE: --destructive renders on the CANVAS or a FIRST-LEVEL WELL only —
+     never on a nested well (4.38:1) or an inset (4.10:1). Error copy belongs
+     at the top of a card, not three fills deep. If an error genuinely must
+     appear inside a nested well, it goes there as --fonda-text plus an icon,
+     not as red text. */
   --destructive: #bc3e39;
   --destructive-foreground: var(--fonda-text-inv);
   --border: var(--fonda-border);
@@ -182,6 +214,7 @@
   --color-surface: var(--fonda-surface);
   --color-surface-2: var(--fonda-surface-2);
   --color-inset: var(--fonda-inset);
+  --color-chrome: var(--fonda-chrome);
   --color-border-2: var(--fonda-border-2);
   --color-accent-solid: var(--fonda-accent);
   --color-muted-3: var(--fonda-text-3);
@@ -242,46 +275,37 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* ── The marketing ground (Phase E-pre) ────────────────────────────────
-     The public site runs on ONE warm ground, #F6F3EE, with no per-band
-     alternation: separation comes from the border-t hairlines and the
-     vertical padding. It previously alternated --fonda-bg (#EEEEEE, neutral)
-     with --fonda-surface-2 (#F6F3EE, warm), which alternates TEMPERATURE
-     rather than value — the page read as changing its mind, and with five
-     warm bands to one grey the grey one looked like a mistake. The rest of
-     the palette is warm already (borders #E2DDD3, inset #E4E0D7, ink
-     #1C1A16), so the neutral ground was the outlier.
+  /* ── The marketing ground (v4) ─────────────────────────────────────────
+     HISTORY, because this class inverted rather than moved. Through v3 the
+     public site ran on ONE warm ground, #F6F3EE, with white cards and
+     product-shot windows floating on it at 1.107:1 — scoped here rather than
+     at :root, because the app's ground was the neutral #EEEEEE and the site
+     wanted warmth. (It had previously alternated the two per band, which
+     alternates TEMPERATURE rather than value; the page read as changing its
+     mind, and with five warm bands to one grey the grey one looked like a
+     mistake.)
 
-     Scoped, NOT global: --fonda-bg stays #EEEEEE at :root and the dashboard
-     keeps the neutral ground the GROUND CORRECTION note above specifies.
+     v4 inverts the ground globally (§0.1): the canvas is #FFFFFF and #F6F3EE
+     is now what a WELL is made of. So the site's old ground became the site's
+     card fill, and its old white cards became the canvas — the same swap,
+     arriving for free. The site now reads white-with-warm-wells, which is what
+     it was reaching for, and this class has nothing left to override.
 
-     Both variables are set on purpose. `--background: var(--fonda-bg)` is
-     substituted at :root, so its computed value (#EEEEEE) is what descendants
-     inherit — redeclaring --fonda-bg alone would NOT re-resolve it. Setting
-     --fonda-bg as well is what carries the ground into anything that reads
-     the raw token, the hero parallax's scrim among them: its
-     color-mix(in srgb, var(--fonda-bg) N%, transparent) stops now resolve
-     warm without hero-parallax.tsx being touched.
+     KEPT AS A DOCUMENTED NO-OP, deliberately: it is applied in the marketing
+     layouts and in not-found.tsx, and removing it is a sweep across those
+     files that belongs with the rest of the marketing tune (APP_UX_PROMPTS.md
+     §D4), not with the token change. The declarations are left in, resolving
+     to the canvas, so the cascade is explicit rather than absent — and so the
+     hero parallax's color-mix(in srgb, var(--fonda-bg) N%, transparent) scrim
+     keeps resolving against a real value without hero-parallax.tsx being
+     touched. D4 re-tunes that scrim against white, where it may now be doing
+     nothing.
 
-     White cards and product-shot windows still float on it at 1.107:1.
-
-     WHERE IT GOES — every route a prospect can reach from the site:
-       /                     landing
-       /sample-brief         the ungated sample + its request form
-       /contact
-       /(legal)/*            privacy, terms — linked from the footer
-       /newsletter/confirm   \ the sample-brief request's own landing pages;
-       /newsletter/unsubscribe/ a lead confirms mid-conversion here
-       404 (not-found.tsx)   reachable from anywhere
-     Phase I's /trust joins this list when it ships.
-
-     WHERE IT DOES NOT — /(auth)/* and /onboarding/* stay on the neutral app
-     ground. That is a decision, not an oversight: they are the app side of
-     the door, and their split-screen brand panel already carries the
-     transition from site to product. The dashboard likewise keeps neutral. */
+     If the site should ever diverge from the app ground again, THIS is the
+     hook — repoint the two declarations below, not :root. */
   .marketing-surface {
-    --fonda-bg: var(--fonda-surface-2);
-    --background: var(--fonda-surface-2);
+    --fonda-bg: #ffffff;
+    --background: #ffffff;
     background-color: var(--fonda-bg);
   }
 

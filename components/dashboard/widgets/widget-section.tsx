@@ -96,7 +96,7 @@ export function WidgetEmpty({
   message: string;
 }) {
   return (
-    <div className="rounded-[18px] bg-card shadow-card">
+    <div className="rounded-[16px] bg-card">
       <EmptyState icon={icon} message={message} size="compact" />
     </div>
   );

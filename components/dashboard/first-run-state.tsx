@@ -48,8 +48,8 @@ export function FirstRunState({
       className={cn(
         "px-6 py-12 text-center md:px-8 md:py-14",
         gradient
-          ? "gradient-hero rounded-[20px] shadow-card md:px-10 md:py-16"
-          : "rounded-[18px] bg-card shadow-card"
+          ? "gradient-hero rounded-[20px] md:px-10 md:py-16"
+          : "rounded-[16px] bg-card"
       )}
     >
       <h2

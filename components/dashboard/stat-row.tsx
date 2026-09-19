@@ -37,12 +37,18 @@ export function StatRow({
     // Four cells are 2×2 all the way up to `lg`. At exactly `md` the desktop
     // rail is already taking 256px, which leaves each of four cells ~64px of
     // text — narrow enough that "OCCUPANCY TONIGHT" spills out of its cell.
-    // v3 (§6): a top-level card — white, borderless, floating on the grey
-    // ground via the resting shadow. The 1px rules *between* cells stay: they
-    // are a true divider, which is the one job §6 still keeps hairlines for.
+    // v4 (§0.1): a top-level card — a warm well on the white canvas, 16px
+    // radius, no shadow. The 1px rules *between* cells stay: they are a true
+    // divider, which is the one job the system still keeps hairlines for.
+    //
+    // Those rules moved from --fonda-border to --fonda-border-2. Against the
+    // v3 white card, #e2ddd3 read at 1.22:1; against the well it is 1.02:1 —
+    // invisible. #d4cec2 is 1.42:1 on the well and holds the four-numbers-as-
+    // one-thought reading together. If these dividers ever vanish again, this
+    // is the reason.
     <div
       className={cn(
-        "grid overflow-hidden rounded-[18px] bg-card shadow-card",
+        "grid overflow-hidden rounded-[16px] bg-card",
         three ? "grid-cols-3" : "grid-cols-2 lg:grid-cols-4"
       )}
     >
@@ -54,14 +60,14 @@ export function StatRow({
             "px-4 py-5 md:px-6 md:py-7",
             three
               ? // One row at every size: rules between columns only.
-                i > 0 && "border-l border-border"
+                i > 0 && "border-l border-border-2"
               : [
                   // 2×2: second column and second row get a rule.
-                  i % 2 === 1 && "border-l border-border",
-                  i >= 2 && "border-t border-border",
+                  i % 2 === 1 && "border-l border-border-2",
+                  i >= 2 && "border-t border-border-2",
                   // One row from lg up: rules between columns only.
                   "lg:border-t-0",
-                  i > 0 && "lg:border-l lg:border-border",
+                  i > 0 && "lg:border-l lg:border-border-2",
                 ]
           )}
         >

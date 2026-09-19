@@ -73,7 +73,7 @@ export function AskYourHotel({ userEmail }: { userEmail: string }) {
       {open ? (
         <section
           aria-label={dict.askYourHotel.title}
-          className="rounded-[18px] bg-card shadow-card"
+          className="rounded-[16px] bg-card"
         >
           <header className="flex items-center justify-between gap-3 px-5 py-3">
             <div className="flex min-w-0 flex-col">
@@ -129,7 +129,7 @@ export function AskYourHotel({ userEmail }: { userEmail: string }) {
           ref={triggerRef}
           type="button"
           onClick={() => setOpen(true)}
-          className="flex w-full items-center gap-3 rounded-[14px] border border-[var(--fonda-border-2)] bg-card px-4 py-2.5 text-left shadow-card transition-colors duration-[180ms] hover:border-[var(--fonda-text-3)]"
+          className="flex w-full items-center gap-3 rounded-[14px] border border-[var(--fonda-border-2)] bg-card px-4 py-2.5 text-left transition-colors duration-[180ms] hover:border-[var(--fonda-text-3)]"
         >
           <Sparkles
             aria-hidden="true"

@@ -356,7 +356,7 @@ export function EmailInbox({
             // A top-level card (§6): white, floating on the grey ground, no
             // outer hairline — the divide-y rules between rows are the only
             // borders inside it.
-            "flex flex-col divide-y divide-border overflow-hidden rounded-[18px] bg-card shadow-card lg:max-h-[70vh] lg:overflow-y-auto",
+           "flex flex-col divide-y divide-border-2 overflow-hidden rounded-[16px] bg-card lg:max-h-[70vh] lg:overflow-y-auto",
             mobileView === "detail" && "hidden lg:flex"
           )}
         >
@@ -436,7 +436,7 @@ export function EmailInbox({
           ref={detailRef}
           tabIndex={-1}
           className={cn(
-            "rounded-[18px] bg-card p-4 shadow-card lg:p-5",
+           "rounded-[16px] bg-card p-4 lg:p-5",
             mobileView === "list" && "hidden lg:block"
           )}
         >

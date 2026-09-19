@@ -28,7 +28,7 @@ export function BriefHero({
   action?: React.ReactNode;
 }) {
   return (
-    <section className="gradient-hero relative overflow-hidden rounded-[20px] px-6 py-8 shadow-card md:px-10 md:py-12">
+    <section className="gradient-hero relative overflow-hidden rounded-[20px] px-6 py-8 md:px-10 md:py-12">
       <Sunrise
         aria-hidden="true"
         className="pointer-events-none absolute -right-6 -top-8 size-40 text-[var(--fonda-text-inv)]/20 md:size-52"

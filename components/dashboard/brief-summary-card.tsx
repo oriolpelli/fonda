@@ -61,7 +61,7 @@ export function BriefSummaryCard({
   return (
     <Link
       href={localizedHref(locale, "/dashboard/brief")}
-      className="group flex flex-col gap-3 rounded-[18px] bg-card p-6 shadow-card transition-shadow duration-[180ms] hover:shadow-card-hover"
+      className="group flex flex-col gap-3 rounded-[16px] bg-card p-6"
     >
       <div className="flex items-start justify-between gap-4">
         {summary ? (

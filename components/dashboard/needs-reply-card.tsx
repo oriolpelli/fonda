@@ -53,7 +53,7 @@ export function NeedsReplyCard({
   const inboxHref = communicationsHref(locale);
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-[18px] bg-card shadow-card">
+    <div className="flex flex-col overflow-hidden rounded-[16px] bg-card">
       <ul className="flex flex-col divide-y divide-border">
         {emails.map((email) => {
           const note = urgencyNoteFor(email.urgency);

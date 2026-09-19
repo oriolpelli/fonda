@@ -22,7 +22,7 @@ export default function ArrivalsLoading() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="rounded-[18px] bg-card p-6 shadow-card">
+          <div key={i} className="rounded-[16px] bg-card p-6">
             <Skeleton className="h-4 w-1/2" />
             <Skeleton className="mt-4 h-20 w-full" />
             <div className="mt-4 flex gap-2">
@@ -33,7 +33,7 @@ export default function ArrivalsLoading() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-4 rounded-[18px] bg-card p-6 shadow-card">
+      <div className="flex flex-col gap-4 rounded-[16px] bg-card p-6">
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">

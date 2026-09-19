@@ -58,7 +58,7 @@ export default async function ContactPage({
           </p>
 
           <div className="mt-14 grid gap-6 md:grid-cols-[7fr_5fr]">
-            <section className="rounded-[18px] bg-card p-8 shadow-card md:p-10">
+            <section className="rounded-[16px] bg-card p-8 md:p-10">
               <h2 className="text-[22px] font-semibold tracking-[-0.01em] text-foreground">
                 {dict.contact.emailHeading}
               </h2>
@@ -81,7 +81,7 @@ export default async function ContactPage({
             </section>
 
             <div className="flex flex-col gap-6">
-              <section className="rounded-[18px] bg-card p-8 shadow-card">
+              <section className="rounded-[16px] bg-card p-8">
                 <h2 className="text-[18px] font-semibold tracking-[-0.01em] text-foreground">
                   {dict.contact.pilotHeading}
                 </h2>
@@ -90,7 +90,7 @@ export default async function ContactPage({
                 </p>
               </section>
 
-              <section className="rounded-[18px] bg-card p-8 shadow-card">
+              <section className="rounded-[16px] bg-card p-8">
                 <h2 className="text-[18px] font-semibold tracking-[-0.01em] text-foreground">
                   {dict.contact.locationHeading}
                 </h2>

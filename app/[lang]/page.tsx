@@ -817,7 +817,7 @@ export default async function Home({
                     containment), so the strip reads as a note beside the
                     headline and never competes with the timeline. */}
                 <Reveal index={1} className="mt-10">
-                  <ol className="rounded-[18px] bg-card shadow-card">
+                  <ol className="rounded-[16px] bg-card">
                     {STEPS.map((step) => (
                       <li
                         key={step.num}
@@ -864,7 +864,7 @@ export default async function Home({
                         <span className="font-mono text-[13px] tabular-nums text-[var(--fonda-text-3)] sm:text-right">
                           {row.time}
                         </span>
-                        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-[14px] bg-card px-5 py-4 shadow-card sm:mt-0">
+                        <div className="mt-1.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-[14px] bg-card px-5 py-4 sm:mt-0">
                           <p className="text-[15px] font-medium leading-[1.45] text-foreground">
                             {row.title}
                           </p>
@@ -936,9 +936,9 @@ export default async function Home({
                   // sitting on — a no-op that read as intent. The hairline is
                   // what separates it; the elevation ranking is unchanged.
                   className={cn(
-                    "rounded-[18px] p-7",
+                   "rounded-[18px] p-7",
                     column.isFondas
-                      ? "bg-card shadow-card"
+                      ? "bg-card"
                       : "border border-border"
                   )}
                 >
@@ -1015,7 +1015,7 @@ export default async function Home({
                 containment treatment as the stats band below, and for the same
                 reason its comment gives — the internal hairlines only read as
                 "one thought split four ways" when something contains them. */}
-            <div className="mt-12 grid overflow-hidden rounded-[18px] bg-card shadow-card sm:grid-cols-2">
+            <div className="mt-12 grid overflow-hidden rounded-[16px] bg-card sm:grid-cols-2">
               {SECTIONS.map((part, i) => (
                 <Reveal
                   key={part.title}
@@ -1067,7 +1067,7 @@ export default async function Home({
                 <Reveal
                   key={card.role}
                   index={i}
-                  className="flex flex-col rounded-[18px] bg-card p-7 shadow-card"
+                  className="flex flex-col rounded-[16px] bg-card p-7"
                 >
                   {/* Decorative only — aria-hidden inside Vignette, so the
                       role label below carries all the meaning. */}
@@ -1221,7 +1221,7 @@ export default async function Home({
                 </p>
               </Reveal>
 
-              <div className="overflow-hidden rounded-[18px] bg-card shadow-card">
+              <div className="overflow-hidden rounded-[16px] bg-card">
                 {SECURITY.map((cell, i) => (
                   <Reveal
                     key={cell.title}
@@ -1322,7 +1322,7 @@ export default async function Home({
                 four ways" when something contains them, and on the grey ground
                 an uncontained grid just floats. Same treatment as the
                 dashboard's stat-row (§6). */}
-            <div className="grid grid-cols-2 overflow-hidden rounded-[18px] bg-card shadow-card md:grid-cols-4">
+            <div className="grid grid-cols-2 overflow-hidden rounded-[16px] bg-card md:grid-cols-4">
               {STATS.map((stat, i) => (
                 <Reveal
                   key={stat.value}
@@ -1359,7 +1359,7 @@ export default async function Home({
           className="scroll-mt-20 border-t border-border px-6 py-24 md:px-8"
         >
           <Reveal className="mx-auto max-w-[1120px]">
-            <div className="rounded-[28px] bg-card px-6 py-16 text-center shadow-card md:px-16">
+            <div className="rounded-[28px] bg-card px-6 py-16 text-center md:px-16">
               <Eyebrow>{dict.pricing.eyebrow}</Eyebrow>
               <h2 className="mx-auto mt-5 max-w-[16ch] text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.03em] text-foreground">
                 {dict.pricing.headline}

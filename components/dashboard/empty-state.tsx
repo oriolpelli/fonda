@@ -79,7 +79,7 @@ export function EmptyState({
         // gradient layer on the quiet sand tier (§7.3). Compact is an inline
         // note inside someone else's card — a gradient there would be a
         // gradient inside a gradient's neighbour, so it stays flat.
-        compact ? "p-6" : "gradient-panel rounded-[20px] px-6 py-14 shadow-card",
+        compact ? "p-6" : "gradient-panel rounded-[20px] px-6 py-14",
         className
       )}
     >

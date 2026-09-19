@@ -127,10 +127,14 @@ export function EmailDraftPreviewWindow({
         {/* 3 — the drafted reply, waiting for a yes. */}
         <div className={pane}>
           <p className={eyebrow}>{draftLabel}</p>
-          {/* The well is --fonda-surface-2, not --fonda-surface: since the
-              ground flipped, "surface" IS white, so this panel was white on
-              white and the draft had lost its container entirely. */}
-          <div className="mt-3 rounded-[12px] bg-[var(--fonda-surface-2)] p-4">
+          {/* Back to --fonda-surface in v4. That v3 note was right at the time
+              and the inversion turns it inside out: "surface" meant white then,
+              so a well drawn with it vanished against the window's white body
+              and had to drop to surface-2. v4 makes --fonda-surface the well
+              again (#f6f3ee) — which is what the real product draws this panel
+              with, so the mock and the product agree. surface-2 here would now
+              be a level deeper than anything the real draft view uses. */}
+          <div className="mt-3 rounded-[12px] bg-[var(--fonda-surface)] p-4">
             <p className="text-[13px] leading-[1.6] text-foreground">
               {draftBody}
             </p>

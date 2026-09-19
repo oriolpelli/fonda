@@ -47,7 +47,7 @@ export default function DashboardLoading() {
             contents are predictable. Three rows, the shape a ranked to-do list
             arrives in. */}
         <Widget className="lg:col-span-2" titleWidth="w-36">
-          <div className="flex flex-col divide-y divide-border overflow-hidden rounded-[18px] bg-card shadow-card">
+          <div className="flex flex-col divide-y divide-border-2 overflow-hidden rounded-[16px] bg-card">
             {Array.from({ length: 3 }).map((_, row) => (
               <div key={row} className="flex items-start gap-3 px-6 py-4">
                 <Skeleton className="mt-[7px] size-[7px] shrink-0 rounded-[2px]" />
@@ -62,7 +62,7 @@ export default function DashboardLoading() {
             it is a white card of roughly this height, and guessing which would
             be a prediction this file isn't entitled to make. */}
         <Widget className="lg:col-span-2" titleWidth="w-32">
-          <div className="flex flex-col gap-3 rounded-[18px] bg-card p-6 shadow-card">
+          <div className="flex flex-col gap-3 rounded-[16px] bg-card p-6">
             <div className="flex min-w-0 flex-col gap-2">
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-2/3" />
@@ -94,7 +94,7 @@ export default function DashboardLoading() {
 /** The list card the half-width widgets share: an avatar, two lines, one meta. */
 function ListCard({ rows }: { rows: number }) {
   return (
-    <div className="flex flex-col divide-y divide-border overflow-hidden rounded-[18px] bg-card shadow-card">
+    <div className="flex flex-col divide-y divide-border-2 overflow-hidden rounded-[16px] bg-card">
       {Array.from({ length: rows }).map((_, row) => (
         <div
           key={row}

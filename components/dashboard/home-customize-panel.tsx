@@ -502,7 +502,7 @@ function SortableWidgetRow({
       className={cn(
         "flex items-center gap-3 rounded-[10px] px-3 py-2.5 transition-colors",
         isDragging
-          ? "relative z-10 bg-[var(--fonda-surface-2)] shadow-card"
+          ? "relative z-10 bg-[var(--fonda-surface-2)]"
           : "hover:bg-[var(--fonda-surface-2)]"
       )}
     >

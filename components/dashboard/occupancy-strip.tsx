@@ -57,7 +57,7 @@ export function OccupancyStrip({
   return (
     // v3 (§6): white card floating on the grey ground — borderless, 18px, the
     // resting whisper shadow doing the separating, same as the stat row above.
-    <div className="rounded-[18px] bg-card p-6 shadow-card">
+    <div className="rounded-[16px] bg-card p-6">
       {/* Fourteen 42px columns don't fit a 375px phone, so the strip scrolls
           sideways and snaps night-to-night. The negative margin lets it run to
           the card's edges — so a half-cut column reads as "there's more" — while

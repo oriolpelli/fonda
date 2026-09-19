@@ -94,7 +94,7 @@ export function TodoList({
   return (
     // overflow-hidden so a row's hover fill is clipped by the card's 18px
     // corners — the rows used to start below a heading, never at the radius.
-    <div className="flex flex-col overflow-hidden rounded-[18px] bg-card shadow-card">
+    <div className="flex flex-col overflow-hidden rounded-[16px] bg-card">
       <ul className="flex flex-col divide-y divide-border">
         {items.map((item) => (
           <li key={item.id}>

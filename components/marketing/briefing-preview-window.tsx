@@ -38,14 +38,25 @@ export function BriefingPreviewWindow({
         // Keeps its hairline where the page's cards dropped theirs: this is a
         // product shot in a window frame, not a card, and the frame is the
         // point. Depth is tinted with the warm ink (28 26 22) rather than the
-        // old neutral rgba(10,10,10) so it matches the v3 material.
+        // old neutral rgba(10,10,10) so it matches the material.
         "overflow-hidden border border-border",
-        // The hero copy is the thing that moves; this must not. No transition,
-        // no hover, no sticky — and the page's own card treatment (§6) rather
-        // than the window's depth shadow, so it reads as part of the page
-        // rather than as a second floating object over the painting.
+        // v4 — THE SHOWCASE RULE (FONDA_SANA_REDESIGN.md §0.2). The interior of
+        // this window is `bg-popover`, i.e. #ffffff, in BOTH variants, because
+        // it is a picture of the real Morning Brief and the real Morning Brief
+        // sits on a white canvas. It does not take the page's card fill. When
+        // the ground inverted, `bg-card` stopped meaning "white" and started
+        // meaning "warm grey well" — and the hero variant, which used it
+        // deliberately in v3 to read as part of the page, would have quietly
+        // started showing prospects a grey dashboard we do not ship.
+        //
+        // The original intent still holds and is now carried by the hairline
+        // alone: the hero copy is the thing that moves, so this must not — no
+        // transition, no hover, no sticky, and no shadow either, so it reads as
+        // part of the page rather than as a second floating object over the
+        // watercolour. The border (#e2ddd3, 1.22:1 on the canvas) is what
+        // separates it now, which is exactly the job v3 gave the shadow.
         isHero
-          ? "mx-auto w-full max-w-[1120px] rounded-[18px] bg-card shadow-card"
+          ? "mx-auto w-full max-w-[1120px] rounded-[18px] bg-popover"
           : cn(
               "bg-popover transition-[transform,box-shadow] duration-300 ease-out",
               isLarge
@@ -55,6 +66,11 @@ export function BriefingPreviewWindow({
         className
       )}
     >
+      {/* The title bar is the one part of this that is NOT canvas: it is the
+          window's own chrome, and `bg-card` (#f6f3ee) now puts it at the same
+          value as the product's real sidebar chrome. That is a coincidence of
+          the inversion, and a welcome one — the mock's frame and the product's
+          frame are the same material. */}
       <div className="flex items-center gap-1.5 border-b border-border bg-card px-4 py-3">
         <span className="size-2.5 rounded-full bg-[#FF5F57]" />
         <span className="size-2.5 rounded-full bg-[#FEBC2E]" />

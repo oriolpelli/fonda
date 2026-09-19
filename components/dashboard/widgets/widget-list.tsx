@@ -93,7 +93,7 @@ export function WidgetList({
 }) {
   return (
     // overflow-hidden so a row's hover fill is clipped by the 18px corners.
-    <div className="flex flex-col overflow-hidden rounded-[18px] bg-card shadow-card">
+    <div className="flex flex-col overflow-hidden rounded-[16px] bg-card">
       <ul className="flex flex-col divide-y divide-border">
         {rows.map((row) => (
           <li key={row.key}>

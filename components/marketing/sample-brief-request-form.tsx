@@ -52,7 +52,7 @@ export function SampleBriefRequestForm() {
           : null;
 
   return (
-    <div className="rounded-[18px] bg-card p-7 shadow-card md:p-10">
+    <div className="rounded-[16px] bg-card p-7 md:p-10">
       <h2 className="text-[clamp(1.4rem,2.6vw,1.875rem)] font-semibold leading-[1.1] tracking-[-0.025em] text-foreground">
         {dict.sampleBrief.requestHeadline}
       </h2>

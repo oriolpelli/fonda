@@ -50,7 +50,7 @@ export function NewsletterUnsubscribe({ token }: { token: string }) {
             : null;
 
   return (
-    <div className="rounded-[18px] bg-card p-8 shadow-card">
+    <div className="rounded-[16px] bg-card p-8">
       {outcome ? (
         <>
           <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-foreground">

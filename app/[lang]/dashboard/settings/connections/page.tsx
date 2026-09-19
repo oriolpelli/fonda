@@ -301,7 +301,7 @@ export default async function ConnectionsSettingsPage({
             <h3 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
               {dict.sync.recentSyncRuns}
             </h3>
-            <div className="overflow-x-auto rounded-[18px] bg-card shadow-card">
+            <div className="overflow-x-auto rounded-[16px] bg-card">
               <table className="w-full text-sm">
                 <thead className="bg-muted text-left text-muted-foreground">
                   <tr>
@@ -362,7 +362,7 @@ export default async function ConnectionsSettingsPage({
             <h3 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
               {dict.sync.latestReservations}
             </h3>
-            <div className="overflow-x-auto rounded-[18px] bg-card shadow-card">
+            <div className="overflow-x-auto rounded-[16px] bg-card">
               <table className="w-full text-sm">
                 <thead className="bg-muted text-left text-muted-foreground">
                   <tr>

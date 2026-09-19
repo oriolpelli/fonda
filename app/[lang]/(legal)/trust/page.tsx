@@ -188,7 +188,7 @@ export default async function TrustPage({
 
       {/* The hand-off to the legal text. A card rather than another hairline
           section: it is the one block on the page that asks for an action. */}
-      <section className="rounded-[18px] bg-card p-8 shadow-card">
+      <section className="rounded-[16px] bg-card p-8">
         <h2 className="text-[18px] font-semibold tracking-[-0.01em] text-foreground">
           {copy.moreTitle}
         </h2>

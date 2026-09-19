@@ -9,6 +9,10 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
       data-slot="input"
       className={cn(
         // v3 (§9): white field on the grey ground. Focus keeps the Signal
+        // v4 (§0.1): `bg-surface` now resolves to the WELL (#f6f3ee), so the
+        // field reads as recessed into the white canvas rather than raised out
+        // of a grey one. No class change was needed — the token moved under it,
+        // which is the whole point of never hard-coding hex. Keeps the focus
         // shape — accent border + 3px ring — but the ring tint is
         // --fonda-accent-tint, NOT the generic --accent, which is now a warm
         // neutral (§3.1) and would read as a muddy halo rather than a focus
