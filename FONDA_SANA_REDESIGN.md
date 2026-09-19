@@ -183,6 +183,44 @@ they are **stale** for the ground and the rail; use §D.
 
 ---
 
+## 0.2 The showcase rule (v4)
+
+> **A picture of the product renders the PRODUCT's system, not the page's.**
+
+The marketing site showcases Fonda by drawing it — the Badi Blau morning brief
+and the drafted-reply window on the landing page are mock app windows, not
+illustrations. They are the only place on the site where the two systems meet,
+and the rule is that **the product wins inside the frame**:
+
+- **The interior of a product mock is the canvas — `#ffffff`.** The real
+  dashboard and the real Morning Brief sit on a white canvas, so a mock of them
+  does too. A mock rendered in the page's own card fill would show a prospect a
+  grey dashboard that does not exist.
+- **Wells inside a mock are `--fonda-surface`**, the same fill the real surface
+  uses, at the same radius. Not `--fonda-surface-2` — that is a level deeper
+  than the real view goes.
+- **The window frame is chrome and may be `bg-card`.** The mock's title bar now
+  lands at the same value as the product's real sidebar chrome, which is a
+  coincidence of the inversion and a welcome one.
+- **The frame keeps its depth shadow** where it floats (the showcase band), and
+  drops it where it must sit still (the hero, under the watercolour) — there the
+  hairline does the separating. Overlay shadows are allowed here precisely
+  because a window frame *is* an overlay.
+
+**Why this is stated rather than left to judgement.** Both preview windows used
+`bg-card` and `--fonda-surface-2` in v3, and both were *correct* then: `bg-card`
+meant white and `--fonda-surface` meant white, so the mocks matched the product
+by accident of the tokens rather than by intent. The inversion silently flipped
+both — the hero brief would have gone warm grey and the draft well would have
+gone a level too deep — with nothing failing, nothing linting, and no visible
+error beyond a product shot that quietly misrepresents the product. That is the
+worst class of design bug: it ships.
+
+When the ground moves again, **re-check these two files by hand.** They are the
+files where "follow the token" gives the wrong answer on purpose.
+
+---
+
 ## 1. What Sana actually does (the DNA)
 
 Observed directly from the four reference videos. This is the target feel; §§4–13
