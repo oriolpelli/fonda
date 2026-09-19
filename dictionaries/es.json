@@ -1169,5 +1169,13 @@
       "anniversary": "Aniversario",
       "honeymoon": "Luna de miel"
     }
+  },
+  "palette": {
+    "open": "Buscar",
+    "placeholder": "Busca páginas y huéspedes…",
+    "pages": "Páginas",
+    "guests": "Huéspedes",
+    "ask": "Preguntar",
+    "askPrefix": "Preguntar:"
   }
 }

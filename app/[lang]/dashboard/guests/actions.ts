@@ -2,7 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 
-import type { GuestPreference, Occasion, TripPurpose } from "@/lib/guests";
+import {
+  listGuests,
+  type GuestPreference,
+  type Occasion,
+  type TripPurpose,
+} from "@/lib/guests";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database";
 
@@ -148,4 +153,33 @@ export async function removeGuestPreference(
 
   revalidateGuest(customerMewsId);
   return {};
+}
+
+/**
+ * Guest search for the command palette (APP_UX_PROPOSAL.md §7.1).
+ *
+ * A SERVER ACTION, not an API route and not a client-side filter over a
+ * preloaded list. The palette must never hold the hotel's guest list in the
+ * browser waiting to be searched — what crosses to the client is at most five
+ * names the person already typed enough of to find.
+ *
+ * Scoped by `currentHotelId()` and then by RLS underneath it. A search box is
+ * the easiest place in a product to cross a tenant boundary, so it gets no
+ * shortcut.
+ */
+export async function searchGuests(
+  q: string
+): Promise<{ id: string; name: string; arrival: string | null }[]> {
+  const trimmed = q.trim();
+  if (trimmed.length < 2) return [];
+
+  const hotelId = await currentHotelId();
+  if (!hotelId) return [];
+
+  const guests = await listGuests(hotelId, { view: "all", q: trimmed });
+  return guests.slice(0, 5).map((g) => ({
+    id: g.customerId,
+    name: g.name,
+    arrival: g.arrival,
+  }));
 }

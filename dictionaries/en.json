@@ -1169,5 +1169,13 @@
       "anniversary": "Anniversary",
       "honeymoon": "Honeymoon"
     }
+  },
+  "palette": {
+    "open": "Search",
+    "placeholder": "Search pages and guests…",
+    "pages": "Pages",
+    "guests": "Guests",
+    "ask": "Ask",
+    "askPrefix": "Ask:"
   }
 }

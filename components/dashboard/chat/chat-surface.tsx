@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
+
 import { ChatComposer } from "@/components/dashboard/chat/chat-composer";
 import { ChatThread } from "@/components/dashboard/chat/chat-thread";
 import { ChatThreadList } from "@/components/dashboard/chat/chat-thread-list";
@@ -23,6 +26,7 @@ export function ChatSurface({
   threads,
   threadId,
   initialMessages,
+  prefill,
 }: {
   userEmail: string;
   threads: ChatThreadSummary[];
@@ -30,6 +34,8 @@ export function ChatSurface({
   threadId: string | null;
   /** Its transcript, already pseudonymised — see lib/chat-threads.ts. */
   initialMessages: ChatMessage[];
+  /** A question handed over by the ⌘K palette, asked once on arrival. */
+  prefill?: string | null;
 }) {
   const { dict } = useDictionary();
   const { messages, streaming, send } = useHotelChat({
@@ -40,6 +46,23 @@ export function ChatSurface({
   // True for a conversation loaded from the database rather than had just now.
   // What it changes is one line of copy — see the notice below.
   const restored = initialMessages.length > 0;
+
+  /**
+   * Ask the palette's question once, then take it out of the URL.
+   *
+   * The ref is what makes "once" true: without it, React's effect would re-fire
+   * on a remount and re-ask the same question, and the param would still be
+   * sitting in the URL for anyone who reloaded or shared the link.
+   */
+  const router = useRouter();
+  const pathname = usePathname();
+  const asked = useRef(false);
+  useEffect(() => {
+    if (!prefill || asked.current || messages.length > 0) return;
+    asked.current = true;
+    void send(prefill);
+    router.replace(pathname);
+  }, [prefill, messages.length, send, router, pathname]);
 
   const body = blank ? (
       // `flex-1` so the block centres in the whole content column rather than

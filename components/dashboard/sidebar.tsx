@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -46,6 +47,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import {
+  CommandPalette,
+  type PalettedPage,
+} from "@/components/dashboard/command-palette";
 import {
   ConnectionStatus,
   type ConnectionState,
@@ -998,6 +1003,36 @@ export function Sidebar({
   // nothing to dismiss. `firstSectionIndex` survives for the mobile drawer,
   // which still draws a divider where the pillars begin.
 
+  /**
+   * Every destination in the tree, flattened for the palette.
+   *
+   * Built from the same `navItems` the sidebar draws, so a page that exists in
+   * the nav is findable by name and one that does not is not — there is no
+   * second list of routes to fall out of step with this one. Pillars are
+   * excluded: they are headings and have nowhere to go.
+   */
+  const palettePages: PalettedPage[] = useMemo(() => {
+    const out: PalettedPage[] = [];
+    for (const item of navItems) {
+      if (item.children?.length) {
+        for (const child of item.children) {
+          out.push({ key: child.key, label: child.label, href: child.href });
+        }
+      } else {
+        out.push({ key: item.key, label: item.label, href: item.href });
+      }
+    }
+    out.push({
+      key: settingsItem.key,
+      label: settingsItem.label,
+      href: settingsItem.href,
+    });
+    // Reputation appears under both pillars; the palette shows one of it.
+    return out.filter(
+      (page, i) => out.findIndex((p) => p.href === page.href) === i
+    );
+  }, [navItems, settingsItem]);
+
   const isActive = useCallback(
     (href: string) => {
       const target = stripLocale(href);
@@ -1135,6 +1170,13 @@ export function Sidebar({
           <span className="min-w-0 flex-1 truncate text-[14px] font-medium text-[var(--fonda-text)]">
             {hotelName}
           </span>
+        </div>
+
+        {/* ⌘K. A CONTROL, not a destination — which is why it sits above the
+            nav rather than in it, and reads a step quieter than a nav row. The
+            nav is still five sections. */}
+        <div className="px-2.5 pt-1">
+          <CommandPalette pages={palettePages} locale={locale} />
         </div>
 
         {/* Scrollable, unlike the rail — which could not scroll without

@@ -1169,5 +1169,13 @@
       "anniversary": "Aniversari de casament",
       "honeymoon": "Lluna de mel"
     }
+  },
+  "palette": {
+    "open": "Cerca",
+    "placeholder": "Cerca pàgines i hostes…",
+    "pages": "Pàgines",
+    "guests": "Hostes",
+    "ask": "Pregunta",
+    "askPrefix": "Pregunta:"
   }
 }

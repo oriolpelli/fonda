@@ -47,12 +47,18 @@ export default async function ChatPage({
   // a perfectly good place to land.
   const threadId = initialMessages.length > 0 ? requested : null;
 
+  // `?q=` arrives from the palette's "Ask:" row. Handed to the surface as a
+  // prefill, which sends it and clears the param — a query that stayed in the
+  // URL would re-ask itself on every reload of that link.
+  const prefill = typeof query.q === "string" ? query.q : null;
+
   return (
     <ChatSurface
       userEmail={user?.email ?? ""}
       threads={threads}
       threadId={threadId}
       initialMessages={initialMessages}
+      prefill={prefill}
     />
   );
 }
