@@ -152,7 +152,14 @@ export function HomeCustomizePanel({ layout }: { layout: readonly CustomizeRow[]
       try {
         const result = await updateHomeLayout(undefined, formData);
         if (result && "error" in result) {
-          setError(result.error);
+          // The action's message is English and sometimes a raw Postgres one
+          // (lib/home-layout.ts interpolates `error.message`). Neither belongs
+          // on screen: none of its cases is something the user can act on
+          // differently, and an es/ca session would get an English sentence.
+          // The reason is still worth having, so it goes to the console for a
+          // support session rather than into the panel.
+          console.error("[home] layout save rejected:", result.error);
+          setError(copy.saveFailed);
           return;
         }
         // Re-seed from what was persisted, not from what was posted: the
