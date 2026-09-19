@@ -645,7 +645,14 @@
       "arrivesTomorrow": "Arrives tomorrow",
       "arrivesInDays": "Arrives in {count} days",
       "waiting": "Waiting {hours}h+"
-    }
+    },
+    "queueLabel": "Filter by queue",
+    "queueNeedsYou": "Needs you",
+    "queueWaiting": "Waiting",
+    "queueDoneToday": "Done today",
+    "queueAll": "All",
+    "queueEmpty": "Nothing in this queue.",
+    "queueClear": "Inbox clear."
   },
   "arrivals": {
     "heading": "Today · {date}",

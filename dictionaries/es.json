@@ -645,7 +645,14 @@
       "arrivesTomorrow": "Llega mañana",
       "arrivesInDays": "Llega en {count} días",
       "waiting": "Esperando +{hours} h"
-    }
+    },
+    "queueLabel": "Filtrar por cola",
+    "queueNeedsYou": "Pendientes",
+    "queueWaiting": "Esperando",
+    "queueDoneToday": "Hecho hoy",
+    "queueAll": "Todos",
+    "queueEmpty": "No hay nada en esta cola.",
+    "queueClear": "Bandeja al día."
   },
   "arrivals": {
     "heading": "Hoy · {date}",

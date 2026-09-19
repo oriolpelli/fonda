@@ -16,6 +16,13 @@ import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import { byDate, byUrgency, type Urgency } from "@/lib/email-urgency";
 import { SORT_COOKIE, SORT_MODES, type SortMode } from "@/lib/inbox-sort";
+import {
+  DEFAULT_QUEUE,
+  matchesQueue,
+  QUEUE_COOKIE,
+  QUEUE_MODES,
+  type QueueMode,
+} from "@/lib/inbox-queue";
 import { urgencyNoteFor } from "@/lib/urgency-note";
 import { intlLocale } from "@/lib/i18n/config";
 import { plural, t } from "@/lib/i18n/format";
@@ -70,6 +77,11 @@ function rememberSort(mode: SortMode): void {
   document.cookie = `${SORT_COOKIE}=${mode}; path=/; max-age=31536000; samesite=lax`;
 }
 
+/** Same contract for the queue — see `rememberSort`. */
+function rememberQueue(queue: QueueMode): void {
+  document.cookie = `${QUEUE_COOKIE}=${queue}; path=/; max-age=31536000; samesite=lax`;
+}
+
 // Quiet, neutral badges (one signal only). Negative categories that need
 // attention get the single destructive tint; everything else stays neutral.
 const NEUTRAL = "bg-[var(--fonda-surface)] text-[var(--fonda-text-2)]";
@@ -103,18 +115,28 @@ export function EmailInbox({
   emptyMessage,
   emptyIcon,
   initialSort = "date",
+  initialQueue = DEFAULT_QUEUE,
   initialSelectedId,
+  today,
+  timeZone,
 }: {
   emails: InboxEmail[];
   emptyMessage: string;
   emptyIcon: EmptyStateIcon;
   initialSort?: SortMode;
+  /** Read from a cookie on the server, so the list never flips after paint. */
+  initialQueue?: QueueMode;
   /** Opens a specific message on first paint (the dashboard links here). */
   initialSelectedId?: string;
+  /** The hotel's today (YYYY-MM-DD) — "Done today" is a hotel-local question. */
+  today: string;
+  /** The hotel's IANA timezone, for dating `sent_at` the way the hotel does. */
+  timeZone: string;
 }) {
   const router = useRouter();
   const { dict, locale } = useDictionary();
   const [sort, setSort] = useState<SortMode>(initialSort);
+  const [queue, setQueue] = useState<QueueMode>(initialQueue);
   const [selectedId, setSelectedId] = useState<string | null>(
     initialSelectedId ?? emails[0]?.id ?? null
   );
@@ -151,17 +173,87 @@ export function EmailInbox({
     setMobileView("detail");
   }
 
-  // Sorting is client-side so the toggle is instant; the server always sends
-  // the same rows with their urgency already computed.
-  const sorted = useMemo(
-    () => emails.slice().sort(sort === "urgency" ? byUrgency : byDate),
-    [emails, sort]
-  );
+  /**
+   * `sent_at` as the hotel would date it. Built once per timezone rather than
+   * per row: constructing an Intl.DateTimeFormat is the expensive part, and
+   * "Done today" asks this of every sent message in the list.
+   */
+  const sentAtLocalDate = useMemo(() => {
+    let fmt: Intl.DateTimeFormat;
+    try {
+      fmt = new Intl.DateTimeFormat("en-CA", {
+        timeZone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+    } catch {
+      // Same failure mode lib/stay-phase.ts guards: one hotel with a bad
+      // timezone must not take down the page for everyone.
+      fmt = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "UTC",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+    }
+    return (sentAt: string) => {
+      const d = new Date(sentAt);
+      return Number.isNaN(d.getTime()) ? null : fmt.format(d);
+    };
+  }, [timeZone]);
+
+  /**
+   * Counts for every segment, off the UNFILTERED list — a count that changed
+   * with the selected queue would only ever tell you about the queue you are
+   * already looking at.
+   */
+  const queueCounts = useMemo(() => {
+    const now = new Date();
+    return Object.fromEntries(
+      QUEUE_MODES.map((mode) => [
+        mode,
+        emails.filter((e) => matchesQueue(e, mode, today, sentAtLocalDate, now))
+          .length,
+      ])
+    ) as Record<QueueMode, number>;
+  }, [emails, today, sentAtLocalDate]);
+
+  // Filter, then sort. Both are client-side so the controls are instant; the
+  // server always sends the same rows with their urgency already computed.
+  const sorted = useMemo(() => {
+    const now = new Date();
+    return emails
+      .filter((e) => matchesQueue(e, queue, today, sentAtLocalDate, now))
+      .sort(sort === "urgency" ? byUrgency : byDate);
+  }, [emails, queue, sort, today, sentAtLocalDate]);
 
   function chooseSort(mode: SortMode) {
     setSort(mode);
     rememberSort(mode);
   }
+
+  function chooseQueue(mode: QueueMode) {
+    setQueue(mode);
+    rememberQueue(mode);
+    // The open message may not be in the new queue. Fall to that queue's first
+    // row rather than leaving the reading pane showing something the list no
+    // longer offers.
+    setSelectedId((current) => {
+      const stillThere = emails.some(
+        (e) =>
+          e.id === current && matchesQueue(e, mode, today, sentAtLocalDate)
+      );
+      return stillThere ? current : null;
+    });
+  }
+
+  const queueLabels: Record<QueueMode, string> = {
+    needs_you: dict.emails.queueNeedsYou,
+    waiting: dict.emails.queueWaiting,
+    done_today: dict.emails.queueDoneToday,
+    all: dict.emails.queueAll,
+  };
 
   const badges = dict.emails.badges as Record<string, string>;
   function badgeLabel(classification: string | null): string {
@@ -269,11 +361,22 @@ export function EmailInbox({
 
   const selectedContext = selected ? bookingContext(selected) : null;
 
-  // Nothing to triage: the whole surface is the empty state, rather than an
-  // empty list sitting next to an empty reading pane.
+  // Nothing in the inbox at all: the whole surface is the empty state, rather
+  // than an empty list sitting next to an empty reading pane. Note this is
+  // `emails`, not `sorted` — an empty QUEUE keeps its segmented control, since
+  // the way out of an empty queue is to pick another one.
   if (emails.length === 0) {
     return <EmptyState icon={emptyIcon} message={emptyMessage} />;
   }
+
+  /**
+   * What an empty queue says. "Needs you" gets its own wording because
+   * emptying it is an achievement and a generic "nothing here" throws that
+   * away — a queue can be finished, and that moment should be visible
+   * (APP_UX_PROPOSAL.md §5.3).
+   */
+  const queueEmptyMessage =
+    queue === "needs_you" ? dict.emails.queueClear : dict.emails.queueEmpty;
 
   return (
     <div className="flex flex-col gap-4">
@@ -286,6 +389,46 @@ export function EmailInbox({
           )}
         </div>
       ) : null}
+
+      {/* The queue segmented control (§5.3). Same treatment as the arrivals
+          tabs, and above the count/sort row because it decides what is being
+          counted. Hidden with the rest of the list chrome on a phone that has
+          navigated into a message. */}
+      <div
+        role="group"
+        aria-label={dict.emails.queueLabel}
+        className={cn(
+          "inline-flex flex-wrap self-start rounded-[10px] border border-[var(--fonda-border-2)] p-0.5",
+          mobileView === "detail" && "hidden lg:inline-flex"
+        )}
+      >
+        {QUEUE_MODES.map((mode) => (
+          <button
+            key={mode}
+            type="button"
+            onClick={() => chooseQueue(mode)}
+            aria-pressed={queue === mode}
+            className={cn(
+              "rounded-[8px] px-3 py-1.5 text-[13px] font-medium transition-colors",
+              queue === mode
+                ? "bg-[var(--fonda-ink)] text-[var(--fonda-text-inv)]"
+                : "text-[var(--fonda-text-2)] hover:text-foreground"
+            )}
+          >
+            {queueLabels[mode]}
+            <span
+              className={cn(
+                "ml-1.5 font-mono text-[11px] tabular-nums",
+                queue === mode
+                  ? "text-[var(--fonda-text-inv)]/70"
+                  : "text-[var(--fonda-text-3)]"
+              )}
+            >
+              {queueCounts[mode]}
+            </span>
+          </button>
+        ))}
+      </div>
 
       {/* Count, sort and bulk approve all belong to the list — on a phone
           showing one message they'd be chrome for a screen you've left. */}
@@ -360,6 +503,13 @@ export function EmailInbox({
             mobileView === "detail" && "hidden lg:flex"
           )}
         >
+          {sorted.length === 0 ? (
+            <div className="px-4 py-10">
+              <p className="text-center text-sm text-muted-foreground">
+                {queueEmptyMessage}
+              </p>
+            </div>
+          ) : null}
           {sorted.map((email) => {
             const isSelected = email.id === selectedId;
             const note = urgencyNote(email.urgency);

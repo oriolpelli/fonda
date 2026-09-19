@@ -551,6 +551,8 @@ Each phase is independently shippable and independently reviewable. Phases 1–3
 
 | 8 | P-6 · The rail's shape | **Overturned 19 Sep** — see below |
 
+| 9 | P-7 · `done_today` and ignored mail | **Decided 19 Sep** — see below |
+
 ### 6 · The guest-data position
 
 **Decided:**
@@ -566,6 +568,37 @@ A 30-room property at ~70% occupancy with an average 2.5-night stay produces rou
 For scale, the same hotel writes **~140,000 log rows a year**: `sync_logs` takes one row per hotel per sync and sync runs every 15 minutes (~35,000/year), and the emails cron writes one `cron_logs` row per hotel per run, unconditionally, on a 5-minute schedule (~105,000/year). **Twenty-four months of guest profiles costs about the same storage as ten days of cron logs.**
 
 So: the retention policy is safe, and the thing that will actually grow the database is operational logging that nobody has put a ceiling on. That is now tracked in `ROADMAP.md` §3.2 as its own item — it is a real finding, not a footnote to this one.
+
+### 9 · P-7 · What "Done today" counts, and the `all` queue *(19 September)*
+
+The queue framing (§5.3) asks for three queues: **Needs you**, **Waiting**,
+**Done today**. Building it surfaced a gap the spec did not know about.
+
+**The `emails` table has `created_at` and `sent_at` and no `updated_at`.** So
+the moment a message was *sent* is recorded, and the moment a message was
+*ignored* is not recorded anywhere. "Done today" can count what was sent today;
+it cannot count what was ignored today without inventing a timestamp.
+
+**Decided:** it does not invent one. `done_today` is sent-today only. A count on
+screen that is quietly wrong is worse than a count that is narrower than you
+expected — and this is the number a GM would use to feel finished.
+
+**The consequence, and the fix.** With three queues, ignored mail then belongs
+to none of them: not Needs you (not pending), not Waiting (not sent), not Done
+today (no date). It would be *invisible*, not merely uncounted, which is a worse
+bug than the one being avoided. So a fourth segment, **All**, carries the
+unfiltered list. It costs one segment and guarantees nothing in the inbox is
+unreachable.
+
+**Queues are filters, not a partition.** This is worth stating because the
+counts look wrong otherwise: a message sent an hour ago is in both Waiting (they
+have not replied) and Done today (you dealt with it). That overlap is intended —
+`done_today` is a progress counter, not a bucket.
+
+**Owed:** a migration adding `emails.updated_at`, after which `done_today` can
+include ignored-today and `all` becomes optional rather than load-bearing. It is
+the right long-term fix and was not worth blocking the queue framing on. Tracked
+in `ROADMAP.md` §3.2.
 
 ### 8 · P-6 · The rail becomes a labelled sidebar *(19 September)*
 

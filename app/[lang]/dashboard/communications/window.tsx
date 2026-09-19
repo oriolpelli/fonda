@@ -11,6 +11,13 @@ import { createClient } from "@/lib/supabase/server";
 // Server-readable sort contract — deliberately NOT imported from the client
 // inbox module, whose exports become throwing client references here.
 import { isSortMode, SORT_COOKIE } from "@/lib/inbox-sort";
+import {
+  DEFAULT_QUEUE,
+  isQueueMode,
+  matchesQueue,
+  QUEUE_COOKIE,
+} from "@/lib/inbox-queue";
+import { hotelToday, localDateOf } from "@/lib/stay-phase";
 import { localizedHref } from "@/lib/i18n/navigation";
 
 /**
@@ -67,17 +74,26 @@ export async function CommunicationsWindow({
   // the real answer is that no mailbox is connected yet.
   const { data: hotel } = await supabase
     .from("hotels")
-    .select("gmail_email")
+    .select("gmail_email, timezone")
     .maybeSingle();
   const inboxConnected = Boolean(hotel?.gmail_email);
+
+  // "Done today" is a hotel-local question, so the hotel's today and its
+  // timezone both cross to the client rather than the browser's being assumed.
+  const timeZone = hotel?.timezone || "UTC";
+  const today = hotelToday(timeZone);
 
   const includePast = query.past === "1";
   const phases = phasesFor(windowKey, includePast);
   const emails = inbox.emails.filter((e) => phases.includes(e.stayPhase));
 
-  // Read the remembered sort server-side so the list doesn't flip after paint.
+  // Read the remembered sort AND queue server-side so neither flips after
+  // paint. Two cookies, one property: whatever the server renders is what the
+  // client starts from.
   const saved = cookieStore.get(SORT_COOKIE)?.value;
   const initialSort = isSortMode(saved) ? saved : "date";
+  const savedQueue = cookieStore.get(QUEUE_COOKIE)?.value;
+  const rememberedQueue = isQueueMode(savedQueue) ? savedQueue : DEFAULT_QUEUE;
 
   // `?email=<id>` opens a specific message. Matched against THIS window's
   // filtered list, not the whole inbox: the parent route is what works out
@@ -85,9 +101,26 @@ export async function CommunicationsWindow({
   // absent is one that belongs to the other window, and silently selecting
   // nothing is the right outcome.
   const requested = typeof query.email === "string" ? query.email : undefined;
-  const initialSelectedId = emails.some((e) => e.id === requested)
-    ? requested
-    : undefined;
+  const target = emails.find((e) => e.id === requested);
+  const initialSelectedId = target ? requested : undefined;
+
+  /**
+   * A deep link outranks the remembered queue.
+   *
+   * The parent route works out which WINDOW owns a message, but the queue is a
+   * second filter on top of that, and the default queue is "Needs you". A link
+   * to a message you already replied to — which is most of what the morning
+   * brief links at — would arrive at the right window with the message filtered
+   * out of the list, and the reading pane showing something the list does not
+   * offer. Falling back to "all" is the one queue guaranteed to contain it.
+   */
+  const initialQueue =
+    target &&
+    !matchesQueue(target, rememberedQueue, today, (sentAt) =>
+      localDateOf(timeZone, sentAt)
+    )
+      ? "all"
+      : rememberedQueue;
 
   const isInHouse = windowKey === "in_house";
   const title = isInHouse
@@ -171,7 +204,10 @@ export async function CommunicationsWindow({
           emptyMessage={emptyMessage}
           emptyIcon="emails"
           initialSort={initialSort}
+          initialQueue={initialQueue}
           initialSelectedId={initialSelectedId}
+          today={today}
+          timeZone={timeZone}
         />
       )}
     </div>

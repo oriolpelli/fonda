@@ -645,7 +645,14 @@
       "arrivesTomorrow": "Arriba demà",
       "arrivesInDays": "Arriba d'aquí a {count} dies",
       "waiting": "Esperant +{hours} h"
-    }
+    },
+    "queueLabel": "Filtra per cua",
+    "queueNeedsYou": "Pendents",
+    "queueWaiting": "Esperant",
+    "queueDoneToday": "Fet avui",
+    "queueAll": "Tots",
+    "queueEmpty": "No hi ha res en aquesta cua.",
+    "queueClear": "Safata al dia."
   },
   "arrivals": {
     "heading": "Avui · {date}",
