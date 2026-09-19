@@ -180,16 +180,21 @@ One release a week. Each row is a week's work and ships on its own.
 | **W2** ✅ *(18 Sep)* | **Two pillars** | Rail to five icons; two panels; nested Communications group; `canonicalSectionKey` for shared Reputation; 15 stub routes → redirects; `roadmapNavFeatures()`/`inNav`/`dashboardNav` deleted | ph. 1–2 · **prompts 1–4** |
 | **W3** ✅ *(18 Sep)* | **Ask + Home v1** | Chat as a rail section; starter questions in the blank state; Home leads with "Needs you today"; existing cards become a widget registry | ph. 3–4 · **prompts 5–7**, 7b optional |
 | **W4** ✅ *(19 Sep)* | **Home v2 — customize** | `dashboard_layouts`, pick + reorder, role defaults, locked roadmap tiles | ph. 5 · **prompts 8–9** |
-| **W5** | **Arrivals & departures** | `/dashboard/checkins` → `/dashboard/arrivals`; departures tab; `TodoTarget` renamed | ph. 6 · **prompt 10** |
-| **W5.5** ◀ *(19 Sep)* | **The Sana pass (v4)** | Ground inverted — white canvas, warm grey wells; the 64px icon rail becomes a 240px labelled sidebar and the docked panels are deleted | `FONDA_SANA_REDESIGN.md` §0.1 · **prompts D1–D2** |
-| **W6** | **Communications, two windows** | `StayPhase` widened to four; In-house + Upcoming; Concierge absorbed; WhatsApp first-run card | ph. 7 · **prompts 11–12** |
+| **W5** ✅ *(19 Sep)* | **Arrivals & departures** | `/dashboard/checkins` → `/dashboard/arrivals`; departures tab; `TodoTarget` renamed | ph. 6 · **prompt 10** |
+| **W5.5** ✅ *(19 Sep)* | **The Sana pass (v4)** | Ground inverted — white canvas, warm grey wells; the 64px icon rail becomes a 240px labelled sidebar and the docked panels are deleted | `FONDA_SANA_REDESIGN.md` §0.1 · **prompts D1–D2** |
+| **W6** ✅ *(19 Sep)* | **Communications, two windows** | `StayPhase` widened to four; In-house + Upcoming; Concierge absorbed; WhatsApp first-run card | ph. 7 · **prompts 11–12** |
 | **W7** | **Billing** | Stripe + trial gating (B20). Blocked on the legal entity — start §4 now, not in week 7 | B20 · Gate 2 · `EXECUTION_PLAYBOOK.md` |
 | **W8** | **Reputation** | The first real Commercial surface. Reviews fetched, themed, score movement | §6 · **prompts 13–14**, after decision P-4 |
 
-**Then, in order:** the guest context pane (prompt 15) → chat threads (16) →
-**the Sana chat pass (D3)** → Guests v1 (17) → chat source chips (18) →
-provenance chips (19) → ⌘K palette (20) → the post-IA sweep (21) → **the v4
-sweep and marketing tune (D4)** → rate cache (B17) → Revenue Management. The four parked house sections
+**Then, in order — ✅ all shipped 19 Sep:** the guest context pane (15) → chat
+threads (16, migration 0023) → the Sana chat pass (D3) → Guests v1 (17,
+migration 0024) → chat source chips (18) → provenance chips (19) → ⌘K palette
+(20) → the post-IA sweep (21) → the v4 sweep and marketing tune (D4).
+
+**⚠️ Migrations 0023 and 0024 are written but NOT APPLIED.** Chat and Guests
+both fail without them. Apply before the next deploy.
+
+**Next:** rate cache (B17) → Revenue Management. The four parked house sections
 (Housekeeping, F&B, Staff, Procurement) and the three business ones
 (Reporting & audit, Chargeback, Team activity) re-enter the nav the week each
 one ships, and not before — see §6.

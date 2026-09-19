@@ -119,6 +119,15 @@ export function HeroParallax({ children }: { children: ReactNode }) {
           different colour rather than as air. Mixing --fonda-bg down to
           transparent instead keeps the hero the same tone as the page all the
           way through, so only the art fades. color-mix rather than a second
+
+          v4 NOTE. The scrim is parameterised by --fonda-bg precisely so it
+          follows the ground, and the ground moved under it: `.marketing-surface`
+          resolved to #F6F3EE and now resolves to the white canvas (§0.1). So
+          the art fades to white rather than to warm, which is correct — the
+          section below it is white too. Nothing to re-tune here; the
+          indirection is what made the inversion free. If a future ground change
+          makes the fade read wrong, the fix is still the token, not these
+          stops.
           hard-coded hex, so the stops follow the token if the ground moves
           again.
 
