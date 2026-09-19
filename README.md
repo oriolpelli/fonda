@@ -3,16 +3,26 @@
 Hotel operations SaaS for independent hotel GMs (20–200 rooms).
 
 > **Naming:** the product is **Fondas** (as shown in the wordmark, emails, and
-> legal pages). The visual design system is called **Signal** (see
-> `FONDA_DESIGN_IDENTITY.md`); "Fonda" in design-token comments refers to that
+> legal pages). The visual design system was called **Signal** (v2,
+> `FONDA_DESIGN_IDENTITY.md`) and is now **Fonda × Sana** (v4,
+> `FONDA_SANA_REDESIGN.md`); "Fonda" in design-token comments refers to that
 > system, not the product.
 
-Core surfaces:
+Core surfaces, live as of 19 Sep 2026:
 
-- **Morning AI briefing** — a daily summary of what needs attention
-- **AI email assistant** — draft and triage guest email
-- **Check-in time chasing** — automatically confirm guest arrival times
-- **Hotel query chat** — ask anything about your hotel in plain language
+- **Home** — leads with what needs you today; the tiles are user-customisable
+- **Ask** — chat over the hotel's own data, with persistent conversations and a
+  source chip per answer saying what it was built from
+- **Morning brief** — a daily summary, with per-section provenance
+- **Arrivals & departures** — two tabs, plus the arrival-time chaser queue
+- **Communications** — two windows, In-house and Upcoming, with a queue framing
+  (Needs you · Waiting · Done today) and a guest context pane at `xl`
+- **Guests** — the list and the record: inferred tags, staff notes inference
+  never touches, and a merged timeline of mail, chasers and prior stays
+- **⌘K** — pages, guests, and "Ask: …"
+
+Not yet built: Billing (blocked on the legal entity) and Reputation (blocked on
+a review-source decision). See `ROADMAP.md`, which is the only roadmap.
 
 ## Stack
 
@@ -20,11 +30,13 @@ Core surfaces:
   (`proxy.ts` at the project root) — see `proxy.ts`.
 - **Supabase** for auth (email/password) and database
 - **shadcn/ui** + **Tailwind CSS v4** for components
-- **Geist** + **Geist Mono**, on a neutral grey `#EEEEEE` ground with warm
-  surfaces and colorless chrome. The design authority is
-  `FONDA_SANA_REDESIGN.md` (v3 "Fonda x Sana"); `FONDA_DESIGN_IDENTITY.md`
-  (v2 "Signal") is background only. Never hard-code hex - reference the CSS
-  variables in `app/globals.css`.
+- **Geist** + **Geist Mono**, on a **white canvas** with **warm grey wells**
+  (`#F6F3EE`) grouping content, and colorless chrome. The design authority is
+  `FONDA_SANA_REDESIGN.md` (v4 "Sana, actually") — **read its §0.1 first**, as
+  it inverts the ground and replaces the icon rail that the rest of that
+  document is written around. `FONDA_DESIGN_IDENTITY.md` (v2 "Signal") is
+  background only. Never hard-code hex — reference the CSS variables in
+  `app/globals.css`.
 
 ## Getting started
 

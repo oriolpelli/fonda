@@ -1,6 +1,9 @@
 # Fondas — App UX & IA Proposal (v4, "Two Pillars")
 
-**Status:** Accepted — decisions of 18 Sep recorded in §11; nothing built yet
+**Status:** **Built through phase 12** (19 Sep 2026). Phases 1–12 are shipped
+except W7 billing (blocked on the legal entity) and W8 Reputation (blocked on
+decision P-4, the review source). Decisions of 18 Sep in §11, plus P-6, P-7 and
+P-8 taken during the build and recorded there.
 **Owner:** Oriol
 **Date:** 2026-09-18
 **Scope:** the product (`app/[lang]/dashboard/*`), not the marketing site

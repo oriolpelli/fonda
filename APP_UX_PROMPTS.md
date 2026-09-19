@@ -5,7 +5,15 @@ a time, each in a **fresh Claude Code session** inside the repo. Each prompt end
 with a gate (`npm run lint` + `npx tsc --noEmit`, and `npm run build` at the end
 of every week) so a mistake surfaces before the next step, not three prompts later.
 
-**Status:** ready to run once `ROADMAP.md` §1 Steps 1–2 are done
+**Status:** **Mostly run — 19 Sep 2026.** Shipped: prompts 1–12, 15–21 and the
+v4 design track D1–D4. **Still live: prompts 13–14 (W8 Reputation)**, blocked on
+decision P-4 — the review source is a product decision, not one for a prompt.
+W7 billing has no prompts here and is blocked on the legal entity.
+
+> **Not archived, deliberately.** Phase 12's own instruction is to retire this
+> pack to `docs/archive/` when the sweep runs. It stays put: a pack with two
+> live prompts in it is not history, and filing it next to
+> `BUILD_PLAN_JULY31.md` is how prompts 13–14 get lost. Move it when W8 ships.
 **Owner:** Oriol · **Date:** 2026-09-18
 **Sequencing:** the pack follows `ROADMAP.md` §2 (W2 → W8, then the "then, in
 order" list). `ROADMAP.md` wins on *when*; `APP_UX_PROPOSAL.md` wins on *what*;

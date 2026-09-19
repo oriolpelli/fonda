@@ -167,6 +167,21 @@ fill; active is `--fonda-inset` with `--fonda-text` and Geist 500. **The active
 tell is still darkness and weight, never hue** — §5.2's rule was right and
 survives the shape change intact. No accent bar, no tint, no navy, in any state.
 
+Two things arrived in the column after the rewrite and belong in its anatomy:
+
+- **A search row above the nav** — the ⌘K palette's trigger (`APP_UX_PROPOSAL.md`
+  §7.1). It is a **control, not a destination**, and reads a step quieter than a
+  nav row so it cannot be mistaken for a sixth section.
+- **The chat thread list stays OUT of the sidebar**, inside `/dashboard/chat`
+  (§4.1). Sana puts recents in its sidebar and we deliberately do not: a list of
+  conversations grows without bound, and content that grows without bound is not
+  chrome. This is the one place the v4 pass declined to follow the reference.
+
+And one outside the column: the **guest context pane** (§1.5, §5.3) — a third
+column at `xl`, 280px, on `--fonda-surface` with a hairline left border. It is
+rendered on the server and handed to the client inbox as a slot, so the guest
+data it shows never crosses the `"use client"` boundary.
+
 `APP_UX_PROPOSAL.md` §2's two-panel rail is amended accordingly; the decision is
 recorded there as **P-6**.
 
