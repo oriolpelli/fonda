@@ -371,11 +371,58 @@ function PanelLink({
  * `aria-hidden` is deliberately NOT set: the text is a real heading for the
  * rows under it, and screen readers should read it as they pass.
  */
-function SectionEyebrow({ label }: { label: string }) {
+function SectionHeader({
+  label,
+  expanded,
+  onToggle,
+  soonLabel,
+  controls,
+}: {
+  label: string;
+  expanded: boolean;
+  onToggle: () => void;
+  /** "Coming soon", when EVERY row in this section is unbuilt. */
+  soonLabel?: string;
+  /** id of the group this header expands, for aria-controls. */
+  controls: string;
+}) {
   return (
-    <p className="px-2.5 pb-1 pt-4 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--fonda-text-3)]">
-      {label}
-    </p>
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={expanded}
+      aria-controls={controls}
+      className="group mt-5 flex w-full items-center gap-1.5 rounded-[6px] px-2.5 py-1 text-left transition-colors first:mt-1 hover:bg-[color-mix(in_srgb,var(--fonda-inset)_45%,transparent)]"
+    >
+      {/* Deliberately NOT bigger than a nav row, which is the one thing every
+          sidebar worth copying agrees on — Linear, Stripe, Klaviyo, Toggl and
+          Plain all make the section header SMALLER and quieter than the rows
+          under it. The rows are what you click; a heading that competes with
+          them inverts the hierarchy and makes the column harder to scan, not
+          easier.
+
+          What makes it legible instead: weight 600 rather than 500, the ink
+          stepped up from --fonda-text-3 to --fonda-text-2 (5.02:1 → 6.94:1 on
+          the chrome, a real readability gain rather than a size one), more air
+          above, and a chevron — which gives the header a silhouette of its own
+          and is the affordance the same five products use. */}
+      <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--fonda-text-2)]">
+        {label}
+      </span>
+      <ChevronDown
+        aria-hidden="true"
+        strokeWidth={2}
+        className={cn(
+          "size-3 shrink-0 text-[var(--fonda-text-3)] transition-transform duration-150",
+          !expanded && "-rotate-90"
+        )}
+      />
+      {soonLabel ? (
+        <span className="ml-auto shrink-0 rounded-full border border-[var(--fonda-border-2)] px-1.5 py-0.5 font-mono text-[10px] font-normal leading-[1.5] tracking-[0.04em] text-[var(--fonda-text-3)]">
+          {soonLabel}
+        </span>
+      ) : null}
+    </button>
   );
 }
 
@@ -1011,6 +1058,40 @@ export function Sidebar({
    * second list of routes to fall out of step with this one. Pillars are
    * excluded: they are headings and have nowhere to go.
    */
+  /**
+   * Whether every row in a section is still unbuilt.
+   *
+   * Commercial is the case today — all seven of its rows are coming-soon — and
+   * it is why that section collapses by default and carries ONE "Coming soon"
+   * on its header instead of seven chips inside it. Derived rather than
+   * hard-coded: the day Reputation ships, Commercial stops being all-soon and
+   * starts opening on its own, with no code change here.
+   */
+  const allSoon = useCallback(
+    (item: NavItem) =>
+      Boolean(item.children?.length) &&
+      (item.children ?? []).every((child) => child.comingSoon === true),
+    []
+  );
+
+  /**
+   * Which sections are open. Only sections the user has TOUCHED are tracked;
+   * everything else follows the rule below, so the column opens sensibly on a
+   * fresh visit and still respects an explicit collapse afterwards. Same shape
+   * the mobile drawer has used since W2.
+   *
+   * The default: open, unless every row in it is unbuilt. A section with
+   * nothing to click is noise, and folding it is most of the reason the column
+   * was feeling long.
+   */
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const sectionsId = useId();
+  const isExpanded = (item: NavItem) =>
+    openSections[item.key] ?? !allSoon(item);
+  const toggleSection = useCallback((key: string, next: boolean) => {
+    setOpenSections((prev) => ({ ...prev, [key]: next }));
+  }, []);
+
   const palettePages: PalettedPage[] = useMemo(() => {
     const out: PalettedPage[] = [];
     for (const item of navItems) {
@@ -1190,18 +1271,34 @@ export function Sidebar({
         >
           {navItems.map((item) =>
             item.children?.length ? (
-              // A pillar: a heading, then its rows inline. No divider — the
-              // eyebrow's own space is the change of register the rail needed
-              // a hairline for.
+              // A pillar: a collapsible heading, then its rows inline.
               <Fragment key={item.key}>
-                <SectionEyebrow label={item.label} />
-                <PanelRows
-                  items={item.children}
-                  sectionKey={item.key}
-                  groupLabels={groupLabels}
-                  isActive={isActive}
-                  marker="chip"
+                <SectionHeader
+                  label={item.label}
+                  expanded={isExpanded(item)}
+                  onToggle={() => toggleSection(item.key, !isExpanded(item))}
+                  soonLabel={
+                    allSoon(item) ? item.children[0]?.comingSoonLabel : undefined
+                  }
+                  controls={`${sectionsId}-${item.key}`}
                 />
+                <div id={`${sectionsId}-${item.key}`} hidden={!isExpanded(item)}>
+                  {isExpanded(item) ? (
+                    <PanelRows
+                      items={item.children}
+                      sectionKey={item.key}
+                      groupLabels={groupLabels}
+                      isActive={isActive}
+                      // GLYPH, not chip. The mono "Coming soon" chip is ~70px
+                      // of a 240px column, and it takes that width from the
+                      // label beside it — which is why "Revenue Management"
+                      // and "Anàlisi de reputació" were ellipsising. The rows
+                      // that are still unbuilt keep the sparkle, whose
+                      // accessible name carries the same words.
+                      marker="glyph"
+                    />
+                  ) : null}
+                </div>
               </Fragment>
             ) : (
               // A direct link — Home and Ask, the two places you are always in.
@@ -1212,7 +1309,7 @@ export function Sidebar({
                 key={item.key}
                 item={item}
                 active={isActive(item.href)}
-                marker="chip"
+                marker="glyph"
               />
             )
           )}
