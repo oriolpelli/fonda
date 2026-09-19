@@ -1,4 +1,9 @@
-# Fonda — Warm Redesign (v3 "Fonda × Sana")
+# Fonda — Warm Redesign (v4 "Sana, actually")
+
+> **v4 amendment, 19 Sep 2026 — read §0.1 first.** The ground is inverted (white
+> canvas, warm grey wells) and the icon rail is now a labelled sidebar. §§5, 6
+> and 13 below are read through §0.1; §14's prompts are stale — use
+> `APP_UX_PROMPTS.md` §D.
 
 > **Purpose.** This document takes the calm, warm, editorial look of Sana AI and
 > adapts it to Fonda. It is written to be **pasted into Claude Code**, section by
@@ -27,15 +32,129 @@
 
 These were decided up front; the whole document follows from them.
 
-1. **Sidebar → slim icon rail.** ~64px, icon-only, monochrome thin icons, labels
-   appear on hover (tooltip/flyout). Replaces today's 256px icon+label rail.
+1. ~~**Sidebar → slim icon rail.**~~ **Superseded by §0.1 (v4).** The rail is a
+   **240px labelled sidebar**; the hover flyouts and the docked panels are gone.
+   *(Was: ~64px, icon-only, monochrome thin icons, labels appear on hover.)*
 2. **Buttons → keep soft 10px corners.** We do **not** adopt Sana's black pills.
    Fonda's ink buttons stay soft-cornered. (Pills remain allowed for chips/badges
    only, exactly as in v2.)
 3. **Color → same discipline as Sana: colorless chrome, color in content.** Navy
    comes **out** of nav, active states, and chips. Color lives only in content:
-   gradient hero/feature cards and a single accent inside data viz.
+   gradient hero/feature cards and a single accent inside data viz. **(Stands.)**
+   The *ground* half of this decision — grey page, white cards — is **superseded
+   by §0.1 (v4)**: the canvas is white and grey wells group content on it. The
+   colorless-chrome rule itself is unchanged.
 4. **Whole-app scope.** Product + marketing move to the warm ground together.
+
+---
+
+## 0.1 Amendment — v4 "Sana, actually" (applied 2026-09-19)
+
+> **Read this before §§5, 6 and 13.** It overturns two of the four locked
+> decisions above. Everything it does not mention still stands.
+
+v3 was built from four reference videos. Checking Sana AI's shipped web app
+screen by screen — the workspace home, the chat surface, the workflows index,
+the integrations grid, the split document view — shows two places where the
+video stills were read backwards.
+
+**1. The ground is inverted.** Decision 3 and §6 specify a grey `#EEEEEE` page
+with **white cards floating** on it. Sana does the opposite: the canvas is
+**white**, and grey is what **groups** — the right-hand Overview panel, the
+composer field, the user's chat bubble, the sidebar, the integration tiles are
+all the same soft grey well sitting **on** a white page. A screenshot cropped to
+one of those panels genuinely does look like white cards on grey, which is how
+the inference went wrong. Seen whole, grey is the container and white is the
+room.
+
+**The corrected system:**
+
+```
+--fonda-bg:        #ffffff   canvas (was #eeeeee)
+--fonda-surface:   #f6f3ee   WELL — what "card" now means (was #ffffff)
+--fonda-surface-2: #efebe3   a well nested inside a well (was #f6f3ee)
+--fonda-inset:     #e4e0d7   unchanged — pressed states, active nav fill
+--fonda-white:     #ffffff   unchanged — overlays only
+--fonda-chrome:    #f6f3ee   NEW — the sidebar panel ground
+```
+
+A well is separated by its **radius and its fill**, never by a shadow. §6's
+"whisper shadow" was load-bearing only because a white card on a grey page has
+no other tell; a grey well on a white canvas needs none, and a shadow under one
+reads as exactly the floating-AI-card look this system exists to remove. The
+elevation tokens survive for **overlays only** — popovers, dialogs, dropdowns,
+the mobile drawer, and the marketing site's preview windows, which are drawings
+of a floating app window and should keep looking like one.
+
+Card radius goes 18px → **16px**; overlays and gradient heroes keep 20–24px.
+
+**The warmth does not move.** Sana's greys are neutral (`#F5F5F5`, `#F7F7F7`);
+Fonda's stay warm, exactly as §3's ground correction decided. We are adopting
+Sana's **arrangement**, in Fonda's material. A warm well on a white canvas reads
+like paper on a desk; a neutral one reads like a wireframe.
+
+**Contrast improves, which is the tell that this reading is the right one.**
+Every muted token had been squeezed when the page went off-white in v3:
+
+| Token | v3 on `#eeeeee` | v4 on `#ffffff` | v4 in a well `#f6f3ee` |
+|---|---|---|---|
+| `--fonda-text-3` `#6c685e` | 4.79:1 | **5.56:1** | **5.03:1** |
+| `--fonda-text-2` `#56534b` | 6.62:1 | **7.68:1** | **6.93:1** |
+| `--destructive` `#bc3e39` | 4.66:1 | **5.40:1** | **4.89:1** |
+
+§3.3's headroom problem is gone. Do not take this as licence to lighten
+`--fonda-text-3` back toward `#7a766c` — it now has margin, and margin is what
+lets a well sit on a well without the third level failing.
+
+**2. The rail is a labelled sidebar.** Decision 1 and §5 specify a ~64px
+icon-only rail with hover-label flyouts; the two amendments stacked on §5 then
+added an eight-section tree, and after that a five-icon two-pillar tree with
+**docked panels** to show the labels the rail cannot. Sana runs a **labelled
+sidebar**: a workspace row at the top, a text nav stack, small uppercase
+eyebrows over groups, a recents list, account and settings pinned at the foot.
+
+The docked-panel mechanic exists only to work around the absence of labels.
+Remove the constraint and the workaround goes with it — one hover/click/pin/
+dismiss state machine and one tooltip primitive, deleted rather than maintained.
+**§5 is superseded in full**; the sidebar's shape is:
+
+```
+240px · background --fonda-chrome · no right border · full height
+  hotel row (mark + name)                              52px
+  Ask                                                  primary verb, Geist 500
+  Home
+  OPERATION            ← eyebrow: Geist Mono 11px, uppercase, 0.08em,
+    Arrivals             --fonda-text-3. A LABEL, not a control: not
+    Communications       focusable, not clickable, no hover state.
+      In-house         ← one level of nesting, indented, no disclosure
+      Upcoming
+    Reputation
+  COMMERCIAL
+    …
+  TODAY                ← recent chat threads (arrives with D3)
+  ─────────────────────  pinned to the foot
+  connection dot · Settings · account
+```
+
+Row treatment: 34px tall, radius 8px, 16px icons at `strokeWidth 1.5`, label
+Geist 400 13.5px. Inactive `--fonda-text-2`; hover adds a 60% `--fonda-inset`
+fill; active is `--fonda-inset` with `--fonda-text` and Geist 500. **The active
+tell is still darkness and weight, never hue** — §5.2's rule was right and
+survives the shape change intact. No accent bar, no tint, no navy, in any state.
+
+`APP_UX_PROPOSAL.md` §2's two-panel rail is amended accordingly; the decision is
+recorded there as **P-6**.
+
+**What v4 does not change.** One grotesque (Geist + Geist Mono) and the type
+scale; warmth in the material rather than the canvas; **colorless chrome**;
+colour as a content material only — gradient hero surfaces, one accent inside
+data viz, the five row-avatar hues; soft 10px controls and no pills; light only;
+WCAG AA; reference the CSS variables, never hard-code hex. §§1–4, 7, 9–12 stand
+as written. §§5, 6 and 13 are read through this amendment.
+
+**The prompts that apply it** are `APP_UX_PROMPTS.md` §D (D1–D4). §14's
+copy-paste prompts below describe the v3 migration and are kept as history —
+they are **stale** for the ground and the rail; use §D.
 
 ---
 

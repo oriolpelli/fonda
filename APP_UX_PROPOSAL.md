@@ -549,6 +549,8 @@ Each phase is independently shippable and independently reviewable. Phases 1–3
 
 | 7 | The two pillar hrefs | **Deliberately unrouted** — see below |
 
+| 8 | P-6 · The rail's shape | **Overturned 19 Sep** — see below |
+
 ### 6 · The guest-data position
 
 **Decided:**
@@ -564,6 +566,42 @@ A 30-room property at ~70% occupancy with an average 2.5-night stay produces rou
 For scale, the same hotel writes **~140,000 log rows a year**: `sync_logs` takes one row per hotel per sync and sync runs every 15 minutes (~35,000/year), and the emails cron writes one `cron_logs` row per hotel per run, unconditionally, on a 5-minute schedule (~105,000/year). **Twenty-four months of guest profiles costs about the same storage as ten days of cron logs.**
 
 So: the retention policy is safe, and the thing that will actually grow the database is operational logging that nobody has put a ceiling on. That is now tracked in `ROADMAP.md` §3.2 as its own item — it is a real finding, not a footnote to this one.
+
+### 8 · P-6 · The rail becomes a labelled sidebar *(19 September)*
+
+§2 of this document describes the nav as a **five-icon rail with docked panels**:
+a pillar is an icon, clicking it pins a ~220px labelled column against the rail's
+edge, and the pillar's own page is reached through a child row. That shape was
+correct **given a 64px rail** — a column that narrow cannot show a label, so the
+labels had to live somewhere, and a docked panel was the least-bad somewhere.
+
+Checking Sana's shipped web app against the four reference videos the design
+system was built from shows the premise was wrong: Sana does not use an icon
+rail. It uses a **labelled sidebar** — a workspace row, a text nav stack under
+small uppercase eyebrows, a recents list, account pinned at the foot.
+
+**Decided:** the rail becomes a **240px labelled sidebar**. A pillar stops being
+a control and becomes an **eyebrow** — a heading with its rows listed inline,
+not focusable, not clickable, no hover state. Communications keeps its one level
+of nesting as indented rows.
+
+**What this deletes:** the docked panel component, its hover-preview / pin /
+dismiss state machine, and the flyout tooltip primitive. Roughly half of
+`components/dashboard/sidebar.tsx`.
+
+**What survives untouched:** the nav *tree* — five sections, two pillars, the
+same children in the same order; `canonicalSectionKey`, because Reputation still
+appears under both pillars and still needs exactly one owner for the active
+state; every badge; every roadmap row and its `SoonMarker`; the mobile top bar
+and drawer; and the rule that the active tell is darkness and weight, never hue.
+
+**Consequence for decision 7 above.** The two pillar hrefs were deliberately
+unrouted because a pillar was a control that had to not-navigate. A pillar is now
+a heading, which cannot navigate by construction — so the decision holds, and the
+mechanism that enforced it is no longer needed.
+
+The design side is `FONDA_SANA_REDESIGN.md` §0.1; the prompts are
+`APP_UX_PROMPTS.md` §D2.
 
 ### 7 · The two pillar hrefs, and why they go nowhere
 
@@ -590,4 +628,4 @@ result, not a missing page. Leave them exactly as they are.
 
 **Protect:** the Morning Brief page as it stands, the `FirstRunState` / `EmptyState` distinction, the single-accent discipline, the server-read sort cookie, the "no invented ADR" placeholder, and `stay-phase.ts` staying computed-on-read. Those are all decisions someone already thought carefully about, and each of them has a comment in the code explaining why. The temptation during an IA change is to tidy them away.
 
-**And the one thing not to compromise:** the rail stays five icons. Every future feature wants to be a sixth. They go in a panel.
+**And the one thing not to compromise:** the nav stays five sections. Every future feature wants to be a sixth. They go inside a pillar, as a row. *(Amended 19 Sep by P-6 — the five sections are now labelled rows in a sidebar rather than five icons with docked panels. The count is the constraint; the icons never were.)*

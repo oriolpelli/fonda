@@ -66,18 +66,24 @@ Situational docs live in the repo root — read them when a task calls for them,
 
 All visual and design decisions for Fonda — color, typography, spacing, radius,
 shadows, component styling, and page layout — MUST follow the **current** design
-spec, v3 "Fonda × Sana", which lives in `FONDA_SANA_REDESIGN.md`.
+spec, v4 "Sana, actually", which lives in `FONDA_SANA_REDESIGN.md`. **Read its
+§0.1 amendment first** — it overturns two of the four decisions the rest of that
+document is written around.
 
 YOU MUST read `FONDA_SANA_REDESIGN.md` before writing or changing any UI —
 components, pages, or styles. It is deliberately not auto-loaded into every
 session, so open it with the Read tool at the start of a UI task.
 
-The system in one line: one grotesque typeface (Geist + Geist Mono), a neutral
-light grey (`#EEEEEE`) page ground with white cards floating on top — warmth
-carried in the surfaces, borders and ink, not the page — colorless chrome (no
-navy in nav, active states, or chips), color reserved for content (gradient hero
-cards plus one accent inside data viz), soft-cornered controls (10px, no pills),
-a slim icon-only left rail, light only.
+The system in one line: one grotesque typeface (Geist + Geist Mono), a **white
+canvas** with **warm grey wells** (`#F6F3EE`) grouping content on it — separated
+by radius and fill, never by a shadow; shadows are for overlays only — colorless
+chrome (no navy in nav, active states, or chips), color reserved for content
+(gradient hero cards plus one accent inside data viz), soft-cornered controls
+(10px, no pills), a **240px labelled left sidebar**, light only.
+
+The ground was inverted and the icon rail replaced on 19 September (v4). If you
+find a file, comment or doc that still says "grey page, white cards" or "slim
+icon rail", it is stale — `FONDA_SANA_REDESIGN.md` §0.1 wins.
 
 `FONDA_DESIGN_IDENTITY.md` is the previous system (v2 "Signal"). Keep it for
 background and history — it still explains the type scale, spacing rhythm, and

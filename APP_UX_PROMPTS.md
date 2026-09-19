@@ -11,6 +11,12 @@ of every week) so a mistake surfaces before the next step, not three prompts lat
 order" list). `ROADMAP.md` wins on *when*; `APP_UX_PROPOSAL.md` wins on *what*;
 this document only says *how to ask for it*.
 
+**Two tracks.** The numbered prompts (1–21) build the IA and the surfaces. The
+lettered prompts (**§D**, D1–D4) move the whole product to the corrected v4
+design system, and they interleave rather than queue: **D1 and D2 run before
+Prompt 11**, D3 after Prompt 16, D4 after Prompt 21. §D opens with the two
+decisions it overturns — read that preamble before running either track.
+
 ---
 
 ## 0. Before the first prompt
@@ -44,7 +50,7 @@ Do not run Prompt 1 until every line below is true. `ROADMAP.md` §1 is explicit
 
 ### Guardrails to repeat (all in `CLAUDE.md`; repeated because they bite here)
 
-- **Read `FONDA_SANA_REDESIGN.md` before any UI change.** Nothing in this pack
+- **Read `FONDA_SANA_REDESIGN.md` — §0.1 first — before any UI change.** Nothing in this pack
   changes a token, a radius, or the colorless-chrome rule. One accent in the whole
   product (today's bar in `OccupancyStrip`). No navy in nav, active states or chips.
 - **Data-driven nav only.** Icons are looked up by string key in `ICONS` inside
@@ -67,7 +73,8 @@ Do not run Prompt 1 until every line below is true. `ROADMAP.md` §1 is explicit
   `FirstRunState` (not set up) — never add a third. `ComingSoon` for stubs.
 - **Protect** (`APP_UX_PROPOSAL.md` §12): the Morning Brief page, the server-read
   `fondas_inbox_sort` cookie, the "no invented ADR" placeholder, `stay-phase.ts`
-  computed-on-read, and **the rail stays five icons.**
+  computed-on-read, and **the nav tree stays five sections** (§D2 changed the
+  rail's *shape*, not its contents).
 
 ### Decisions this pack makes that the proposal left implicit
 
@@ -1674,6 +1681,441 @@ Show me the diff.
 - `APP_UX_PROPOSAL.md`'s status line is updated and this pack has moved to `docs/archive/` with its retirement header.
 
 **Commit:** `chore(dashboard): post-IA sweep — links, audit, loading states, docs`
+
+---
+
+## D — The Sana pass (v4 "Sana, actually")
+
+A design track that runs **alongside** the numbered prompts above, not after
+them. Four prompts. Two of them overturn decisions that `CLAUDE.md` and
+`FONDA_SANA_REDESIGN.md` currently protect, so read this preamble before you
+paste anything.
+
+### Why this track exists
+
+The v3 system was built from four reference videos. Going back to the source on
+Mobbin — Sana AI's shipped web app, screen by screen — shows two places where v3
+inferred the opposite of what Sana actually does:
+
+| | v3 shipped | Sana actually does |
+|---|---|---|
+| **Ground** | Grey `#EEEEEE` page, **white cards floating** on it | **White canvas**, with **grey rounded wells** grouping content inside it |
+| **Left nav** | 64px **icon-only** rail, hover-label flyouts, docked panels for the two pillars | A **labelled sidebar** on a quiet grey panel: workspace switcher, a text nav stack under small eyebrows, a recents list, account pinned at the foot |
+
+Both v3 readings are defensible from video stills — a Sana screenshot cropped to
+the right panel *does* look like white cards on grey. Seen whole, the
+relationship is the other way round: the canvas is the light thing, and grey is
+what Sana uses to **group** — the right-hand Overview panel, the composer field,
+the user's chat bubble, the sidebar itself are all the same soft grey well on a
+white page.
+
+**What does not change.** Everything else in `FONDA_SANA_REDESIGN.md` stands:
+one grotesque (Geist + Geist Mono), warmth in the material rather than the page,
+colorless chrome, color reserved for content, soft 10px controls and no pills,
+light only, WCAG AA, one accent in data viz. We are **not** adopting Sana's
+neutral greys — Fonda's warm ramp is the thing that makes it Fonda rather than a
+Sana clone. We are adopting Sana's **arrangement**, in Fonda's material.
+
+### The two decisions this track overturns
+
+Written out so they can be refused before you run anything.
+
+| # | Was | Now | Why |
+|---|---|---|---|
+| **D-1** | `FONDA_SANA_REDESIGN.md` §0 decision 3 + §6: grey ground, white cards, borderless, load-bearing shadow | **White canvas, warm grey wells.** `--fonda-bg` → `#ffffff`; `--fonda-surface` → `#f6f3ee`; cards become wells and lose the shadow | Matches the source. Also buys contrast headroom back: `--fonda-text-3` goes from 4.79:1 to **5.56:1 on canvas / 5.03:1 in a well**, and `--destructive` from 4.66:1 to 5.40:1 |
+| **D-2** | `FONDA_SANA_REDESIGN.md` §0 decision 1 + §5, and `CLAUDE.md`'s protected *"the rail stays five icons"* | **A 240px labelled sidebar.** The two pillars stop being icons that open docked panels and become **eyebrows with their rows listed inline** | The panel mechanic exists only because a 64px rail cannot show a label. Remove the constraint and the mechanic is dead weight — one hover/click/pin/dismiss state machine, gone. It is also the single biggest "this is not Sana" tell left in the product |
+
+**D-2 has a consequence worth naming:** `APP_UX_PROPOSAL.md` §2 describes the
+two-panel rail as the nav's shape, and the pack's own rule says the proposal
+wins on *what*. This track amends it. The decision is recorded in
+`APP_UX_PROPOSAL.md` §11 as **P-6**; if you disagree, overturn it there and skip
+D2 — D1, D3 and D4 do not depend on it.
+
+### Order
+
+D1 and D2 run **first**, before prompts 11–21, so every surface those prompts
+add is built in the new system rather than migrated into it afterwards. D3 runs
+**after Prompt 16** (chat threads), because it restyles a thread list that does
+not exist until 16 creates it. D4 runs last, after Prompt 21.
+
+```
+D1 → D2 → 11 → 12 → 15 → 16 → D3 → 17 → 18 → 19 → 20 → 21 → D4 → V(final)
+```
+
+---
+
+### D0 — Context (paste once at the top of each D session)
+
+```
+Read FONDA_SANA_REDESIGN.md §0.1 (the v4 amendment) and then the sections it
+points at. We are correcting two things v3 inferred backwards from video
+stills, having now checked Sana's shipped web app screen by screen:
+
+1. The ground is inverted. The page canvas is WHITE. Grey is what groups
+   content: soft warm-grey rounded wells sit ON the white canvas, and the
+   sidebar is one of those wells running full height. v3 had white cards
+   floating on a grey page; that is the wrong way round.
+2. The left nav is a LABELLED sidebar, not an icon rail. Text labels, small
+   eyebrow headings over groups, a recents list, account pinned at the foot.
+
+Everything else in the v3 system stands and must not drift: Geist + Geist Mono
+only; warmth lives in the material (surfaces, wells, borders, the ink ramp),
+never in the canvas; chrome is COLORLESS — no navy in nav, active states,
+chips or links; colour is a content material only (gradient hero cards, one
+accent inside data viz, the row-avatar set); soft 10px controls, no pills
+except icon-only round buttons; light only; WCAG AA.
+
+Do NOT hard-code hex anywhere — reference the CSS variables in
+app/globals.css. Do NOT introduce a dependency. Copy goes in all three of
+dictionaries/{en,es,ca}.json, same keys, same order. Server Components by
+default.
+
+Work only within the phase I give you. Stop at the end of it and show me the
+diff.
+```
+
+---
+
+### D1 — Invert the ground: white canvas, warm grey wells
+
+The highest-leverage prompt in the pack, and the cheapest: the token graph in
+`app/globals.css` is clean — `--background` and `--card` already derive from
+`--fonda-bg` and `--fonda-surface` — so most of the product inverts from four
+value changes. The work is in the components that assumed a shadow was doing the
+separating.
+
+```
+Phase D1 — the ground, and only the ground.
+
+In app/globals.css, change these :root values. Keep every name; change only
+the values and the comments that explain them:
+
+  --fonda-bg:        #ffffff   (was #eeeeee — the page is the CANVAS now)
+  --fonda-surface:   #f6f3ee   (was #ffffff — "card" now means WELL)
+  --fonda-surface-2: #efebe3   (was #f6f3ee — a well nested inside a well)
+  --fonda-inset:     #e4e0d7   (unchanged — pressed states, active nav fill)
+  --fonda-white:     #ffffff   (unchanged — modals, popovers, dropdowns)
+
+Add one new token next to them:
+
+  --fonda-chrome:    #f6f3ee   (the sidebar panel ground; same value as
+                                --fonda-surface today, but named separately so
+                                the sidebar can be tuned without touching
+                                every card in the product)
+
+Rewrite the block comment above them. It currently argues for a grey ground
+with white cards floating on it and calls the card shadow "load-bearing". Both
+are now false. It should say: the canvas is white; grey wells group content on
+it; the tonal step from #ffffff to #f6f3ee (1.06:1) is small on purpose, so a
+well is separated by its RADIUS and its FILL, not by a shadow or a border.
+
+Then the elevation tokens. --fonda-shadow-card and --fonda-shadow-card-hover
+existed to lift a white card off a grey page. A grey well on a white canvas
+must NOT have one — a drop shadow under a well is the exact "floating AI card"
+tell this system is trying to remove. Keep both tokens defined (modals,
+popovers and the mobile drawer still use them; so does the marketing site's
+preview windows) but:
+  - soften them to 0 1px 2px rgb(28 26 22 / 0.04), 0 4px 16px rgb(28 26 22 / 0.06)
+  - rewrite their comment to say they are for OVERLAYS only — popovers,
+    dropdowns, dialogs, the mobile drawer, marketing preview windows — and are
+    never to be applied to an in-page well.
+
+Then components/ui/card.tsx: background --fonda-surface (now the well fill),
+rounded-[16px] (down from 18 — Sana's wells are a touch tighter than its
+overlays), NO shadow, NO border. Keep the Card* sub-component padding as is.
+
+Then the three places that separated by shadow and now need nothing, or need a
+hairline instead:
+  - components/dashboard/stat-row.tsx — well container, no shadow; the internal
+    cell dividers move from --fonda-border to --fonda-border-2, which is the
+    only one of the two that is visible against #f6f3ee.
+  - components/ui/input.tsx and textarea.tsx — a field on a white canvas is now
+    the WELL (--fonda-surface) with a --fonda-border-2 hairline, not white with
+    a border. Keep the existing accent focus ring exactly as it is.
+  - components/ui/skeleton.tsx — the skeleton block is --fonda-inset on a well,
+    --fonda-surface on the canvas. Pick whichever the surrounding context is;
+    if a skeleton has no context, use --fonda-surface.
+
+Then re-verify contrast and write the measured numbers into the comments, the
+way the existing token comments do it. Check --fonda-text-2, --fonda-text-3 and
+--destructive against BOTH #ffffff and #f6f3ee. My arithmetic says all three
+improve (text-3 goes to 5.56:1 on canvas and 5.03:1 in a well; destructive to
+5.40:1 / 4.89:1) — confirm it rather than trusting me, and if anything reads
+under 4.5:1 darken the token and say by how much.
+
+Do not touch the sidebar in this phase — it is D2. Do not touch the chat — it
+is D3. Do not touch any marketing component — it is D4.
+
+Then: npm run lint && npx tsc --noEmit. Show me the diff.
+```
+
+**Look for** — the dashboard, brief, arrivals and communications in en/es/ca, at
+1440 and 375:
+
+- [ ] The page is white and the wells are the grey shapes on it. If you see grey
+      page with white shapes anywhere, that component is hard-coding `bg-white`
+      or `#fff` — note it for D4's sweep rather than fixing it here.
+- [ ] **No well has a shadow.** This is the single check that decides whether
+      the pass worked. A shadow under a grey well reads as a floating panel and
+      undoes the whole thing.
+- [ ] `stat-row`'s internal dividers are still visible. `--fonda-border` against
+      `#f6f3ee` is 1.03:1 — effectively invisible. If they vanished, the
+      `--fonda-border-2` swap did not land.
+- [ ] Inputs read as recessed, not raised. Placeholder text still legible.
+- [ ] The focus ring is unchanged and still visible on the new ground.
+
+`feat(design): invert the ground — white canvas, warm grey wells (v4)`
+
+---
+
+### D2 — The labelled sidebar
+
+Replaces `components/dashboard/sidebar.tsx`'s 64px rail and, with it, the
+docked-panel machinery. The file is ~1,500 lines today and most of that is the
+panel state machine, the flyout tooltips and the two-pillar hover/pin/dismiss
+logic. A labelled sidebar needs none of it; expect the file to get **shorter**.
+
+```
+Phase D2 — the sidebar.
+
+Rewrite components/dashboard/sidebar.tsx as a 240px labelled sidebar and
+update app/[lang]/dashboard/layout.tsx to match. The nav TREE does not change
+— same five sections, same two pillars, same children, same canonicalSectionKey
+rule, same badges, same roadmap rows. Only its presentation changes. Read the
+existing NavItem type and keep it; if a field becomes unused say so rather than
+deleting it silently.
+
+SHAPE, top to bottom:
+
+  1. Hotel row (~52px). The Fonda mark as a solid near-black rounded square
+     (24px, radius 7px), then the hotel name in Geist 500 14px, truncating at
+     one line. Not a link and not a dropdown — a static row for now; it is
+     where a property switcher goes when Fonda is multi-property. Leave a
+     TODO saying so.
+
+  2. Ask row. Full-width, its own row above the nav proper, with a leading
+     icon. This is the equivalent of Sana's "New chat" and it is the product's
+     primary verb, so it sits above everything else and reads slightly heavier
+     (Geist 500 where the nav rows are 400). Links to the chat surface exactly
+     as the rail's Ask icon does today.
+
+  3. Home. A single row, directly under Ask, no eyebrow.
+
+  4. The two pillars, each as an EYEBROW plus its rows inline:
+
+       OPERATION            ← Geist Mono, 11px, uppercase, tracking-[0.08em],
+         Arrivals             --fonda-text-3, 12px of space above it
+         Communications     ← has children: see below
+         Reputation
+       COMMERCIAL
+         ...
+
+     The eyebrow is a label, not a control: not focusable, not clickable, no
+     hover state. This is the whole point of the change — a pillar is a
+     heading now, not a button that opens a panel.
+
+     Communications keeps its one level of nesting: its children render
+     indented under it, at the same type size, with the parent row itself
+     still navigating. No disclosure triangle, no collapse — the group is
+     three rows, and hiding three rows behind a chevron costs more than it
+     saves.
+
+  5. Spacer, then pinned at the foot:
+       - Connection status as a quiet row: an 8px dot in the state colour the
+         existing deriveConnectionState already returns, plus its label. Keep
+         that function exactly as it is; only the presentation moves here.
+       - Settings row, same treatment as any nav row.
+       - Account row: initials disc + the user's email, truncated, opening the
+         existing popover with the language switcher and sign-out.
+
+ROW TREATMENT:
+
+  height 34px · px-2.5 · gap-2.5 · radius 8px · icon 16px strokeWidth 1.5
+  label Geist 400 13.5px
+
+  inactive   text --fonda-text-2 · icon --fonda-text-3 · no fill
+  hover      text --fonda-text   · icon --fonda-text   · fill --fonda-inset at
+             60% (use color-mix, do not add a token)
+  active     text --fonda-text   · icon --fonda-text   · fill --fonda-inset
+             · Geist 500
+  focus      the shared ring from globals.css, unchanged
+
+  NO left accent bar, NO tint, NO navy, anywhere, in any state. Active is
+  darker and slightly heavier — that is the entire tell, and it is the same
+  tell the rail used.
+
+  Badges: a count in Geist Mono 11px pushed to the row's right edge,
+  --fonda-text-3. An alert badge goes solid: --fonda-ink fill, white digits,
+  radius full. Keep the existing NavBadge type and its srLabel.
+
+  Coming-soon rows keep SoonMarker exactly as the docked panel renders it
+  today.
+
+PANEL: the sidebar background is --fonda-chrome, full height, NO right border
+(the tonal step against the white canvas is the separation), and it scrolls
+independently of the page with the hotel row and the foot block pinned.
+
+LAYOUT: app/[lang]/dashboard/layout.tsx — md:pl-16 becomes md:pl-60. Keep the
+max-w-[1120px] centred content. The mobile top bar and slide-over drawer stay
+exactly as they are in behaviour — restyle the drawer's rows to match the new
+desktop rows and let it reuse the same row component.
+
+DELETE, and say in your summary what you deleted: the docked panel component,
+its hover-preview/pin/dismiss state, the flyout tooltip primitive, and the
+w-16 rail shell. If canonicalSectionKey is now only used for one thing, keep
+it anyway — Reputation still appears under both pillars and still needs one
+owner for the active state.
+
+PRESERVE: every accessibility behaviour that exists today — aria-current="page"
+on the active row, the drawer's focus trap, inert on the background while it is
+open, Esc to close, and prefers-reduced-motion. Labels come from the same
+dictionary keys as today; do not invent new copy. If a key that was only ever
+read by a tooltip is now rendered visibly, check its es and ca values actually
+fit 240px and tell me which ones are tight.
+
+Then: npm run lint && npx tsc --noEmit. Show me the diff and the line count
+before and after.
+```
+
+**Look for** — every dashboard route, three locales, 1440 and 375:
+
+- [ ] The longest Catalan and Spanish labels fit on one line at 240px. "Arribades
+      i sortides" and "Comunicaciones" are the ones to check first. If one wraps,
+      widen to 256px (`md:pl-64`) rather than truncating a nav label.
+- [ ] Clicking a pillar eyebrow does nothing at all — no navigation, no focus
+      ring, no cursor change.
+- [ ] Reputation lights **once**, under its canonical pillar, not twice.
+- [ ] Tab order runs top to bottom and never enters an eyebrow.
+- [ ] At 375px nothing changed: same top bar, same drawer, same focus trap.
+- [ ] No navy anywhere in the column, in any state, including focus.
+- [ ] The connection dot still reflects a stale sync — set `last_synced_at` back
+      a day in the dev DB and confirm the state changes.
+
+`feat(nav): labelled sidebar replaces the icon rail and its docked panels`
+
+---
+
+### D3 — Chat, Sana-style — **run after Prompt 16**
+
+`FONDA_SANA_REDESIGN.md` §8 already specifies most of this and it is still
+correct; what changed is the ground under it and the fact that Prompt 16 has by
+now given chat a thread list worth styling. This prompt is §8 plus the
+inversion plus the split canvas.
+
+```
+Phase D3 — chat.
+
+Read FONDA_SANA_REDESIGN.md §8 first; it is the spec for this phase and the
+message pattern in it is unchanged. Apply it to
+components/dashboard/ask-your-hotel.tsx and app/[lang]/dashboard/chat/page.tsx,
+with these four amendments now that the ground is inverted and threads exist:
+
+1. The user's bubble is --fonda-surface (the well fill) on the white canvas,
+   radius 14px, right-aligned, max-width 80%, with the initials disc beside it.
+   The assistant's reply stays plain text on the canvas, no bubble, no
+   container, full column width. This asymmetry IS the pattern — resist any
+   instinct to balance it.
+
+2. The composer is a well, not a white field: --fonda-surface fill,
+   --fonda-border-2 hairline, radius 14px, a "+" affordance on the left, and a
+   round --fonda-ink send button on the right (this is the one place a
+   full-round button is allowed). It docks to the bottom of the column with
+   real air around it — 24px minimum, and the canvas scrolls under it rather
+   than the composer scrolling with the messages.
+
+3. The thread list Prompt 16 built moves INTO the sidebar, under a "Today"
+   eyebrow beneath the Commercial group: the five most recent threads, title
+   truncated to one line, active thread using the same active row treatment as
+   any nav row. "View all" as the last row when there are more than five. This
+   is the shape Sana uses and it is why the sidebar has a scroll region. If
+   Prompt 16 has not run yet, STOP and tell me — do not build a placeholder.
+
+4. Status lines and source chips per §8.2, with one correction: the chips are
+   Geist Mono 10.5px uppercase, --fonda-text-3, on --fonda-surface with a
+   --fonda-border-2 hairline, radius full. They sit INLINE at the end of the
+   sentence they support, not collected in a row under the message. Sana puts
+   them where the claim is, which is what makes them read as provenance rather
+   than as a footer.
+
+Remove the circular floating FAB and replace it per §8.5 option 1 — a slim
+docked "Ask your hotel" bar. Keep all streaming logic untouched.
+
+Then: npm run lint && npx tsc --noEmit.
+```
+
+**Look for:**
+
+- [ ] The assistant's reply has no container of any kind around it.
+- [ ] The composer stays put while messages scroll under it.
+- [ ] Source chips sit inline, mid-paragraph, not in a row at the bottom.
+- [ ] A long thread title truncates in the sidebar rather than wrapping to two
+      lines.
+- [ ] Streaming still streams — this is the one prompt in the pack most likely
+      to break something invisible.
+- [ ] No FAB anywhere, on any route, at any width.
+
+`feat(chat): sana chat — plain assistant, well composer, inline source chips`
+
+---
+
+### D4 — Sweep, marketing tune, screenshot review
+
+Runs last, after Prompt 21. Half cleanup, half the only prompt in this track
+that touches the marketing site.
+
+```
+Phase D4 — sweep and marketing.
+
+PART 1, the sweep. Grep the whole repo and report before you change anything:
+
+  - bg-white, bg-\[#fff, #ffffff, #FFF — every hit. On a white canvas most of
+    these are now invisible no-ops, which is worse than wrong: they are a
+    component that will silently break if the ground ever moves again. Replace
+    with --fonda-white ONLY where the element is a genuine overlay (popover,
+    dialog, dropdown, the mobile drawer). Everywhere else delete the class and
+    let the canvas show through.
+  - shadow-card / shadow-card-hover on anything that is not an overlay. Remove.
+  - #eceffc, --fonda-accent-light — should be zero hits; confirm.
+  - --fonda-accent used anywhere outside occupancy-strip.tsx, the chart
+    components, and the focus ring. Report each one with file and line; do not
+    fix without telling me.
+  - rounded-full on anything that is not a chip, a badge, a dot, an avatar, or
+    the chat send button.
+
+PART 2, marketing. app/[lang]/page.tsx and components/marketing/*. The
+STRUCTURE does not change — same sections, same order, same copy, same La Casa
+hero parallax, same wordmark. Only the material moves to v4:
+
+  - The page is the white canvas it now inherits; feature and preview sections
+    become warm grey wells on it (--fonda-surface, radius 16-20px, no shadow,
+    no border), which is the pattern the product now uses and the one the
+    site's own preview windows were already reaching for.
+  - briefing-preview-window.tsx and email-draft-preview-window.tsx are the
+    exception: they are depictions of a floating app window, so they keep a
+    shadow. Soften it to the new overlay values and keep their radius.
+  - Re-check the hero parallax's white scrim against a white ground — it was
+    tuned against #eeeeee and may now be doing nothing, or may be washing out
+    the image edge.
+  - Keep exactly one gradient surface above the fold, per §7.2.
+
+PART 3, review. Start the dev server and screenshot, at 1440 and at 375, in
+en: the marketing hero, the dashboard, the morning brief, chat, communications,
+and the guest record. Put them side by side with FONDA_SANA_REDESIGN.md §1 (the
+Sana DNA list) and answer, per screen, which DNA lines it satisfies and which it
+misses. Be specific and be willing to say a screen still misses.
+
+Then: npm run lint && npx tsc --noEmit && npm run build.
+```
+
+**Look for:**
+
+- [ ] The live site still looks like itself. D4 changes material, not layout — if
+      a section moved, something went wrong.
+- [ ] The preview windows still read as floating app windows.
+- [ ] The hero scrim still does its job at the image's lightest edge.
+- [ ] Nothing in the screenshot review is defended with "close enough".
+
+`chore(design): v4 sweep — overlay-only shadows, marketing on the white canvas`
 
 ---
 
