@@ -131,9 +131,14 @@ function DraftResultCard({
         <p className="text-[13px] leading-relaxed text-[var(--fonda-text-2)]">
           {dict.askYourHotel.draftBody}
         </p>
-        {/* W6 scopes Communications into Upcoming and In-house
-            (APP_UX_PROPOSAL.md §5.3); this href moves to the scoped route
-            then, and gains the `?email=` the other two call sites carry. */}
+        {/* Stays on the unscoped parent, which is now a redirect that works
+            out which window has the work and forwards (§5.3). It cannot gain
+            the `?email=` the to-do and needs-reply links carry: the chat's
+            draft hand-off knows only that a draft was written and when
+            (`draftAt`) — the message id never reaches this component. Sending
+            the GM to the busier window is the honest fallback; inventing a
+            lookup here would mean the chat re-deriving what the inbox already
+            knows. */}
         <LocaleLink
           href="/dashboard/communications"
           onClick={onNavigate}

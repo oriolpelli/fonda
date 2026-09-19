@@ -98,6 +98,18 @@ type EventProperties = {
    * lib/roadmap.ts.
    */
   home_locked_widget_clicked: { key: HomeLockedWidgetKey };
+  /**
+   * Someone asked for WhatsApp from the In-house window (APP_UX_PROPOSAL.md
+   * §5.3). The same demand signal as the locked Home tiles, in the one place
+   * the gap is felt: in-house guests text rather than email, so an In-house
+   * inbox fed only by Gmail is honest about being half a channel.
+   *
+   * No properties at all. There is exactly one button and one meaning, so
+   * there is nothing to enumerate — and a payload-free event cannot carry a
+   * guest's address by accident, which is the property the catalogue exists
+   * to guarantee.
+   */
+  whatsapp_connect_clicked: Record<string, never>;
 };
 
 export type AnalyticsEvent = keyof EventProperties;

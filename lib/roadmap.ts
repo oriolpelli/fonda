@@ -80,16 +80,6 @@ export const ROADMAP = [
     label: (dict: Dictionary) => dict.sidebar.chat,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.chat,
   },
-  {
-    // Absorbed by Communications › In-house (APP_UX_PROPOSAL.md §2.5): the
-    // route redirects to the inbox, and `communications-in-house` below is the
-    // surface that replaces it. Kept only until W6 retires the key with it.
-    key: "concierge",
-    route: "/dashboard/concierge",
-    status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.concierge,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.concierge,
-  },
 
   // --- Operation, the first pillar (APP_UX_PROPOSAL.md §2.2) ---------------
   {
@@ -108,14 +98,6 @@ export const ROADMAP = [
     status: "coming-soon",
     label: (dict: Dictionary) => dict.sidebar.reputation,
     blurb: (dict: Dictionary) => dict.roadmap.blurb.reputation,
-  },
-  {
-    // The second Communications window, and what supersedes `concierge`.
-    key: "communications-in-house",
-    route: "/dashboard/communications/in-house",
-    status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.inHouse,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb["communications-in-house"],
   },
   {
     // The Guest Experience surface (APP_UX_PROPOSAL.md §5.4).

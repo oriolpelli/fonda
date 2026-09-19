@@ -14,9 +14,40 @@ type Admin = ReturnType<typeof createAdminClient>;
 
 function revalidateInbox(): void {
   // Route (not URL) paths — the locale is a dynamic `[lang]` segment.
-  revalidatePath("/[lang]/dashboard/communications", "page");
+  //
+  // All three Communications routes, since W6 split the inbox into two windows
+  // (APP_UX_PROPOSAL.md §5.3): the parent is a redirect and has nothing of its
+  // own to refresh, but a triage action moves a message's *status*, and both
+  // windows render status. Revalidating only the one the action was fired from
+  // would leave the other stale until a hard reload — and the two are one click
+  // apart in the sidebar.
+  revalidatePath("/[lang]/dashboard/communications/in-house", "page");
+  revalidatePath("/[lang]/dashboard/communications/upcoming", "page");
   // The sidebar badge is rendered by the dashboard layout, above the page.
   revalidatePath("/[lang]/dashboard", "layout");
+}
+
+/**
+ * Records that someone asked for WhatsApp from the In-house window.
+ *
+ * The button is inert on purpose and says so. In-house guests text rather than
+ * email, so an In-house inbox fed only by Gmail is half a channel; the honest
+ * move is to show the gap, let a GM press the thing that would close it, and
+ * count the presses. A dialog collecting an address to do nothing with would
+ * be worse.
+ *
+ * Same contract as `recordLockedWidgetClick`: the hotel is the subject, never
+ * the person (lib/analytics.ts rule 3), and it returns nothing and throws
+ * nothing — a dropped metric is the acceptable loss, since the click was
+ * already inert.
+ */
+export async function recordWhatsAppConnectClick(): Promise<void> {
+  try {
+    const hotelId = await requireHotelId();
+    track(hotelId, "whatsapp_connect_clicked", {});
+  } catch {
+    // Analytics is never allowed to affect the caller's outcome.
+  }
 }
 
 async function requireHotelId(): Promise<string> {

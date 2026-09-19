@@ -4,7 +4,7 @@ import type { Dictionary } from "@/app/[lang]/dictionaries";
 import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { t } from "@/lib/i18n/format";
 import type { Locale } from "@/lib/i18n/config";
-import { communicationsHref } from "@/lib/i18n/navigation";
+import { communicationsHref, localizedHref } from "@/lib/i18n/navigation";
 import type { InboxEmail } from "@/lib/inbox";
 import { urgencyNoteFor } from "@/lib/urgency-note";
 import { cn } from "@/lib/utils";
@@ -50,7 +50,9 @@ export function NeedsReplyCard({
   // The `?email=` deep link and the plain inbox link are the same helper, so
   // W6's scoped Communications route moves both at once
   // (lib/i18n/navigation.ts).
-  const inboxHref = communicationsHref(locale);
+  // The window, not a message — so it skips the parent's redirect hop. Upcoming
+  // is the bigger of the two and the one a GM works through (see `phasesFor`).
+  const inboxHref = localizedHref(locale, "/dashboard/communications/upcoming");
 
   return (
     <div className="flex flex-col overflow-hidden rounded-[16px] bg-card">

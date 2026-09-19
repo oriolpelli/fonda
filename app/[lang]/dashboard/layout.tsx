@@ -8,7 +8,7 @@ import { SetupBanner } from "@/components/dashboard/setup-banner";
 import { Sidebar, type NavItem } from "@/components/dashboard/sidebar";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { plural } from "@/lib/i18n/format";
-import { loadInboxBadge } from "@/lib/inbox";
+import { loadInboxBadges } from "@/lib/inbox";
 import { roadmapFeature, type RoadmapKey } from "@/lib/roadmap";
 import { createClient } from "@/lib/supabase/server";
 
@@ -55,7 +55,7 @@ export default async function DashboardLayout({
 
   // Unhandled message count for the inbox badge. Fails soft to zero, so a bad
   // inbox query can never blank the whole dashboard.
-  const inboxBadge = await loadInboxBadge();
+  const inboxBadges = await loadInboxBadges();
 
   // Everything that isn't built yet takes its label, blurb and "Coming soon"
   // status from lib/roadmap.ts, so all three languages stay in step. The
@@ -139,24 +139,36 @@ export default async function DashboardLayout({
           href: localizedHref(locale, "/dashboard/arrivals"),
           sectionKey: "operation",
         },
-        soon("communications-in-house", {
-          sectionKey: "operation",
-          group: "communications",
-        }),
         {
-          // The upcoming-stays window, still at the unscoped
-          // /dashboard/communications until W6 splits the two. The inbox badge
-          // belongs here: this is where unanswered guest mail lives.
-          key: "communications",
-          label: dict.sidebar.upcoming,
-          href: localizedHref(locale, "/dashboard/communications"),
+          // Both Communications windows are live as of W6 (§5.3), so neither
+          // is a roadmap stub any more and the badge splits across them. The
+          // two counts add up to what the single badge showed before.
+          key: "communications-in-house",
+          label: dict.sidebar.inHouse,
+          href: localizedHref(locale, "/dashboard/communications/in-house"),
           sectionKey: "operation",
           group: "communications",
           badge: {
-            count: inboxBadge.count,
-            alert: inboxBadge.alert,
+            count: inboxBadges.inHouse.count,
+            alert: inboxBadges.inHouse.alert,
             srLabel: plural(
-              inboxBadge.count,
+              inboxBadges.inHouse.count,
+              dict.sidebar.waitingOne,
+              dict.sidebar.waitingOther
+            ),
+          },
+        },
+        {
+          key: "communications",
+          label: dict.sidebar.upcoming,
+          href: localizedHref(locale, "/dashboard/communications/upcoming"),
+          sectionKey: "operation",
+          group: "communications",
+          badge: {
+            count: inboxBadges.upcoming.count,
+            alert: inboxBadges.upcoming.alert,
+            srLabel: plural(
+              inboxBadges.upcoming.count,
               dict.sidebar.waitingOne,
               dict.sidebar.waitingOther
             ),

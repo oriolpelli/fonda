@@ -103,6 +103,15 @@ export function computeUrgency(input: UrgencyInput): Urgency {
   }
 
   // 1 & 2 — an arrival we can see coming.
+  //
+  // These rules key off the arrival DATE, never lib/stay-phase.ts's StayPhase,
+  // and that is why W6 widening StayPhase from two values to four changed no
+  // urgency anywhere. When "pre_arrival" meant "not in-house", it covered
+  // future bookings, past ones and unmatched mail alike; all three still land
+  // here and are still separated by the same arithmetic — a past arrival gives
+  // a negative `days` and falls through, a null arrival skips the block. Do not
+  // "tidy" this into a phase check: it would couple a ranking rule to a
+  // grouping decision, and the two are allowed to disagree.
   if (arrival) {
     const days = daysBetween(today, arrival);
     if (!Number.isNaN(days)) {

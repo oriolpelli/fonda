@@ -345,7 +345,6 @@
     "home": "Home",
     "brief": "Morning Brief",
     "arrivals": "Arrivals & departures",
-    "concierge": "Concierge",
     "communications": "Communications",
     "communicationsGroup": "Communications",
     "inHouse": "In-house",
@@ -387,8 +386,6 @@
     },
     "blurb": {
       "chat": "A full page for asking your hotel anything, with the whole conversation kept. The button in the corner already answers one-off questions.",
-      "concierge": "Messaging for guests who are already in-house, WhatsApp included. Until then, every guest email sits in Communications, where arriving guests are flagged for you.",
-      "communications-in-house": "Messaging for guests who are already in the house, WhatsApp included, so a request mid-stay reaches someone who can act on it.",
       "guests": "Every guest in one place — who they are, what they asked for last time, and what to have ready before they arrive.",
       "frontDeskInfo": "House facts, policies and shift notes in one place, so anyone on the desk answers the same way.",
       "reputation": "Reviews across Booking, Google and TripAdvisor read and themed for you, so you see what's moving your score.",
@@ -419,7 +416,17 @@
     "emptyState": "No guest messages right now.",
     "presyncTitle": "Connect the inbox guests write to",
     "presyncBody": "Fondas reads overnight guest email, works out who's asking and how urgent it is, and has a reply drafted for you to check. Link the mailbox and the first drafts appear within the hour.",
-    "presyncCta": "Connect Gmail"
+    "presyncCta": "Connect Gmail",
+    "inHouseTitle": "In-house",
+    "inHouseEmpty": "No messages from guests currently staying.",
+    "upcomingTitle": "Upcoming stays",
+    "upcomingEmpty": "No messages from guests arriving.",
+    "showPast": "Show past stays & other mail",
+    "hidePast": "Hide past stays & other mail",
+    "whatsappTitle": "In-house guests text more than they email",
+    "whatsappBody": "Connect WhatsApp to bring those messages here, beside the in-stay email below.",
+    "whatsappCta": "Connect WhatsApp",
+    "whatsappRequested": "We'll let you know"
   },
   "connection": {
     "synced": "Synced",

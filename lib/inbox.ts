@@ -6,6 +6,7 @@ import { computeUrgency, type Urgency } from "@/lib/email-urgency";
 import {
   hotelToday,
   localDateOf,
+  type StayPhase,
   stayPhaseFor,
 } from "@/lib/stay-phase";
 import { fetchInChunks } from "@/lib/supabase/paged";
@@ -40,7 +41,12 @@ const RESERVATION_COLUMNS =
   "mews_id, customer_mews_id, number, start_utc, end_utc";
 
 /** Statuses that still need a human: they drive the sidebar badge count. */
-const UNHANDLED_STATUSES = ["pending", "needs_attention"] as const;
+/**
+ * Statuses that still need a human. Exported since W6: the Communications
+ * parent route decides which window to send you to by asking which one has
+ * unanswered mail, and it must ask the same question the badge does.
+ */
+export const UNHANDLED_STATUSES = ["pending", "needs_attention"] as const;
 
 export interface InboxEmail {
   id: string;
@@ -57,6 +63,12 @@ export interface InboxEmail {
   booking_ref: string | null;
   arrival: string | null;
   departure: string | null;
+  /**
+   * Which Communications window owns this message (APP_UX_PROPOSAL.md §5.3).
+   * Derived per read from the matched booking's dates — never stored, because
+   * a stored phase is wrong the morning after a guest checks out.
+   */
+  stayPhase: StayPhase;
   /** Derived per read — see lib/email-urgency.ts. */
   urgency: Urgency;
 }
@@ -278,6 +290,9 @@ export async function withGuestContext(
       booking_ref: reservation?.number ?? null,
       arrival,
       departure,
+      // Computed from the dates just resolved, so a message follows its guest
+      // across the two windows as the stay moves, with nothing rewritten.
+      stayPhase: stayPhaseFor(arrival, departure, today),
       urgency: computeUrgency({
         classification: row.classification,
         status: row.status,
@@ -367,36 +382,77 @@ export async function loadInbox(): Promise<InboxData> {
 export interface InboxBadge {
   /** Messages still waiting on a human (pending or flagged). */
   count: number;
-  /** True when at least one of them is a complaint — the only navy signal. */
+  /** True when at least one of them is a complaint. */
   alert: boolean;
 }
 
 /**
- * The unhandled count for the sidebar. Deliberately fails soft: a badge is
+ * One badge per Communications window (APP_UX_PROPOSAL.md §5.3).
+ *
+ * W6 split the inbox in two, and a single count on a parent that is only a
+ * redirect would point at neither window. The two add up to what the one badge
+ * showed before — that is the invariant to check if these ever look wrong.
+ */
+export interface InboxBadges {
+  inHouse: InboxBadge;
+  upcoming: InboxBadge;
+}
+
+/**
+ * The unhandled counts for the sidebar. Deliberately fails soft: a badge is
  * decoration, and a broken query here must not take down every dashboard page
  * (the layout renders on all of them).
+ *
+ * COST. This used to be a two-column read that counted rows. Splitting by
+ * window needs each message's stay phase, and a phase needs the matched
+ * booking's dates — so the unhandled rows now go through `withGuestContext`
+ * like the inbox proper. That is affordable precisely because they are the
+ * unhandled ones: mail waiting on a human is a working queue a GM is actively
+ * emptying, not the 200-row history `loadInbox` pages through. If a property
+ * ever lets this grow into the hundreds, the badge is the wrong thing to
+ * optimise — the queue is.
  */
-export async function loadInboxBadge(): Promise<InboxBadge> {
+export async function loadInboxBadges(): Promise<InboxBadges> {
   const zero: InboxBadge = { count: 0, alert: false };
+  const none: InboxBadges = { inHouse: zero, upcoming: { ...zero } };
 
   try {
     const supabase = await createClient();
+    const hotel = await currentHotel(supabase);
+    if (!hotel) return none;
+
     const { data, error } = await supabase
       .from("emails")
-      .select("status, classification")
+      .select(EMAIL_COLUMNS)
       .in("status", [...UNHANDLED_STATUSES])
       .limit(500);
-    if (error) return zero;
+    if (error) return none;
 
-    const rows = data ?? [];
-    return {
+    const emails = await withGuestContext(
+      supabase,
+      hotel.id,
+      hotel.timezone,
+      (data ?? []) as EmailRow[]
+    );
+
+    const tally = (rows: InboxEmail[]): InboxBadge => ({
       count: rows.length,
       alert: rows.some(
         (r) => r.status === "needs_attention" || r.classification === "complaint"
       ),
+    });
+
+    return {
+      inHouse: tally(emails.filter((e) => e.stayPhase === "in_house")),
+      // Everything that is not in-house, which is exactly what the Upcoming
+      // window shows once its chip is on. The chip hides rows; it does not
+      // make them handled, so the badge counts them either way — a count that
+      // changed with a display filter would be telling you how much work you
+      // can see rather than how much there is.
+      upcoming: tally(emails.filter((e) => e.stayPhase !== "in_house")),
     };
   } catch {
-    return zero;
+    return none;
   }
 }
 

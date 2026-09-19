@@ -345,7 +345,6 @@
     "home": "Inici",
     "brief": "Resum matinal",
     "arrivals": "Arribades i sortides",
-    "concierge": "Consergeria",
     "communications": "Comunicacions",
     "communicationsGroup": "Comunicacions",
     "inHouse": "A casa",
@@ -387,8 +386,6 @@
     },
     "blurb": {
       "chat": "Una pàgina sencera per preguntar el que vulguis sobre el teu hotel, amb tota la conversa desada. El botó del cantó ja respon preguntes soltes.",
-      "concierge": "Missatgeria per a hostes ja allotjats, inclòs WhatsApp. Fins llavors, tots els correus d'hostes són a Comunicacions, on es destaquen els que arriben aviat.",
-      "communications-in-house": "Missatgeria per a hostes ja allotjats, inclòs WhatsApp, perquè una petició a mitja estada arribi a qui la pot resoldre.",
       "guests": "Cada hoste en un sol lloc: qui és, què va demanar l'última vegada i què convé tenir a punt abans que arribi.",
       "frontDeskInfo": "Dades de la casa, polítiques i notes de torn en un sol lloc, perquè a recepció tothom respongui igual.",
       "reputation": "Les ressenyes de Booking, Google i TripAdvisor llegides i agrupades per temes, per veure què mou la teva nota.",
@@ -419,7 +416,17 @@
     "emptyState": "No hi ha missatges d'hostes ara mateix.",
     "presyncTitle": "Connecta la bústia on t'escriuen els hostes",
     "presyncBody": "Fondas llegeix el correu nocturn dels hostes, dedueix qui pregunta i amb quina urgència, i deixa una resposta redactada perquè la revisis. Enllaça la bústia i els primers esborranys apareixeran en menys d'una hora.",
-    "presyncCta": "Connecta Gmail"
+    "presyncCta": "Connecta Gmail",
+    "inHouseTitle": "A casa",
+    "inHouseEmpty": "No hi ha missatges d'hostes allotjats ara mateix.",
+    "upcomingTitle": "Properes estades",
+    "upcomingEmpty": "No hi ha missatges d'hostes que estiguin a punt d'arribar.",
+    "showPast": "Mostra estades passades i altre correu",
+    "hidePast": "Amaga estades passades i altre correu",
+    "whatsappTitle": "Els hostes allotjats escriuen més per WhatsApp que per correu",
+    "whatsappBody": "Connecta WhatsApp per rebre aquests missatges aquí, al costat del correu de l'estada de sota.",
+    "whatsappCta": "Connecta WhatsApp",
+    "whatsappRequested": "T'avisarem"
   },
   "connection": {
     "synced": "Sincronitzat",

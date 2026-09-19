@@ -4,9 +4,9 @@ import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { CommunicationsWindow } from "../window";
 
 /**
- * In-house — messages from guests who are staying right now
- * (APP_UX_PROPOSAL.md §5.3). Absorbs what Concierge used to be, and carries
- * the future WhatsApp channel.
+ * Upcoming stays — messages from guests who have not arrived yet
+ * (APP_UX_PROPOSAL.md §5.3), plus past stays and unmatched mail behind a chip
+ * that is off by default. See `phasesFor` for why those two live here.
  */
 
 export async function generateMetadata({
@@ -15,10 +15,10 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   const { dict } = await loadDictionary((await params).lang);
-  return { title: dict.communications.inHouseTitle };
+  return { title: dict.communications.upcomingTitle };
 }
 
-export default async function CommunicationsInHousePage({
+export default async function CommunicationsUpcomingPage({
   params,
   searchParams,
 }: {
@@ -27,6 +27,6 @@ export default async function CommunicationsInHousePage({
 }) {
   const [{ lang }, query] = await Promise.all([params, searchParams]);
   return (
-    <CommunicationsWindow lang={lang} windowKey="in_house" query={query} />
+    <CommunicationsWindow lang={lang} windowKey="upcoming" query={query} />
   );
 }

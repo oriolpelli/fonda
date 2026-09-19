@@ -103,6 +103,10 @@ export default async function BriefingPage({
     .maybeSingle();
 
   const quickActions = [
+    // The unscoped parent on purpose: it redirects to whichever Communications
+    // window has unanswered mail (§5.3), which is exactly what "review emails"
+    // from the morning brief means. A hard link to one window would send you
+    // to an empty one half the time.
     { label: dict.briefing.reviewEmails, href: "/dashboard/communications" },
     { label: dict.briefing.seeArrivals, href: "/dashboard/arrivals" },
   ];

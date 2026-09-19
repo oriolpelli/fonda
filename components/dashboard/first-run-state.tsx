@@ -1,7 +1,19 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+/**
+ * The CTA's inverted treatment on the gradient: a white surface with ink text
+ * is the strongest, calmest thing that can sit on a sunrise.
+ *
+ * Exported because a `ctaSlot` has to match the button it replaces, and the
+ * alternative is a second copy of these classes drifting out of step with this
+ * one.
+ */
+export const FIRST_RUN_CTA_ON_GRADIENT =
+  "bg-[var(--fonda-white)] text-[var(--fonda-text)] hover:bg-[var(--fonda-surface-2)]";
 
 /**
  * What a page says before there is any data behind it.
@@ -33,13 +45,23 @@ export function FirstRunState({
    * because its header hero outranks a first-run card underneath it (§7.2).
    */
   tone = "gradient",
+  ctaSlot,
 }: {
   title: string;
   body: string;
-  ctaLabel: string;
-  ctaHref: string;
+  /** Ignored when `ctaSlot` is given. */
+  ctaLabel?: string;
+  /** Ignored when `ctaSlot` is given. */
+  ctaHref?: string;
   external?: boolean;
   tone?: "gradient" | "plain";
+  /**
+   * Replaces the default link button, for the one case where the action is not
+   * a navigation: In-house's WhatsApp card, whose button records interest and
+   * goes nowhere because there is nowhere yet to go. Pass a Client Component —
+   * this stays a Server Component.
+   */
+  ctaSlot?: ReactNode;
 }) {
   const gradient = tone === "gradient";
 
@@ -71,22 +93,18 @@ export function FirstRunState({
       >
         {body}
       </p>
-      <Button
-        asChild
-        className={cn(
-          "mt-6",
-          // The CTA inverts on the gradient: a white surface with ink text is
-          // the strongest, calmest thing that can sit on a sunrise.
-          gradient &&
-            "bg-[var(--fonda-white)] text-[var(--fonda-text)] hover:bg-[var(--fonda-surface-2)]"
-        )}
-      >
-        {external ? (
-          <a href={ctaHref}>{ctaLabel}</a>
-        ) : (
-          <Link href={ctaHref}>{ctaLabel}</Link>
-        )}
-      </Button>
+      {ctaSlot ?? (
+        <Button
+          asChild
+          className={cn("mt-6", gradient && FIRST_RUN_CTA_ON_GRADIENT)}
+        >
+          {external ? (
+            <a href={ctaHref}>{ctaLabel}</a>
+          ) : (
+            <Link href={ctaHref!}>{ctaLabel}</Link>
+          )}
+        </Button>
+      )}
     </section>
   );
 }

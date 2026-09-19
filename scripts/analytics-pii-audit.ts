@@ -88,6 +88,18 @@ track(HOTEL, "chat_query", {
   chars: `Which room is ${GUEST_NAME} in?`.length, turns: 4, produced_draft: true,
 });
 track(HOTEL, "home_locked_widget_clicked", { key: "adr-revpar" });
+// Payload-free by construction (W6, §5.3). Audited anyway: "it has no
+// properties" is a claim about today's catalogue, and this file exists to
+// notice the day someone adds one.
+track(HOTEL, "whatsapp_connect_clicked", {});
+
+/**
+ * Every event in lib/analytics.ts's catalogue must be fired above. The count is
+ * asserted rather than inferred so that ADDING an event without auditing it
+ * fails here — which is the whole job of this file. Bump it when you add one,
+ * in the same commit that adds the track() call above.
+ */
+const EXPECTED_EVENTS = 10;
 
 const goodCount = captured.length;
 
@@ -118,7 +130,7 @@ for (const { event, properties } of captured) {
 }
 
 const tripwireHeld = captured.length === goodCount;
-const ok = failures === 0 && goodCount === 9 && tripwireHeld;
-console.log(`\n${ok ? "PASS" : "FAIL"} — ${goodCount}/9 events captured, ${failures} leaks, ` +
+const ok = failures === 0 && goodCount === EXPECTED_EVENTS && tripwireHeld;
+console.log(`\n${ok ? "PASS" : "FAIL"} — ${goodCount}/${EXPECTED_EVENTS} events captured, ${failures} leaks, ` +
   `tripwire ${tripwireHeld ? "dropped the bad event" : "LET IT THROUGH"}.`);
 process.exit(ok ? 0 : 1);
