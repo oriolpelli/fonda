@@ -216,8 +216,8 @@ One release a week. Each row is a week's work and ships on its own.
 | **W7** | **Billing** | Stripe + trial gating (B20). Blocked on the legal entity — start §4 now, not in week 7 | B20 · Gate 2 · `EXECUTION_PLAYBOOK.md` |
 | **W8** | **Reputation** | The first real Commercial surface. Reviews fetched, themed, score movement | §6 · **prompts 13–14**, after decision P-4 |
 | **W9** ✅ *(1 Oct, on `main`)* | **AI transparency (EU AI Act, P0)** | Model IDs in one place + provenance on every output (migration 0025, also closes the two `emails` rows in §3.2); machine-readable AI headers on every sent reply, chaser and brief; quiet "Fondas AI" labels; recorded bulk-send confirmation. **Hard deadline 2 Dec 2026** — met | `AI_ACT_PROMPTS.md` **A1–A4** |
-| **S1** 🟡 *built 1 Oct on `perf/pass-a`, 0028 applied — preview, merge* | **Speed, pass A — nothing visible, everything faster** | Opt-in loader timings; read 5 keys of the PMS payload instead of all of it, no email bodies outside the inbox; one hotel read per request and parallel loads on every live page; two indexes (migration 0028); visited pages kept 30 s; Sentry loaded when idle; Customize loaded on open; one render per inbox action | `docs/audits/2026-10-01-performance.md` §6 **M1, P1–P4** |
-| **S2** 🟡 *built 1 Oct on `perf/pass-b` (stacked on S1), no migration — preview, merge after S1* | **Speed, pass B — feels instant** | Home, Brief, Communications and the sidebar badges stream in; the inbox sends full text only for open work; optimistic Send/Dismiss/Flag with a cached Gmail token (stored thread id skipped — needs a migration, nothing gained behind an optimistic row); guest inference off the critical path with a 10-minute back-off; Ask caches the hotel context across turns | same, **P5–P8** |
+| **S1** 🟢 *merged to `main` 1 Oct (`94e9c77`), 0028 applied* | **Speed, pass A — nothing visible, everything faster** | Opt-in loader timings; read 5 keys of the PMS payload instead of all of it, no email bodies outside the inbox; one hotel read per request and parallel loads on every live page; two indexes (migration 0028); visited pages kept 30 s; Sentry loaded when idle; Customize loaded on open; one render per inbox action | `docs/audits/2026-10-01-performance.md` §6 **M1, P1–P4** |
+| **S2** 🟡 *built 1 Oct on `perf/pass-b` (on `main` after S1), no migration — preview, merge* | **Speed, pass B — feels instant** | Home, Brief, Communications and the sidebar badges stream in; the inbox sends full text only for open work; optimistic Send/Dismiss/Flag with a cached Gmail token (stored thread id skipped — needs a migration, nothing gained behind an optimistic row); guest inference off the critical path with a 10-minute back-off; Ask caches the hotel context across turns | same, **P5–P8** |
 | **W10** | **AI trust pack (P1)** | "How Fondas uses AI" on `/trust`; AI-literacy onboarding + record (Art. 4); guest-notice wording; AI activity log + problem reports — un-parks *AI management*. **Before the first invoices, ~1 Dec** | `AI_ACT_PROMPTS.md` **A5–A8** |
 
 **Then, in order — ✅ all shipped 19 Sep:** the guest context pane (15) → chat
@@ -240,8 +240,9 @@ deleting a conversation is a silent no-op.
 step plus one review-fix commit, each gated by lint, tsc and a production build.
 Home's first-load JavaScript is 268 → 184 KB, and its window read 40 ms / 2.5 MB →
 7.7 ms / 0.27 MB on a test-hotel-sized database. Migration 0028 applied and
-verified by Oriol (1 Oct, three indexes present). To ship: run the clicks in
-`docs/audits/2026-10-01-S1-speed-pass-a.md` §4 on the preview, merge.
+verified by Oriol (1 Oct, three indexes present). Merged to `main` on 1 Oct
+(`94e9c77`). The clicks in
+`docs/audits/2026-10-01-S1-speed-pass-a.md` §4 are the check to run on production.
 
 **S2 status (1 Oct):** P5–P8 built on `perf/pass-b`, one commit per prompt
 plus one commit of fixes from an independent review (no double send after a
@@ -250,7 +251,7 @@ production build, and checked end to end against a local Supabase stand-in
 with 30 ms per call. Measured against S1 there: Home first paint 836 → 352 ms,
 a guest record 2.3 s → 0.65 s with inference due, Needs attention 1.4 s →
 0.09 s, and Ask's second question reads the hotel from the prompt cache. No
-migration. To ship, after S1: run the clicks in
+migration. To ship: run the clicks in
 `docs/audits/2026-10-01-S2-speed-pass-b.md` §4 on the preview, then merge. Its §6
 has four small decisions, none blocking.
 

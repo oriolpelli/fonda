@@ -1,6 +1,6 @@
 # S2 — Speed, pass B: build record
 
-**Date:** 1 October 2026 · **Branch:** `perf/pass-b` (stacked on `perf/pass-a` at `94e9c77`)
+**Date:** 1 October 2026 · **Branch:** `perf/pass-b`, cut from `main` at `94e9c77`, where S1 was merged on 1 Oct
 **Scope:** `docs/audits/2026-10-01-performance.md` §6, prompts **P5–P8** · **Status:** built and gated, **not merged**. **No migration.**
 **Why now:** Oriol decided on 1 Oct that speed comes before anything else (`ROADMAP.md` §1 Step 3). S1 made every read cheaper. S2 makes the product *feel* instant: pages paint before their slowest read, and clicks answer before the server does.
 
@@ -10,7 +10,7 @@ There is one commit per prompt, plus one commit fixing what the independent revi
 
 ## 1. Before you deploy this branch
 
-1. **S1 first.** This branch contains `perf/pass-a`, so merging it merges both. The tidy order is: test and merge S1's preview (S1 record §4), then push `perf/pass-b`.
+1. **S1 is already on `main`** (merged 1 Oct), so this branch holds only S2's commits. If S1's preview clicks (S1 record §4) weren't run before that merge, run them on production first: then anything odd can be told apart from S2.
 2. **Nothing to apply in Supabase.** S2 adds no migration.
 3. Push `perf/pass-b`. Vercel builds a **preview**.
 4. Optional, but it gives you the numbers: keep `PERF_LOG=1` on Preview. S2 adds three lines to Ask: `ask.settings`, `ask.thread`, and `ask.cache_read_tokens` / `ask.cache_write_tokens` (counts only).
