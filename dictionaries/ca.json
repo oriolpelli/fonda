@@ -1178,7 +1178,7 @@
     "chaserLine": "Redactat per Fondas AI — revisa'l abans d'enviar-lo",
     "sentAsDrafted": "Redactat per Fondas AI · enviat tal com era",
     "sentEdited": "Redactat per Fondas AI · editat abans d'enviar-lo",
-    "askLine": "Fondas AI · es pot equivocar — comprova les xifres importants",
+    "askLine": "Fondas AI · la IA pot cometre errors — revisa les xifres clau",
     "briefLine": "Escrit per Fondas AI a partir del teu PMS i del teu correu. Comprova qualsevol dada abans d'actuar.",
     "inferredMark": "Fondas AI"
   },

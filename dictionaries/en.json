@@ -1178,7 +1178,7 @@
     "chaserLine": "Drafted by Fondas AI — check before sending",
     "sentAsDrafted": "Drafted by Fondas AI · sent as drafted",
     "sentEdited": "Drafted by Fondas AI · edited before sending",
-    "askLine": "Fondas AI · can be wrong — check figures that matter",
+    "askLine": "Fondas AI · AI can make mistakes — double-check key figures",
     "briefLine": "Written by Fondas AI from your PMS and inbox. Check anything you act on.",
     "inferredMark": "Fondas AI"
   },
