@@ -52,6 +52,8 @@ design/_*
 
 # Outreach tracker — holds prospect contact details, and this repo is public.
 Fondas_Outreach_Tracker.xlsx
+Fondas_Hoteles_ZonaAlta.xlsx
+Fondas_seguimientos.ics
 
 # Holding pen for docs pending deletion — never meant to be tracked.
 _to_delete/
@@ -62,3 +64,9 @@ _to_delete/
 # Build-gate tarball: the cloud sandbox can't build against macOS node_modules,
 # so the working tree is archived here and rebuilt elsewhere. Never committed.
 .fonda-src.tar
+
+# Session scratch from Claude (previews, concept images) — not project source.
+Claude outputs/
+
+# macOS text clippings dragged into the tree by accident.
+*.textClipping

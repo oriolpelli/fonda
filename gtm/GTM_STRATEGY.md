@@ -1,10 +1,10 @@
 # Fondas — Go-to-Market Strategy
 
-_The single source of truth for market fit, positioning, pricing, pilot outreach, and the raise. Owner: Oriol · Last updated 26 August 2026 · Status: MVP built, pre-pilot, first outreach wave underway._
+_Market, competitors, ICP, pricing, legal triggers, the raise and metrics. Owner: Oriol · Last updated 23 September 2026 — moved to `gtm/`; every script moved to `PILOT_PLAYBOOK.md`; priority lives only in `ROADMAP.md`._
 
 **This document replaces and consolidates** the ten planning docs that came before it — `GO_TO_MARKET.md`, `MARKET_STRATEGY.md`, `PILOT_OUTREACH.md`, `LAUNCH_PLAN.md`, `COMPETITOR_LANDSCAPE.md`, `Fondas_GTM_Strategy_Consolidated.docx`, and the two June `.docx` plans (Pilot Outreach, MVP Launch Plan). Product and engineering execution lives separately in `EXECUTION_PLAYBOOK.md` and the build roadmaps — this file is strategy, market, and go-to-market only.
 
-> **Where you are on the calendar (26 Aug 2026):** the plan below is written from an Aug 1 standing start. As of today you are in the **Aug 24 – Sep 4 window** — the season is winding down, GMs are surfacing, and demos start to land. The `Fri 28 Aug` milestone (4+ demos done, 1 pilot onboarding) is this week. Judge the funnel in September, not on any single quiet August day.
+> **Read this first (23 Sep 2026).** This file is the *why*: market, buyer, price. What to say to a hotel is `PILOT_PLAYBOOK.md`; the current fortnight is `PILOT_SPRINT.md`; what comes first is `ROADMAP.md`. Sections that used to hold scripts, milestones or priorities (§3.1, §3.3, §4.5, §4.7–4.13, Part 10) are now pointers, kept so older references still land. The folder index is `README.md`.
 
 ---
 
@@ -28,7 +28,9 @@ Fondas is an AI front-office layer for the general manager of an independent hot
 
 ### 1.1 The product in one line
 
-> Fondas gives an independent hotel's GM their first 90 minutes back every morning — the inbox drafted, the day briefed, the arrivals chased, and any question answered — across whichever PMS they run, at a flat price a single owner can say yes to in one call.
+> Fondas runs the admin of an independent hotel all day and across the whole stay — the day briefed, every guest email drafted before arrival and in-house, the arrivals chased, every guest remembered, any question answered — across whichever PMS they run, gets more capable every week, at a flat price a single owner can say yes to in one call.
+>
+> _Rewritten 23 Sep: the previous line sold "the first 90 minutes back every morning", which makes Fondas sound small to a small hotel. `POSITIONING_V3.md` §1.3 and §10._
 
 ### 1.2 What has actually been built (verified against the codebase)
 
@@ -50,10 +52,12 @@ This is not aspirational. Each item is present in the git history and the Supaba
 - **Hotel profile, tone & upsells.** Per-hotel voice settings and configurable paid extras (late checkout, breakfast, transfer, parking with prices) injected into drafts and chat.
 - **Reliability & observability.** One-command morning reliability check, cron observability, Sentry error alerting, database backups.
 - **Security & tenancy.** Postgres row-level security per hotel, server-side-only provisioning (no client INSERT path), PMS/mailbox tokens encrypted at rest and hidden from client selects. Notably strong for this stage.
-- **The website ("Signal" redesign).** Landing positioned on "AI software for hotels", watercolour hero, feature bento, comparison table, flat €199 pricing, grouped FAQ, SEO (OG image, JSON-LD, sitemap, hreflang), split-screen auth, stepped onboarding, real double-opt-in newsletter, EN/ES/CA throughout, WCAG-AA.
+- **The website ("Signal" redesign).** Landing positioned on "AI software for hotels", watercolour hero, feature bento, comparison table, a pricing band with no figure (taken off on 17 Sep — `POSITIONING_V3.md` §8), grouped FAQ, SEO (OG image, JSON-LD, sitemap, hreflang), split-screen auth, stepped onboarding, real double-opt-in newsletter, EN/ES/CA throughout, WCAG-AA.
 - **The sample-brief lead magnet.** A public `/sample-brief` page — the best top-of-funnel asset; it demonstrates rather than describes.
 
 ### 1.3 What is deliberately NOT built yet
+
+_State as of 26 August. For today's product see the root `README.md` and `ROADMAP.md` §0._
 
 Sensible scoping — but it defines exactly the gate between "can pilot" and "can charge" (see §3.4).
 
@@ -132,7 +136,7 @@ The field is fragmenting into funded point solutions — which is itself the pit
 
 1. **Habit:** >70% daily brief open rate across pilots.
 2. **Moat works:** >60% of drafted replies sent with only minor edits.
-3. **Willingness to pay:** at least one pilot says yes to €199/mo with no discount pressure.
+3. **Willingness to pay:** at least one founding hotel commits at day 30 to continue at €149/mo with no further discount pressure, and the first hotel after the founding cohort says yes to €199/mo.
 
 Until those exist, PMF is a hypothesis, not a fact. The pilots are the experiment — define pass/fail before you start (§8).
 
@@ -142,53 +146,44 @@ Until those exist, PMF is a hypothesis, not a fact. The pilots are the experimen
 
 ### 3.1 Positioning (the single most important change)
 
-| From (retired) | To (adopt everywhere) |
-|---|---|
-| "AI morning briefings for boutique hotels" — now a PMS feature. | **"Fondas runs your hotel's front-office admin — the inbox, the morning, the chasing — no matter which PMS you use."** |
+**Superseded by `POSITIONING_V3.md` §1** (the hero, locked 17 Sep) — read that; it wins where the two differ.
 
-Concretely:
-
-- **Lead with the email assistant** in every pitch, demo, and the landing hero. The brief remains the emotional hook (it demos beautifully) but is framed as *one output* of Fondas knowing your hotel — not the product.
-- **Sell the bundle, not surfaces.** The GM buys "my first 90 minutes back," delivered by four surfaces working together. No platform copilot bundles all four across systems.
-- **Weaponise neutrality.** *"Your PMS's copilot works for your PMS. Fondas works for you."* Use it with multi-property owners and anyone burned by platform lock-in.
-- **Never say "AI" in the demo.** *"Fondas reads your data and writes this."* Saying AI makes them think ChatGPT and raises their guard. This instinct is now *more* correct, since "AI copilot" is the platforms' language.
+What survives from this section and still holds: **lead with the inbox, not the brief** (the brief is now a PMS feature; the inbox is what no PMS copilot sees); **sell the bundle, not the surfaces**; **neutrality** — *«el copiloto de tu PMS trabaja para tu PMS; Fondas trabaja para ti»*. How to say it in a lobby or a demo is `PILOT_PLAYBOOK.md`.
 
 ### 3.2 Pricing & packaging
 
 | Tier | Price | For | When |
 |---|---|---|---|
-| **Single property** | €199 / mo flat | One hotel, 20–80 rooms. ~1 room-night/month — keep saying that. | Now (the pilot ask) |
+| **Founding hotel** | 60 days free, then €149 / mo for life, including everything shipped later | The first 3–4 pilots. The reason to join now rather than later (`PILOT_PLAYBOOK.md` §0.1) | Now (the pilot ask) |
+| **Single property** | €199 / mo flat | One hotel, 20–80 rooms. ~1 room-night/month — keep saying that. | List price, after the founding cohort |
 | **Group** | €149 / property / mo (2+) + owner digest | The 1–3-property owner — the best-fit buyer; raises ACV; monetises the wedge. | When multi-property digest ships |
 | **Annual** | €1,990 / yr (2 months free) | Cash-flow + churn dampener for a bootstrapper. | Once billing ships |
 
 Hold the flat price. The independent band is €99–300, often ~€4/room; flat beats per-room above ~50 rooms and is easier to say yes to. **Don't discount the first customer** — discount the *terms* (monthly, cancel anytime, no setup fee). The pilot cohort keeps **founder pricing (€149/mo lifetime)** as the conversion carrot — cheaper than the discount conversations you'll otherwise have.
 
+**Open (21 Sep, not decided):** a second, higher tier (~€449–499) once pre-arrival upsell drafting and the rate signal ship — a revenue product prices against the revenue it makes. Saying €500 now would ask a director to pay above the value of what the demo shows, with no logos behind it. The day-30 pricing questions (`PILOT_PLAYBOOK.md` §11) decide it. Founding hotels stay at €149 regardless.
+
+#### 3.2.1 How to frame the price: hours of a person's work
+
+_Added 23 Sep._ Anchor €199 to **hours of front-desk work**, never to **a person** — that invites *«¿esto sustituye a mi recepcionista?»* (`POSITIONING_V3.md` §0.2) — and never to a ChatGPT subscription, which compares a tool to a worker when the worker is the cost.
+
+| Role, Barcelona 2026 | Gross / month, 14 pagas | Employer cost / year (+32%) | Per hour (1,800 h) |
+|---|---|---|---|
+| Recepcionista, convenio minimum (Nivel IV) | €1,342–1,486 | €24,800–27,500 | €13.80–15.30 |
+| Recepcionista, boutique market rate | €1,800 | €33,300 | €18.50 |
+| Jefe de recepción | €3,000 | €55,400 | €30.80 |
+
+These are floors: they exclude absenteeism (9–11% in the sector), recruiting, training and the months a post sits empty. Employer social security is ~32% (23.60% contingencias comunes, 5.50% desempleo, 0.20% FOGASA, 0.60% formación, 0.75% MEI, ~1.5% AT/EP).
+
+**Use the director's number, not ours.** Fondas takes admin off the desk all day — guest email before arrival and in-house, arrival times, guest records, the day's questions, the brief. How many hours that is varies by hotel, so in the demo you ask (*«¿cuántas horas al día se os van, entre todos, en correos, llegadas, preguntas y papeleo?»*), multiply by 30 days, and halve it out loud. At market receptionist cost (€18.50/h), 1 hour a day is ~€555 a month, 2 hours ~€1,110, 3 hours ~€1,665; *even if Fondas takes half*, €199 is a fraction of it. The table and the lines are `PILOT_PLAYBOOK.md` §6. Replace the estimate with each pilot's measured number as soon as there is one.
+
+_The version of this paragraph written on 21 Sep priced only "the first hour's admin" at 45 minutes a day (~20 hours, €275–615 a month). It was retired on 23 Sep for the same reason §1.1 was: it undersells a product that works all day._
+
+Sources, opened 21 Sep 2026: [pide.bar](https://pide.bar/blog/convenio-hosteleria-catalunya-2026) · [Shifty](https://shifty.es/blog/convenio-colectivo-hosteleria-barcelona-2026) · [Insertia](https://www.insertia.net/blog/cuanto-cobra-un-recepcionista-de-hotel-en-espana-sueldo-convenio-y-por-categoria-de-hotel) · [Indeed](https://es.indeed.com/career/jefe-de-recepci%C3%B3n/salaries/Barcelona--Barcelona-provincia) · [Campa&Go](https://campago.es/coste-empleado.html) · [Hosteltur](https://www.hosteltur.com/173142_muchos-hoteles-facturan-mas-que-nunca-pero-con-margenes-mas-reducidos.html). Confirm the 14-paga assumption against the DOGC tables before quoting an annual figure to a director who knows their own convenio.
+
 ### 3.3 Feature gaps, by gate
 
-The useful question isn't "what's missing" but "a blocker for what?" — piloting, charging, or scaling. Priorities: **P0 = before pilots · P1 = before charging · P2 = before scaling/raise.**
-
-| Gap | Why it matters | Pri | Effort |
-|---|---|---|---|
-| Mobile pass not done | The GM reads the brief on a phone at 6:45am — that moment *is* the pitch. | P0 | S |
-| PMS connect not in onboarding | A new hotel must reach a real preview brief in one sitting, or they drop off before value. | P0 | S |
-| Website punch-list | Dead footer links + per-env SITE_URL remain. Provisional content on a live site kills credibility. | P0 | S |
-| `hello@fondas.app` can't receive mail | It's the contact on the site; a bounce to a prospect is an own-goal. | P0 | XS |
-| Apaleo end-to-end unverified | Code exists; no real Apaleo hotel proven through sync → brief. Don't demo blind. | P0 | S |
-| Draft-acceptance measurement (edit-distance) | THE PMF metric. Until built, ask pilots directly. | P0 | M |
-| Data-honesty language fix | Say "stored encrypted, EU-hosted, deleted on offboarding" everywhere. | P0 | XS |
-| Billing / Stripe | No way to charge. Fine for free pilots; hard gate before the €199 ask. | P1 | M |
-| Rate limiting + per-hotel spend caps | Unmetered AI routes = uncapped cost/abuse risk. | P1 | S |
-| Legal entity + lawyer-drafted DPA | GDPR applies the moment guest data flows. A competent DPO will ask. | P1 | M |
-| Google OAuth verification | Needed before public Gmail connect beyond test users. Weeks of lead time. | P1 | M |
-| **Outlook / Microsoft 365 support** | "We use Outlook" disqualifies ~half the ICP. Highest-leverage TAM expansion. | P2 | L |
-| Multi-property owner digest | Monetises the cross-PMS wedge; supports the Group tier. | P2 | M |
-| Graduated autonomy (auto-send routine) | Altek executes; Fondas drafts. Needs draft → approve → auto-handle-routine or it looks dated within a year. | P2 | M |
-| Pre-arrival upsell drafting | Turns Fondas from cost-saver into revenue-maker: "one late checkout a week pays for Fondas." | P2 | M |
-| Automated tests / CI on money paths | No safety net for a solo founder shipping fast. | P2 | M |
-| WhatsApp delivery of brief + urgent flags | Spanish GMs live in WhatsApp. Delivery channel, not a chatbot. | P2 | S |
-| 3rd PMS (Cloudbeds or Amenitiz) | Roughly doubles Spanish TAM. Choose by pilot-pipeline evidence. | P2 | L |
-
-**Priority order:** finish **P0 before any outreach demo**; re-point every surface at the inbox; sequence **P1 to the calendar** (start Google verification and the lawyer conversation the week the second pilot goes live); **hold the P2 line** — Outlook is the one P2 to pull forward if pilots keep surfacing it. Breadth before depth is how a solo founder dies.
+**Moved to `ROADMAP.md` §3**, the only place priority lives. The gates this section introduced survive there: before piloting (§3.1), before charging (§3.3), later with a trigger (§3.6). The 26 Aug table had drifted — most of its P0 items have shipped — and git history keeps it.
 
 ### 3.4 What to explicitly NOT build now
 
@@ -217,6 +212,8 @@ Founder-led sales to a narrow ICP — independent / small-group, design-forward,
 
 That's ~12% contact-to-pilot — realistic for warm, personalised outreach to a tight ICP. Identify **40 rather than 30** to absorb August's lower response rate. **Cadence:** 5 contacts/day, 5 days/week.
 
+_23 Sep: for the current sprint the funnel is split into three lanes — warm intros, walk-ins, digital plus phone — with its own numbers in `PILOT_SPRINT.md` §3._
+
 ### 4.3 Who you're targeting (ICP)
 
 | Signal | Why it qualifies |
@@ -229,6 +226,8 @@ That's ~12% contact-to-pilot — realistic for warm, personalised outreach to a 
 | **City / urban boutique** | Busier daily ops, and reachable in August. Prioritise first. |
 
 **Disqualifiers:** chain-affiliated (Marriott/IHG/Accor) · Opera/Cloudbeds/other PMS · Outlook or shared non-Gmail inbox · under 15 rooms.
+
+_23 Sep: for the first pilots, the PMS is no longer a disqualifier — a hotel on any other PMS pilots on the daily-export Sheet source, and an Outlook hotel pilots without the inbox (`PILOT_PLAYBOOK.md` §8, §9.2). Log both: three of the same is the trigger for that integration._
 
 ### 4.4 The calendar problem and geography sequencing
 
@@ -246,17 +245,11 @@ This does **not** mean waiting. It means sequencing:
 - **September onward:** Costa Brava, Costa Daurada, Sitges, Girona + Valencia, Seville, Bilbao, San Sebastián. Coastal properties are ideal ICP but only reachable post-season. **Contacting a Costa Brava GM on 12 August burns a good lead** — in a small industry, a badly timed first impression is expensive.
 - **Your advantage:** you're in Barcelona. Offer to visit. For a Costa Brava property in September, *"I can drive up Tuesday"* converts far better than a Zoom link.
 
+_23 Sep: the coastal hold is lifted. Barcelona walk-ins avoid La Mercè (24–27 Sep) — `PILOT_SPRINT.md` §5._
+
 ### 4.5 Dated milestones
 
-| Date | Milestone |
-|---|---|
-| Fri 7 Aug | 40-hotel list built, tracking sheet live, first 15 contacted. |
-| Fri 14 Aug | 25 contacted; follow-up sequence running; 1–2 demos booked. |
-| **Fri 28 Aug** | **4+ demos done; 1 pilot onboarding.** _(This is this week — see the calendar note at the top.)_ |
-| Fri 4 Sep | **2 pilots live and receiving daily briefs.** If you hit this, you're on track. |
-| Fri 18 Sep | 3 pilots live; second (coastal) outreach wave underway. |
-| Fri 2 Oct | Structured feedback from all 3; case-study material collected. |
-| Mid-Oct | **The €199 ask.** First paying customer. Legal entity exists or in progress. |
+**Passed unmet.** None of these dates (4+ demos by 28 Aug, 2 pilots by 4 Sep, 3 by 18 Sep) were hit, because outreach never started — the tracker still read `found` on 23 Sep. They are reset in `ROADMAP.md` §4 and scheduled day by day in `PILOT_SPRINT.md`. The 15 October bar in Part 11 still stands.
 
 ### 4.6 Week 1 — build the list
 
@@ -271,147 +264,35 @@ This does **not** mean waiting. It means sequencing:
 **Tracking-sheet columns:** `Hotel · City · Rooms · PMS (confirmed?) · GM name · Source · Date contacted · Status · Last touch · Next action · Notes`
 **Status values:** `found → contacted → replied → demo booked → demo done → onboarding → active pilot → paying` (or `dead`).
 
+_Built 26 Aug: `Fondas_Outreach_Tracker.xlsx`, in this folder and gitignored. A *Walk-in loop* and a *First channel* column were added 23 Sep._
+
 ### 4.7 The outreach sequence (four touches, then stop)
 
-Four touches maximum. In a small industry, a fifth follow-up costs you reputation. **Write in Spanish to Spanish GMs** — English-first outreach signals you're not local, and being local is one of your few structural advantages.
-
-```
-Day 1   →  LinkedIn connection request (with note)
-Day 4   →  LinkedIn message (the actual ask)
-Day 11  →  Email follow-up
-Day 18  →  Final note, with the sample-brief link
-```
-
-**Touch 1 — LinkedIn connection request (300 char limit)**
-
-- **ES:** _Hola [Nombre] — estoy construyendo una herramienta de operaciones para hoteles boutique y me encantaría conectar. Estamos arrancando con 3 hoteles piloto y [Hotel] es justo el tipo de propiedad que teníamos en mente._
-- **EN:** _Hi [Name] — I'm building an operations tool for boutique hotels and would love to connect. We're launching with 3 pilot hotels and [Hotel] looks like exactly the kind of property we had in mind._
-
-**Touch 2 — LinkedIn message, day 4 (the pitch)**
-
-> Hola [Nombre],
->
-> Soy el fundador de Fondas. Hemos construido una capa que se conecta a tu PMS y a tu bandeja de entrada: redacta las respuestas a los emails de huéspedes para que las revises, y te deja el resumen de la mañana escrito a las 6:30 — llegadas, VIPs, incidencias, ETAs sin confirmar.
->
-> En vez de 45 minutos sacando informes y contestando correos, lo tienes hecho antes de llegar al hotel.
->
-> Estamos incorporando 3 hoteles piloto antes de abrirlo. Sin coste y sin compromiso — lo que necesito es feedback real de directores que cuiden la calidad.
->
-> ¿Te encajaría una llamada de 20 minutos esta semana? Estoy en Barcelona, así que si lo prefieres me acerco.
->
-> — Oriol
-
-_Why it works: leads with the inbox (the differentiated bit) before the brief; quantifies the saving; the ask is small and concrete; scarcity without pressure; the in-person offer is a local advantage nobody else has._
-
-**Touch 3 — Email, day 11**
-Subject: `Fondas — el resumen de la mañana para [Hotel]`
-
-> Hola [Nombre],
->
-> Te dejo esto por correo por si LinkedIn se perdió entre el ruido.
->
-> Fondas se conecta a tu PMS y a Gmail: redacta los borradores de respuesta a huéspedes y te escribe el resumen operativo de cada mañana — llegadas, salidas, VIPs, estado de habitaciones — listo antes de que llegues al hotel.
->
-> Estamos trabajando con 3 propiedades piloto este otoño. Gratis, y la configuración la hago yo. A cambio me gustaría media hora de tu tiempo a las dos semanas para saber qué funciona y qué no.
->
-> Aquí puedes ver un ejemplo real del resumen: fondas.app/es/sample-brief
->
-> Un saludo,
-> Oriol · oriolpelli@icloud.com · fondas.app
-
-**Touch 4 — Day 18, close the loop**
-
-> Hola [Nombre],
->
-> Última nota por mi parte — sé que las bandejas se llenan rápido, y más en temporada.
->
-> Si no es el momento, ningún problema. Vuelvo a escribirte en octubre, que suele ser mejor época para mirar herramientas nuevas.
->
-> Y si te pica la curiosidad: fondas.app/es/sample-brief
->
-> Mucha suerte con lo que queda de temporada.
->
-> — Oriol
-
-_Respectful, removes pressure, leaves a door open — and "I'll come back in October" is credible given the actual calendar._
+→ **`PILOT_PLAYBOOK.md` §4** (every email, LinkedIn and WhatsApp template, ES/CA/EN) and **§5** (the sequence by entry channel — walk-in, email or warm intro). The rules survive there: four touches, then stop; Spanish to Spanish directors.
 
 ### 4.8 The demo (20 minutes)
 
-Goal is not to sell. It's to make them feel smart for taking the call.
-
-| Min | What you do |
-|---|---|
-| 0–3 | Ask about their morning. *"¿Cómo es tu primera hora? ¿Dónde se te va más tiempo antes de que llegue el equipo?"* Let them describe the pain first. |
-| 3–6 | **Open on the inbox** — Concierge with a real draft waiting. The differentiated moment; don't bury it. |
-| 6–12 | Then the brief (read part aloud), then check-in chasing, then ask-anything chat. Narrate the day, not the features: *"Son las 6:45, abres esto…"* |
-| 12–14 | The fragmentation close: *"Podrías pagar seis suscripciones — comunicaciones, revenue, finanzas, tareas, experiencias, CRM — o una capa que te lleva la mañana."* |
-| 14–17 | *"¿Esto se parece a algo que te ahorraría tiempo?"* Then stop talking. |
-| 17–20 | If yes: *"El siguiente paso es conectar tu PMS, son 30 minutos y lo hacemos juntos. ¿Lo agendamos?"* |
-
-**Never say "AI."** Say *"Fondas lee tus datos y escribe esto."* **Before every demo:** add the prospect's Google account as an OAuth **test user** the day the demo is booked (verification isn't submitted, so Gmail connect will otherwise fail live), and seed the test hotel with realistic Spanish guest names and a plausible occupancy pattern so the demo feels real.
+→ **`PILOT_PLAYBOOK.md` §6**, re-sequenced to lead with the inbox and with the labour close added.
 
 ### 4.9 Objections
 
-**"Estamos en plena temporada."**
-> "Justo por eso te escribo ahora. El resumen ahorra más tiempo cuando estás al 90% y todo va rápido. La configuración la hago yo en 30 minutos, cuando mejor te venga."
-
-**"Ya usamos otra herramienta de informes."**
-> "Fondas no es una herramienta de informes — es un digest diario que lee tus informes por ti y te dice qué importa. La mayoría usa las dos."
-
-**"Tengo que consultarlo con el propietario."**
-> "Claro. Te mando una página explicando qué datos toca, qué no toca, y cómo funciona la conexión." Then send the one-pager (§4.13) and follow up in 5 days.
-
-**"¿Están seguros mis datos?"**
-> "Fondas lee de tu PMS por su API oficial, igual que tu channel manager. Los datos se guardan cifrados y alojados en la UE, solo para generar tus resúmenes, y se borran si te das de baja. Los correos se leen para clasificarlos y redactar borradores — nada se envía sin que tú lo apruebes." _(Note the corrected, honest data-handling line — see §1.4 ②.)_
-
-**"¿Cuánto cuesta?"**
-> "El piloto no cuesta nada — son los tres primeros hoteles. Después la idea son 199€ al mes, plano, sin coste por habitación. Pero esa conversación es dentro de seis semanas y depende de que te resulte útil."
+→ **`PILOT_PLAYBOOK.md` §8**, merged with `POSITIONING_V3.md` §5.4 and the sprint's objections (ChatGPT, no MEWS, Outlook, *«¿cuántos hoteles tenéis?»*).
 
 ### 4.10 Pilot onboarding runbook
 
-When a demo converts, book a **30-minute screen-share** and do these in order:
-
-1. **Before the call:** add their Google account as an OAuth test user; confirm they're on MEWS + Gmail.
-2. Create their account → onboarding wizard → connect PMS → first sync.
-3. **Generate a preview brief live on the call** — this is the moment they get it. Don't skip it.
-4. Connect Gmail.
-5. Fill **Hotel Profile & Tone together** (incl. the upsell fields with prices) — the product gets good here; do it conversationally, not as homework.
-6. Set **brief recipients** (their email), **send hour**, and **language** — Spanish for Spanish GMs. An English brief kills it.
-7. Open a **WhatsApp thread** before ending the call. Not email — WhatsApp. It's how you'll learn something broke.
-
-**Then, daily for the first week:** read their brief yourself every morning *before they do*, and fix what's wrong before they report it. The highest-value hour of the whole programme. **A broken pilot is worse than a late one.**
+→ **`PILOT_PLAYBOOK.md` §10**, updated for the three data sources.
 
 ### 4.11 During the pilot — what to measure
 
-| Metric | Why it matters |
-|---|---|
-| **Draft acceptance rate** (sent unedited / minor / major / discarded) | The #1 PMF signal. Until edit-distance tracking ships, ask directly. |
-| Brief opens, and whether they read it before arriving | Is it part of the morning? |
-| Chat queries per week | Are they treating it as the place to ask? |
-| Unprompted feature requests | Strongest possible signal — they're imagining it in their workflow. |
-
-**Structured feedback at 2 weeks**, per pilot (15 min or 5 written questions): (1) What's wrong or missing in the brief? (2) Which drafts did you edit, and why? (3) What do you now *not* do that you used to? (4) What would make you stop using it? (5) What would you pay for it? Paste verbatim answers into a `PILOT_FEEDBACK.md` — it drives the fix cycle and becomes case-study raw material (ask permission to quote).
+→ **`PILOT_PLAYBOOK.md` §11.** The metrics and their targets stay here, in Part 8.
 
 ### 4.12 Converting to paid
 
-**Timing:** ask at week 2–3 of an active pilot, not later. Momentum decays.
-
-**The ask** — direct, no discount theatre:
-> "Llevas tres semanas usándolo. ¿Te sirve lo suficiente como para que valga 199€ al mes? Si la respuesta es no, dime qué falta — es igual de útil para mí."
-
-Hold €199/month flat. Don't discount the first customer — discount the *terms* (monthly, cancel anytime, no setup fee) if you need to reduce friction.
+→ **`PILOT_PLAYBOOK.md` §11**: the week-3 ask, the founding-hotel price and the two pricing questions.
 
 ### 4.13 The one-pager (to forward internally)
 
-**Fondas — la mañana del hotel, resuelta**
-
-- *Qué hace:* se conecta a tu PMS (MEWS) y a Gmail. Redacta los borradores de respuesta a los correos de huéspedes usando los datos de su reserva, y te escribe cada mañana el resumen operativo — llegadas, salidas, VIPs, incidencias, ETAs sin confirmar — listo antes de que llegues.
-- *Qué más:* persigue automáticamente las horas de llegada sin confirmar, y responde preguntas sobre el día ("¿cuántas habitaciones quedan por limpiar?").
-- *A qué se conecta:* MEWS vía API oficial. Gmail vía OAuth, con los mismos permisos que cualquier cliente de correo.
-- *Qué NO hace:* no modifica datos en tu PMS, y no envía ningún correo sin tu revisión y aprobación.
-- *Datos:* se guardan cifrados y alojados en la UE, solo para generar tus resúmenes; se borran si te das de baja.
-- *Condiciones del piloto:* 30 días gratis, acceso completo, una llamada de configuración, una de feedback. Sin contrato ni tarjeta.
-- *Contacto:* Oriol · oriolpelli@icloud.com · fondas.app
+→ **`PILOT_PLAYBOOK.md` Appendix A** (the text, corrected) and the PDFs in `pitch/`. The pilot agreement is §9.3.
 
 ### 4.14 Channels (ranked, with budget)
 
@@ -503,7 +384,7 @@ The willingness-to-pay test is built in: the ask comes at week 2–3 while momen
 | Brief email open rate | >70% daily | The habit exists. |
 | Email-draft acceptance (sent ≤ minor edit) | >60% | The moat surface works. **THE #1 PMF signal.** |
 | Week-4 pilot retention | 3/3 | The product delivers. |
-| Pilot → paid conversion | ≥1/3 by wk 6; ≥2/3 by wk 10 | Willingness to pay. |
+| Founding pilot → committed to continue | ≥1/3 at day 30; ≥2/3 by day 60; first invoices from day 61 | Willingness to pay. |
 | Sean Ellis ("very disappointed" without it) | >40% of active GMs | The classic PMF bar. |
 | Monthly logo churn (paid) | <3% | Retention proof for the raise. |
 | CAC (founder-led) | <€300/customer | Payback < 2 months. |
@@ -527,34 +408,14 @@ The willingness-to-pay test is built in: the ask comes at week 2–3 while momen
 
 ## Part 10 — What to do next (the 90-day source-of-truth checklist)
 
-**Now → first pilot (P0, ~1–2 weeks of build):**
-- Finish the mobile pass and PMS-in-onboarding; clear the website punch-list; give `hello@fondas.app` an inbox.
-- Prove one real Apaleo hotel end-to-end (sync → brief), or explicitly park Apaleo from outreach until then.
-- Ship draft-acceptance measurement; fix the data-honesty language everywhere.
-- Build the 40-hotel list + tracking sheet; seed realistic demo data; run the full demo twice (laptop + phone).
-
-**August → 2 pilots live (by 4 Sep):**
-- Execute the four-touch outreach, city hotels only, inbox-first pitch, 5/day.
-- Onboard pilots via the runbook; read every brief each morning before they do; open a WhatsApp thread per pilot.
-- The week the 2nd pilot lands: book the lawyer, start Spanish SL incorporation, start Google OAuth verification.
-
-**September → 3 pilots + first revenue (P1):**
-- Ship Stripe billing + rate-limiting/spend caps; get the one-page pilot agreement and DPA ready to send same-day.
-- Collect 2-week structured feedback; produce one quantified case study; get first Hotel Tech Report reviews.
-- Second outreach wave: coastal properties, in person where possible. Make the €199 ask at pilot week 2–3.
-
-**October → paying customer + raise prep (P2 begins):**
-- Convert ≥1 pilot to €199; if Outlook keeps recurring in the pipeline, start Microsoft 365 support.
-- Open informal investor conversations at budget-season events; build the deck around the validation slide (Mews, Otel, happyhotel) and your real pilot metrics.
-
----
+**Superseded.** What comes first is `ROADMAP.md`; the selling fortnight is `PILOT_SPRINT.md`. The 26 Aug checklist is in git history — most of its build items have shipped, and its outreach items are rescheduled in the sprint.
 
 ## Part 11 — What success looks like on 15 October
 
 - 3 hotels have used Fondas daily for 2+ weeks.
 - At least one "I showed the owner and he loved it" moment, with a quotable line.
 - Specific written feedback on what the brief gets wrong — and a real draft-acceptance number.
-- At least one hotel has said yes to €199/month.
+- At least one founding hotel is on track for its day-30 commitment (pilots that start ~1 Oct reach day 30 ~1 Nov and first invoice ~1 Dec).
 - The legal entity exists, or is actively in progress.
 
 If that's where you are in mid-October, everything after — building, raising, growing — gets dramatically easier to justify.

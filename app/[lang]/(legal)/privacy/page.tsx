@@ -124,7 +124,7 @@ const SECTIONS: Section[] = [
       // drafts are built from stored rows, not from data held in memory for
       // the length of a request. Any outward claim that we "use and discard"
       // guest data is false and must not be reintroduced here, in the FAQ, in
-      // the pilot agreement, or in sales material. See GTM_STRATEGY.md §1.4.
+      // the pilot agreement, or in sales material. See gtm/GTM_STRATEGY.md §1.4.
       "We do store the hotel data we process: reservations, guest profiles, and the mailbox contents needed to draft replies are held in our database, hosted in the European Union and encrypted at rest. We keep them because the briefings, drafts, and answers the service produces are generated from them. They are used for no other purpose, and they are deleted when a hotel closes its account, as described under Retention.",
     ],
   },

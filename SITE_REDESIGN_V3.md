@@ -2,13 +2,13 @@
 
 _Owner: Oriol · 17 September 2026 · Status: **final** — ready to execute_
 
-**What this implements.** The hero, category line and anchor strings decided in `POSITIONING_V3.md` §1 and §3, plus the page architecture that makes those claims land. Informed by a full read of `otelai.com` on 17 Sep 2026 (`POSITIONING_V3.md` §0.3).
+**What this implements.** The hero, category line and anchor strings decided in `gtm/POSITIONING_V3.md` §1 and §3, plus the page architecture that makes those claims land. Informed by a full read of `otelai.com` on 17 Sep 2026 (`gtm/POSITIONING_V3.md` §0.3).
 
 **What this does NOT change.** `FONDA_DESIGN_IDENTITY.md` v2.0 "Signal" stands: no new colours, no new fonts, no new tokens, no new motion vocabulary. Every band is built from the section shell, `Eyebrow`, `SquareMarker`, `Reveal`, `Button` and the card treatments that exist today. **A re-architecture, not a re-skin.**
 
 **Primary file.** `app/[lang]/page.tsx` (876 lines today). All copy lives in `dictionaries/{en,es,ca}.json` — no hardcoded strings, ever.
 
-**This file is self-sufficient.** Every string the redesign needs is in §3, including the hero and anchor lines (§3.0). A fresh Claude Code session needs this document and nothing else; `POSITIONING_V3.md` explains *why* and is worth reading, but is not required to execute.
+**This file is self-sufficient.** Every string the redesign needs is in §3, including the hero and anchor lines (§3.0). A fresh Claude Code session needs this document and nothing else; `gtm/POSITIONING_V3.md` explains *why* and is worth reading, but is not required to execute.
 
 **How to run it.** One phase per session, one commit per phase, review the diff before moving on. Do not batch phases — each one has its own acceptance criteria, and a failed batch is hard to unpick. Every phase is a single commit, so `git revert` is the rollback.
 
@@ -89,7 +89,7 @@ Shared shell, unchanged:
 
 ### Band 1 — Hero
 
-Copy from `POSITIONING_V3.md` §3.1. Structure: eyebrow → two-tone h1 → mechanism subhead → two CTAs → **artefact**.
+Copy from `gtm/POSITIONING_V3.md` §3.1. Structure: eyebrow → two-tone h1 → mechanism subhead → two CTAs → **artefact**.
 
 The artefact is the change. Otel puts the product directly under the CTA row, cropped by the viewport edge so it reads as "there's more".
 
@@ -101,7 +101,7 @@ The artefact is the change. Otel puts the product directly under the CTA row, cr
 - **No parallax on the window.** It is the one still object in a moving hero; that contrast is the point.
 - Phone: full width minus the 24px gutter, crop reduced to ~15% so two lines of brief prose stay legible.
 
-⚠️ **Decision required** (`POSITIONING_V3.md` §8.3). The alternative is retiring the parallax hero and going product-only. The above keeps the brand asset *and* satisfies R1.
+⚠️ **Decision required** (`gtm/POSITIONING_V3.md` §8.3). The alternative is retiring the parallax hero and going product-only. The above keeps the brand asset *and* satisfies R1.
 
 ### Band 2 — Funciona con
 
@@ -119,7 +119,7 @@ Currently `showcase` at 557. Moves directly under the trust bar and shows a **co
 
 ### Band 4 — Las comunicaciones (promoted, upgraded)
 
-Currently `emailShowcase` at 529. `EmailDraftPreviewWindow` should show three things at once, the way Otel's compose panel does: **the guest's email · the matched reservation · the draft**. If the component renders only the draft today, adding the matched-reservation column is the highest-value component work in this spec — it is the visual proof of the moat (`GTM_STRATEGY.md` §2.2: the inbox is what no PMS copilot can see).
+Currently `emailShowcase` at 529. `EmailDraftPreviewWindow` should show three things at once, the way Otel's compose panel does: **the guest's email · the matched reservation · the draft**. If the component renders only the draft today, adding the matched-reservation column is the highest-value component work in this spec — it is the visual proof of the moat (`gtm/GTM_STRATEGY.md` §2.2: the inbox is what no PMS copilot can see).
 
 One `SquareMarker` line underneath: *"Nada se envía sin tu visto bueno."*
 
@@ -131,7 +131,7 @@ Structure, top to bottom:
 
 1. **The three `howItWorks` steps, compacted into a strip** — Conecta · Trabaja de noche · Te lo encuentras hecho. This keeps R3's job on the setup fear ("live in an afternoon") without spending a whole band on it, which is why `howItWorks` is absorbed here rather than kept separate.
 2. **The timeline**: seven rows, 23:00 → 09:00, hour label in a left column, title and chip in a card row. Copy in §3.6.
-3. **The kicker** — one line, the economic argument stated plainly: *"Todo esto, sin una hora extra ni una persona más en plantilla."* This is the sentence the whole band exists to earn. Say it as **work nobody had to stay up for**, never as people you no longer need — the displacement frame is what v2's hero got wrong (`POSITIONING_V3.md` §0.2).
+3. **The kicker** — one line, the economic argument stated plainly: *"Todo esto, sin una hora extra ni una persona más en plantilla."* This is the sentence the whole band exists to earn. Say it as **work nobody had to stay up for**, never as people you no longer need — the displacement frame is what v2's hero got wrong (`gtm/POSITIONING_V3.md` §0.2).
 4. **The honesty note** underneath the kicker, in muted text at `--fonda-text-3`.
 
 **What this band is actually for.** A GM deciding whether to sign does not buy "AI". They buy an answer to *what would it cost me to have someone do this?* The timeline answers it without arithmetic: seven things happened between midnight and nine, nobody worked late, nobody came in early, and the payroll line didn't move. That is the same argument the `stats` band makes with €199, and the same one `sections` makes with "six subscriptions" — but this is the one that lands in the body rather than the spreadsheet.
@@ -168,7 +168,7 @@ Layout: one card holding four cells with internal hairlines — the same contain
 
 Otel segments by role, not by feature. Three cards: **Propiedad y grupo · Dirección · Recepción**. Copy in §3.2. The existing `Vignette` system carries over — one vignette per role instead of per feature.
 
-The first card is written for one hotel **or twenty** (`POSITIONING_V3.md` §1.4). Nothing on this page says *independiente*, *boutique* or *pequeño* — a multi-property reader must never conclude the product was built for someone smaller than them and leave.
+The first card is written for one hotel **or twenty** (`gtm/POSITIONING_V3.md` §1.4). Nothing on this page says *independiente*, *boutique* or *pequeño* — a multi-property reader must never conclude the product was built for someone smaller than them and leave.
 
 ### Band 9 — De tu lado (NEW)
 
@@ -190,7 +190,7 @@ Honest momentum, and the home for everything that isn't live: analytics and reve
 
 ### Bands 13–15 — Precio · Preguntas · Cuando quieras
 
-Pricing gains `pricing.groupLine` (§3.7) under the flat price, so a group reader sees that multi-property is a supported case rather than an afterthought. It matches the Group tier in `GTM_STRATEGY.md` §3.2 (€149/property from the second). `pricing.note` drops "los primeros 20 hoteles" for "los tres primeros hoteles del piloto".
+Pricing gains `pricing.groupLine` (§3.7) under the flat price, so a group reader sees that multi-property is a supported case rather than an afterthought. It matches the Group tier in `gtm/GTM_STRATEGY.md` §3.2 (€149/property from the second). `pricing.note` drops "los primeros 20 hoteles" for "los tres primeros hoteles del piloto".
 
 Pricing moves above the FAQ: someone who has read ten bands wants the number before they want the small print. FAQ keeps the honest data language already in `faq.a5`. The CTA mirrors Otel's de-risked close — *twenty minutes, your data, nothing to migrate.*
 
@@ -202,7 +202,7 @@ Add to all three dictionaries. Written natively per language — the Spanish is 
 
 ### 3.0 Hero and anchor strings (Phase 0)
 
-The decided copy from `POSITIONING_V3.md` §3, inlined here so this document stands alone. Keep every `{brand}`, `{year}` and `{price}` token intact.
+The decided copy from `gtm/POSITIONING_V3.md` §3, inlined here so this document stands alone. Keep every `{brand}`, `{year}` and `{price}` token intact.
 
 | Key | ES | CA | EN |
 |---|---|---|---|
@@ -423,11 +423,11 @@ Violating any of these is a bug, not a style choice.
 3. **No connection count.** `LIVE_INTEGRATIONS` and `ON_REQUEST_INTEGRATIONS` stay as they are. Moving a name between them is a product claim, not a copy edit.
 4. **`lib/roadmap.ts` governs the site.** If a surface is `coming-soon` there, it cannot appear above band 10 here. Today that means **analytics, revenue, finance, operations, front-desk, oversight, sales-marketing and concierge are not claimed on the landing page.**
 5. **`comingSoon` stays in the future tense**, in all three languages, forever.
-6. **The hero subhead never gets shortened** below the four live surfaces. It is what makes the headline honest (`POSITIONING_V3.md` §1.2).
+6. **The hero subhead never gets shortened** below the four live surfaces. It is what makes the headline honest (`gtm/POSITIONING_V3.md` §1.2).
 7. **WCAG AA holds**, especially hero text over the watercolour — the existing code comments document measured ratios. Re-measure if the scrim changes.
 8. **The parallax is the only motion exception.** The overnight timeline uses `Reveal`'s existing stagger, which is the site's normal motion vocabulary — it is not a second exception, and it must not become one.
 9. **Never the word "capa"** in ES/CA copy, and never *director* / *manager* as the category noun in any language.
-10. **No segment words on the landing page.** *Independiente*, *boutique*, *pequeño* and their EN/CA equivalents come out (`settings.propertyTypePlaceholder` is a form hint and stays). Outbound targeting stays narrow — that lives in `GTM_STRATEGY.md` §4.3, not on the site. See `POSITIONING_V3.md` §1.4.
+10. **No segment words on the landing page.** *Independiente*, *boutique*, *pequeño* and their EN/CA equivalents come out (`settings.propertyTypePlaceholder` is a form hint and stays). Outbound targeting stays narrow — that lives in `gtm/GTM_STRATEGY.md` §4.3, not on the site. See `gtm/POSITIONING_V3.md` §1.4.
 
 ---
 
@@ -837,7 +837,7 @@ security band's cta resolves to the /trust page built in Phase I, with no 404.
 Phase I — trust page. Add a localised page at /trust under app/[lang]/(legal)/
 covering: what Fondas reads, what it stores, where it is hosted, what it never
 does, the deletion policy, and the controller/processor split. Source the
-wording from POSITIONING_V3.md §4 and the existing faq.a5 — "stored encrypted,
+wording from gtm/POSITIONING_V3.md §4 and the existing faq.a5 — "stored encrypted,
 EU-hosted, used only to produce your briefs and drafts, deleted on offboarding".
 
 Decided: publish the full page now, stated as facts. The controller/processor
@@ -890,7 +890,7 @@ no-token headline path exercised and correct.
 
 - [x] All three dictionaries parse as valid JSON; no missing-key warnings in any locale. *(Phase J: all three `require()` clean at 50 namespaces each; `npm run build` prerenders every locale of every route with no warning.)*
 - [x] `grep -i` across the dictionaries: zero hits for *capa*, *director con IA*, *director amb IA*, *AI manager*, *piloto automático*, *pilot automàtic*, *on autopilot*, *front office*. *(Phase J: the only match is "es**capa**n" inside `manual3`, which is the verb, not the noun.)*
-- [ ] Every claim on the page is demonstrable in the 20-minute demo (`POSITIONING_V3.md` §0.4) or sits inside `comingSoon`.
+- [ ] Every claim on the page is demonstrable in the 20-minute demo (`gtm/POSITIONING_V3.md` §0.4) or sits inside `comingSoon`.
 - [ ] Nothing marked `coming-soon` in `lib/roadmap.ts` is claimed above band 10.
 - [ ] `comingSoon` is future tense in ES, CA and EN.
 - [ ] `nightShift.kicker` and `nightShift.note` are both on the page, and every timeline row still matches the schedules in `vercel.json`.

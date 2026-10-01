@@ -1,8 +1,8 @@
 # Fondas — Positioning & GTM v3
 
-_Owner: Oriol · 17 September 2026 · Status: proposal, pending one decision (§1.5)_
+_Owner: Oriol · 17 September 2026 · Status: **adopted** — the site went live on it on 18 September. Moved to `gtm/` and tidied 23 September._
 
-**What this amends.** `FONDA_MARKETING_VOICE.md` §1–§4 (the "AI manager" repositioning) is **retired** by this document. `GTM_STRATEGY.md` stays the source of truth for market, ICP, pricing and funnel; this file replaces its **§3.1 (positioning)**, **§4.7 (outreach sequence copy)**, **§4.8 (the demo)**, **§4.9 (objections)** and **§4.13 (the one-pager)**. Everything else in that file stands.
+**What this amends.** `GTM_STRATEGY.md` stays the source of truth for market, ICP, pricing and funnel; this file replaces its §3.1 (positioning) and **wins wherever the two differ**. The outreach copy, demo, one-pager and objections that §5 used to carry now live in `PILOT_PLAYBOOK.md`, the only home for scripts. The voice rules that survived the retired `FONDA_MARKETING_VOICE.md` are §9 below.
 
 **Why now.** We're inside the Sep 7 – Oct 15 window — the best selling window of the year per §4.4. The page and the pitch need to say the same true thing before the outreach wave lands.
 
@@ -66,9 +66,14 @@ Applied honestly, this rule alone recovers more conversion than any headline. It
 
 | | |
 |---|---|
-| **ES** | DOS PASOS POR DELANTE, CADA MAÑANA. |
-| **CA** | DOS PASSOS PER DAVANT, CADA MATÍ. |
-| **EN** | TWO STEPS AHEAD, EVERY MORNING. |
+| **ES** | SUPERINTELIGENCIA PARA HOTELES |
+| **CA** | SUPERINTEL·LIGÈNCIA PER A HOTELS |
+| **EN** | SUPERINTELLIGENCE FOR HOTELS |
+
+> **Changed 1 Oct 2026 (founder's call).** The eyebrow is now a plain category
+> claim, set bold with no leading dot. The reasoning below is about the line it
+> replaced, *Dos pasos por delante, cada mañana*, which still closes the footer
+> (`footer.rights`).
 
 Cheeky, confident rather than loud, and it **names no segment and no enemy** — which matters more than it looks: other candidates either jabbed at a peer (*el hotel de al lado*, who in Barcelona is often the person who referred you) or fixed the page to one size of hotel (§1.4).
 
@@ -152,6 +157,8 @@ The band-by-band page architecture, the design deltas against the Signal system,
 
 ## 3. The string swap
 
+_Executed: the site went live with these strings on 18 September (`ROADMAP.md` §1). Kept as the record of what was decided._
+
 Mechanical: apply by key, invent nothing, keep tokens (`{year}`, `{brand}`, `{price}`) intact. Files: `dictionaries/en.json`, `dictionaries/es.json`, `dictionaries/ca.json`.
 
 ### 3.1 Hero
@@ -212,147 +219,37 @@ The claims above are small enough to be true today — but "true" isn't "believe
 
 ## 5. GTM refresh
 
+**Moved 23 Sep.** Every script that stood here now lives in `PILOT_PLAYBOOK.md`. The subsection headings stay so older references still land.
+
 ### 5.1 The outreach opener
 
-Replaces the touch-1 copy in §4.7. Rules kept: personalised, no attachment, one ask, no "IA", offer to visit.
-
-**ES (primary)**
-
-> **Asunto:** el resumen de mañana del [Hotel]
->
-> Hola [Nombre],
->
-> Soy Oriol, de Barcelona. Estoy arrancando Fondas con tres hoteles independientes de la ciudad y me gustaría que uno fuera el vuestro.
->
-> Funciona así: conecta tu MEWS y tu Gmail, y cuando llegas por la mañana ya te está esperando el resumen del día —llegadas, salidas, VIPs, ETAs sin confirmar— y los correos de huéspedes redactados con la voz del hotel para que solo los revises y los envíes. Nada se envía sin tu visto bueno y no cambia nada de lo que ya usáis.
->
-> ¿Te mando el resumen de mañana de un hotel de 45 habitaciones de Barcelona, para que veas exactamente de qué hablo? Si te encaja, te lo enseño en 20 minutos — o me paso por recepción, que lo tengo a mano.
->
-> Un saludo,
-> Oriol
-
-**CA**
-
-> **Assumpte:** el resum de demà de l'[Hotel]
->
-> Hola [Nom],
->
-> Sóc l'Oriol, de Barcelona. Estic arrencant Fondas amb tres hotels independents de la ciutat i m'agradaria que un fos el vostre.
->
-> Funciona així: connectes el teu MEWS i el teu Gmail, i quan arribes al matí ja t'està esperant el resum del dia —arribades, sortides, VIPs, ETAs sense confirmar— i els correus dels hostes redactats amb la veu de l'hotel perquè només els revisis i els enviïs. Res no s'envia sense el teu vistiplau i no canvia res del que ja feu servir.
->
-> Vols que t'enviï el resum de demà d'un hotel de 45 habitacions de Barcelona, perquè vegis exactament de què parlo? Si et quadra, te l'ensenyo en 20 minuts — o em passo per recepció, que ho tinc a prop.
->
-> Una abraçada,
-> Oriol
-
-**EN** (for UK/IE-facing or English-speaking GMs)
-
-> **Subject:** tomorrow's brief for [Hotel]
->
-> Hi [Name],
->
-> I'm Oriol, based in Barcelona. I'm starting Fondas with three independent hotels in the city and I'd like yours to be one of them.
->
-> It works like this: connect your MEWS and your Gmail, and when you walk in the morning is already waiting — the day's brief (arrivals, departures, VIPs, unconfirmed ETAs) and your guest emails drafted in the hotel's voice, ready for you to review and send. Nothing sends without your yes, and nothing you already use changes.
->
-> Can I send you tomorrow morning's brief for a 45-room Barcelona hotel, so you can see exactly what I mean? If it lands, I'll show you the rest in 20 minutes — or I'll come by reception, I'm local.
->
-> Best,
-> Oriol
+→ `PILOT_PLAYBOOK.md` §4, template **E3** (ES/CA/EN). "Conecta tu MEWS" became "conecta tu PMS" now that Apaleo and the Sheet source work.
 
 ### 5.2 The 20-minute demo, re-sequenced
 
-Replaces §4.8. The page leads with the morning; the **demo leads with the morning too — but only for 2 minutes**, then spends its weight on the inbox. The §4.8 warning still holds: never let a GM sit through five minutes of brief and think *"mi PMS ya hace eso."*
-
-| Min | What you do |
-|---|---|
-| 0–3 | *"¿Cómo es tu primera hora? ¿Dónde se te va el tiempo antes de que llegue el equipo?"* Let them describe it. Write down their words — they're your next headline. |
-| 3–5 | **The brief, on their own seeded data. Two minutes, no more.** *"Esto es lo que te encuentras a las 6:45."* Read two lines aloud. It's the hook, not the product. |
-| 5–12 | **The inbox.** A real guest email, the reservation pulled beside it, the draft in the hotel's voice. Edit one word live and send. *"Fondas lee tus datos y escribe esto. Tú decides qué sale."* This is the seven minutes that differentiate you. |
-| 12–14 | ETA chasing and ask-anything, fast. Narrate the day, not the features. |
-| 14–16 | The fragmentation close: *"Puedes pagar seis suscripciones —comunicaciones, revenue, finanzas, tareas, experiencias, CRM— o una capa que te lleva la mañana."* |
-| 16–18 | *"¿Esto se parece a algo que te ahorraría tiempo?"* Then stop talking. |
-| 18–20 | *"El siguiente paso es conectar tu PMS. Son 30 minutos y lo hacemos juntos. ¿Lo agendamos?"* |
-
-**Apaleo exception:** if the prospect is on Apaleo, skip minutes 3–5 entirely and open on the inbox. Apaleo Copilot ships a brief; do not invite the comparison.
-**Unchanged from §4.8:** add their Google account as an OAuth test user the day the demo is booked; seed the test hotel with realistic Spanish guest names and a plausible occupancy pattern; never say "IA".
+→ `PILOT_PLAYBOOK.md` §6, with the labour close added. The fragmentation line there says *herramienta*, not *capa* — §1.3 retired *capa* as jargon.
 
 ### 5.3 The one-pager v3
 
-Replaces §4.13. This is the page that gets forwarded to an owner who wasn't on the call, so it answers their questions, not the GM's.
-
-> **Fondas — todo resuelto antes de que llegues**
->
-> **Qué es.** Una capa sobre el PMS y el correo que ya usáis. Trabaja de noche y os deja la mañana hecha.
->
-> **Qué hace hoy.**
-> · Escribe el resumen del día antes de que abra recepción: llegadas, salidas, VIPs, ETAs sin confirmar, lo que necesita atención.
-> · Redacta las respuestas a los correos de huéspedes con la voz del hotel, cruzando cada correo con su reserva. Las revisáis vosotros.
-> · Pide automáticamente las horas de llegada sin confirmar, para que pisos vaya por delante.
-> · Responde preguntas sobre el día en lenguaje normal ("¿cuántas habitaciones quedan por limpiar?").
->
-> **Qué llega durante el piloto.** Extras antes de la llegada con vuestros precios · señal de tarifa en el resumen · el resumen por WhatsApp.
->
-> **A qué se conecta.** MEWS por su API oficial. Gmail por OAuth, con los mismos permisos que cualquier cliente de correo. Nada que migrar.
->
-> **Qué NO hace.** No modifica datos en vuestro PMS. No envía ningún correo sin vuestra revisión y aprobación. No sustituye a nadie de recepción — le quita el trabajo administrativo.
->
-> **Datos.** Se guardan cifrados y alojados en la UE, se usan solo para generar vuestros resúmenes y borradores, y se borran si os dais de baja. El hotel es el responsable del tratamiento; Fondas, el encargado.
->
-> **Piloto.** 30 días gratis, acceso completo, una llamada de configuración (30 min) y una de feedback. Sin contrato ni tarjeta. Después, 199 €/mes por hotel, plano — menos que una noche de habitación.
->
-> **Contacto.** Oriol · oriolpelli@icloud.com · fondas.app
+→ `PILOT_PLAYBOOK.md` Appendix A, corrected in two places: *«Qué llega durante el piloto»* became *«En camino»* (§0.4 — the roadmap schedules none of the three items inside a pilot), and *«una capa»* became *«una herramienta»* (§1.3). The printed PDFs in `pitch/` still carry the old text — `README.md`, known issue 1.
 
 ### 5.4 Objections, updated
 
-The two §4.9 objections that change, plus the one v3 creates:
-
-**"Mi PMS ya hace el resumen."** *(new — the most dangerous one, and the reason band #6 exists)*
-> "Sí, y el de Apaleo está bien. La diferencia es el correo: el copiloto de tu PMS no ve tu bandeja de entrada, y ahí es donde se te va la mañana de verdad. Y si algún día tienes dos hoteles en dos sistemas, el copiloto de cada uno trabaja para su sistema. Fondas trabaja para ti."
-
-**"¿Esto sustituye a alguien de recepción?"** *(new — the question "AI manager" was inviting)*
-> "No, y no está pensado para eso. Le quita a recepción el trabajo administrativo —redactar, perseguir ETAs, cuadrar el día— para que estén con el huésped, que es lo que no se puede automatizar."
-
-**"Ya usamos otra herramienta de informes."** *(unchanged, still works)*
-> "Fondas no es una herramienta de informes — es un relevo: lee tus informes por ti y te dice qué importa hoy. La mayoría usa las dos."
-
-**"¿Cuánto cuesta?"** *(unchanged)*
-> "El piloto no cuesta nada — son los tres primeros hoteles. Después la idea son 199 € al mes, plano, sin coste por habitación. Pero esa conversación es dentro de seis semanas y depende de que te resulte útil."
-
----
+→ `PILOT_PLAYBOOK.md` §8, merged with `GTM_STRATEGY.md` §4.9 and the sprint's objections.
 
 ## 6. What changes in the other docs
 
-| Doc | Action |
-|---|---|
-| `FONDA_MARKETING_VOICE.md` | §1 (front office → hotel manager) and §3–§4 (hero options, anchor lines) are **superseded**. **§2 (the voice) survives intact and is still the standard** — v3 is more consistent with it than v2 was. Add a header pointing here. |
-| `GTM_STRATEGY.md` | Replace §3.1, §4.7 touch 1, §4.8, §4.9, §4.13 with §1.5, §5.1, §5.2, §5.4, §5.3 of this file. Parts 1, 2, 3.2–3.4, 5–11 and the appendices are unchanged. |
-| `FONDA_SANA_PROMPT_PACK.md` | Phase 7.5 is retired. The copy swap is now Phase 0, and Phases A–J of the redesign live in `SITE_REDESIGN_V3.md` §7. |
-| `COMINGSOON_CONTENT.md` | Re-check against §0.4 — anything claiming pricing or offers comes out. |
-| `brand/linkedin/LINKEDIN_SETUP.md` | "The AI manager for independent hotels" → "La IA que lleva la operativa de tu hotel." Drop *independent* here too (§1.4) — LinkedIn is inbound. |
-
----
+| Doc | Action | Status, 23 Sep |
+|---|---|---|
+| `FONDA_MARKETING_VOICE.md` | §1 and §3–§4 superseded; §2 (the voice) survives | **Archived** to `docs/archive/`. §2 lives on as §9 below, edited to the v3 scope |
+| `GTM_STRATEGY.md` | §3.1, §4.7, §4.8, §4.9, §4.13 replaced by this file | **Done** — those sections are pointers (to here and to `PILOT_PLAYBOOK.md`) |
+| `FONDA_SANA_PROMPT_PACK.md` | Phase 7.5 retired | **Archived** (`ROADMAP.md` §8) |
+| `COMINGSOON_CONTENT.md` | Re-check against §0.4 | **Clean** (`ROADMAP.md` §9, 18 Sep) |
+| `brand/linkedin/LINKEDIN_SETUP.md` | Tagline to *«La IA que lleva la operativa de tu hotel»*; drop *independiente* | **Rewritten 23 Sep**, text only — the images still carry the v2 slogan (`README.md`, known issue 2) |
 
 ## 7. Application plan — 14 days
 
-The selling window closes 15 October. Sequenced so outreach starts before the page is finished. Phase letters refer to `SITE_REDESIGN_V3.md` §7.
-
-| Day | Do | Why it's in this slot |
-|---|---|---|
-| 1 | `SITE_REDESIGN_V3.md` Phase 0 — string swap across en/es/ca. | Everything downstream quotes the hero. |
-| 1 | `SITE_REDESIGN_V3.md` Phase A — band reorder, `comparison` retired. | Structure before decoration; no new copy needed. |
-| 2 | Phases B–D — the artefact in the hero, the ungated brief, the matched reservation. | The single highest-conversion group of changes available. |
-
-| 3 | Phases E–F — the four parts of the day, then the overnight timeline. | The timeline is the band that sells without arithmetic. |
-| 4 | Phases G–H — role cards, then the three objection bands. | Kills the objections that end calls. |
-| 4 | Rewrite the one-pager (§5.3) as a PDF. | It gets forwarded; it must stand alone. |
-| 5 | **Outreach wave restarts with §5.1, 5 contacts/day.** | Do not wait for Phases I–J. |
-| 5–10 | Demos with §5.2 sequencing. | |
-| 7 | Phase I — trust page live. | Before the first owner asks. |
-| 10 | Gremi d'Hotels / CEHAT membership enquiry sent. | Slow to land; start early. |
-| 12 | Phase J — mobile pass and polish. | P0 in GTM §3.3: the GM reads the brief on a phone at 6:45. |
-| 14 | First pilot live → ask for the quote at the agreement stage. | Proof #2 in §4. |
+**Executed and superseded.** The site phases (Phase 0 through J of `SITE_REDESIGN_V3.md`) shipped by 18 September. The selling half of this plan — outreach from day 5, demos, a first pilot by day 14 — never started; it is rescheduled in `PILOT_SPRINT.md`. The 14-day table is in git history.
 
 ## 8. Decisions taken
 
@@ -370,3 +267,52 @@ All four open items were closed on 17 September. Recorded here so the phases can
 Taking the price off the page removes a qualifier. Some of the traffic that would have self-selected out on €199 will now book a demo instead, which costs founder hours — the §5.2 demo already asks the money question at minute 16, so the filter moves from the page to the call rather than disappearing.
 
 Fifteen bands is a long page. Every band answers a named objection, so none of them is padding, but scroll depth should be watched once it's live. If bands 6 and 7 both underperform, band 6 (`comparison`) is the one to cut — it was the marginal call in the first place.
+
+
+---
+
+## 9. The voice
+
+_Carried over 23 Sep from `FONDA_MARKETING_VOICE.md` §2 — the one section of that file that survived. Edited to the v3 scope: no rates, no offers. The rest of that file is in `docs/archive/`._
+
+**The moves**, from Sana: declarative and calm; confident, not loud; concrete nouns and verbs that name the real work; the human stays in the frame; one idea per line.
+
+**Fondas's voice** is that calm, applied to running a hotel: warm, plain-spoken, boutique rather than corporate. It should sound like a sharp operator who worked the night shift for you — the brief written, the inbox drafted, the arrivals chased — not like software bragging.
+
+**Do**
+
+- Lead with outcomes a director feels: a calm morning, guests answered, arrivals known.
+- Name the real jobs: the brief, the guest inbox, arrivals, the day's questions.
+- Keep the human on the judgment calls: *drafted for you*, *your call*, *nothing goes out without your yes*.
+- Let a headline be a plain statement. Tension is fine; cleverness is a tax.
+
+**Don't**
+
+- Claim autonomy: no *runs itself*, *on autopilot*, *set and forget*.
+- Claim what the demo can't show (§0.4). Upsells, rates and offers are *on the way*, never present tense.
+- Build a headline on a pun or a mirror-image antithesis that breaks in translation.
+- Use hype adjectives, exclamation marks or emoji in marketing copy.
+
+**ES/CA.** Informal *tú/tu* in writing; translate the idea, not the words; everyday hotel terms (*huéspedes/hostes*, *llegadas/arribades*, *operativa*, *extras*); no *capa* (§1.3). Read it aloud — if a director wouldn't say it, rephrase. In person, drop to *usted* when they do (`PILOT_PLAYBOOK.md`, intro).
+
+---
+
+## 10. Selling the trajectory — decided 23 September
+
+**The decision.** The pitch sells the **whole daily operativa** and **where the product is going**, not "the first hour" or "the morning". A small hotel hears *la primera hora* and concludes *«eso lo hago yo en un rato»*. §1.3 already rejected that framing for the site; this extends it to every sales conversation, email, one-pager and the door pitch. The morning brief stays as how the day *starts* in a demo — ten seconds, then on.
+
+**How §0.4 applies to a conversation.** §0.4 says every claim must be demonstrable in the demo *or visibly labelled as coming*. The sales version of that rule, now in `PILOT_PLAYBOOK.md` §0.1:
+
+1. **Present tense only for what's live**; future tense for the roadmap.
+2. **Promise the pace, never a date** for a specific feature. The pace is provable: 20 product features shipped in the 30 days to 23 Sep, and the guest record, saved chats, both communications inboxes and the customisable Home didn't exist a month earlier.
+3. **The hotel never pays for a promise.** The decision at day 60 is about what's on the screen that day.
+4. **The roadmap in the pitch is the roadmap in the repo** — `ROADMAP.md` and `lib/roadmap.ts`, shown through the locked tiles in Home › Personalizar.
+
+**The offer that makes the trajectory a reason to join now.** Founding hotels (the first 3–4): 60 days free with everything shipped in that time, a review at day 30, a decision at day 60, then €149/month for life including everything shipped later (list price €199). Their requests go first in the queue.
+
+**Consequences to watch.**
+
+- **The release train is now part of the promise.** After the sprint (6 Oct), a quiet fortnight of shipping is visible to every pilot. `ROADMAP.md` §4 records this.
+- **The first invoice moves to ~December** (pilots from ~1 Oct, day 61 ~1 Dec). The day-30 commitment keeps the willingness-to-pay signal early; the legal entity has more time.
+- **"Everything shipped later" at €149 is a real giveaway**, deliberately limited to 3–4 hotels. If a future module is priced separately, founding hotels keep it; say so in the agreement and don't widen the cohort.
+- **The site's eyebrow still says *cada mañana*** (§1, *Dos pasos por delante, cada mañana*). It reads as "every day" rather than "only mornings", so it stays for now; revisit with the next site pass. Not changed during the sprint. *Superseded 1 Oct 2026: the eyebrow is now* Superinteligencia para hoteles *(see the category line above).*

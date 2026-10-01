@@ -8,6 +8,9 @@ Hotel operations SaaS for independent hotel GMs (20–200 rooms).
 > `FONDA_SANA_REDESIGN.md`); "Fonda" in design-token comments refers to that
 > system, not the product.
 
+Go-to-market — strategy, positioning, the pilot playbook and the current
+sprint — lives in [`gtm/`](gtm/README.md).
+
 Core surfaces, live as of 19 Sep 2026:
 
 - **Home** — leads with what needs you today; the tiles are user-customisable

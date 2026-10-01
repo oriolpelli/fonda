@@ -91,7 +91,7 @@ Written here so they are visible and can be overturned before you run anything:
 | # | Decision | Why |
 |---|---|---|
 | P-1 | In W2, nav rows whose surface ships later (**Guests**, **Communications › In-house**, **Arrivals** rename) point at an interim target: Guests and In-house render the existing `ComingSoon` page from a new `lib/roadmap.ts` row; Arrivals points at `/dashboard/checkins` until W5 renames it. | The rail must be complete and stable from W2; a row that appears in W6 is a nav change the user notices twice. Stub count briefly goes 6 → 8, back to 6 by the time Guests ships. |
-| P-2 | Migrations are numbered `0022` (`dashboard_layouts`), `0023` (`chat_threads` + `chat_logs` columns), `0024` (`guest_profiles` + retention), `0025` (`reviews` for Reputation). | Continues the existing sequence; `0017`/`0018` gaps are historical and stay as they are. |
+| P-2 | Migrations are numbered `0022` (`dashboard_layouts`), `0023` (`chat_threads` + `chat_logs` columns), `0024` (`guest_profiles` + retention), `0026` (`reviews` for Reputation — moved from 0025 on 1 Oct 2026, when `AI_ACT_PROMPTS.md` A1 took 0025 for AI provenance). | Continues the existing sequence; `0017`/`0018` gaps are historical and stay as they are. |
 | P-3 | The widget registry lives at `lib/home-widgets.ts` (keys, width, loader) and `components/dashboard/widgets/*` (renderers). | Keeps `dashboard/page.tsx` a thin composer, same as the proposal's "existing cards become widgets in a registry". |
 | P-4 | The Reputation review source is **decided before Prompt 14 runs**, not by Claude Code. Options in §W8. | There is no TripAdvisor review API for this use; scraping is not a product decision Claude Code should make. |
 | P-5 | The optional Morning Brief additions (`APP_UX_PROPOSAL.md` §5.1) run as Prompt 7b after Home v1, since "Since the brief" reuses the `TodoItem` rendering Home v1 just moved. | Cheapest point in the sequence; skippable. |
@@ -1184,7 +1184,7 @@ supabase/migrations/0021 (comment convention), and CLAUDE.md.
 
 Data layer only. No page in this step.
 
-1. supabase/migrations/0025_reviews.sql:
+1. supabase/migrations/0026_reviews.sql:
    create table public.reviews (
      id uuid primary key default gen_random_uuid(),
      hotel_id uuid not null references public.hotels(id) on delete cascade,
@@ -1244,9 +1244,9 @@ the migration is ready to apply. Show me the diff.
 - Read a handful of classified rows: themes come from the fixed vocabulary, the sentiment matches the text, and the quote actually appears in the body.
 - Grep the logs for review text and author names. There should be none.
 
-**Commit:** `feat(reputation): reviews table, Google reviews sync, theme classifier (migration 0025)`
+**Commit:** `feat(reputation): reviews table, Google reviews sync, theme classifier (migration 0026)`
 
-Apply `0025` before Prompt 14.
+Apply `0026` before Prompt 14.
 
 ---
 
@@ -2215,7 +2215,7 @@ W4   feat(home): per-user dashboard layouts with role defaults (migration 0022)
 W5   feat(arrivals): rename check-ins to arrivals & departures, two tabs
 W6   feat(communications): in-house and upcoming windows; StayPhase widened to four
      feat(communications): queue framing — needs you, waiting, done today     (optional)
-W8   feat(reputation): reviews table, Google reviews sync, theme classifier (migration 0025)
+W8   feat(reputation): reviews table, Google reviews sync, theme classifier (migration 0026)
      feat(reputation): score movement, themes and recent reviews
 then feat(communications): guest context pane at xl
      feat(chat): persistent threads, thread list, continue-in-chat handoff (migration 0023)

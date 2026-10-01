@@ -38,7 +38,7 @@ coming-soon stubs sit behind the nav.
 three locales. The repo's oldest unblocked item is closed; the branch can be
 deleted.
 
-**Commercially.** Zero pilots live. `GTM_STRATEGY.md` §4.5's dated milestones —
+**Commercially.** Zero pilots live. `gtm/GTM_STRATEGY.md` §4.5's dated milestones —
 "2 pilots live by 4 Sep", "3 pilots by 18 Sep" — have all passed unmet. That is
 the honest headline of this document and §2 is built around fixing it.
 
@@ -145,13 +145,26 @@ a grep before and after, not by eye.
 **2c · Fix the stale facts.** `README.md` still says Inter and `#1A56DB`, two
 design systems out of date. Extract `FONDA_REDESIGN_SPEC.md` §6 (the only
 permissions spec that exists) into a short section of this file before archiving
-it. Add the retirement header `POSITIONING_V3.md` §6 asked for to
+it. Add the retirement header `gtm/POSITIONING_V3.md` §6 asked for to
 `FONDA_MARKETING_VOICE.md`.
 
-### Step 3 — The release train ◀ **you are here**
+### Step 3 — The release train — paused 23 Sep – 6 Oct for the pilot sprint
 
-§2 below. **Next: W2, prompts 1–4** in `APP_UX_PROMPTS.md` — the two-pillar
-rail. §2's "How to run a release week" states the loop.
+§2 below. W2–W6 and the whole follow-on list shipped 18–19 Sep; **next, after
+the sprint: W9, AI transparency** (`AI_ACT_PROMPTS.md` A1–A4 — the EU AI Act's
+Art. 50(2) marking is due **2 Dec 2026**), **then the rate cache (B17)**, as §2
+says. §2's "How to run a release
+week" states the loop.
+
+### Step 3a — The pilot sprint, 23 Sep – 6 Oct ◀ **you are here**
+
+**Selling outranks building until 6 October.** Zero pilots is the actual
+problem, and on 23 Sep all 40 rows of the outreach tracker still read `found`.
+The day-by-day is `gtm/PILOT_SPRINT.md`; every script is
+`gtm/PILOT_PLAYBOOK.md`. During the sprint, code changes are limited to the
+demo blockers in `gtm/PILOT_SPRINT.md` §4 (migrations 0023/0024, demo seed
+data, the demo run-through) and to fixes a demo or a live pilot needs. The
+release train resumes after the sprint review on 6 Oct.
 
 ### Running alongside all of it, from today
 
@@ -164,9 +177,8 @@ rail. §2's "How to run a release week" states the loop.
   archaeology, and the blocker that has sat for seven weeks clears in five days.
   While you're in the file: line 46 still says "Four consecutive green days" —
   the bar is five (§7 #7).
-- **Restart outreach: five contacts a day**, using `POSITIONING_V3.md` §5.1.
-  This does not wait for any build, any merge or any cleanup. Zero pilots is the
-  actual problem.
+- **The pilot sprint** — Step 3a above. Outreach does not wait for any build,
+  any merge or any cleanup.
 
 ---
 
@@ -185,6 +197,8 @@ One release a week. Each row is a week's work and ships on its own.
 | **W6** ✅ *(19 Sep)* | **Communications, two windows** | `StayPhase` widened to four; In-house + Upcoming; Concierge absorbed; WhatsApp first-run card | ph. 7 · **prompts 11–12** |
 | **W7** | **Billing** | Stripe + trial gating (B20). Blocked on the legal entity — start §4 now, not in week 7 | B20 · Gate 2 · `EXECUTION_PLAYBOOK.md` |
 | **W8** | **Reputation** | The first real Commercial surface. Reviews fetched, themed, score movement | §6 · **prompts 13–14**, after decision P-4 |
+| **W9** ◀ *first after the sprint* | **AI transparency (EU AI Act, P0)** | Model IDs in one place + provenance on every output (migration 0025, also closes the two `emails` rows in §3.2); machine-readable AI headers on every sent reply, chaser and brief; quiet "Fondas AI" labels; recorded bulk-send confirmation. **Hard deadline 2 Dec 2026** | `AI_ACT_PROMPTS.md` **A1–A4** |
+| **W10** | **AI trust pack (P1)** | "How Fondas uses AI" on `/trust`; AI-literacy onboarding + record (Art. 4); guest-notice wording; AI activity log + problem reports — un-parks *AI management*. **Before the first invoices, ~1 Dec** | `AI_ACT_PROMPTS.md` **A5–A8** |
 
 **Then, in order — ✅ all shipped 19 Sep:** the guest context pane (15) → chat
 threads (16, migration 0023) → the Sana chat pass (D3) → Guests v1 (17,
@@ -194,7 +208,10 @@ migration 0024) → chat source chips (18) → provenance chips (19) → ⌘K pa
 **⚠️ Migrations 0023 and 0024 are written but NOT APPLIED.** Chat and Guests
 both fail without them. Apply before the next deploy.
 
-**Next:** rate cache (B17) → Revenue Management. The four parked house sections
+**Next, after the sprint:** W9 AI transparency → rate cache (B17) → W10 AI
+trust pack → Revenue Management. W9 goes first because it is small, it carries
+the only legal deadline on this page, and a pilot's DPO will ask about it. If
+W10 and B17 compete for a week, W10 wins before 1 Dec. The four parked house sections
 (Housekeeping, F&B, Staff, Procurement) and the three business ones
 (Reporting & audit, Chargeback, Team activity) re-enter the nav the week each
 one ships, and not before — see §6.
@@ -216,9 +233,11 @@ If a prompt asks a question it doesn't answer, the answer is in
 chat. If the proposal is silent: stop, decide, write it into `APP_UX_PROPOSAL.md`
 §11, continue.
 
-**Two prompt documents, one boundary.** `APP_UX_PROMPTS.md` holds the app IA/UX
+**Three prompt documents, one boundary.** `APP_UX_PROMPTS.md` holds the app IA/UX
 prompts (W2–W8, prompts 1–21) **and the v4 design track (§D, prompts D1–D4)**. `EXECUTION_PLAYBOOK.md` holds the B-numbered
-build tasks, including B20 (billing, W7) and B15–B22. Neither says *when* —
+build tasks, including B20 (billing, W7) and B15–B22. `AI_ACT_PROMPTS.md` holds
+the EU AI Act work (W9–W10, prompts A1–A8), its rules for unbuilt features (§R)
+and the non-code items (§L). None says *when* —
 that is this table. If they ever disagree with it, they are stale.
 
 **Why the prompts are not pasted into this file.** They run to 1,400 lines. This
@@ -287,6 +306,7 @@ Nothing here is optional once money changes hands.
 | 🔴 | **Legal entity — Spanish SL or autónomo** | **weeks.** Book the lawyer the week pilot #2 lands. Everything below blocks on this |
 | 🔴 | **One-page pilot agreement** | write it now — data accessed, no model training, encrypted EU-hosted, sub-processor list, deletion on request |
 | 🔴 | **Lawyer-drafted DPA** | triggered the day a hotel's DPO asks |
+| 🔴 | **EU AI Act classification memo, lawyer-reviewed** | a few hours of a tech lawyer's time; skeleton in `AI_ACT_PROMPTS.md` §L. Same lawyer conversation as the entity and the DPA. Until it's signed off, `/trust` shows no "reviewed by" line |
 | 🔴 | **Stripe billing + trial gating (B20)** | W7 |
 | 🔴 | **Rate limiting + per-hotel AI spend caps (B21)** | required before public signups |
 | 🔴 | **Google OAuth verification** | weeks; blocked on the entity; **may require a CASA security assessment and a demo video of the OAuth flow** — that requirement is recorded only in `STAGE0.md` §0.2 |
@@ -337,11 +357,12 @@ Held deliberately. Each has a trigger, not a date.
 | **Outlook / Microsoft 365** | pipeline evidence — "the biggest addressable-market lever", but only if pilots keep asking |
 | **Pre-arrival upsell drafting (B15)** | B6 data fields are done; "one late checkout a week pays for Fondas" |
 | **Repeat-guest personalization (B18)** | largely absorbed by Guests v1 (`APP_UX_PROPOSAL.md` §5.4) |
-| **Graduated autonomy (B19)** | gate on B16 acceptance data proving draft quality |
+| **Graduated autonomy (B19)** | gate on B16 acceptance data proving draft quality. **Auto-sent mail needs a visible AI line** — `AI_ACT_PROMPTS.md` §R |
 | **Multi-property owner digest** | unlocks the Group tier |
 | **Apaleo multi-property merge** | fine for single-property pilots; matters for the 1–3-property owners in the ICP |
 | **3rd PMS — Cloudbeds or Amenitiz** | pilot-pipeline evidence |
-| **WhatsApp — brief delivery + urgent flags**, and separately **in-house guest messaging** | the second one is what makes Communications › In-house worth splitting |
+| **WhatsApp — brief delivery + urgent flags**, and separately **in-house guest messaging** | the second one is what makes Communications › In-house worth splitting. The guest bot is an AI Act Art. 50(1) chatbot — `AI_ACT_PROMPTS.md` §R |
+| **ISO/IEC 42001 (AI management system)** | a chain or 10+ property group in the pipeline; after ISO 27001 or SOC 2 |
 | **Automated tests / CI on money paths (B22)** | before, not after, Stripe carries real charges |
 | **User permissions (Phase G)** | first multi-staff pilot. The spec was the only copy in the repo and is now preserved in §10 below |
 | **ES/CA translation quality sweep** | a native pass over all UI from B1–B12 |
@@ -355,12 +376,14 @@ Held deliberately. Each has a trigger, not a date.
 
 ## 4. Commercial
 
-From `GTM_STRATEGY.md`, which stays the authority on market, positioning,
+From `gtm/GTM_STRATEGY.md`, which stays the authority on market, positioning,
 pricing and the raise. Only the dates and triggers live here.
 
 **The milestones that passed unmet:** 2 pilots live by 4 Sep, 3 pilots by 18 Sep.
 Reset honestly rather than re-dated optimistically — the gating activity is
 outreach, and outreach stopped.
+
+**Pilots are founding-hotel pilots, sold on the trajectory (23 Sep).** 60 days free with everything shipped in that time, a review at day 30, €149/month from day 61 for life (`gtm/PILOT_PLAYBOOK.md` §0.1, §9; `gtm/POSITIONING_V3.md` §10). Consequence for this file: **after 6 Oct the weekly release train is also the promise made to pilots** — keep shipping every week, and let their requests and the locked-tile clicks reorder §2. First invoices land ~1 Dec.
 
 **Hard triggers, unchanged:**
 
@@ -393,7 +416,10 @@ so they don't vanish with them.
    there is a rate cache. Inventing an ADR is the fastest way to lose a GM.
 3. **No unearned trust badges.** `/trust` states out loud that there is no
    ISO 27001 and no SOC 2. No seal, badge or "compliant with" line until a
-   certificate exists.
+   certificate exists. **EU AI Act:** no certificate exists for a system in our
+   tier, so never "certified" or a bare "compliant". Once the memo is
+   lawyer-reviewed (§3.3), the line is *"Built for the EU AI Act — assessed,
+   documented and reviewed by <firm>"*, linked to `/trust`.
 4. **No price figure on the marketing surface** (`SITE_REDESIGN_V3.md` §9.1 #5).
    Keep `COMPANY.priceMonthly`, the Stripe price and the `COMPANY.price` prose in
    step — they are hand-synced.
@@ -409,6 +435,11 @@ so they don't vanish with them.
    touching UI. Colorless chrome, one accent, light only, WCAG AA.
 9. **A deviation that isn't written down will be silently reverted by the next
    session.** Write decisions into the doc that owns them.
+10. **Stay out of the AI Act's high-risk regime, and inside Art. 50.** Nothing
+    scores, ranks or allocates work to individual staff (Annex III point 4).
+    Anything new that sends model-written text out of Fondas ships with
+    provenance and machine-readable marking from day one, and anything a guest
+    talks to says it is an AI. The per-feature rules are `AI_ACT_PROMPTS.md` §R.
 
 ---
 
@@ -425,7 +456,10 @@ Their rows stay in `lib/roadmap.ts` and their copy stays in
 panel**, which is where the roadmap is sold from here on — and clicks on those
 tiles are the signal for which one to build. Log them via `lib/analytics.ts`.
 
-Each returns to the rail the week it ships. **Finance** is the most likely to
+Each returns to the rail the week it ships. **AI management** returns in W10
+(`AI_ACT_PROMPTS.md` A8, as "AI activity"). **Team activity** may only return
+under `AI_ACT_PROMPTS.md` §R's rule — per hotel or role, never per person.
+**Finance** is the most likely to
 come back as its own pillar rather than a row under Operation; decide when
 there's something to put in it.
 
@@ -448,7 +482,7 @@ disagreed. Recording the resolutions so they don't get re-litigated.
 | 8 | B11 (ETA-from-reply) priority | **Droppable.** Deferred four times across four docs; that is itself the answer. The PMS can supply ETAs — fixing `arrival_time` (§3.2) matters more |
 | 9 | The timezone bug | **Fixed 27 July.** `BUILD_PLAN_JULY31.md` §5's "known unfixed bug" was never updated |
 | 10 | Migration 0016 | **Applied.** `LAUNCH_PUNCHLIST.md`'s warning was wrong and sent readers to do unnecessary work |
-| 11 | `FONDA_MARKETING_VOICE.md` authority | **§2 (the voice) survives; §1 and §3–4 are retired.** Needs the header `POSITIONING_V3.md` §6 asked for — §8 |
+| 11 | `FONDA_MARKETING_VOICE.md` authority | **Archived 23 Sep.** Its §2 (the voice) lives on as `gtm/POSITIONING_V3.md` §9; §1 and §3–4 stay retired |
 | 12 | `FONDA_SANA_PROMPT_PACK.md` Phase 7.5 | **Retired.** The pack still ships it; archive the pack |
 | 13 | `STAGE0.md` and the Dev Roadmap `.docx` | **Both spent.** Archive. The `.docx` is a live hazard — it contains a prompt that would restore the retired v1 terracotta palette |
 | 14 | Three docs each called "the single list" | **This one.** The other three are archived |
@@ -470,17 +504,18 @@ this requires.
 | `Fonda_MVP_Dev_Roadmap.docx` | archive, and **remove from `CLAUDE.md`** — it would restore a retired palette |
 | the previous `ROADMAP.md` | replaced by this file |
 | `FONDA_CLAUDE_CODE_BRIEF.md`, `FONDAS_DESIGN_POLISH.md`, `FONDA_SANA_PROMPT_PACK.md`, `NAV_REORG_PROMPTS.md`, `FONDA_REDESIGN_SPEC.md` | archive — all executed. `FONDA_REDESIGN_SPEC.md` §6 (permissions) is the exception worth extracting first |
-| `FONDA_MARKETING_VOICE.md` | **keep**, with the retirement header it was supposed to get in §6 of `POSITIONING_V3.md` |
+| `FONDA_MARKETING_VOICE.md` | archived 23 Sep to `docs/archive/`; its §2 is now `gtm/POSITIONING_V3.md` §9 |
 | `CLAUDE.md.bak-*`, `_to_delete/` | delete |
 
-**Surviving set — seventeen documents.** `CLAUDE.md` + `AGENTS.md` (the contract) ·
+**Surviving set — eighteen documents.** `CLAUDE.md` + `AGENTS.md` (the contract) ·
 `README.md` (needs a refresh; it still claims Inter and `#1A56DB`) ·
-`ROADMAP.md` (this) · `GTM_STRATEGY.md` + `POSITIONING_V3.md` (commercial) ·
+`ROADMAP.md` (this) · `gtm/` (commercial — `gtm/GTM_STRATEGY.md`, `gtm/POSITIONING_V3.md`,
+`PILOT_PLAYBOOK.md`, `PILOT_SPRINT.md`; start at `gtm/README.md`) ·
 `FONDA_SANA_REDESIGN.md` + `FONDA_DESIGN_IDENTITY.md` (design) ·
 `SITE_REDESIGN_V3.md` + `APP_UX_PROPOSAL.md` (the two live specs) ·
 `RUNBOOK.md` + `RELIABILITY.md` + `B1_VERIFY_RUNBOOK.md` (ops) ·
-`EXECUTION_PLAYBOOK.md` + `APP_UX_PROMPTS.md` (prompts — B-numbers and W2–W8
-respectively) · `COMINGSOON_CONTENT.md` + `NAV_REORG_SPEC.md` (content and the
+`EXECUTION_PLAYBOOK.md` + `APP_UX_PROMPTS.md` + `AI_ACT_PROMPTS.md` (prompts —
+B-numbers, W2–W8 and W9–W10 respectively) · `COMINGSOON_CONTENT.md` + `NAV_REORG_SPEC.md` (content and the
 rail spec the code still cites).
 
 ---

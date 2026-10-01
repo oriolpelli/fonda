@@ -8,22 +8,33 @@ legal pages). The design system is separately named **Signal** — "Fonda" in
 design-token comments and `FONDA_DESIGN_IDENTITY.md` refers to that system, not
 the product, and should be left as-is.
 
-Situational docs live in the repo root — read them when a task calls for them, not by default:
+Situational docs live in the repo root, and go-to-market docs in `gtm/` — read them when a task calls for them, not by default:
 
 - `ROADMAP.md` — **the only roadmap.** Priority and sequencing live here and nowhere
   else. It supersedes PATH_TO_MVP / WHATS_LEFT / LAUNCH_PUNCHLIST / FEATURE_GAPS /
   BUILD_PLAN_JULY31 / STAGE0 / F1_FOUNDER_CHECKLIST / the Dev Roadmap `.docx` and the
   two `*_START_HERE` notes. **If another document claims a priority or a build order,
   it is stale — ROADMAP.md wins.**
-- `GTM_STRATEGY.md` — market, positioning, pricing, pilot outreach, the raise.
-  `POSITIONING_V3.md` amends its §3.1, §4.7–4.9 and §4.13; where they differ,
-  POSITIONING_V3 wins.
+- `gtm/` — **everything go-to-market; start at `gtm/README.md`.**
+  `GTM_STRATEGY.md` (market, ICP, pricing, the raise) · `POSITIONING_V3.md`
+  (positioning, site messaging, the voice — wins over GTM_STRATEGY where they
+  differ) · `PILOT_PLAYBOOK.md` (every script: in person, phone, email, demo,
+  close — the only place pitch copy lives) · `PILOT_SPRINT.md` (the current
+  selling fortnight). `gtm/Fondas_Outreach_Tracker.xlsx` holds prospect contact
+  details and is gitignored — never commit it.
 - `APP_UX_PROPOSAL.md` — the product IA and UX spec (two pillars, the rail, Home,
   chat, the Operation surfaces). `SITE_REDESIGN_V3.md` — the marketing site spec.
+- `GUEST_EXPERIENCE_SPEC.md` — the Guest Experience surface: the tailored,
+  printable stay plan, the hotel's own picks, the weekly area scan. Its print
+  reference is `design/guest-plan-print-preview.html`.
 - `EXECUTION_PLAYBOOK.md` — build-task prompts and the B1–B22 task-ID map.
 - `APP_UX_PROMPTS.md` — the Claude Code prompts that implement
   `APP_UX_PROPOSAL.md`, W2–W8 (prompts 1–21). Run them in `ROADMAP.md` §2's
   order; the pack itself says *how* to ask, never *when*.
+- `AI_ACT_PROMPTS.md` — the EU AI Act work: prompts A1–A8 (W9–W10), the rules
+  any future AI feature must follow (§R), and the non-code items (§L). Read §R
+  before building anything that sends model-written text out of Fondas, talks
+  to guests, or reports on staff.
 - `RUNBOOK.md` — ops and go-live. `RELIABILITY.md` — the morning ritual and the
   daily log. `B1_VERIFY_RUNBOOK.md` — the brief-delivery E2E test.
 
