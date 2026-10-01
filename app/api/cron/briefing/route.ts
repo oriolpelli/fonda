@@ -5,6 +5,8 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
+import { briefAiHeaders } from "@/lib/ai-disclosure";
+import { AI_MODELS, PROMPT_VERSIONS } from "@/lib/ai-provenance";
 import { flushAnalytics, track } from "@/lib/analytics";
 import { generateBriefing, type BriefingContent } from "@/lib/briefing";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -188,6 +190,13 @@ async function sendBriefingEmail(
     to,
     subject: `Your Fondas briefing — ${dateLabel}`,
     html: briefingEmailHtml(hotelName, dateLabel, content),
+    // Art. 50(2) machine-readable marking (lib/ai-disclosure.ts). The brief
+    // was generated moments ago in this same tick from these same constants,
+    // which are also what lib/briefing.ts stored on the row.
+    headers: briefAiHeaders({
+      model: AI_MODELS.briefing,
+      promptVersion: PROMPT_VERSIONS.briefing,
+    }),
   });
   if (error) {
     throw new Error(`Resend: ${error.message}`);

@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
+import { aiHeaders } from "@/lib/ai-disclosure";
+import { sha256 } from "@/lib/ai-provenance";
 import { track, type EditBucket } from "@/lib/analytics";
 import { runCheckinChaser } from "@/lib/checkin-chaser";
 import { recordDraftSend } from "@/lib/draft-acceptance";
@@ -28,11 +30,18 @@ async function requireHotelId(): Promise<string> {
   return profile.hotel_id;
 }
 
+/** The row as stored: `draft_content` is what Fondas wrote, never what is sent. */
 interface SendableChaser {
   id: string;
   guest_email: string | null;
   draft_content: string | null;
+  draft_model: string | null;
+  draft_prompt_version: string | null;
+  draft_sha256: string | null;
 }
+
+const SENDABLE_COLUMNS =
+  "id, guest_email, draft_content, draft_model, draft_prompt_version, draft_sha256";
 
 /**
  * How a chaser went out — recorded on the row (migration 0025). Same contract
@@ -43,20 +52,45 @@ interface SendRecord {
   edit: EditBucket | null;
 }
 
+/**
+ * The Art. 50(2) marking for this chaser, from the provenance stored with the
+ * draft (A1). Pre-0025 drafts are still marked, as "unknown" model/prompt with
+ * the ref hashed from the stored draft — same contract as communications.
+ */
+function markingFor(
+  chaser: SendableChaser,
+  record: SendRecord
+): Record<string, string> {
+  if (record.edit === null || !chaser.draft_content?.trim()) {
+    return aiHeaders({ origin: "written" });
+  }
+  return aiHeaders({
+    origin: "drafted",
+    model: chaser.draft_model ?? "unknown",
+    promptVersion: chaser.draft_prompt_version ?? "unknown",
+    edit: record.edit,
+    review: record.via,
+    draftSha256: chaser.draft_sha256 ?? sha256(chaser.draft_content),
+  });
+}
+
+/** Sends `content` for `chaser` (the stored row) and marks it sent. */
 async function sendOne(
   admin: Admin,
   gmail: GmailClient,
   hotelName: string,
   chaser: SendableChaser,
+  content: string,
   record: SendRecord
 ): Promise<void> {
   if (!chaser.guest_email) throw new Error("This chaser has no guest email.");
-  if (!chaser.draft_content?.trim()) throw new Error("The message is empty.");
+  if (!content.trim()) throw new Error("The message is empty.");
 
   await gmail.sendEmail({
     to: chaser.guest_email,
     subject: `Your upcoming stay at ${hotelName}`,
-    body: chaser.draft_content,
+    body: content,
+    headers: markingFor(chaser, record),
   });
 
   await admin
@@ -118,7 +152,7 @@ export async function sendChaser(
   const [{ data: chaser }, { data: hotel }] = await Promise.all([
     admin
       .from("checkin_chasers")
-      .select("id, guest_email, draft_content")
+      .select(SENDABLE_COLUMNS)
       .eq("id", chaserId)
       .eq("hotel_id", hotelId)
       .single(),
@@ -129,21 +163,18 @@ export async function sendChaser(
   const gmail = await getGmailClientForHotel(hotelId);
   if (!gmail) return { error: "Gmail is not connected." };
 
-  // Measured before the send so the row (and, from A2, the outbound marking)
-  // records whether a person changed the draft. Pure; the metric below is
+  // Measured before the send so the row and the outbound marking record
+  // whether a person changed the draft. Pure; the metric below is
   // still recorded after the send, unchanged.
   const edit = chaser.draft_content?.trim()
     ? measureDraftEdit(chaser.draft_content, content).bucket
     : null;
 
   try {
-    await sendOne(
-      admin,
-      gmail,
-      hotel?.name ?? "our hotel",
-      { ...chaser, draft_content: content },
-      { via: "single", edit }
-    );
+    await sendOne(admin, gmail, hotel?.name ?? "our hotel", chaser, content, {
+      via: "single",
+      edit,
+    });
   } catch (err) {
     return { error: (err as Error).message };
   }
@@ -181,7 +212,7 @@ export async function approveAllChasers(): Promise<{ sent: number; error?: strin
   const [{ data: chasers }, { data: hotel }] = await Promise.all([
     admin
       .from("checkin_chasers")
-      .select("id, guest_email, draft_content")
+      .select(SENDABLE_COLUMNS)
       .eq("hotel_id", hotelId)
       .eq("status", "pending"),
     admin.from("hotels").select("name").eq("id", hotelId).single(),
@@ -190,10 +221,14 @@ export async function approveAllChasers(): Promise<{ sent: number; error?: strin
   let sent = 0;
   for (const chaser of chasers ?? []) {
     try {
-      await sendOne(admin, gmail, hotel?.name ?? "our hotel", chaser, {
-        via: "bulk",
-        edit: "none",
-      });
+      await sendOne(
+        admin,
+        gmail,
+        hotel?.name ?? "our hotel",
+        chaser,
+        chaser.draft_content ?? "",
+        { via: "bulk", edit: "none" }
+      );
       sent++;
       // Sent verbatim — no editor in the bulk path. See the same note in the
       // communications action for why these are flagged rather than merged.

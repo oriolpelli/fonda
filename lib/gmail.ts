@@ -183,7 +183,29 @@ export interface GmailClient {
     body: string;
     threadId?: string;
     inReplyTo?: string;
+    /**
+     * Extra `X-` headers — today only the AI marking from lib/ai-disclosure.ts.
+     * Names must match /^X-[A-Za-z0-9-]+$/ and values must be one line; anything
+     * else throws before a byte is sent (header injection).
+     */
+    headers?: Record<string, string>;
   }): Promise<void>;
+}
+
+const CUSTOM_HEADER_NAME = /^X-[A-Za-z0-9-]+$/;
+
+/** Validates custom headers and renders them as RFC 2822 lines. */
+function customHeaderLines(headers: Record<string, string> | undefined): string[] {
+  if (!headers) return [];
+  return Object.entries(headers).map(([name, value]) => {
+    if (!CUSTOM_HEADER_NAME.test(name)) {
+      throw new Error(`Refusing to send: invalid header name "${name}".`);
+    }
+    if (/[\r\n]/.test(value)) {
+      throw new Error(`Refusing to send: header ${name} contains a line break.`);
+    }
+    return `${name}: ${value}`;
+  });
 }
 
 export function createGmailClient(refreshToken: string): GmailClient {
@@ -299,12 +321,14 @@ export function createGmailClient(refreshToken: string): GmailClient {
       return parseMessage(raw);
     },
 
-    async sendEmail({ to, subject, body, threadId, inReplyTo }) {
+    async sendEmail({ to, subject, body, threadId, inReplyTo, headers }) {
       const lines = [
         `To: ${to}`,
         `Subject: ${subject}`,
         "Content-Type: text/plain; charset=UTF-8",
         ...(inReplyTo ? [`In-Reply-To: ${inReplyTo}`, `References: ${inReplyTo}`] : []),
+        // Before the blank line, so they are headers and never body text.
+        ...customHeaderLines(headers),
         "",
         body,
       ];
