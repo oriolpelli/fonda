@@ -319,7 +319,9 @@ export async function summarizeReviews(
       const response = await client.messages.create({
         model: AI_MODELS.reviewSummary,
         max_tokens: 300,
-        output_config: { effort: "low" },
+        // No `output_config.effort`: AI_MODELS.reviewSummary is Haiku 4.5,
+        // which rejects it with a 400 — the same mistake that once broke every
+        // email classification (see lib/ai-provenance.ts).
         system:
           "Condense these pasted guest reviews into a short, upbeat 2-3 sentence " +
           "summary of what guests consistently praise. Use only what's in the " +
