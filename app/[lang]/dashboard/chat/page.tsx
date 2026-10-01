@@ -52,8 +52,15 @@ export default async function ChatPage({
   // URL would re-ask itself on every reload of that link.
   const prefill = typeof query.q === "string" ? query.q : null;
 
+  // `key` is what makes clicking a conversation in the list actually open it.
+  // Picking a thread is a soft navigation to `?thread=<id>` on the SAME route,
+  // so React keeps ChatSurface mounted — and useHotelChat seeds its state from
+  // props only once, on mount. Without a key the list highlighted the new
+  // thread while the transcript stayed on the old one. Keyed by thread, each
+  // conversation gets a fresh surface seeded from its own messages.
   return (
     <ChatSurface
+      key={threadId ?? "new"}
       userEmail={user?.email ?? ""}
       threads={threads}
       threadId={threadId}

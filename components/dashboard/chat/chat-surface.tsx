@@ -38,7 +38,7 @@ export function ChatSurface({
   prefill?: string | null;
 }) {
   const { dict } = useDictionary();
-  const { messages, streaming, send } = useHotelChat({
+  const { messages, streaming, send, reset } = useHotelChat({
     threadId,
     messages: initialMessages,
   });
@@ -117,7 +117,10 @@ export function ChatSurface({
 
   return (
     <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:gap-6">
-      <ChatThreadList threads={threads} />
+      {/* "New conversation" from a conversation you started on this page has
+          nowhere new to navigate to (both are the bare /chat URL, so the key
+          in page.tsx doesn't change) — so it resets the hook directly. */}
+      <ChatThreadList threads={threads} onNewConversation={reset} />
       {body}
     </div>
   );

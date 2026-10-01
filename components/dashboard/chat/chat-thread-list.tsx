@@ -21,7 +21,14 @@ import { cn } from "@/lib/utils";
  * reload and can be opened in a new tab — the same reason the inbox's sort and
  * queue live in a cookie and its deep links in the URL.
  */
-export function ChatThreadList({ threads }: { threads: ChatThreadSummary[] }) {
+export function ChatThreadList({
+  threads,
+  onNewConversation,
+}: {
+  threads: ChatThreadSummary[];
+  /** Clears the conversation on screen — see chat-surface.tsx. */
+  onNewConversation?: () => void;
+}) {
   const { dict } = useDictionary();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -32,6 +39,10 @@ export function ChatThreadList({ threads }: { threads: ChatThreadSummary[] }) {
     <>
       <Link
         href={pathname}
+        onClick={() => {
+          onNewConversation?.();
+          setOpen(false);
+        }}
         className="mb-1 flex items-center gap-2 rounded-[8px] px-2.5 py-[7px] text-[13px] font-medium text-[var(--fonda-text)] transition-colors hover:bg-[color-mix(in_srgb,var(--fonda-inset)_60%,transparent)]"
       >
         <MessageSquarePlus
