@@ -62,6 +62,11 @@ export type AiHeaderInput = WrittenReply | DraftedReply;
  * how header injection works, so it is a thrown error, never a silent strip:
  * a send that can't be marked correctly should fail loudly, not go out
  * unmarked or with an extra header someone smuggled in.
+ *
+ * `;` and `=` are refused too: they are X-Fondas-AI's own separators, and a
+ * value carrying them could append a field of its own ("model=x; review=single").
+ * Every legitimate value (model ids, dated prompt versions, buckets, hex) is
+ * free of both.
  */
 function safe(value: string, what: string): string {
   if (/[\r\n]/.test(value)) {
@@ -69,6 +74,9 @@ function safe(value: string, what: string): string {
   }
   if (!/^[\x20-\x7E]*$/.test(value)) {
     throw new Error(`AI marking: ${what} is not printable ASCII.`);
+  }
+  if (/[;=]/.test(value)) {
+    throw new Error(`AI marking: ${what} contains a field separator.`);
   }
   return value;
 }
@@ -83,8 +91,14 @@ function mark(fields: [string, string][]): Record<string, string> {
 
 /**
  * The headers for an outbound guest email (a reply or a check-in chaser).
- * Returns {} for a reply a person wrote with no draft — that text isn't AI
- * output, and marking it would be a false statement.
+ *
+ * Returns {} only when there was no Fondas draft at all — the person wrote the
+ * reply from scratch, so the text isn't AI output and marking it would be a
+ * false statement. A draft a person then rewrote heavily is still marked, as
+ * `edit=major`: it started as AI output, and over-marking a reviewed reply
+ * costs nothing visible while under-marking is the Art. 50(2) failure. Whether
+ * a near-total rewrite should count as "written" is a question for the
+ * classification memo (AI_ACT_PROMPTS.md §L), not for this function.
  */
 export function aiHeaders(input: AiHeaderInput): Record<string, string> {
   if (input.origin === "written") return {};

@@ -168,17 +168,43 @@ async function sendOne(
     headers: markingFor(email, record),
   });
 
+  // Two writes, in this order, on purpose. The guest already has the email,
+  // so the one thing that must land is "sent" — a row left pending after a
+  // successful send gets sent AGAIN by the next click or "approve all". Those
+  // columns predate migration 0025 and are written alone first. The
+  // provenance record (0025's columns) follows as a separate, best-effort
+  // write, so a database missing 0025 loses the record, never the status.
+  // Errors are logged by row id only — no guest data.
   const now = new Date().toISOString();
-  await admin
+  const { error: statusError } = await admin
+    .from("emails")
+    .update({ status: "sent", sent_at: now })
+    .eq("id", email.id);
+  if (statusError) {
+    console.error(
+      `[communications] sent ${email.id} but could not mark it sent:`,
+      statusError.message
+    );
+  }
+  const { error: recordError } = await admin
     .from("emails")
     .update({
-      status: "sent",
-      sent_at: now,
       updated_at: now,
       sent_via: record.via,
       draft_edited: record.edit === null ? null : record.edit !== "none",
+      // A pre-0025 draft was marked with a ref hashed at send time; store
+      // that hash so `verify-ai-mark --ref` can find it later.
+      ...(email.draft_sha256 === null && email.draft_reply?.trim()
+        ? { draft_sha256: sha256(email.draft_reply) }
+        : {}),
     })
     .eq("id", email.id);
+  if (recordError) {
+    console.error(
+      `[communications] could not record send provenance for ${email.id}:`,
+      recordError.message
+    );
+  }
 }
 
 /** Sends `content` as the reply to an email, then marks it sent. */

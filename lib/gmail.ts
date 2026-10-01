@@ -322,9 +322,19 @@ export function createGmailClient(refreshToken: string): GmailClient {
     },
 
     async sendEmail({ to, subject, body, threadId, inReplyTo, headers }) {
+      // Header injection guard for the values that come from the outside
+      // world: `to` and `inReplyTo` are refused outright if they carry a line
+      // break; the subject (echoed from the guest's own email) has any line
+      // break folded to a space, so an odd inbound subject can't end the
+      // header block early — which would push the AI marking into the body —
+      // or smuggle in a Bcc, and still doesn't block the reply.
+      if (/[\r\n]/.test(to) || (inReplyTo && /[\r\n]/.test(inReplyTo))) {
+        throw new Error("Refusing to send: a recipient header contains a line break.");
+      }
+      const safeSubject = subject.replace(/[\r\n]+/g, " ");
       const lines = [
         `To: ${to}`,
-        `Subject: ${subject}`,
+        `Subject: ${safeSubject}`,
         "Content-Type: text/plain; charset=UTF-8",
         ...(inReplyTo ? [`In-Reply-To: ${inReplyTo}`, `References: ${inReplyTo}`] : []),
         // Before the blank line, so they are headers and never body text.

@@ -94,15 +94,37 @@ async function sendOne(
     headers: markingFor(chaser, record),
   });
 
-  await admin
+  // Status first, provenance second — same reasoning as communications'
+  // sendOne: a chaser left pending after a successful send is sent again by
+  // the next "approve all", so the pre-0025 columns are written alone and the
+  // 0025 record is best-effort. Logged by row id only.
+  const { error: statusError } = await admin
+    .from("checkin_chasers")
+    .update({ status: "sent", sent_at: new Date().toISOString() })
+    .eq("id", chaser.id);
+  if (statusError) {
+    console.error(
+      `[arrivals] sent chaser ${chaser.id} but could not mark it sent:`,
+      statusError.message
+    );
+  }
+  const { error: recordError } = await admin
     .from("checkin_chasers")
     .update({
-      status: "sent",
-      sent_at: new Date().toISOString(),
       sent_via: record.via,
       draft_edited: record.edit === null ? null : record.edit !== "none",
+      // Store the hash a pre-0025 draft's ref was computed from (verify-ai-mark).
+      ...(chaser.draft_sha256 === null && chaser.draft_content?.trim()
+        ? { draft_sha256: sha256(chaser.draft_content) }
+        : {}),
     })
     .eq("id", chaser.id);
+  if (recordError) {
+    console.error(
+      `[arrivals] could not record send provenance for chaser ${chaser.id}:`,
+      recordError.message
+    );
+  }
 }
 
 /**
