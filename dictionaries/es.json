@@ -591,9 +591,7 @@
       "fromPms": "de tu PMS",
       "syncedAt": "sincronizado {time}",
       "fromGmail": "de Gmail",
-      "fromSettings": "Ajustes de la casa",
-      "draftProvenance": "Redactado a partir de este hilo y del tono de tu casa",
-      "draftEdited": "editado"
+      "fromSettings": "Ajustes de la casa"
     }
   },
   "emails": {
@@ -1149,8 +1147,8 @@
     "timelineTitle": "Historial",
     "timelineEmpty": "Todavía no hay nada registrado.",
     "sourceStaff": "Añadido por el equipo",
-    "sourceEmail": "Deducido del correo",
-    "sourceReservation": "Deducido de la reserva",
+    "sourceEmail": "Deducido por Fondas AI del correo",
+    "sourceReservation": "Deducido por Fondas AI de la reserva",
     "clear": "Borrar",
     "none": "Sin definir",
     "kindEmail": "Correo",
@@ -1177,5 +1175,14 @@
     "guests": "Huéspedes",
     "ask": "Preguntar",
     "askPrefix": "Preguntar:"
+  },
+  "ai": {
+    "draftLine": "Redactado por Fondas AI a partir de este hilo y del tono de tu casa — revísalo antes de enviarlo",
+    "chaserLine": "Redactado por Fondas AI a partir de la reserva y del tono de tu casa — revísalo antes de enviarlo",
+    "sentAsDrafted": "Redactado por Fondas AI · enviado tal cual",
+    "sentEdited": "Redactado por Fondas AI · editado antes de enviarlo",
+    "askLine": "Fondas AI · puede equivocarse — comprueba las cifras importantes",
+    "briefLine": "Escrito por Fondas AI a partir de tu PMS y tu correo. Comprueba cualquier dato antes de actuar.",
+    "inferredMark": "Fondas AI"
   }
 }

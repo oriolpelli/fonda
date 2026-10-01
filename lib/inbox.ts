@@ -35,7 +35,7 @@ import type { Database } from "@/types/database";
 type Db = SupabaseClient<Database>;
 
 const EMAIL_COLUMNS =
-  "id, from_email, subject, body, classification, draft_reply, status, created_at, sent_at, reservation_mews_id, customer_mews_id";
+  "id, from_email, subject, body, classification, draft_reply, status, created_at, sent_at, reservation_mews_id, customer_mews_id, draft_edited";
 
 const RESERVATION_COLUMNS =
   "mews_id, customer_mews_id, number, start_utc, end_utc";
@@ -58,6 +58,12 @@ export interface InboxEmail {
   status: string;
   created_at: string;
   sent_at: string | null;
+  /**
+   * Set when a reply is sent (migration 0025): true if a person changed the
+   * Fondas draft first, false if it went as drafted, null when there was no
+   * draft or it was sent before 0025. Drives the "· edited" line (P-8).
+   */
+  draft_edited: boolean | null;
   /** Booking context, shown inline. Null when no reservation matched. */
   guest_name: string | null;
   booking_ref: string | null;
@@ -98,6 +104,7 @@ interface EmailRow {
   sent_at: string | null;
   reservation_mews_id: string | null;
   customer_mews_id: string | null;
+  draft_edited: boolean | null;
 }
 
 interface ReservationRow {
@@ -297,6 +304,7 @@ export async function withGuestContext(
       status: row.status,
       created_at: row.created_at,
       sent_at: row.sent_at,
+      draft_edited: row.draft_edited,
       guest_name:
         guestName(customerId ? customerById.get(customerId) : undefined) ??
         guestName(fallbackGuest),

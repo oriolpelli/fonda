@@ -80,6 +80,13 @@ function ChaserItem({
           className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]"
           placeholder={dict.checkin.chasePlaceholder}
         />
+        {/* The same one quiet line as a draft reply (AI_ACT_PROMPTS.md A3):
+            names the AI, asks for the check. Mono, text-3, no chip. */}
+        {chaser.draftContent ? (
+          <p className="mt-2 font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
+            {dict.ai.chaserLine}
+          </p>
+        ) : null}
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2">
         <Button

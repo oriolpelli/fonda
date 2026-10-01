@@ -556,7 +556,7 @@ Each phase is independently shippable and independently reviewable. Phases 1–3
 
 | 9 | P-7 · `done_today` and ignored mail | **Decided 19 Sep** — see below |
 
-| 10 | P-8 · No "· edited" marker on drafts | **Decided 19 Sep** — see below |
+| 10 | P-8 · No "· edited" marker on drafts | **Decided 19 Sep; resolved 1 Oct** by migration 0025 — see below |
 
 ### 6 · The guest-data position
 
@@ -628,6 +628,14 @@ of every message, to add three characters.
 similarity — one column on a table that legitimately holds message state, and
 no new link from analytics to guests. Tracked in `ROADMAP.md` §3.2 alongside
 the `emails.updated_at` item, which the same migration could carry.
+
+**Resolved 1 October (`AI_ACT_PROMPTS.md` A1 + A3).** Migration 0025 added
+exactly that boolean, written at send time. Because "edited" is only knowable
+once a reply has gone, the marker lives on the **sent** state, as one mono line
+under "Reply sent": *"Drafted by Fondas AI · edited before sending"* or
+*"· sent as drafted"*. A pending draft carries the A3 line instead (*"Drafted by
+Fondas AI from this thread and your house tone — check before sending"*). A
+reply with no draft, or one sent before 0025, shows nothing.
 
 ### 8 · P-6 · The rail becomes a labelled sidebar *(19 September)*
 

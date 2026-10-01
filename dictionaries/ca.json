@@ -591,9 +591,7 @@
       "fromPms": "del teu PMS",
       "syncedAt": "sincronitzat {time}",
       "fromGmail": "de Gmail",
-      "fromSettings": "Configuració de la casa",
-      "draftProvenance": "Redactat a partir d'aquest fil i del to de la teva casa",
-      "draftEdited": "editat"
+      "fromSettings": "Configuració de la casa"
     }
   },
   "emails": {
@@ -1149,8 +1147,8 @@
     "timelineTitle": "Historial",
     "timelineEmpty": "Encara no hi ha res registrat.",
     "sourceStaff": "Afegit per l'equip",
-    "sourceEmail": "Deduït del correu",
-    "sourceReservation": "Deduït de la reserva",
+    "sourceEmail": "Deduït per Fondas AI del correu",
+    "sourceReservation": "Deduït per Fondas AI de la reserva",
     "clear": "Esborra",
     "none": "Sense definir",
     "kindEmail": "Correu",
@@ -1177,5 +1175,14 @@
     "guests": "Hostes",
     "ask": "Pregunta",
     "askPrefix": "Pregunta:"
+  },
+  "ai": {
+    "draftLine": "Redactat per Fondas AI a partir d'aquest fil i del to de la teva casa — revisa'l abans d'enviar-lo",
+    "chaserLine": "Redactat per Fondas AI a partir de la reserva i del to de la teva casa — revisa'l abans d'enviar-lo",
+    "sentAsDrafted": "Redactat per Fondas AI · enviat tal com era",
+    "sentEdited": "Redactat per Fondas AI · editat abans d'enviar-lo",
+    "askLine": "Fondas AI · es pot equivocar — comprova les xifres importants",
+    "briefLine": "Escrit per Fondas AI a partir del teu PMS i del teu correu. Comprova qualsevol dada abans d'actuar.",
+    "inferredMark": "Fondas AI"
   }
 }

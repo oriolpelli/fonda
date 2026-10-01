@@ -198,22 +198,41 @@ export default async function GuestRecordPage({
               <p className="pb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fonda-text-3)]">
                 {dict.guests.preferencesTitle}
               </p>
+              {/* Inferred vs staff must be tellable at a glance, not only on
+                  hover (AI_ACT_PROMPTS.md A3): an inferred preference carries a
+                  quiet mono "Fondas AI" after it, and its full source ("Inferred
+                  by Fondas AI from email") is in the title for hover and in
+                  sr-only text for screen readers. A staff entry carries
+                  nothing — it is the default, and a person's word. */}
               <ul className="flex flex-col gap-1.5">
-                {guestProfile.preferences.map((pref) => (
-                  <li
-                    key={pref.text}
-                    title={
-                      pref.source === "staff"
-                        ? dict.guests.sourceStaff
-                        : pref.source === "email"
-                          ? dict.guests.sourceEmail
-                          : dict.guests.sourceReservation
-                    }
-                    className="text-[13px] leading-snug text-[var(--fonda-text-2)]"
-                  >
-                    {pref.text}
-                  </li>
-                ))}
+                {guestProfile.preferences.map((pref) => {
+                  const source =
+                    pref.source === "staff"
+                      ? dict.guests.sourceStaff
+                      : pref.source === "email"
+                        ? dict.guests.sourceEmail
+                        : dict.guests.sourceReservation;
+                  return (
+                    <li
+                      key={pref.text}
+                      title={source}
+                      className="text-[13px] leading-snug text-[var(--fonda-text-2)]"
+                    >
+                      {pref.text}
+                      {pref.source === "staff" ? null : (
+                        <>
+                          <span
+                            aria-hidden="true"
+                            className="ml-1.5 font-mono text-[10.5px] tracking-[0.04em] text-[var(--fonda-text-3)]"
+                          >
+                            · {dict.ai.inferredMark}
+                          </span>
+                          <span className="sr-only"> ({source})</span>
+                        </>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ) : null}

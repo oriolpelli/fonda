@@ -591,9 +591,7 @@
       "fromPms": "from your PMS",
       "syncedAt": "synced {time}",
       "fromGmail": "from Gmail",
-      "fromSettings": "House settings",
-      "draftProvenance": "Drafted from this thread and your house tone",
-      "draftEdited": "edited"
+      "fromSettings": "House settings"
     }
   },
   "emails": {
@@ -1149,8 +1147,8 @@
     "timelineTitle": "History",
     "timelineEmpty": "Nothing recorded yet.",
     "sourceStaff": "Added by staff",
-    "sourceEmail": "Inferred from email",
-    "sourceReservation": "Inferred from the booking",
+    "sourceEmail": "Inferred by Fondas AI from email",
+    "sourceReservation": "Inferred by Fondas AI from the booking",
     "clear": "Clear",
     "none": "Not set",
     "kindEmail": "Email",
@@ -1177,5 +1175,14 @@
     "guests": "Guests",
     "ask": "Ask",
     "askPrefix": "Ask:"
+  },
+  "ai": {
+    "draftLine": "Drafted by Fondas AI from this thread and your house tone — check before sending",
+    "chaserLine": "Drafted by Fondas AI from the booking and your house tone — check before sending",
+    "sentAsDrafted": "Drafted by Fondas AI · sent as drafted",
+    "sentEdited": "Drafted by Fondas AI · edited before sending",
+    "askLine": "Fondas AI · can be wrong — check figures that matter",
+    "briefLine": "Written by Fondas AI from your PMS and inbox. Check anything you act on.",
+    "inferredMark": "Fondas AI"
   }
 }

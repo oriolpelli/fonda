@@ -200,6 +200,15 @@ function AssistantTurn({
           {message.content}
         </p>
       ) : null}
+      {/* Art. 50(1), quietly (AI_ACT_PROMPTS.md A3): one mono line under each
+          finished answer. Held back while streaming, so the line doesn't sit
+          under half a sentence; text-3 is AA on the canvas and on both wells
+          a thread can sit in. */}
+      {message.content && !working ? (
+        <p className="mt-2 font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
+          {dict.ai.askLine}
+        </p>
+      ) : null}
       {message.draftId ? (
         <DraftResultCard
           at={message.draftAt}

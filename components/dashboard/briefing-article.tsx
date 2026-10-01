@@ -59,10 +59,18 @@ export function BriefingArticle({
   content,
   dict,
   locale,
+  aiNote = false,
 }: {
   content: BriefingContent;
   dict: Dictionary;
   locale: Locale;
+  /**
+   * The one-line "written by Fondas AI" foot (AI_ACT_PROMPTS.md A3). On for a
+   * hotel's real briefs (today and history). Off by default so /sample-brief —
+   * a hand-written sample whose print rules are tuned to land on one A4
+   * sheet — is unchanged.
+   */
+  aiNote?: boolean;
 }) {
   /**
    * Provenance is optional and absent on every brief written before it
@@ -102,6 +110,11 @@ export function BriefingArticle({
         text={content.rate_alert}
         source={pmsChip}
       />
+      {aiNote ? (
+        <p className="border-t border-border pt-6 font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
+          {dict.ai.briefLine}
+        </p>
+      ) : null}
     </article>
   );
 }

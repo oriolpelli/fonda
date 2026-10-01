@@ -167,6 +167,11 @@ function briefingEmailHtml(
       </table>
       <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width:600px;">
         <tr><td align="center" style="padding:20px 8px 0;">
+          <!-- Art. 50(1) (AI_ACT_PROMPTS.md A3): the same sentence as the foot
+               of the in-app brief. Literal hex only — email clients don't read
+               CSS variables (ROADMAP.md §3.5). English, like the rest of this
+               email until the §3.2 brief-language defect is fixed. -->
+          <p style="margin:0 0 6px;font-family:${SANS};font-size:13px;line-height:1.5;color:${TEXT_MUTED};">Written by Fondas AI from your PMS and inbox. Check anything you act on.</p>
           <p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.5;color:${TEXT_MUTED};">Sent by Fondas — hotel operations, on autopilot.</p>
         </td></tr>
       </table>

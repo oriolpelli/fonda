@@ -59,6 +59,8 @@ export interface InboxEmail {
   status: string;
   created_at: string;
   sent_at: string | null;
+  /** True/false once a Fondas draft is sent; null otherwise — lib/inbox.ts. */
+  draft_edited: boolean | null;
   guest_name: string | null;
   booking_ref: string | null;
   arrival: string | null;
@@ -661,13 +663,26 @@ export function EmailInbox({
               </div>
 
               {selected.status === "sent" ? (
-                <p className="text-sm font-medium text-[var(--fonda-text-2)]">
-                  {selected.sent_at
-                    ? t(dict.emails.replySentAt, {
-                        time: shortTime(selected.sent_at),
-                      })
-                    : dict.emails.replySent}
-                </p>
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm font-medium text-[var(--fonda-text-2)]">
+                    {selected.sent_at
+                      ? t(dict.emails.replySentAt, {
+                          time: shortTime(selected.sent_at),
+                        })
+                      : dict.emails.replySent}
+                  </p>
+                  {/* The "· edited" marker P-8 deferred, now honest: migration
+                      0025 records draft_edited on the email itself when it is
+                      sent. Null — no draft, or sent before 0025 — shows
+                      nothing rather than a guess. */}
+                  {selected.draft_edited !== null ? (
+                    <p className="font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
+                      {selected.draft_edited
+                        ? dict.ai.sentEdited
+                        : dict.ai.sentAsDrafted}
+                    </p>
+                  ) : null}
+                </div>
               ) : (
                 <>
                   {selected.status === "needs_attention" ? (
@@ -695,15 +710,15 @@ export function EmailInbox({
                       about. One quiet mono line, once, under the thing it
                       describes.
 
-                      No "· edited" marker: draft_edit_events records a bucket
-                      and a similarity score per HOTEL, with no link to an
-                      email — deliberately, since it is an analytics table and
-                      linking it to a message would make it guest-adjacent. So
-                      there is no honest way to say whether THIS draft was
-                      edited. See decision P-8. */}
+                      It names the AI (Art. 50(1), AI_ACT_PROMPTS.md A3) and
+                      asks for the check, because the check is the human
+                      oversight the whole product claims. Whether the draft was
+                      edited is only knowable once it is sent, so the "· edited"
+                      marker lives on the sent state above (P-8, resolved by
+                      migration 0025). */}
                   {selected.draft_reply ? (
                     <p className="font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
-                      {dict.briefing.provenance.draftProvenance}
+                      {dict.ai.draftLine}
                     </p>
                   ) : null}
                   <div className="flex flex-wrap gap-2">
