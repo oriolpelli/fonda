@@ -2,8 +2,8 @@ import "server-only";
 
 import { getHotel } from "@/lib/auth";
 import {
+  rawSelect,
   readRoomType,
-  RESERVATION_RAW_SELECT,
   withSlimRaw,
 } from "@/lib/pms-fields";
 import { hotelToday, localDateOf, stayPhaseFor } from "@/lib/stay-phase";
@@ -172,7 +172,7 @@ export async function loadGuestContexts(
       // docs/audits/2026-10-01-performance.md) — this reads every stay of
       // every guest in the window.
       .select(
-        `mews_id, customer_mews_id, start_utc, end_utc, adult_count, child_count, requested_category_id, ${RESERVATION_RAW_SELECT}`
+        `mews_id, customer_mews_id, start_utc, end_utc, adult_count, child_count, requested_category_id, ${rawSelect("roomType")}`
       )
       .eq("hotel_id", hotel.id)
       .in("customer_mews_id", customerIds)
@@ -181,7 +181,7 @@ export async function loadGuestContexts(
 
   const customerById = new Map((customers ?? []).map((c) => [c.mews_id, c]));
   const byCustomer = new Map<string, ReservationRow[]>();
-  for (const r of withSlimRaw<ReservationRow>(reservations ?? [], "reservation")) {
+  for (const r of withSlimRaw<ReservationRow>(reservations ?? [])) {
     if (!r.customer_mews_id) continue;
     const list = byCustomer.get(r.customer_mews_id) ?? [];
     list.push(r);

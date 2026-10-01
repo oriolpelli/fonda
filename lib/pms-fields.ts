@@ -101,33 +101,38 @@ export function readEta(raw: Json): string | null {
 // --- Reading only these keys from the database ------------------------------
 
 /**
- * Every key the readers above look at, per table. The rest of `raw` — the bulk
- * of a MEWS payload — is never read by any page, so it is never fetched.
+ * The keys each reader above looks at. The rest of `raw` — the bulk of a MEWS
+ * payload — is never read by any page, so it is never fetched.
  *
  * Before 1 Oct every dashboard read selected `raw` whole: Home pulled the full
  * provider payload of every reservation in a 16-night window to answer "is
  * there a note?" (docs/audits/2026-10-01-performance.md §4.1). A reader that
  * starts looking at a new key must add it here, or it will only ever see null.
+ *
+ * Grouped by reader, and a query asks only for the groups it uses: each key is
+ * a separate `raw->'Key'` in SQL, and Postgres decompresses `raw` once per key
+ * per row, so twelve keys on Home's ~1,800-row window cost more database time
+ * than the whole payload did. Measured on Postgres 16 with MEWS-sized rows:
+ * Home's window read went from 40 ms and 2.5 MB (all of `raw`) to 7 ms and
+ * 0.27 MB (the two note keys, ordered by the new end_utc index).
  */
 const RAW_KEYS = {
-  reservation: [
-    "Notes",
-    "notes",
-    "RoomType",
-    "roomType",
-    "roomtype",
-    "Room",
-    "room",
-    "SpaceName",
-    "Eta",
-    "eta",
-    "ArrivalTime",
-    "arrivalTime",
-  ],
-  customer: ["IsVip", "Classifications"],
+  /** readNotes — reservations. */
+  notes: ["Notes", "notes"],
+  /** readRoomType — reservations. */
+  roomType: ["RoomType", "roomType", "roomtype"],
+  /** readRoom — reservations. */
+  room: ["Room", "room", "SpaceName"],
+  /** readEta — reservations. */
+  eta: ["Eta", "eta", "ArrivalTime", "arrivalTime"],
+  /** readVip — customers. */
+  vip: ["IsVip", "Classifications"],
 } as const;
 
-type RawTable = keyof typeof RAW_KEYS;
+export type RawReader = keyof typeof RAW_KEYS;
+
+/** Every key, in one fixed order — a key's position is its alias. */
+const ALL_KEYS: readonly string[] = Object.values(RAW_KEYS).flat();
 
 /**
  * Positional aliases (`pf_raw_0`…) rather than the key names: several keys
@@ -136,41 +141,42 @@ type RawTable = keyof typeof RAW_KEYS;
 const ALIAS = "pf_raw_";
 
 /**
- * A PostgREST select fragment for just those keys, as JSON values (`->`, not
- * `->>`), so a boolean stays a boolean and an array an array — the readers
- * check types, and text would change their answers.
+ * A PostgREST select fragment for the keys of the given readers, as JSON
+ * values (`->`, not `->>`) so a boolean stays a boolean and an array an array:
+ * the readers check types, and text would change their answers.
+ *
+ *     .select(`mews_id, start_utc, ${rawSelect("notes")}`)
  */
-function rawSelect(table: RawTable): string {
-  return RAW_KEYS[table].map((key, i) => `${ALIAS}${i}:raw->${key}`).join(", ");
+export function rawSelect(...readers: RawReader[]): string {
+  const keys = new Set<string>(readers.flatMap((reader) => RAW_KEYS[reader]));
+  return ALL_KEYS.flatMap((key, i) =>
+    keys.has(key) ? [`${ALIAS}${i}:raw->${key}`] : []
+  ).join(", ");
 }
 
-/** Use in place of `raw` in a `reservations` select. */
-export const RESERVATION_RAW_SELECT = rawSelect("reservation");
-/** Use in place of `raw` in a `customers` select. */
-export const CUSTOMER_RAW_SELECT = rawSelect("customer");
-
 /**
- * Puts a `raw` object back on rows read with one of the fragments above,
- * holding only the selected keys, and drops the aliases. The readers in this
- * file then work unchanged, and stay the only place that knows the keys'
- * meaning. A key the provider didn't send is simply absent, as it was before.
+ * Puts a `raw` object back on rows read with rawSelect(), holding only the keys
+ * that were selected, and drops the aliases. The readers in this file then work
+ * unchanged, and stay the only place that knows the keys' meaning. A key the
+ * provider didn't send is simply absent, as it was before.
  */
 export function withSlimRaw<T extends { raw: Json }>(
-  rows: readonly unknown[],
-  table: RawTable
+  rows: readonly unknown[]
 ): T[] {
-  const keys = RAW_KEYS[table];
   return rows.map((row) => {
     const source = row as Record<string, unknown>;
     const out: Record<string, unknown> = {};
-    for (const [field, value] of Object.entries(source)) {
-      if (!field.startsWith(ALIAS)) out[field] = value;
-    }
     const raw: Record<string, Json> = {};
-    keys.forEach((key, i) => {
-      const value = source[`${ALIAS}${i}`];
-      if (value !== null && value !== undefined) raw[key] = value as Json;
-    });
+    for (const [field, value] of Object.entries(source)) {
+      if (!field.startsWith(ALIAS)) {
+        out[field] = value;
+        continue;
+      }
+      const key = ALL_KEYS[Number(field.slice(ALIAS.length))];
+      if (key !== undefined && value !== null && value !== undefined) {
+        raw[key] = value as Json;
+      }
+    }
     out.raw = raw;
     return out as T;
   });

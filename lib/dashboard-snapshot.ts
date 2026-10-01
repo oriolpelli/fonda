@@ -12,10 +12,9 @@ import {
   type StayDates,
 } from "@/lib/occupancy";
 import {
-  CUSTOMER_RAW_SELECT,
+  rawSelect,
   readNotes,
   readVip,
-  RESERVATION_RAW_SELECT,
   withSlimRaw,
 } from "@/lib/pms-fields";
 import { hotelToday, localDateOf } from "@/lib/stay-phase";
@@ -184,23 +183,30 @@ export async function loadDashboardSnapshot(): Promise<DashboardSnapshot> {
   // Paged: a busy fortnight easily exceeds PostgREST's 1,000-row cap, and a
   // truncated read would quietly report a half-empty hotel.
   //
-  // Only the `raw` keys lib/pms-fields.ts reads, never the whole provider
-  // payload (docs/audits/2026-10-01-performance.md §4.1).
+  // Only the note keys of `raw` — the one thing this read uses it for — never
+  // the whole provider payload (docs/audits/2026-10-01-performance.md §4.1).
   const pagedRows = await fetchAllPages<ReservationRow>((from, to) =>
     supabase
       .from("reservations")
       .select(
-        `mews_id, state, start_utc, end_utc, customer_mews_id, arrival_time, mews_updated_utc, ${RESERVATION_RAW_SELECT}`
+        `mews_id, state, start_utc, end_utc, customer_mews_id, arrival_time, mews_updated_utc, ${rawSelect("notes")}`
       )
       .eq("hotel_id", hotel.id)
       .lt("start_utc", windowEnd)
       .gt("end_utc", windowStart)
-      // Unique within one hotel, so paging can't skip or repeat a row.
+      // Ordered by end_utc first so Postgres can walk the (hotel_id, end_utc)
+      // index (migration 0028) to the stays that haven't finished, instead of
+      // the mews_id index across every booking the hotel has ever had —
+      // ~40 ms → ~7 ms on a 45k-reservation test hotel. mews_id breaks ties,
+      // and with it the order is unique within one hotel, so paging can't
+      // skip or repeat a row. Nothing below depends on the order beyond the
+      // listing order of today's VIPs, which was GUID order before.
+      .order("end_utc", { ascending: true })
       .order("mews_id", { ascending: true })
       .range(from, to)
       .overrideTypes<ReservationRow[]>()
   );
-  const reservationRows = withSlimRaw<ReservationRow>(pagedRows, "reservation");
+  const reservationRows = withSlimRaw<ReservationRow>(pagedRows);
 
   const reservations = reservationRows.filter(
     (r) => r.state !== CANCELLED_STATE && r.start_utc && r.end_utc
@@ -234,11 +240,11 @@ export async function loadDashboardSnapshot(): Promise<DashboardSnapshot> {
   if (arrivingTodayIds.length > 0) {
     const { data: customers } = await supabase
       .from("customers")
-      .select(`mews_id, first_name, last_name, ${CUSTOMER_RAW_SELECT}`)
+      .select(`mews_id, first_name, last_name, ${rawSelect("vip")}`)
       .eq("hotel_id", hotel.id)
       .in("mews_id", arrivingTodayIds);
     customerById = new Map(
-      withSlimRaw<CustomerRow>(customers ?? [], "customer").map((c) => [
+      withSlimRaw<CustomerRow>(customers ?? []).map((c) => [
         c.mews_id,
         c,
       ])

@@ -8,10 +8,9 @@ import {
   type StayDates,
 } from "@/lib/occupancy";
 import {
-  CUSTOMER_RAW_SELECT,
+  rawSelect,
   readNotes,
   readVip,
-  RESERVATION_RAW_SELECT,
   withSlimRaw,
 } from "@/lib/pms-fields";
 import { localDate, localDateOf } from "@/lib/stay-phase";
@@ -170,7 +169,7 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
     admin
       .from("reservations")
       .select(
-        `mews_id, state, start_utc, end_utc, customer_mews_id, adult_count, child_count, arrival_time, ${RESERVATION_RAW_SELECT}`
+        `mews_id, state, start_utc, end_utc, customer_mews_id, adult_count, child_count, arrival_time, ${rawSelect("notes")}`
       )
       .eq("hotel_id", hotelId)
       .lt("start_utc", horizonEnd.toISOString())
@@ -180,7 +179,7 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
       .range(from, to)
       .overrideTypes<ReservationRow[]>()
   );
-  const reservationsRaw = withSlimRaw<ReservationRow>(pagedRows, "reservation");
+  const reservationsRaw = withSlimRaw<ReservationRow>(pagedRows);
 
   const reservations = reservationsRaw.filter(
     (r) => r.state !== "Canceled" && r.start_utc && r.end_utc
@@ -199,12 +198,12 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
   const customerRows = await fetchInChunks<CustomerRow>(guestIds, (chunk) =>
     admin
       .from("customers")
-      .select(`mews_id, first_name, last_name, ${CUSTOMER_RAW_SELECT}`)
+      .select(`mews_id, first_name, last_name, ${rawSelect("vip")}`)
       .eq("hotel_id", hotelId)
       .in("mews_id", chunk)
       .overrideTypes<CustomerRow[]>()
   );
-  for (const c of withSlimRaw<CustomerRow>(customerRows, "customer")) {
+  for (const c of withSlimRaw<CustomerRow>(customerRows)) {
     guestById.set(c.mews_id, c);
   }
 

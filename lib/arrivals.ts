@@ -3,10 +3,10 @@ import "server-only";
 import { getHotel } from "@/lib/auth";
 import { addDays } from "@/lib/occupancy";
 import {
+  rawSelect,
   readEta,
   readRoom,
   readRoomType,
-  RESERVATION_RAW_SELECT,
   withSlimRaw,
 } from "@/lib/pms-fields";
 import { hotelToday, localDateOf } from "@/lib/stay-phase";
@@ -103,7 +103,7 @@ export interface MovementGuest {
 
 // Only the `raw` keys lib/pms-fields.ts reads — room, room type, ETA — never
 // the whole provider payload (docs/audits/2026-10-01-performance.md §4.1).
-const COLUMNS = `mews_id, state, start_utc, end_utc, customer_mews_id, requested_category_id, assigned_space_id, arrival_time, ${RESERVATION_RAW_SELECT}`;
+const COLUMNS = `mews_id, state, start_utc, end_utc, customer_mews_id, requested_category_id, assigned_space_id, arrival_time, ${rawSelect("roomType", "room", "eta")}`;
 
 function fullName(customer: MovementGuest | undefined): string | null {
   if (!customer) return null;
@@ -196,13 +196,13 @@ export async function loadTodayMovements(): Promise<TodayMovements> {
   ]);
 
   const arriving = movingToday(
-    withSlimRaw<MovementRow>(arrivalRows, "reservation"),
+    withSlimRaw<MovementRow>(arrivalRows),
     tz,
     today,
     "arrival"
   );
   const leaving = movingToday(
-    withSlimRaw<MovementRow>(departureRows, "reservation"),
+    withSlimRaw<MovementRow>(departureRows),
     tz,
     today,
     "departure"

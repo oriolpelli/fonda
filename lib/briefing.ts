@@ -6,10 +6,9 @@ import { AI_MODELS, provenance } from "@/lib/ai-provenance";
 import { track } from "@/lib/analytics";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import {
-  CUSTOMER_RAW_SELECT,
+  rawSelect,
   readNotes,
   readVip,
-  RESERVATION_RAW_SELECT,
   withSlimRaw,
 } from "@/lib/pms-fields";
 import { pseudoName } from "@/lib/pseudonymise";
@@ -213,16 +212,14 @@ export async function generateBriefing(
   const { data: reservationRows } = await admin
     .from("reservations")
     .select(
-      `mews_id, state, start_utc, end_utc, customer_mews_id, adult_count, child_count, ${RESERVATION_RAW_SELECT}`
+      `mews_id, state, start_utc, end_utc, customer_mews_id, adult_count, child_count, ${rawSelect("notes")}`
     )
     .eq("hotel_id", hotelId)
     .lt("start_utc", horizonEnd.toISOString())
     .gt("end_utc", todayStart.toISOString())
     .overrideTypes<BriefReservationRow[]>();
   const reservations = withSlimRaw<BriefReservationRow>(
-    reservationRows ?? [],
-    "reservation"
-  );
+    reservationRows ?? []);
 
   const active = reservations.filter(
     (r) => r.state !== "Canceled" && r.start_utc && r.end_utc
@@ -251,11 +248,11 @@ export async function generateBriefing(
   if (arrivalCustomerIds.length > 0) {
     const { data: customers } = await admin
       .from("customers")
-      .select(`mews_id, first_name, last_name, ${CUSTOMER_RAW_SELECT}`)
+      .select(`mews_id, first_name, last_name, ${rawSelect("vip")}`)
       .eq("hotel_id", hotelId)
       .in("mews_id", arrivalCustomerIds)
       .overrideTypes<BriefCustomerRow[]>();
-    for (const c of withSlimRaw<BriefCustomerRow>(customers ?? [], "customer")) {
+    for (const c of withSlimRaw<BriefCustomerRow>(customers ?? [])) {
       customerById.set(c.mews_id, c);
     }
   }

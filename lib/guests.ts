@@ -2,8 +2,8 @@ import "server-only";
 
 import { getHotel } from "@/lib/auth";
 import {
+  rawSelect,
   readRoomType,
-  RESERVATION_RAW_SELECT,
   withSlimRaw,
 } from "@/lib/pms-fields";
 import { hotelToday, localDateOf } from "@/lib/stay-phase";
@@ -97,7 +97,7 @@ interface CustomerRow {
 // Only the `raw` keys lib/pms-fields.ts reads — never the whole provider
 // payload, which up to 500 rows of the list would otherwise drag along
 // (docs/audits/2026-10-01-performance.md §4.1). Rows go through withSlimRaw.
-const RESERVATION_COLUMNS = `mews_id, customer_mews_id, number, start_utc, end_utc, adult_count, child_count, requested_category_id, ${RESERVATION_RAW_SELECT}`;
+const RESERVATION_COLUMNS = `mews_id, customer_mews_id, number, start_utc, end_utc, adult_count, child_count, requested_category_id, ${rawSelect("roomType")}`;
 
 const CUSTOMER_COLUMNS =
   "mews_id, first_name, last_name, email, phone, nationality_code, language_code";
@@ -182,7 +182,7 @@ export async function listGuests(
   }
 
   const { data: reservations } = await query.overrideTypes<ReservationRow[]>();
-  const rows = withSlimRaw<ReservationRow>(reservations ?? [], "reservation");
+  const rows = withSlimRaw<ReservationRow>(reservations ?? []);
   if (rows.length === 0) return [];
 
   // One reservation per guest — the one that explains why they are listed.
@@ -347,7 +347,7 @@ export async function loadGuestRecord(
 
   const tz = hotel?.timezone || "UTC";
   const today = hotelToday(tz);
-  const stays = withSlimRaw<ReservationRow>(reservations ?? [], "reservation");
+  const stays = withSlimRaw<ReservationRow>(reservations ?? []);
   const current =
     stays.find((r) => {
       const start = localDateOf(tz, r.start_utc);
