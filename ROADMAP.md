@@ -166,6 +166,11 @@ demo blockers in `gtm/PILOT_SPRINT.md` §4 (migrations 0023/0024, demo seed
 data, the demo run-through) and to fixes a demo or a live pilot needs. The
 release train resumes after the sprint review on 6 Oct.
 
+**One recorded exception (1 Oct, Oriol's call):** W9 (AI transparency) is built
+early on the branch `w9/ai-transparency`, one commit per prompt, so it can be
+previewed and tested without touching production. It merges to `main` only
+after migration 0025 is applied — selling still comes first until 6 Oct.
+
 ### Running alongside all of it, from today
 
 - **Log five green mornings in `RELIABILITY.md` — fresh ones, starting now.**
@@ -205,8 +210,9 @@ threads (16, migration 0023) → the Sana chat pass (D3) → Guests v1 (17,
 migration 0024) → chat source chips (18) → provenance chips (19) → ⌘K palette
 (20) → the post-IA sweep (21) → the v4 sweep and marketing tune (D4).
 
-**⚠️ Migrations 0023 and 0024 are written but NOT APPLIED.** Chat and Guests
-both fail without them. Apply before the next deploy.
+✅ **Migrations 0023 and 0024 applied** (confirmed by Oriol, 1 Oct). Chat and
+Guests depended on them. `npm run verify-migrations` re-checks both from your
+own terminal.
 
 **Next, after the sprint:** W9 AI transparency → rate cache (B17) → W10 AI
 trust pack → Revenue Management. W9 goes first because it is small, it carries
