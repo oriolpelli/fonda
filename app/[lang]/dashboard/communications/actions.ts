@@ -11,6 +11,7 @@ import { confirmedIds } from "@/lib/bulk-ids";
 import { recordDraftSend } from "@/lib/draft-acceptance";
 import { measureDraftEdit } from "@/lib/draft-edit";
 import { getGmailClientForHotel, type GmailClient } from "@/lib/gmail";
+import { migrationApplied } from "@/lib/schema-features";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -106,10 +107,19 @@ interface SendableEmail {
   draft_model: string | null;
   draft_prompt_version: string | null;
   draft_sha256: string | null;
+  /** Migration 0029 — absent until it is applied, null until first known. */
+  gmail_thread_id?: string | null;
 }
 
 const SENDABLE_COLUMNS =
   "id, from_email, subject, external_id, draft_reply, draft_model, draft_prompt_version, draft_sha256";
+
+/** SENDABLE_COLUMNS, plus the stored Gmail thread once migration 0029 is in. */
+async function sendableColumns(): Promise<string> {
+  return (await migrationApplied("0029"))
+    ? `${SENDABLE_COLUMNS}, gmail_thread_id`
+    : SENDABLE_COLUMNS;
+}
 
 /**
  * How a reply went out — recorded on the row (migration 0025) as the human
@@ -171,11 +181,15 @@ async function sendOne(
   if (!email.from_email) throw new Error("This email has no sender address.");
   if (!content.trim()) throw new Error("The reply is empty.");
 
-  // Look up the original thread so the reply is threaded in Gmail.
-  let threadId: string | undefined;
-  if (email.external_id) {
+  // The original thread, so the reply is threaded in Gmail: stored since
+  // migration 0029 (at ingest, or on a first send), looked up otherwise — and
+  // then only the thread id, not the whole message.
+  let threadId: string | undefined = email.gmail_thread_id ?? undefined;
+  let learnedThread = false;
+  if (!threadId && email.external_id) {
     try {
-      threadId = (await gmail.getMessage(email.external_id)).threadId;
+      threadId = await gmail.getThreadId(email.external_id);
+      learnedThread = true;
     } catch {
       // Threading is best-effort; send a standalone reply if lookup fails.
     }
@@ -218,6 +232,11 @@ async function sendOne(
       ...(email.draft_sha256 === null && email.draft_reply?.trim()
         ? { draft_sha256: sha256(email.draft_reply) }
         : {}),
+      // Remembered, so a second reply on this message skips the lookup. Only
+      // when 0029 added the column — the row was selected with it then.
+      ...(learnedThread && "gmail_thread_id" in email
+        ? { gmail_thread_id: threadId }
+        : {}),
     })
     .eq("id", email.id);
   if (recordError) {
@@ -241,10 +260,10 @@ export async function sendReply(
   // the single moment the acceptance metric can be measured.
   const { data: email } = await admin
     .from("emails")
-    .select(`${SENDABLE_COLUMNS}, status`)
+    .select(`${await sendableColumns()}, status`)
     .eq("id", emailId)
     .eq("hotel_id", hotelId)
-    .single();
+    .single<SendableEmail & { status: string }>();
   if (!email) return { error: "Email not found." };
 
   // Already sent: say so and send nothing. The inbox moves a row the moment
@@ -369,7 +388,7 @@ export async function approveAllStandard(ids: string[]): Promise<{
 
   const { data: emails } = await admin
     .from("emails")
-    .select(SENDABLE_COLUMNS)
+    .select(await sendableColumns())
     .eq("hotel_id", hotelId)
     .eq("status", "pending")
     .in("classification", BULK_CLASSIFICATIONS)
@@ -377,7 +396,8 @@ export async function approveAllStandard(ids: string[]): Promise<{
     // A draft started from Ask has no recipient yet (ROADMAP §3.2) — it can
     // only be sent one by one, once someone has given it an address.
     .not("from_email", "is", null)
-    .in("id", confirmed);
+    .in("id", confirmed)
+    .overrideTypes<SendableEmail[]>();
 
   // BULK_CONCURRENCY at a time rather than one after another: each send is a
   // thread lookup, the send and two writes, so a batch of eight used to keep

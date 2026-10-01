@@ -3,6 +3,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 
 import { decryptSecret, encryptSecret } from "@/lib/encryption";
+import { migrationApplied } from "@/lib/schema-features";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { TablesInsert } from "@/types/database";
 
@@ -179,6 +180,12 @@ export interface GmailClient {
   getProfileEmail(): Promise<string>;
   listRecentMessageIds(days: number): Promise<string[]>;
   getMessage(id: string): Promise<GmailMessage>;
+  /**
+   * Just the thread a message belongs to — `format=minimal`, so none of the
+   * body comes down. Replying needs only this, and fetching the whole message
+   * to read one id was most of a send's lookup time.
+   */
+  getThreadId(id: string): Promise<string>;
   sendEmail(input: {
     to: string;
     subject: string;
@@ -365,6 +372,13 @@ export function createGmailClient(refreshToken: string): GmailClient {
       return parseMessage(raw);
     },
 
+    async getThreadId(id) {
+      const raw = await api<{ threadId: string }>(
+        `/messages/${id}?format=minimal`
+      );
+      return raw.threadId;
+    },
+
     async sendEmail({ to, subject, body, threadId, inReplyTo, headers }) {
       // Header injection guard for the values that come from the outside
       // world: `to` and `inReplyTo` are refused outright if they carry a line
@@ -467,6 +481,9 @@ export async function ingestRecentEmails(
   if (newIds.length === 0) return 0;
 
   const messages = await Promise.all(newIds.map((id) => client.getMessage(id)));
+  // The thread is stored with the message (migration 0029), so a reply never
+  // has to ask Gmail for it. Left out until 0029 is applied.
+  const storeThread = await migrationApplied("0029");
   const rows: TablesInsert<"emails">[] = messages.map((m) => ({
     hotel_id: hotelId,
     external_id: m.id,
@@ -475,6 +492,7 @@ export async function ingestRecentEmails(
     body: m.body,
     status: "pending",
     created_at: m.receivedAt,
+    ...(storeThread ? { gmail_thread_id: m.threadId } : {}),
   }));
 
   // ignoreDuplicates guards against a race with a concurrent run.

@@ -57,6 +57,12 @@ export interface GuestProfile {
   /** Staff-written. Never touched by inference — see migration 0024. */
   notes: string | null;
   inferredAt: string | null;
+  /**
+   * When inference last failed for this guest (migration 0029). Null when it
+   * never has, or before 0029 is applied. lib/guest-inference.ts waits 10
+   * minutes after it before trying again.
+   */
+  inferenceFailedAt: string | null;
 }
 
 export interface GuestListRow {
@@ -135,6 +141,7 @@ function toProfile(row: {
   preferences: Json;
   notes: string | null;
   inferred_at: string | null;
+  inference_failed_at?: string | null;
 } | null): GuestProfile {
   return {
     tripPurpose: (row?.trip_purpose as TripPurpose | null) ?? null,
@@ -144,6 +151,7 @@ function toProfile(row: {
     preferences: parsePreferences(row?.preferences ?? null),
     notes: row?.notes ?? null,
     inferredAt: row?.inferred_at ?? null,
+    inferenceFailedAt: row?.inference_failed_at ?? null,
   };
 }
 
@@ -329,9 +337,10 @@ export async function loadGuestRecord(
       .overrideTypes<ReservationRow[]>(),
     supabase
       .from("guest_profiles")
-      .select(
-        "trip_purpose, occasion, trip_purpose_source, occasion_source, preferences, notes, inferred_at"
-      )
+      // The whole row, a few small columns: it carries inference_failed_at
+      // once migration 0029 adds it, without a probe or a second query
+      // before then.
+      .select("*")
       .eq("hotel_id", hotelId)
       .eq("customer_mews_id", customerMewsId)
       .maybeSingle(),

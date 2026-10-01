@@ -11,6 +11,7 @@ import type {
   TripPurpose,
 } from "@/lib/guests";
 import { reduceSurnames } from "@/lib/pseudonymise";
+import { migrationApplied } from "@/lib/schema-features";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database";
 
@@ -48,7 +49,7 @@ const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
 /**
  * After a failure, how long before this server tries again.
  *
- * A failed run stamps nothing, so `shouldInfer` keeps saying yes, and before
+ * A failed run used to stamp nothing, so `shouldInfer` kept saying yes: before
  * 1 Oct every view of every record retried — the week the API credits ran out,
  * each guest page waited on a call that was certain to fail
  * (docs/audits/2026-10-01-performance.md §4.7). Now a provider failure (bad
@@ -56,12 +57,11 @@ const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
  * it is never about one guest; any other failure (a malformed answer) pauses
  * only that guest.
  *
- * Memory only, per server instance: nothing is written, so a database without
- * a new column still gets the back-off, and a cold instance simply tries once.
- * With a few warm instances that is a handful of attempts per ten minutes, not
- * one per view. If that ever needs to be exact, the durable version is a
- * `guest_profiles.inference_failed_at` column — a migration, so a decision, not
- * a default.
+ * Two layers. In memory, per server instance: immediate, and enough on its
+ * own when the provider is down for everyone. On the guest's profile
+ * (`inference_failed_at`, migration 0029): so the pause also holds on every
+ * other instance and after a cold start. Without 0029 only the first layer
+ * applies — a handful of attempts per ten minutes rather than one per view.
  */
 const RETRY_AFTER_FAILURE_MS = 10 * 60 * 1000;
 
@@ -174,6 +174,14 @@ export function shouldInfer(
   profile: GuestProfile,
   latestEmailAt: string | null
 ): boolean {
+  // A failure stamped on the profile (migration 0029) pauses every server,
+  // not just the one that saw it — see RETRY_AFTER_FAILURE_MS.
+  if (profile.inferenceFailedAt) {
+    const failedAt = Date.parse(profile.inferenceFailedAt);
+    if (!Number.isNaN(failedAt) && Date.now() - failedAt < RETRY_AFTER_FAILURE_MS) {
+      return false;
+    }
+  }
   if (!profile.inferredAt) return true;
   const inferredAt = Date.parse(profile.inferredAt);
   if (Number.isNaN(inferredAt)) return true;
@@ -293,6 +301,7 @@ async function runInference(input: InferenceInput): Promise<GuestProfile> {
       // Rule 1. Carried through untouched, and absent from the write below.
       notes: existing.notes,
       inferredAt: now,
+      inferenceFailedAt: null,
     };
 
     const supabase = await createClient();
@@ -314,6 +323,9 @@ async function runInference(input: InferenceInput): Promise<GuestProfile> {
         inference_model: AI_MODELS.guestInference,
         inference_prompt_version: PROMPT_VERSIONS.guestInference,
         updated_at: now,
+        // A success clears an earlier failure. Only when one was stamped,
+        // which also means migration 0029's column is there to clear.
+        ...(existing.inferenceFailedAt ? { inference_failed_at: null } : {}),
       },
       { onConflict: "hotel_id,customer_mews_id" }
     );
@@ -341,6 +353,7 @@ async function runInference(input: InferenceInput): Promise<GuestProfile> {
     // this guest only, and is logged by name alone: a JSON parse error's
     // message quotes the model's output, which quotes the guest.
     const reported = classifyAiError(err, "guest-inference");
+    await stampFailure(input.hotelId, input.customerMewsId);
     if (err instanceof Anthropic.AnthropicError) {
       // An SDK error that never reached the provider — a missing key — isn't
       // reported by classifyAiError, and it fails every run until it is fixed.
@@ -357,5 +370,31 @@ async function runInference(input: InferenceInput): Promise<GuestProfile> {
       pauseGuest(guestKey(input.hotelId, input.customerMewsId));
     }
     return existing;
+  }
+}
+
+/**
+ * Records the failure on the guest's profile (migration 0029), so the
+ * 10-minute pause holds on every server instance, not only this one. Best
+ * effort: without 0029, or if the write fails, the in-memory pause above
+ * still applies. Writes nothing but the stamp.
+ */
+async function stampFailure(
+  hotelId: string,
+  customerMewsId: string
+): Promise<void> {
+  try {
+    if (!(await migrationApplied("0029"))) return;
+    const supabase = await createClient();
+    await supabase.from("guest_profiles").upsert(
+      {
+        hotel_id: hotelId,
+        customer_mews_id: customerMewsId,
+        inference_failed_at: new Date().toISOString(),
+      },
+      { onConflict: "hotel_id,customer_mews_id" }
+    );
+  } catch {
+    // The in-memory pause stands either way.
   }
 }
