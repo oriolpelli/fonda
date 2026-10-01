@@ -1,7 +1,13 @@
 import "server-only";
 
+import type { SupabaseClient } from "@supabase/supabase-js";
+
 import { intlLocale, type Locale } from "@/lib/i18n/config";
 import { createClient } from "@/lib/supabase/server";
+import type { Database } from "@/types/database";
+
+/** A user-scoped (RLS) client — never the admin one. */
+type UserClient = SupabaseClient<Database>;
 
 /**
  * The thread list and transcript behind /dashboard/chat (APP_UX_PROPOSAL.md
@@ -36,7 +42,15 @@ export interface StoredChatMessage {
   content: string;
 }
 
-/** This user's conversations, most recent first. */
+/**
+ * How many conversations a user keeps. Older ones are deleted when a new one
+ * starts (pruneOwnThreads, from the chat route), so the list — and what we
+ * store — can't grow without bound. Oriol's call, 1 Oct 2026; recorded in
+ * APP_UX_PROPOSAL.md §11 #11. The list shows exactly this many.
+ */
+export const CHAT_HISTORY_LIMIT = 10;
+
+/** This user's conversations, most recent first — at most CHAT_HISTORY_LIMIT. */
 export async function loadChatThreads(
   locale: Locale
 ): Promise<ChatThreadSummary[]> {
@@ -46,7 +60,7 @@ export async function loadChatThreads(
       .from("chat_threads")
       .select("id, title, last_message_at")
       .order("last_message_at", { ascending: false })
-      .limit(50),
+      .limit(CHAT_HISTORY_LIMIT),
     supabase.from("hotels").select("timezone").maybeSingle(),
   ]);
 
@@ -110,4 +124,64 @@ export async function loadThreadMessages(
       row.role === "user" || row.role === "assistant"
     )
     .map((row) => ({ role: row.role, content: row.content }));
+}
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Deletes conversations — transcript first, then the thread — AS THE SIGNED-IN
+ * USER. RLS (migration 0027) is what limits this to the user's own threads in
+ * their own hotel: an id that isn't theirs deletes nothing, it doesn't error.
+ * No service role here on purpose.
+ *
+ * Returns false when either delete reported an error.
+ */
+export async function deleteOwnThreads(
+  ids: string[],
+  client?: UserClient
+): Promise<boolean> {
+  const clean = [...new Set(ids.filter((id) => UUID.test(id)))];
+  if (clean.length === 0) return true;
+  const supabase = client ?? (await createClient());
+  const { error: logsError } = await supabase
+    .from("chat_logs")
+    .delete()
+    .in("thread_id", clean);
+  if (logsError) return false;
+  const { error: threadsError } = await supabase
+    .from("chat_threads")
+    .delete()
+    .in("id", clean);
+  return !threadsError;
+}
+
+/** Every conversation the signed-in user owns ("Clear history"). */
+export async function deleteAllOwnThreads(): Promise<boolean> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("chat_threads").select("id");
+  if (error) return false;
+  return deleteOwnThreads((data ?? []).map((row) => row.id));
+}
+
+/**
+ * Keeps the user's CHAT_HISTORY_LIMIT most recent conversations and deletes
+ * the rest. Called by the chat route when a new conversation starts, so the
+ * count never exceeds the limit for long. Best-effort: a failure here leaves
+ * one conversation too many, which the next new conversation tidies up.
+ *
+ * `client` lets the chat route pass the user client it already made before
+ * its stream started, rather than reading cookies again from inside it.
+ */
+export async function pruneOwnThreads(
+  keep: number = CHAT_HISTORY_LIMIT,
+  client?: UserClient
+): Promise<void> {
+  const supabase = client ?? (await createClient());
+  const { data } = await supabase
+    .from("chat_threads")
+    .select("id")
+    .order("last_message_at", { ascending: false })
+    .range(keep, keep + 199);
+  const stale = (data ?? []).map((row) => row.id);
+  if (stale.length > 0) await deleteOwnThreads(stale, supabase);
 }

@@ -5,6 +5,7 @@ import { getSessionProfile } from "@/lib/auth";
 import { AI_MODELS, provenance, sha256 } from "@/lib/ai-provenance";
 import { flushAnalytics, track } from "@/lib/analytics";
 import { sourcesFor } from "@/lib/chat-sources";
+import { CHAT_HISTORY_LIMIT, pruneOwnThreads } from "@/lib/chat-threads";
 import { buildHotelContext } from "@/lib/hotel-context";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { reduceSurnames, type NameToReduce } from "@/lib/pseudonymise";
@@ -168,6 +169,9 @@ export async function POST(request: Request) {
    * rather than erroring: the answer has to go out either way.
    */
   let threadId: string | null = null;
+  // True when this turn starts a new conversation — the moment to drop the
+  // oldest beyond the 10 a user keeps (lib/chat-threads.ts).
+  let startedThread = false;
   if (body?.threadId) {
     const { data: owned } = await admin
       .from("chat_threads")
@@ -191,6 +195,7 @@ export async function POST(request: Request) {
       .select("id")
       .single();
     threadId = created?.id ?? null;
+    startedThread = threadId !== null;
   }
 
   const stream = new ReadableStream<Uint8Array>({
@@ -302,6 +307,16 @@ export async function POST(request: Request) {
               .from("chat_threads")
               .update({ last_message_at: new Date().toISOString() })
               .eq("id", threadId);
+          }
+        }
+        // Keep the latest 10 conversations; delete older ones. As the user,
+        // through RLS (migration 0027) — after the answer has streamed, so it
+        // never delays it, and best-effort, so it never breaks it.
+        if (startedThread) {
+          try {
+            await pruneOwnThreads(CHAT_HISTORY_LIMIT, supabase);
+          } catch (err) {
+            console.error("[chat] pruning old conversations failed:", err);
           }
         }
         controller.close();
