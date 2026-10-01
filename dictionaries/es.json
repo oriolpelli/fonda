@@ -1158,6 +1158,7 @@
     "sourceEmail": "Deducido por Fondas AI del correo",
     "sourceReservation": "Deducido por Fondas AI de la reserva",
     "sourceInferred": "Deducido por Fondas AI",
+    "inferenceUpdating": "Fondas AI está actualizando esto con el correo reciente",
     "clear": "Borrar",
     "none": "Sin definir",
     "kindEmail": "Correo",

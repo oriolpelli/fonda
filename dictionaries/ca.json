@@ -1158,6 +1158,7 @@
     "sourceEmail": "Deduït per Fondas AI del correu",
     "sourceReservation": "Deduït per Fondas AI de la reserva",
     "sourceInferred": "Deduït per Fondas AI",
+    "inferenceUpdating": "Fondas AI ho està actualitzant amb el correu recent",
     "clear": "Esborra",
     "none": "Sense definir",
     "kindEmail": "Correu",

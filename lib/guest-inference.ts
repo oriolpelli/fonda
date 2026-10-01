@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { classifyAiError } from "@/lib/ai-errors";
 import { AI_MODELS, PROMPT_VERSIONS } from "@/lib/ai-provenance";
 import type {
   GuestPreference,
@@ -43,6 +44,61 @@ import type { Json } from "@/types/database";
 
 /** Re-run at most this often, however many times a record is opened. */
 const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * After a failure, how long before this server tries again.
+ *
+ * A failed run stamps nothing, so `shouldInfer` keeps saying yes, and before
+ * 1 Oct every view of every record retried — the week the API credits ran out,
+ * each guest page waited on a call that was certain to fail
+ * (docs/audits/2026-10-01-performance.md §4.7). Now a provider failure (bad
+ * key, no credits, outage, rate limit) pauses inference for everyone, because
+ * it is never about one guest; any other failure (a malformed answer) pauses
+ * only that guest.
+ *
+ * Memory only, per server instance: nothing is written, so a database without
+ * a new column still gets the back-off, and a cold instance simply tries once.
+ * With a few warm instances that is a handful of attempts per ten minutes, not
+ * one per view. If that ever needs to be exact, the durable version is a
+ * `guest_profiles.inference_failed_at` column — a migration, so a decision, not
+ * a default.
+ */
+const RETRY_AFTER_FAILURE_MS = 10 * 60 * 1000;
+
+/** Until when the model is considered down for every guest. */
+let providerPausedUntil = 0;
+
+/** Per guest (`hotelId:customerMewsId`): until when that guest is paused. */
+const guestPausedUntil = new Map<string, number>();
+
+/** Runs in flight, so two renders of one record share one model call. */
+const inFlight = new Map<string, Promise<GuestProfile>>();
+
+function guestKey(hotelId: string, customerMewsId: string): string {
+  return `${hotelId}:${customerMewsId}`;
+}
+
+/** True while a recent failure says not to try this guest yet. */
+export function inferencePaused(
+  hotelId: string,
+  customerMewsId: string
+): boolean {
+  const now = Date.now();
+  if (now < providerPausedUntil) return true;
+  const until = guestPausedUntil.get(guestKey(hotelId, customerMewsId));
+  return until !== undefined && now < until;
+}
+
+function pauseGuest(key: string): void {
+  const now = Date.now();
+  // Keep the map from growing for the life of a warm instance.
+  if (guestPausedUntil.size > 500) {
+    for (const [k, until] of guestPausedUntil) {
+      if (until <= now) guestPausedUntil.delete(k);
+    }
+  }
+  guestPausedUntil.set(key, now + RETRY_AFTER_FAILURE_MS);
+}
 
 const SCHEMA = {
   type: "object",
@@ -130,11 +186,22 @@ export function shouldInfer(
  *
  * Returns the merged profile, or the existing one unchanged if anything goes
  * wrong. A failed inference is a record with fewer guesses on it, which is a
- * perfectly good record — it must never be an error page.
+ * perfectly good record — it must never be an error page. A failure also
+ * pauses further attempts (`RETRY_AFTER_FAILURE_MS`).
  */
-export async function inferGuestProfile(
-  input: InferenceInput
-): Promise<GuestProfile> {
+export function inferGuestProfile(input: InferenceInput): Promise<GuestProfile> {
+  const key = guestKey(input.hotelId, input.customerMewsId);
+  if (inferencePaused(input.hotelId, input.customerMewsId)) {
+    return Promise.resolve(input.existing);
+  }
+  const running = inFlight.get(key);
+  if (running) return running;
+  const run = runInference(input).finally(() => inFlight.delete(key));
+  inFlight.set(key, run);
+  return run;
+}
+
+async function runInference(input: InferenceInput): Promise<GuestProfile> {
   const { existing } = input;
 
   try {
@@ -249,8 +316,25 @@ export async function inferGuestProfile(
     );
 
     return merged;
-  } catch {
-    // A record with fewer guesses on it is still a good record.
+  } catch (err) {
+    // A record with fewer guesses on it is still a good record. Say so once,
+    // then stop asking for a while.
+    //
+    // Anything the SDK raised — the provider refused or was unreachable, or
+    // the key is missing — is not about this guest, so it pauses everyone;
+    // classifyAiError logs and reports the provider cases (no guest data,
+    // lib/ai-errors.ts). Anything else, a malformed answer most likely, pauses
+    // this guest only, and is logged by name alone: a JSON parse error's
+    // message quotes the model's output, which quotes the guest.
+    classifyAiError(err, "guest-inference");
+    if (err instanceof Anthropic.AnthropicError) {
+      providerPausedUntil = Date.now() + RETRY_AFTER_FAILURE_MS;
+    } else {
+      console.error(
+        `[guest-inference] run failed (${err instanceof Error ? err.name : "unknown"}); pausing this guest`
+      );
+      pauseGuest(guestKey(input.hotelId, input.customerMewsId));
+    }
     return existing;
   }
 }

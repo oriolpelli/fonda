@@ -44,6 +44,7 @@ export function GuestTags({
   tripPurposeSource,
   occasionSource,
   inferredAt,
+  disabled = false,
 }: {
   customerId: string;
   tripPurpose: TripPurpose | null;
@@ -52,6 +53,8 @@ export function GuestTags({
   occasionSource: TagSource | null;
   /** When inference last ran — the date on an inferred tag's line. */
   inferredAt: string | null;
+  /** Held while an inference run is in flight — see the guest record page. */
+  disabled?: boolean;
 }) {
   const { dict, locale } = useDictionary();
   const [pending, startTransition] = useTransition();
@@ -95,12 +98,12 @@ export function GuestTags({
         </label>
         <select
           value={value ?? ""}
-          disabled={pending}
+          disabled={pending || disabled}
           title={provenance ?? undefined}
           onChange={(e) => onChange(e.target.value || null)}
           className={cn(
             "h-9 rounded-[10px] border border-input bg-surface px-3 text-[13px] text-[var(--fonda-text)] transition-colors focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]",
-            pending && "opacity-60"
+            (pending || disabled) && "opacity-60"
           )}
         >
           <option value="">{dict.guests.none}</option>

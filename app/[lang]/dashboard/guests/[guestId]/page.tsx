@@ -1,15 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { Suspense } from "react";
 
-import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { loadDictionary, type Dictionary } from "@/app/[lang]/dictionaries";
 import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { Fact, Section } from "@/components/dashboard/guest-context-panel";
 import { GuestNotes } from "@/components/dashboard/guest-notes";
 import { GuestTags } from "@/components/dashboard/guest-tags";
 import { getHotel, getSessionProfile } from "@/lib/auth";
-import { inferGuestProfile, shouldInfer } from "@/lib/guest-inference";
-import { loadGuestRecord } from "@/lib/guests";
+import {
+  inferencePaused,
+  inferGuestProfile,
+  shouldInfer,
+  type InferenceInput,
+} from "@/lib/guest-inference";
+import {
+  loadGuestRecord,
+  type GuestProfile,
+  type GuestRecord,
+} from "@/lib/guests";
 import { intlLocale, type Locale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { plural, t } from "@/lib/i18n/format";
@@ -70,40 +80,32 @@ export default async function GuestRecordPage({
   if (!record) notFound();
 
   /**
-   * Inference runs LAZILY, here, on first view — never on a cron.
+   * Inference runs LAZILY, on first view — never on a cron.
    *
    * Inferring about every guest of every hotel nightly would be expensive and
    * slightly rude: most records are never opened, and a guess nobody reads is a
    * guess not worth making. `shouldInfer` also rate-limits it to once a day
-   * unless new mail has arrived since.
+   * unless new mail has arrived since, and a recent failure pauses it
+   * (lib/guest-inference.ts).
+   *
+   * It no longer holds the page. The record renders at once from what is
+   * stored; when a run is due, the tags and preferences stream in behind it
+   * (`InferredProfile`), and until then show what was there in a quiet
+   * "updating" state. Before 1 Oct the whole record waited one to three
+   * seconds on the model, and on every view while it was failing
+   * (docs/audits/2026-10-01-performance.md §4.7).
    */
-  let guestProfile = record.profile;
-  if (shouldInfer(guestProfile, record.latestEmailAt)) {
-    const weekendStay = Boolean(
-      record.arrival &&
-        [5, 6].includes(new Date(`${record.arrival}T00:00:00Z`).getUTCDay())
-    );
-    guestProfile = await timed(
-      "guest.inference",
-      inferGuestProfile({
-        hotelId: profile.hotelId,
-        customerMewsId: customerId,
-        emails: record.timeline
-          .filter((e) => e.kind === "email")
-          .slice(0, 12)
-          .map((e) => ({ subject: e.title, body: null })),
-        stay: {
-          adults: record.adults,
-          children: record.children,
-          nights: record.nights,
-          weekend: weekendStay,
-          leadTimeDays: null,
-        },
-        names: [{ first: record.name.split(" ")[0] ?? null, last: record.name.split(" ").slice(1).join(" ") || null }],
-        existing: guestProfile,
-      })
-    );
-  }
+  const inferring =
+    shouldInfer(record.profile, record.latestEmailAt) &&
+    !inferencePaused(profile.hotelId, customerId);
+  const storedProfile = (
+    <ProfileTags
+      customerId={record.customerId}
+      profile={record.profile}
+      dict={dict}
+      updating={inferring}
+    />
+  );
 
   const dateFmt = new Intl.DateTimeFormat(intlLocale[locale], {
     day: "numeric",
@@ -185,71 +187,28 @@ export default async function GuestRecordPage({
             />
           </Section>
 
-          <div>
-            <p className="pb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fonda-text-3)]">
-              {dict.guests.tagsTitle}
-            </p>
-            <GuestTags
-              customerId={record.customerId}
-              tripPurpose={guestProfile.tripPurpose}
-              occasion={guestProfile.occasion}
-              tripPurposeSource={guestProfile.tripPurposeSource}
-              occasionSource={guestProfile.occasionSource}
-              inferredAt={guestProfile.inferredAt}
-            />
-          </div>
+          {inferring ? (
+            <Suspense fallback={storedProfile}>
+              <InferredProfile
+                input={inferenceInputFor(record, profile.hotelId, customerId)}
+                customerId={record.customerId}
+                dict={dict}
+              />
+            </Suspense>
+          ) : (
+            storedProfile
+          )}
 
-          {guestProfile.preferences.length > 0 ? (
-            <div>
-              <p className="pb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fonda-text-3)]">
-                {dict.guests.preferencesTitle}
-              </p>
-              {/* Inferred vs staff must be tellable at a glance, not only on
-                  hover (AI_ACT_PROMPTS.md A3): an inferred preference carries a
-                  quiet mono "Fondas AI" after it, and its full source ("Inferred
-                  by Fondas AI from email") is in the title for hover and in
-                  sr-only text for screen readers. A staff entry carries
-                  nothing — it is the default, and a person's word. */}
-              <ul className="flex flex-col gap-1.5">
-                {guestProfile.preferences.map((pref) => {
-                  const source =
-                    pref.source === "staff"
-                      ? dict.guests.sourceStaff
-                      : pref.source === "email"
-                        ? dict.guests.sourceEmail
-                        : dict.guests.sourceReservation;
-                  return (
-                    <li
-                      key={pref.text}
-                      title={source}
-                      className="text-[13px] leading-snug text-[var(--fonda-text-2)]"
-                    >
-                      {pref.text}
-                      {pref.source === "staff" ? null : (
-                        <>
-                          <span
-                            aria-hidden="true"
-                            className="ml-1.5 font-mono text-[10.5px] tracking-[0.04em] text-[var(--fonda-text-3)]"
-                          >
-                            · {dict.ai.inferredMark}
-                          </span>
-                          <span className="sr-only"> ({source})</span>
-                        </>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ) : null}
-
+          {/* Outside the Suspense on purpose: inference never writes notes
+              (lib/guest-inference.ts rule 1), so the editor is live from the
+              first paint and nothing streaming in can remount it mid-sentence. */}
           <div>
             <p className="pb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fonda-text-3)]">
               {dict.guests.notesTitle}
             </p>
             <GuestNotes
               customerId={record.customerId}
-              initialNotes={guestProfile.notes}
+              initialNotes={record.profile.notes}
             />
           </div>
         </div>
@@ -299,5 +258,153 @@ export default async function GuestRecordPage({
         </div>
       </div>
     </div>
+  );
+}
+
+/** What the model is given about this record (lib/guest-inference.ts). */
+function inferenceInputFor(
+  record: GuestRecord,
+  hotelId: string,
+  customerId: string
+): InferenceInput {
+  const weekendStay = Boolean(
+    record.arrival &&
+      [5, 6].includes(new Date(`${record.arrival}T00:00:00Z`).getUTCDay())
+  );
+  return {
+    hotelId,
+    customerMewsId: customerId,
+    emails: record.timeline
+      .filter((e) => e.kind === "email")
+      .slice(0, 12)
+      .map((e) => ({ subject: e.title, body: null })),
+    stay: {
+      adults: record.adults,
+      children: record.children,
+      nights: record.nights,
+      weekend: weekendStay,
+      leadTimeDays: null,
+    },
+    names: [
+      {
+        first: record.name.split(" ")[0] ?? null,
+        last: record.name.split(" ").slice(1).join(" ") || null,
+      },
+    ],
+    existing: record.profile,
+  };
+}
+
+/**
+ * The tags and preferences once a due inference run has finished — merged
+ * under the two write rules, or the stored profile if the run failed or was
+ * paused. Streams into the `<Suspense>` the page wraps it in.
+ */
+async function InferredProfile({
+  input,
+  customerId,
+  dict,
+}: {
+  input: InferenceInput;
+  customerId: string;
+  dict: Dictionary;
+}) {
+  const inferred = await timed("guest.inference", inferGuestProfile(input));
+  return <ProfileTags customerId={customerId} profile={inferred} dict={dict} />;
+}
+
+/**
+ * The two tags and the preference list.
+ *
+ * `updating` is the state while a run is in flight: the stored values, with a
+ * quiet working line naming Fondas AI (§11's soft pulse, not a spinner) and
+ * the two pickers held. Held, not just dimmed: a tag a GM picked during the run
+ * could be overwritten by the run's write, which read the profile before the
+ * pick — and a staff value is never overwritten (lib/guest-inference.ts rule 2).
+ */
+function ProfileTags({
+  customerId,
+  profile,
+  dict,
+  updating = false,
+}: {
+  customerId: string;
+  profile: GuestProfile;
+  dict: Dictionary;
+  updating?: boolean;
+}) {
+  return (
+    <>
+      <div>
+        <p className="pb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fonda-text-3)]">
+          {dict.guests.tagsTitle}
+        </p>
+        {updating ? (
+          <p
+            role="status"
+            className="mb-2 inline-flex items-center gap-1.5 text-[11px] leading-none text-[var(--fonda-text-3)]"
+          >
+            <span
+              aria-hidden="true"
+              className="size-1.5 animate-pulse rounded-full bg-[var(--fonda-text-3)]"
+            />
+            {dict.guests.inferenceUpdating}
+          </p>
+        ) : null}
+        <GuestTags
+          customerId={customerId}
+          tripPurpose={profile.tripPurpose}
+          occasion={profile.occasion}
+          tripPurposeSource={profile.tripPurposeSource}
+          occasionSource={profile.occasionSource}
+          inferredAt={profile.inferredAt}
+          disabled={updating}
+        />
+      </div>
+
+      {profile.preferences.length > 0 ? (
+        <div>
+          <p className="pb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fonda-text-3)]">
+            {dict.guests.preferencesTitle}
+          </p>
+          {/* Inferred vs staff must be tellable at a glance, not only on
+              hover (AI_ACT_PROMPTS.md A3): an inferred preference carries a
+              quiet mono "Fondas AI" after it, and its full source ("Inferred
+              by Fondas AI from email") is in the title for hover and in
+              sr-only text for screen readers. A staff entry carries
+              nothing — it is the default, and a person's word. */}
+          <ul className="flex flex-col gap-1.5">
+            {profile.preferences.map((pref) => {
+              const source =
+                pref.source === "staff"
+                  ? dict.guests.sourceStaff
+                  : pref.source === "email"
+                    ? dict.guests.sourceEmail
+                    : dict.guests.sourceReservation;
+              return (
+                <li
+                  key={pref.text}
+                  title={source}
+                  className="text-[13px] leading-snug text-[var(--fonda-text-2)]"
+                >
+                  {pref.text}
+                  {pref.source === "staff" ? null : (
+                    <>
+                      <span
+                        aria-hidden="true"
+                        className="ml-1.5 font-mono text-[10.5px] tracking-[0.04em] text-[var(--fonda-text-3)]"
+                      >
+                        · {dict.ai.inferredMark}
+                      </span>
+                      <span className="sr-only"> ({source})</span>
+                    </>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : null}
+    </>
   );
 }
