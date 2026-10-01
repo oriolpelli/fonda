@@ -52,21 +52,43 @@ export async function fetchAllPages<T>(
 }
 
 /**
+ * How many chunk requests are in flight at once. Before 1 Oct they ran one
+ * after another, so a fortnight of a busy hotel's guests — a thousand ids,
+ * five chunks — was five round trips end to end in front of every Ask answer
+ * (docs/audits/2026-10-01-performance.md §4.8). Four overlaps them without
+ * opening a burst of connections for a very long list.
+ */
+const IN_CONCURRENCY = 4;
+
+/**
  * Splits a long `.in(...)` list into several requests and concatenates the
- * results. An `.in()` of a few thousand ids would both exceed the row cap and
- * build a URL long enough to be rejected.
+ * results, in chunk order. An `.in()` of a few thousand ids would both exceed
+ * the row cap and build a URL long enough to be rejected.
+ *
+ * A chunk that errors contributes nothing, as before; a chunk that throws
+ * rejects the whole call, as before.
  */
 export async function fetchInChunks<T>(
   values: string[],
   page: (chunk: string[]) => PromiseLike<PagedResult<T>>
 ): Promise<T[]> {
-  const all: T[] = [];
-
+  const chunks: string[][] = [];
   for (let i = 0; i < values.length; i += IN_CHUNK) {
-    const { data, error } = await page(values.slice(i, i + IN_CHUNK));
-    if (error || !data) continue;
-    all.push(...data);
+    chunks.push(values.slice(i, i + IN_CHUNK));
   }
 
-  return all;
+  const results: T[][] = chunks.map(() => []);
+  let next = 0;
+  const worker = async () => {
+    while (next < chunks.length) {
+      const index = next++;
+      const { data, error } = await page(chunks[index]);
+      if (!error && data) results[index] = data;
+    }
+  };
+  await Promise.all(
+    Array.from({ length: Math.min(IN_CONCURRENCY, chunks.length) }, worker)
+  );
+
+  return results.flat();
 }

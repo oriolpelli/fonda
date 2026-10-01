@@ -48,3 +48,12 @@ export function logSince(label: string, start: number): void {
   if (!enabled) return;
   console.log(`[perf] ${label} ${Math.round(performance.now() - start)}ms`);
 }
+
+/**
+ * Logs a count under `label` — Ask's prompt-cache token counts, say. Numbers
+ * only, by type: a count can't carry a name.
+ */
+export function logValue(label: string, value: number): void {
+  if (!enabled) return;
+  console.log(`[perf] ${label} ${value}`);
+}

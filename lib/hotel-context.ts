@@ -142,8 +142,42 @@ function pseudoName(first?: string | null, last?: string | null): string {
 
 // --- builder ----------------------------------------------------------------
 
+/**
+ * The live inbox counts. Needs only the hotel id, so it runs alongside the
+ * reservation chain rather than after it (performance audit §4.8).
+ */
+async function loadEmailCounts(
+  admin: ReturnType<typeof createAdminClient>,
+  hotelId: string
+): Promise<HotelContext["emails"]> {
+  const { data: emailRows } = await admin
+    .from("emails")
+    .select("classification, status")
+    .eq("hotel_id", hotelId)
+    .in("status", ["pending", "needs_attention"])
+    .limit(500);
+  const classifications: Record<string, number> = {};
+  let pendingCount = 0;
+  let urgentCount = 0;
+  for (const e of emailRows ?? []) {
+    if (e.status === "pending") pendingCount++;
+    if (e.status === "needs_attention") urgentCount++;
+    if (e.classification) {
+      classifications[e.classification] =
+        (classifications[e.classification] ?? 0) + 1;
+    }
+  }
+  return { pendingCount, urgentCount, classifications };
+}
+
 export async function buildHotelContext(hotelId: string): Promise<HotelContext> {
   const admin = createAdminClient();
+
+  // Started now, awaited at the end: it doesn't depend on anything below.
+  const emailCounts = loadEmailCounts(admin, hotelId);
+  // A rejection is surfaced by the await below, not as an unhandled one while
+  // the reservation chain is still running.
+  emailCounts.catch(() => {});
 
   const { data: hotel } = await admin
     .from("hotels")
@@ -287,25 +321,6 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
     .slice(0, CAP_LIST)
     .map((r) => ({ guest: nameOf(r.customer_mews_id), arrival: r.start_utc! }));
 
-  // Emails.
-  const { data: emailRows } = await admin
-    .from("emails")
-    .select("classification, status")
-    .eq("hotel_id", hotelId)
-    .in("status", ["pending", "needs_attention"])
-    .limit(500);
-  const classifications: Record<string, number> = {};
-  let pendingCount = 0;
-  let urgentCount = 0;
-  for (const e of emailRows ?? []) {
-    if (e.status === "pending") pendingCount++;
-    if (e.status === "needs_attention") urgentCount++;
-    if (e.classification) {
-      classifications[e.classification] =
-        (classifications[e.classification] ?? 0) + 1;
-    }
-  }
-
   const todayOccupied = occupiedOn(stays, today);
 
   return {
@@ -318,7 +333,7 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
     },
     thisWeek: { reservations: weekReservations, occupancyByDay },
     guests: { vipArrivals, specialRequests, missingArrivalTimes },
-    emails: { pendingCount, urgentCount, classifications },
+    emails: await emailCounts,
     rates: { currentRates: {}, occupancyAlerts },
     occupancyOutlook,
   };

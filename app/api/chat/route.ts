@@ -11,7 +11,7 @@ import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-pro
 import { reduceSurnames, type NameToReduce } from "@/lib/pseudonymise";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import { logSince, timed } from "@/lib/timing";
+import { logSince, logValue, timed } from "@/lib/timing";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -128,23 +128,86 @@ export async function POST(request: Request) {
   const wantsDraft =
     !!lastUser && /draft an email|write an email/i.test(lastUser.content);
 
-  const context = await timed("ask.context", buildHotelContext(hotelId));
-  const { data: settings } = await supabase
-    .from("hotel_settings")
-    .select(`briefing_language, ${HOTEL_PROFILE_COLUMNS}`)
-    .eq("hotel_id", hotelId)
-    .maybeSingle();
+  const client = new Anthropic();
+  const encoder = new TextEncoder();
+  const admin = createAdminClient();
+
+  // The hotel's data, its settings and the thread check need nothing but the
+  // hotel id, so they run together. Before 1 Oct they ran one after another in
+  // front of every answer (docs/audits/2026-10-01-performance.md §4.8).
+  const settingsRead = (async () => {
+    const { data } = await supabase
+      .from("hotel_settings")
+      .select(`briefing_language, ${HOTEL_PROFILE_COLUMNS}`)
+      .eq("hotel_id", hotelId)
+      .maybeSingle();
+    return data;
+  })();
+  /**
+   * A client-supplied thread id, re-checked against this user before it is
+   * trusted — it crosses the network, and the admin client bypasses RLS, so the
+   * policy in migration 0023 cannot be what stops someone writing into a
+   * colleague's thread. An id that does not check out is discarded and a new
+   * thread starts below, rather than erroring: the answer has to go out either
+   * way.
+   */
+  const ownedThreadRead = (async () => {
+    if (!body?.threadId) return null;
+    const { data } = await admin
+      .from("chat_threads")
+      .select("id")
+      .eq("id", body.threadId)
+      .eq("user_id", user.id)
+      .eq("hotel_id", hotelId)
+      .maybeSingle();
+    return data?.id ?? null;
+  })();
+  const [context, settings, ownedThreadId] = await Promise.all([
+    timed("ask.context", buildHotelContext(hotelId)),
+    timed("ask.settings", settingsRead),
+    timed("ask.thread", ownedThreadRead),
+  ]);
   const language = LANGUAGES[settings?.briefing_language ?? "en"] ?? "English";
   const profileBlock = buildHotelProfileSummary(settings);
 
-  const system =
-    `You are Fondas, the operations assistant for ${context.hotel.name}. ` +
-    "Answer questions about the hotel using ONLY the data provided below. " +
-    "If the answer is not in the data, say so clearly and suggest where the GM " +
-    "might find it. Never invent or estimate data. Be concise and answer directly. " +
-    `Speak in ${language}.` +
-    (profileBlock ? `\n\n${profileBlock}` : "") +
-    `\n\nHOTEL DATA (JSON):\n${JSON.stringify(context)}`;
+  /**
+   * Three blocks, in this order, and the order is the point.
+   *
+   * The instructions and the hotel's data change a few times a day (a sync, a
+   * settings edit), so they end in a cache breakpoint: a follow-up question
+   * within five minutes reads them from Anthropic's prompt cache instead of
+   * having the whole hotel processed again — sooner to the first word, and
+   * cheaper. The inbox counts change with every five-minute mail poll, so they
+   * sit AFTER the breakpoint; inside it, each poll would throw the cache away.
+   *
+   * Caching only applies once the cached part passes the model's minimum
+   * (1,024 tokens for Sonnet); a small enough hotel is simply not cached, with
+   * no other effect. PROMPT_VERSIONS.chat moved with this change.
+   */
+  const { emails: liveEmailCounts, ...hotelData } = context;
+  const system: Anthropic.TextBlockParam[] = [
+    {
+      type: "text",
+      text:
+        `You are Fondas, the operations assistant for ${context.hotel.name}. ` +
+        "Answer questions about the hotel using ONLY the data provided below. " +
+        "If the answer is not in the data, say so clearly and suggest where the GM " +
+        "might find it. Never invent or estimate data. Be concise and answer directly. " +
+        `Speak in ${language}.` +
+        (profileBlock ? `\n\n${profileBlock}` : ""),
+    },
+    {
+      type: "text",
+      text: `HOTEL DATA (JSON):\n${JSON.stringify(hotelData)}`,
+      cache_control: { type: "ephemeral" },
+    },
+    {
+      type: "text",
+      text:
+        "HOTEL DATA, LIVE INBOX (JSON) — part of the hotel data above, current " +
+        `as of this question:\n${JSON.stringify({ emails: liveEmailCounts })}`,
+    },
+  ];
 
   /**
    * Which blocks of the hotel's data were put in front of the model
@@ -157,33 +220,15 @@ export async function POST(request: Request) {
    */
   const sources = sourcesFor(context, Boolean(profileBlock));
 
-  const client = new Anthropic();
-  const encoder = new TextEncoder();
-  const admin = createAdminClient();
-
   /**
-   * The conversation this turn belongs to, created on the first message.
-   *
-   * A client-supplied id is re-checked against this user before it is trusted —
-   * it crosses the network, and the admin client bypasses RLS, so the policy in
-   * migration 0023 cannot be what stops someone writing into a colleague's
-   * thread. An id that does not check out is discarded and a new thread starts,
-   * rather than erroring: the answer has to go out either way.
+   * The conversation this turn belongs to: the checked one from above, or a
+   * new one created on the first message. Created only once the context has
+   * been built, as before, so a turn that fails there leaves no empty thread.
    */
-  let threadId: string | null = null;
+  let threadId: string | null = ownedThreadId;
   // True when this turn starts a new conversation — the moment to drop the
   // oldest beyond the 10 a user keeps (lib/chat-threads.ts).
   let startedThread = false;
-  if (body?.threadId) {
-    const { data: owned } = await admin
-      .from("chat_threads")
-      .select("id")
-      .eq("id", body.threadId)
-      .eq("user_id", user.id)
-      .eq("hotel_id", hotelId)
-      .maybeSingle();
-    threadId = owned?.id ?? null;
-  }
   if (!threadId && lastUser) {
     const { data: created } = await admin
       .from("chat_threads")
@@ -215,6 +260,16 @@ export async function POST(request: Request) {
         });
 
         for await (const event of claude) {
+          // Whether the hotel's data came from the prompt cache: token counts
+          // only, behind PERF_LOG (lib/timing.ts).
+          if (event.type === "message_start") {
+            const usage = event.message.usage;
+            logValue("ask.cache_read_tokens", usage.cache_read_input_tokens ?? 0);
+            logValue(
+              "ask.cache_write_tokens",
+              usage.cache_creation_input_tokens ?? 0
+            );
+          }
           if (
             event.type === "content_block_delta" &&
             event.delta.type === "text_delta"

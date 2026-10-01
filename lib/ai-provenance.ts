@@ -81,7 +81,9 @@ export const PROMPT_VERSIONS: Record<AiFeature, string> = {
   emailDraft: "email-draft@2026-10-01",
   chaser: "chaser@2026-10-01",
   briefing: "briefing@2026-10-01",
-  chat: "chat@2026-10-01",
+  // b: the system prompt split into instructions · cached hotel data · live
+  // inbox counts (prompt caching, performance audit §4.8). Same wording.
+  chat: "chat@2026-10-01b",
   guestInference: "guest-inference@2026-10-01",
   reviewSummary: "review-summary@2026-10-01",
 };
