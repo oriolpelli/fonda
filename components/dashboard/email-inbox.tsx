@@ -11,6 +11,12 @@ import {
   ignoreEmail,
   sendReply,
 } from "@/app/[lang]/dashboard/communications/actions";
+import {
+  BulkSendDialog,
+  firstLineOf,
+  firstNameOf,
+  type BulkSendItem,
+} from "@/components/dashboard/bulk-send-dialog";
 import { EmptyState, type EmptyStateIcon } from "@/components/dashboard/empty-state";
 import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
@@ -160,6 +166,10 @@ export function EmailInbox({
   const [actionError, setActionError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const draftRef = useRef<HTMLTextAreaElement>(null);
+  // The bulk-send confirmation (AI_ACT_PROMPTS.md A4) and the button it
+  // returns focus to.
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const bulkButtonRef = useRef<HTMLButtonElement>(null);
 
   // Which pane a phone is looking at. A deep link from the dashboard names a
   // specific message, so it opens straight into it rather than into the list.
@@ -331,13 +341,22 @@ export function EmailInbox({
 
   const selected = sorted.find((e) => e.id === selectedId) ?? null;
   const complaints = sorted.filter((e) => e.urgency.kind === "complaint");
-  const standardCount = sorted.filter(
+  // What "approve all" would send from the queue on screen. The server action
+  // re-applies the same filter to these ids (communications/actions.ts) —
+  // this copy only decides what the dialog lists.
+  const standard = sorted.filter(
     (e) =>
       e.status === "pending" &&
       e.draft_reply &&
       (e.classification === "arrival_info" ||
         e.classification === "general_inquiry")
-  ).length;
+  );
+  const standardCount = standard.length;
+  const bulkItems: BulkSendItem[] = standard.map((e) => ({
+    id: e.id,
+    name: firstNameOf(senderName(e)),
+    firstLine: firstLineOf(e.draft_reply),
+  }));
 
   function run(fn: () => Promise<{ error?: string } | void>) {
     setActionError(null);
@@ -359,19 +378,16 @@ export function EmailInbox({
 
   function handleBulk() {
     if (standardCount === 0) return;
-    if (
-      !window.confirm(
-        plural(
-          standardCount,
-          dict.emails.confirmBulkOne,
-          dict.emails.confirmBulkOther
-        )
-      )
-    ) {
-      return;
-    }
+    setBulkOpen(true);
+  }
+
+  function confirmBulk() {
+    // Exactly the rows the dialog listed — captured now, not re-derived after
+    // a refresh could have changed the queue.
+    const ids = bulkItems.map((item) => item.id);
+    setBulkOpen(false);
     run(async () => {
-      const result = await approveAllStandard();
+      const result = await approveAllStandard(ids);
       return result.error ? { error: result.error } : undefined;
     });
   }
@@ -493,6 +509,7 @@ export function EmailInbox({
           </div>
 
           <Button
+            ref={bulkButtonRef}
             onClick={handleBulk}
             disabled={pending || standardCount === 0}
             variant="outline"
@@ -500,6 +517,19 @@ export function EmailInbox({
           >
             {t(dict.emails.approveAllStandard, { count: standardCount })}
           </Button>
+          <BulkSendDialog
+            open={bulkOpen}
+            title={plural(
+              standardCount,
+              dict.bulkSend.titleRepliesOne,
+              dict.bulkSend.titleRepliesOther
+            )}
+            items={bulkItems}
+            sendLabel={t(dict.bulkSend.send, { count: standardCount })}
+            onSend={confirmBulk}
+            onCancel={() => setBulkOpen(false)}
+            returnFocusTo={bulkButtonRef}
+          />
         </div>
       </div>
 

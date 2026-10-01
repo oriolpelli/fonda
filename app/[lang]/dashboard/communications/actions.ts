@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { aiHeaders } from "@/lib/ai-disclosure";
 import { sha256 } from "@/lib/ai-provenance";
 import { track, type EditBucket } from "@/lib/analytics";
+import { confirmedIds } from "@/lib/bulk-ids";
 import { recordDraftSend } from "@/lib/draft-acceptance";
 import { measureDraftEdit } from "@/lib/draft-edit";
 import { getGmailClientForHotel, type GmailClient } from "@/lib/gmail";
@@ -253,19 +254,37 @@ export async function ignoreEmail(emailId: string): Promise<void> {
 }
 
 /**
- * Sends every pending arrival_info / general_inquiry draft in one go.
+ * The categories "approve all" may send. DO NOT WIDEN THIS without a decision
+ * written into APP_UX_PROPOSAL.md §11 first: it is the safety rail under the
+ * claim that a person reads every non-routine message, and under the AI Act
+ * human-oversight story (AI_ACT_PROMPTS.md A4).
+ */
+const BULK_CLASSIFICATIONS = ["arrival_info", "general_inquiry"];
+
+/**
+ * Sends the pending arrival_info / general_inquiry drafts a person just
+ * confirmed in the bulk-send dialog — exactly those, and only those.
  *
  * The narrow filter is the safety rail: bulk approval only ever touches the two
  * routine categories, and only where a draft already exists. Complaints,
  * cancellations, modifications and special requests are never sent this way —
  * those always get read by a human first.
+ *
+ * `ids` is the list the dialog showed. It is NEVER trusted as the filter: the
+ * query below re-applies the hotel scope, status, category and draft checks,
+ * and the ids can only narrow that set. So a message that arrived after the
+ * dialog opened is not sent, and a forged id that fails the filter is ignored.
+ * Every row sent is recorded as sent_via = 'bulk' (migration 0025).
  */
-export async function approveAllStandard(): Promise<{
+export async function approveAllStandard(ids: string[]): Promise<{
   sent: number;
   error?: string;
 }> {
   const hotelId = await requireHotelId();
   const admin = createAdminClient();
+
+  const confirmed = confirmedIds(ids);
+  if (confirmed.length === 0) return { sent: 0 };
 
   const gmail = await getGmailClientForHotel(hotelId);
   if (!gmail) return { sent: 0, error: "Gmail is not connected." };
@@ -275,8 +294,9 @@ export async function approveAllStandard(): Promise<{
     .select(SENDABLE_COLUMNS)
     .eq("hotel_id", hotelId)
     .eq("status", "pending")
-    .in("classification", ["arrival_info", "general_inquiry"])
-    .not("draft_reply", "is", null);
+    .in("classification", BULK_CLASSIFICATIONS)
+    .not("draft_reply", "is", null)
+    .in("id", confirmed);
 
   let sent = 0;
   for (const email of emails ?? []) {

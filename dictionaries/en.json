@@ -625,8 +625,6 @@
     "ignored": "Ignored",
     "replySent": "Reply sent",
     "replySentAt": "Reply sent · {time}",
-    "confirmBulkOne": "Send {count} standard reply (arrival info & general inquiries)?",
-    "confirmBulkOther": "Send {count} standard replies (arrival info & general inquiries)?",
     "badges": {
       "processing": "Processing…",
       "complaint": "Complaint",
@@ -682,8 +680,6 @@
     "chasePlaceholder": "Chase message…",
     "guest": "Guest",
     "arrives": "Arrives {date}",
-    "confirmBulkOne": "Send all {count} pending chaser?",
-    "confirmBulkOther": "Send all {count} pending chasers?",
     "presyncTitle": "Chasing starts once your bookings are in",
     "presyncBody": "Fondas spots confirmed guests arriving in the next week with no arrival time, drafts a short note asking for one, and files the answers. It needs your PMS first.",
     "presyncCta": "Connect your PMS"
@@ -1184,5 +1180,16 @@
     "askLine": "Fondas AI · can be wrong — check figures that matter",
     "briefLine": "Written by Fondas AI from your PMS and inbox. Check anything you act on.",
     "inferredMark": "Fondas AI"
+  },
+  "bulkSend": {
+    "titleRepliesOne": "Send {count} reply exactly as drafted?",
+    "titleRepliesOther": "Send {count} replies exactly as drafted?",
+    "titleChasersOne": "Send {count} chaser exactly as drafted?",
+    "titleChasersOther": "Send {count} chasers exactly as drafted?",
+    "body": "Each message goes to the guest as Fondas AI drafted it, without edits. Only these are sent — nothing that arrived after you opened this.",
+    "listLabel": "What will be sent",
+    "emptyLine": "(no text)",
+    "send": "Send {count}",
+    "review": "Review one by one"
   }
 }

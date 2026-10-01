@@ -8,6 +8,12 @@ import {
   sendChaser,
   skipChaser,
 } from "@/app/[lang]/dashboard/arrivals/actions";
+import {
+  BulkSendDialog,
+  firstLineOf,
+  firstNameOf,
+  type BulkSendItem,
+} from "@/components/dashboard/bulk-send-dialog";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
@@ -112,6 +118,14 @@ export function CheckinChasers({ chasers }: { chasers: ChaserCard[] }) {
   const { dict } = useDictionary();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  // The bulk-send confirmation (AI_ACT_PROMPTS.md A4) and its opener.
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const bulkButtonRef = useRef<HTMLButtonElement>(null);
+  const bulkItems: BulkSendItem[] = chasers.map((c) => ({
+    id: c.id,
+    name: firstNameOf(c.guestName),
+    firstLine: firstLineOf(c.draftContent),
+  }));
 
   function run(fn: () => Promise<{ error?: string } | void>) {
     setError(null);
@@ -127,19 +141,15 @@ export function CheckinChasers({ chasers }: { chasers: ChaserCard[] }) {
 
   function handleBulk() {
     if (chasers.length === 0) return;
-    if (
-      !window.confirm(
-        plural(
-          chasers.length,
-          dict.checkin.confirmBulkOne,
-          dict.checkin.confirmBulkOther
-        )
-      )
-    ) {
-      return;
-    }
+    setBulkOpen(true);
+  }
+
+  function confirmBulk() {
+    // Exactly the chasers the dialog listed; the action re-checks them.
+    const ids = bulkItems.map((item) => item.id);
+    setBulkOpen(false);
     run(async () => {
-      const result = await approveAllChasers();
+      const result = await approveAllChasers(ids);
       return result.error ? { error: result.error } : undefined;
     });
   }
@@ -154,12 +164,26 @@ export function CheckinChasers({ chasers }: { chasers: ChaserCard[] }) {
             (components/dashboard/generate-chasers-button.tsx) — this toolbar
             belongs to the queue, so it only approves what is in it. */}
         <Button
+          ref={bulkButtonRef}
           onClick={handleBulk}
           disabled={pending || chasers.length === 0}
           size="sm"
         >
           {t(dict.checkin.approveAll, { count: chasers.length })}
         </Button>
+        <BulkSendDialog
+          open={bulkOpen}
+          title={plural(
+            chasers.length,
+            dict.bulkSend.titleChasersOne,
+            dict.bulkSend.titleChasersOther
+          )}
+          items={bulkItems}
+          sendLabel={t(dict.bulkSend.send, { count: chasers.length })}
+          onSend={confirmBulk}
+          onCancel={() => setBulkOpen(false)}
+          returnFocusTo={bulkButtonRef}
+        />
       </div>
 
       {error ? (

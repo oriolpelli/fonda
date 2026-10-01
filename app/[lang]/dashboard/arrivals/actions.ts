@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { aiHeaders } from "@/lib/ai-disclosure";
 import { sha256 } from "@/lib/ai-provenance";
 import { track, type EditBucket } from "@/lib/analytics";
+import { confirmedIds } from "@/lib/bulk-ids";
 import { runCheckinChaser } from "@/lib/checkin-chaser";
 import { recordDraftSend } from "@/lib/draft-acceptance";
 import { measureDraftEdit } from "@/lib/draft-edit";
@@ -202,9 +203,24 @@ export async function skipChaser(chaserId: string): Promise<void> {
   revalidatePath("/dashboard/arrivals");
 }
 
-export async function approveAllChasers(): Promise<{ sent: number; error?: string }> {
+/**
+ * Sends the pending chasers a person just confirmed in the bulk-send dialog
+ * (AI_ACT_PROMPTS.md A4) — exactly those, and only those.
+ *
+ * `ids` is the list the dialog showed and only ever NARROWS the query: the
+ * hotel scope and the pending-only filter are re-applied here, so a chaser
+ * generated after the dialog opened is not sent and a forged id is ignored.
+ * Widening what bulk approval may send needs a decision in
+ * APP_UX_PROPOSAL.md §11 first. Rows sent are recorded as sent_via = 'bulk'.
+ */
+export async function approveAllChasers(
+  ids: string[]
+): Promise<{ sent: number; error?: string }> {
   const hotelId = await requireHotelId();
   const admin = createAdminClient();
+
+  const confirmed = confirmedIds(ids);
+  if (confirmed.length === 0) return { sent: 0 };
 
   const gmail = await getGmailClientForHotel(hotelId);
   if (!gmail) return { sent: 0, error: "Gmail is not connected." };
@@ -214,7 +230,8 @@ export async function approveAllChasers(): Promise<{ sent: number; error?: strin
       .from("checkin_chasers")
       .select(SENDABLE_COLUMNS)
       .eq("hotel_id", hotelId)
-      .eq("status", "pending"),
+      .eq("status", "pending")
+      .in("id", confirmed),
     admin.from("hotels").select("name").eq("id", hotelId).single(),
   ]);
 

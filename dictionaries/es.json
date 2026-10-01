@@ -625,8 +625,6 @@
     "ignored": "Ignorado",
     "replySent": "Respuesta enviada",
     "replySentAt": "Respuesta enviada · {time}",
-    "confirmBulkOne": "¿Enviar {count} respuesta estándar (información de llegada y consultas generales)?",
-    "confirmBulkOther": "¿Enviar {count} respuestas estándar (información de llegada y consultas generales)?",
     "badges": {
       "processing": "Procesando…",
       "complaint": "Queja",
@@ -682,8 +680,6 @@
     "chasePlaceholder": "Mensaje de seguimiento…",
     "guest": "Huésped",
     "arrives": "Llega el {date}",
-    "confirmBulkOne": "¿Enviar el {count} seguimiento pendiente?",
-    "confirmBulkOther": "¿Enviar los {count} seguimientos pendientes?",
     "presyncTitle": "El seguimiento empieza cuando estén tus reservas",
     "presyncBody": "Fondas detecta a los huéspedes confirmados que llegan en los próximos siete días sin hora de llegada, redacta una nota breve para pedírsela y archiva las respuestas. Primero necesita tu PMS.",
     "presyncCta": "Conectar tu PMS"
@@ -1184,5 +1180,16 @@
     "askLine": "Fondas AI · puede equivocarse — comprueba las cifras importantes",
     "briefLine": "Escrito por Fondas AI a partir de tu PMS y tu correo. Comprueba cualquier dato antes de actuar.",
     "inferredMark": "Fondas AI"
+  },
+  "bulkSend": {
+    "titleRepliesOne": "¿Enviar {count} respuesta tal como está redactada?",
+    "titleRepliesOther": "¿Enviar {count} respuestas tal como están redactadas?",
+    "titleChasersOne": "¿Enviar {count} seguimiento tal como está redactado?",
+    "titleChasersOther": "¿Enviar {count} seguimientos tal como están redactados?",
+    "body": "Cada mensaje le llega al huésped tal como lo redactó Fondas AI, sin cambios. Solo se envían estos: nada de lo que haya llegado después de abrir esta ventana.",
+    "listLabel": "Lo que se enviará",
+    "emptyLine": "(sin texto)",
+    "send": "Enviar {count}",
+    "review": "Revisar uno a uno"
   }
 }

@@ -625,8 +625,6 @@
     "ignored": "Ignorat",
     "replySent": "Resposta enviada",
     "replySentAt": "Resposta enviada · {time}",
-    "confirmBulkOne": "Vols enviar {count} resposta estàndard (informació d'arribada i consultes generals)?",
-    "confirmBulkOther": "Vols enviar {count} respostes estàndard (informació d'arribada i consultes generals)?",
     "badges": {
       "processing": "Processant…",
       "complaint": "Queixa",
@@ -682,8 +680,6 @@
     "chasePlaceholder": "Missatge de seguiment…",
     "guest": "Hoste",
     "arrives": "Arriba el {date}",
-    "confirmBulkOne": "Vols enviar el {count} seguiment pendent?",
-    "confirmBulkOther": "Vols enviar els {count} seguiments pendents?",
     "presyncTitle": "El seguiment comença quan hi hagi les teves reserves",
     "presyncBody": "Fondas detecta els hostes confirmats que arriben els propers set dies sense hora d'arribada, redacta una nota breu per demanar-la i arxiva les respostes. Primer li cal el teu PMS.",
     "presyncCta": "Connecta el teu PMS"
@@ -1184,5 +1180,16 @@
     "askLine": "Fondas AI · es pot equivocar — comprova les xifres importants",
     "briefLine": "Escrit per Fondas AI a partir del teu PMS i del teu correu. Comprova qualsevol dada abans d'actuar.",
     "inferredMark": "Fondas AI"
+  },
+  "bulkSend": {
+    "titleRepliesOne": "Vols enviar {count} resposta tal com està redactada?",
+    "titleRepliesOther": "Vols enviar {count} respostes tal com estan redactades?",
+    "titleChasersOne": "Vols enviar {count} seguiment tal com està redactat?",
+    "titleChasersOther": "Vols enviar {count} seguiments tal com estan redactats?",
+    "body": "Cada missatge arriba a l'hoste tal com el va redactar Fondas AI, sense canvis. Només s'envien aquests: res del que hagi arribat després d'obrir aquesta finestra.",
+    "listLabel": "El que s'enviarà",
+    "emptyLine": "(sense text)",
+    "send": "Envia {count}",
+    "review": "Revisa'ls un a un"
   }
 }
