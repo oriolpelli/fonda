@@ -509,14 +509,15 @@ export default async function Home({
                   one line down to 320px, and the section eyebrows keep the
                   full treatment because they are short.
 
-                  The weight and colour are stepped up too, and only here: the
-                  category line is a plain statement, set in --fonda-text at
-                  600 with no leading dot (1 Oct 2026). Eyebrows are
-                  --fonda-text-3 everywhere else; this one sits over the
-                  watercolour, where text-3 measures 4.26:1 against the
-                  lightest pixel beneath it (rgb(226,226,216)). --fonda-text
-                  clears it with room to spare. */}
-              <Eyebrow className="font-semibold text-[var(--fonda-text)] max-sm:text-[11px] max-sm:tracking-[0.08em]">
+                  The treatment is stepped up too, and only here (1 Oct 2026):
+                  the category line is a plain statement, not a label. Geist
+                  sans at 14px/600 in --fonda-text, no leading dot, on a
+                  frosted white chip. The mono eyebrow at 12px sat straight on
+                  the watercolour and read as texture rather than text; the
+                  chip is a fill-and-radius separation (no shadow), so it stays
+                  inside the system's rules while lifting the line off the art.
+                  Every other eyebrow on the page keeps the mono treatment. */}
+              <Eyebrow className="rounded-[10px] bg-[var(--fonda-white)]/85 px-3.5 py-2 font-sans text-[14px] font-semibold tracking-[0.08em] text-[var(--fonda-text)] backdrop-blur-sm max-sm:px-3 max-sm:text-[11px] max-sm:tracking-[0.06em]">
                 {dict.hero.badge}
               </Eyebrow>
               {/* Two-tone: the turn from problem to promise happens on the
