@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Fragment,
@@ -344,11 +344,12 @@ function PanelLink({
       onClick={onNavigate}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group flex items-center gap-2.5 rounded-[10px] px-2.5 py-[9px] text-[13px] font-medium transition-colors",
+        "group relative flex items-center gap-2.5 rounded-[10px] px-2.5 py-[9px] text-[13px] font-medium transition-colors",
         rowStateClass(active, soon),
         className
       )}
     >
+      <PendingHairline />
       {/* A step quieter than the label at rest, then it comes up with the row —
           `text-inherit` hands it back to whatever state class is in force. */}
       <Icon
@@ -755,10 +756,11 @@ function DrawerLink({
       onClick={onNavigate}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
+        "group relative flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
         rowStateClass(active, soon)
       )}
     >
+      <PendingHairline />
       <Icon className="size-[18px] shrink-0" strokeWidth={1.5} />
       <span className="min-w-0 truncate">{item.label}</span>
       {soon && item.comingSoonLabel ? (
@@ -1435,5 +1437,32 @@ export function Sidebar({
         />
       </aside>
     </>
+  );
+}
+
+/**
+ * The click's acknowledgement (performance audit §4.12): a 2 px hairline along
+ * the foot of the row whose navigation is still on its way.
+ *
+ * Most sidebar clicks land on a prefetched loading state and need nothing.
+ * This is for the rest: a click before the prefetch arrived, or a page whose
+ * prefetch expired. Then nothing on screen changed until the server answered,
+ * and the click felt ignored. Next's useLinkStatus is true only while this
+ * link's navigation is pending.
+ *
+ * Fixed size and absolutely placed, so nothing shifts. It fades in only after
+ * 100 ms, so a fast navigation never flickers it. A soft pulse, not a spinner
+ * (FONDA_SANA_REDESIGN.md §11), which the global reduced-motion rule stills.
+ */
+function PendingHairline() {
+  const { pending } = useLinkStatus();
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        "pointer-events-none absolute inset-x-2.5 bottom-0.5 h-[2px] rounded-full bg-[var(--fonda-text-3)] opacity-0 transition-opacity duration-[180ms]",
+        pending && "animate-pulse opacity-60 delay-100"
+      )}
+    />
   );
 }

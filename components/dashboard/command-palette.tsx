@@ -161,6 +161,20 @@ export function CommandPalette({
     setActive(0);
   }
 
+  /**
+   * The highlighted destination is prefetched, so Enter lands on its loading
+   * state at once (performance audit §4.12). Palette results aren't links on
+   * the page, so nothing else would have fetched them, and a choice used to
+   * close the palette and then show nothing until the server answered. The
+   * router dedupes, so moving back and forth costs nothing. Not the "Ask"
+   * row: its URL changes with every keystroke, and Ask's page is a shell
+   * already.
+   */
+  const activeRow = open ? rows[active] : undefined;
+  useEffect(() => {
+    if (activeRow && activeRow.kind !== "ask") router.prefetch(activeRow.href);
+  }, [activeRow, router]);
+
   if (!open) {
     return (
       <button
