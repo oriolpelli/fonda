@@ -20,6 +20,7 @@ import {
   QUEUE_COOKIE,
 } from "@/lib/inbox-queue";
 import { hotelToday, localDateOf } from "@/lib/stay-phase";
+import { timed } from "@/lib/timing";
 import { localizedHref } from "@/lib/i18n/navigation";
 
 /**
@@ -66,7 +67,7 @@ export async function CommunicationsWindow({
 }) {
   const { locale, dict } = await loadDictionary(lang);
   const [inbox, cookieStore, supabase] = await Promise.all([
-    loadInbox(),
+    timed("comms.inbox", loadInbox()),
     cookies(),
     createClient(),
   ]);
@@ -74,10 +75,12 @@ export async function CommunicationsWindow({
   // This inbox is fed by Gmail, not the PMS — a hotel can be fully synced and
   // still have nothing here. "No guest messages right now" would be a lie when
   // the real answer is that no mailbox is connected yet.
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("gmail_email, timezone")
-    .maybeSingle();
+  const { data: hotel } = await timed(
+    "comms.hotel",
+    Promise.resolve(
+      supabase.from("hotels").select("gmail_email, timezone").maybeSingle()
+    )
+  );
   const inboxConnected = Boolean(hotel?.gmail_email);
 
   // "Done today" is a hotel-local question, so the hotel's today and its
@@ -132,7 +135,7 @@ export async function CommunicationsWindow({
    * This is the whole reason the pane is a Server Component: the nationality,
    * language and party size it shows never enter the client payload.
    */
-  const contexts = await loadGuestContexts(emails);
+  const contexts = await timed("comms.contexts", loadGuestContexts(emails));
   const contextPanes = Object.fromEntries(
     [...contexts.values()].map((context) => [
       context.key,

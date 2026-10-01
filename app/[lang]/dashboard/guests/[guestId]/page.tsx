@@ -13,6 +13,7 @@ import { loadGuestRecord } from "@/lib/guests";
 import { intlLocale, type Locale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { plural, t } from "@/lib/i18n/format";
+import { timed } from "@/lib/timing";
 
 /**
  * Guests v1 — the record (APP_UX_PROPOSAL.md §5.4).
@@ -54,11 +55,14 @@ export default async function GuestRecordPage({
   const { locale, dict } = await loadDictionary(lang);
 
   // Shared with the dashboard layout's lookup in the same render (lib/auth.ts).
-  const profile = await getSessionProfile();
+  const profile = await timed("guest.session", getSessionProfile());
   if (!profile?.hotelId) redirect(localizedHref(locale, "/dashboard"));
 
   const customerId = decodeURIComponent(guestId);
-  const record = await loadGuestRecord(profile.hotelId, customerId);
+  const record = await timed(
+    "guest.record",
+    loadGuestRecord(profile.hotelId, customerId)
+  );
   if (!record) notFound();
 
   /**
@@ -75,23 +79,26 @@ export default async function GuestRecordPage({
       record.arrival &&
         [5, 6].includes(new Date(`${record.arrival}T00:00:00Z`).getUTCDay())
     );
-    guestProfile = await inferGuestProfile({
-      hotelId: profile.hotelId,
-      customerMewsId: customerId,
-      emails: record.timeline
-        .filter((e) => e.kind === "email")
-        .slice(0, 12)
-        .map((e) => ({ subject: e.title, body: null })),
-      stay: {
-        adults: record.adults,
-        children: record.children,
-        nights: record.nights,
-        weekend: weekendStay,
-        leadTimeDays: null,
-      },
-      names: [{ first: record.name.split(" ")[0] ?? null, last: record.name.split(" ").slice(1).join(" ") || null }],
-      existing: guestProfile,
-    });
+    guestProfile = await timed(
+      "guest.inference",
+      inferGuestProfile({
+        hotelId: profile.hotelId,
+        customerMewsId: customerId,
+        emails: record.timeline
+          .filter((e) => e.kind === "email")
+          .slice(0, 12)
+          .map((e) => ({ subject: e.title, body: null })),
+        stay: {
+          adults: record.adults,
+          children: record.children,
+          nights: record.nights,
+          weekend: weekendStay,
+          leadTimeDays: null,
+        },
+        names: [{ first: record.name.split(" ")[0] ?? null, last: record.name.split(" ").slice(1).join(" ") || null }],
+        existing: guestProfile,
+      })
+    );
   }
 
   const dateFmt = new Intl.DateTimeFormat(intlLocale[locale], {

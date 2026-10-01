@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { loadInbox, UNHANDLED_STATUSES } from "@/lib/inbox";
+import { timed } from "@/lib/timing";
 import { phasesFor } from "./window";
 
 /**
@@ -28,7 +29,7 @@ export default async function CommunicationsPage({
 }) {
   const [{ lang }, query] = await Promise.all([params, searchParams]);
   const { locale } = await loadDictionary(lang);
-  const inbox = await loadInbox();
+  const inbox = await timed("comms.redirect.inbox", loadInbox());
 
   const forwarded = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {

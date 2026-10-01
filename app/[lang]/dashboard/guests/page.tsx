@@ -9,6 +9,7 @@ import { getSessionProfile } from "@/lib/auth";
 import { listGuests, type GuestView } from "@/lib/guests";
 import { guestHref, localizedHref } from "@/lib/i18n/navigation";
 import { intlLocale, type Locale } from "@/lib/i18n/config";
+import { timed } from "@/lib/timing";
 import { cn } from "@/lib/utils";
 
 /**
@@ -64,14 +65,17 @@ export default async function GuestsPage({
   const { locale, dict } = await loadDictionary(lang);
 
   // Shared with the dashboard layout's lookup in the same render (lib/auth.ts).
-  const profile = await getSessionProfile();
+  const profile = await timed("guests.session", getSessionProfile());
   if (!profile?.hotelId) redirect(localizedHref(locale, "/dashboard"));
 
   const view: GuestView =
     query.view === "all" ? "all" : "in_house_and_arriving";
   const q = typeof query.q === "string" ? query.q : "";
 
-  const guests = await listGuests(profile.hotelId, { view, q });
+  const guests = await timed(
+    "guests.list",
+    listGuests(profile.hotelId, { view, q })
+  );
 
   const viewHref = (next: GuestView) => {
     const p = new URLSearchParams();

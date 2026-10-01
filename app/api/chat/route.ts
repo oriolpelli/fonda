@@ -11,6 +11,7 @@ import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-pro
 import { reduceSurnames, type NameToReduce } from "@/lib/pseudonymise";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { logSince, timed } from "@/lib/timing";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -95,6 +96,7 @@ async function guestNamesNearToday(
 }
 
 export async function POST(request: Request) {
+  const requestStart = performance.now();
   // Resolve the hotel from the session — never trust a client-supplied id.
   const supabase = await createClient();
   // Verified identity + hotel in one helper (lib/auth.ts): a local JWT check
@@ -126,7 +128,7 @@ export async function POST(request: Request) {
   const wantsDraft =
     !!lastUser && /draft an email|write an email/i.test(lastUser.content);
 
-  const context = await buildHotelContext(hotelId);
+  const context = await timed("ask.context", buildHotelContext(hotelId));
   const { data: settings } = await supabase
     .from("hotel_settings")
     .select(`briefing_language, ${HOTEL_PROFILE_COLUMNS}`)
@@ -202,6 +204,7 @@ export async function POST(request: Request) {
     async start(controller) {
       let assistantText = "";
       let producedDraft = false;
+      let firstToken = true;
       try {
         const claude = client.messages.stream({
           model: AI_MODELS.chat,
@@ -216,6 +219,10 @@ export async function POST(request: Request) {
             event.type === "content_block_delta" &&
             event.delta.type === "text_delta"
           ) {
+            if (firstToken) {
+              firstToken = false;
+              logSince("ask.ttft", requestStart);
+            }
             assistantText += event.delta.text;
             controller.enqueue(encoder.encode(event.delta.text));
           }

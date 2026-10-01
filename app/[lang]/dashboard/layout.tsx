@@ -12,6 +12,7 @@ import { plural } from "@/lib/i18n/format";
 import { loadInboxBadges } from "@/lib/inbox";
 import { roadmapFeature, type RoadmapKey } from "@/lib/roadmap";
 import { createClient } from "@/lib/supabase/server";
+import { timed } from "@/lib/timing";
 
 export default async function DashboardLayout({
   children,
@@ -24,7 +25,7 @@ export default async function DashboardLayout({
 
   // Who, and which hotel — resolved once and shared with the page rendering
   // under this layout (lib/auth.ts), instead of each asking Supabase again.
-  const user = await getSessionProfile();
+  const user = await timed("layout.session", getSessionProfile());
 
   // Proxy already guards this route; this is defense-in-depth so the page
   // never renders for an unauthenticated user.
@@ -42,12 +43,17 @@ export default async function DashboardLayout({
   // a bad inbox query can never blank the whole dashboard.
   const supabase = await createClient();
   const [{ data: hotel }, inboxBadges] = await Promise.all([
-    supabase
-      .from("hotels")
-      .select("name, pms_connected, last_synced_at")
-      .eq("id", user.hotelId)
-      .single(),
-    loadInboxBadges(),
+    timed(
+      "layout.hotel",
+      Promise.resolve(
+        supabase
+          .from("hotels")
+          .select("name, pms_connected, last_synced_at")
+          .eq("id", user.hotelId)
+          .single()
+      )
+    ),
+    timed("layout.badges", loadInboxBadges()),
   ]);
 
   const connectionState = deriveConnectionState(

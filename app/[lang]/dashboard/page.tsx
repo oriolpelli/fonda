@@ -33,6 +33,7 @@ import { localizedHref } from "@/lib/i18n/navigation";
 import { loadInbox, loadReservationThreads } from "@/lib/inbox";
 import { createClient } from "@/lib/supabase/server";
 import { loadSyncHealth, type SourceHealth } from "@/lib/sync-health";
+import { timed } from "@/lib/timing";
 import { buildTodoList } from "@/lib/todo-rules";
 
 /**
@@ -69,10 +70,10 @@ export default async function DashboardPage({
   const { locale, dict } = await loadDictionary((await params).lang);
 
   const [snapshot, inbox, gmName, layout] = await Promise.all([
-    loadDashboardSnapshot(),
-    loadInbox(),
-    loadGmName(),
-    loadViewerLayout(),
+    timed("home.snapshot", loadDashboardSnapshot()),
+    timed("home.inbox", loadInbox()),
+    timed("home.gmName", loadGmName()),
+    timed("home.layout", loadViewerLayout()),
   ]);
 
   const greeting = gmName || snapshot.hotelName;
@@ -150,20 +151,26 @@ export default async function DashboardPage({
   // The brief uses the same loader the Morning Brief page does, so the teaser
   // can never claim a brief that page would deny.
   const [todaysBrief, movements, vipThreads, syncHealth] = await Promise.all([
-    soft(() => loadTodaysBriefing(snapshot.timezone), null as TodaysBriefing | null),
-    soft(loadTodayMovements, {
+    soft(
+      () => timed("home.brief", loadTodaysBriefing(snapshot.timezone)),
+      null as TodaysBriefing | null
+    ),
+    soft(() => timed("home.movements", loadTodayMovements()), {
       timezone: snapshot.timezone,
       arrivals: [],
       departures: [],
     } satisfies TodayMovements),
     soft(
       () =>
-        loadReservationThreads(
-          snapshot.vipArrivalsWithoutNote.map((vip) => vip.reservationId)
+        timed(
+          "home.vipThreads",
+          loadReservationThreads(
+            snapshot.vipArrivalsWithoutNote.map((vip) => vip.reservationId)
+          )
         ),
       new Map<string, string>()
     ),
-    soft(loadSyncHealth, [] as SourceHealth[]),
+    soft(() => timed("home.syncHealth", loadSyncHealth()), [] as SourceHealth[]),
   ]);
 
   const todos = buildTodoList({

@@ -22,6 +22,7 @@ import { intlLocale, type Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/format";
 import { arrivalsHref, guestHref, localizedHref } from "@/lib/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { timed } from "@/lib/timing";
 import { cn } from "@/lib/utils";
 
 /**
@@ -66,10 +67,12 @@ export default async function ArrivalsPage({
   // Without one, "Generate chasers" can only fail — so don't offer it, and
   // don't claim an empty day either: "No arrivals today" would be a lie when
   // the real answer is that nothing is connected yet.
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("pms_connected, timezone")
-    .maybeSingle();
+  const { data: hotel } = await timed(
+    "arrivals.hotel",
+    Promise.resolve(
+      supabase.from("hotels").select("pms_connected, timezone").maybeSingle()
+    )
+  );
 
   const today = headingDate(locale, hotel?.timezone || "UTC");
 
@@ -88,8 +91,8 @@ export default async function ArrivalsPage({
   }
 
   const [movements, cards] = await Promise.all([
-    loadTodayMovements(),
-    loadChaserCards(supabase, dict),
+    timed("arrivals.movements", loadTodayMovements()),
+    timed("arrivals.chasers", loadChaserCards(supabase, dict)),
   ]);
 
   const counts = {

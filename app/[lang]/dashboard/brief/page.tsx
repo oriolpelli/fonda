@@ -17,6 +17,7 @@ import { intlLocale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { loadInbox } from "@/lib/inbox";
 import { createClient } from "@/lib/supabase/server";
+import { timed } from "@/lib/timing";
 import { buildTodoList, type TodoItem } from "@/lib/todo-rules";
 
 export async function generateMetadata({
@@ -46,22 +47,32 @@ export default async function BriefingPage({
   const { locale, dict } = await loadDictionary((await params).lang);
   const supabase = await createClient();
 
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("name, timezone, pms_connected, last_synced_at")
-    .single();
+  const { data: hotel } = await timed(
+    "brief.hotel",
+    Promise.resolve(
+      supabase
+        .from("hotels")
+        .select("name, timezone, pms_connected, last_synced_at")
+        .single()
+    )
+  );
 
   const tz = hotel?.timezone || "UTC";
   const now = new Date();
 
-  const { data: settings } = await supabase
-    .from("hotel_settings")
-    .select("brief_recipients, brief_send_hour, briefing_language")
-    .maybeSingle();
+  const { data: settings } = await timed(
+    "brief.settings",
+    Promise.resolve(
+      supabase
+        .from("hotel_settings")
+        .select("brief_recipients, brief_send_hour, briefing_language")
+        .maybeSingle()
+    )
+  );
 
   // Shared with the dashboard's summary card (lib/briefing-latest.ts), so the
   // teaser and this page can never disagree about whether a brief exists.
-  const today = await loadTodaysBriefing(tz);
+  const today = await timed("brief.today", loadTodaysBriefing(tz));
   const briefing = today?.content ?? null;
 
   // "Since the brief" (APP_UX_PROPOSAL.md §5.1) — the brief is a 07:00
@@ -75,8 +86,8 @@ export default async function BriefingPage({
   let sinceTheBrief: TodoItem[] = [];
   if (today) {
     const [snapshot, inbox] = await Promise.all([
-      loadDashboardSnapshot(),
-      loadInbox(),
+      timed("brief.snapshot", loadDashboardSnapshot()),
+      timed("brief.inbox", loadInbox()),
     ]);
     sinceTheBrief = buildTodoList({
       emails: inbox.emails
@@ -95,12 +106,17 @@ export default async function BriefingPage({
   // Only whether there is a history, not the history itself — the list lives at
   // /dashboard/brief/history now, and the hero link shouldn't point at an empty
   // page on a hotel's first morning.
-  const { data: firstBrief } = await supabase
-    .from("briefings")
-    .select("id")
-    .not("content_json->>summary", "is", null)
-    .limit(1)
-    .maybeSingle();
+  const { data: firstBrief } = await timed(
+    "brief.firstBrief",
+    Promise.resolve(
+      supabase
+        .from("briefings")
+        .select("id")
+        .not("content_json->>summary", "is", null)
+        .limit(1)
+        .maybeSingle()
+    )
+  );
 
   const quickActions = [
     // The unscoped parent on purpose: it redirects to whichever Communications
