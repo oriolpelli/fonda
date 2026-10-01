@@ -83,7 +83,9 @@ export const PROMPT_VERSIONS: Record<AiFeature, string> = {
   briefing: "briefing@2026-10-01",
   // b: the system prompt split into instructions · cached hotel data · live
   // inbox counts (prompt caching, performance audit §4.8). Same wording.
-  chat: "chat@2026-10-01b",
+  // c: messages sent as text blocks, the last one a cache breakpoint, so the
+  // conversation so far is cached too (S3). Same wording.
+  chat: "chat@2026-10-01c",
   guestInference: "guest-inference@2026-10-01",
   reviewSummary: "review-summary@2026-10-01",
 };

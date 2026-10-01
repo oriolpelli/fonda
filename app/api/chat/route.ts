@@ -256,7 +256,7 @@ export async function POST(request: Request) {
           max_tokens: 2048,
           output_config: { effort: "low" },
           system,
-          messages: messages.map((m) => ({ role: m.role, content: m.content })),
+          messages: withHistoryBreakpoint(messages),
         });
 
         for await (const event of claude) {
@@ -399,4 +399,41 @@ export async function POST(request: Request) {
       "X-Fondas-Sources": sources.join(","),
     },
   });
+}
+
+/**
+ * The conversation, with a second prompt-cache breakpoint on its last message.
+ *
+ * The first breakpoint (end of the hotel data, above) makes each question
+ * re-read the hotel from cache. This one also covers the conversation so far,
+ * so the tenth question of a long thread doesn't re-process the nine before
+ * it. Each turn writes the prefix through its question, and the next turn
+ * reads it back: Anthropic looks for a cached prefix at earlier block
+ * boundaries on its own. When the live inbox counts change (they sit between
+ * the two breakpoints), only this part misses; the hotel data still hits.
+ * Two of the four breakpoints a request may carry.
+ */
+function withHistoryBreakpoint(
+  messages: ChatMessage[]
+): Anthropic.MessageParam[] {
+  // Every message in block form, the same shape on every turn, so a turn's
+  // prefix is byte-for-byte the prefix the previous turn cached. Only the
+  // last carries the marker. (An empty text block is refused by the API, so
+  // an empty message stays a plain string.)
+  return messages.map((m, i) =>
+    m.content.trim()
+      ? {
+          role: m.role,
+          content: [
+            {
+              type: "text" as const,
+              text: m.content,
+              ...(i === messages.length - 1
+                ? { cache_control: { type: "ephemeral" as const } }
+                : {}),
+            },
+          ],
+        }
+      : { role: m.role, content: m.content }
+  );
 }
