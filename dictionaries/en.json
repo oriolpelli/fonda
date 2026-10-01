@@ -1190,6 +1190,7 @@
     "listLabel": "What will be sent",
     "emptyLine": "(no text)",
     "send": "Send {count}",
-    "review": "Review one by one"
+    "review": "Review one by one",
+    "partial": "Sent {sent} of {count}. The rest are still in the queue — open them one by one."
   }
 }

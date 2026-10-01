@@ -150,7 +150,15 @@ export function CheckinChasers({ chasers }: { chasers: ChaserCard[] }) {
     setBulkOpen(false);
     run(async () => {
       const result = await approveAllChasers(ids);
-      return result.error ? { error: result.error } : undefined;
+      if (result.error) return { error: result.error };
+      // Fewer sent than confirmed is reported, never silent — set directly so
+      // `run` still refreshes the queue.
+      if (result.skipped > 0) {
+        setError(
+          t(dict.bulkSend.partial, { sent: result.sent, count: ids.length })
+        );
+      }
+      return undefined;
     });
   }
 

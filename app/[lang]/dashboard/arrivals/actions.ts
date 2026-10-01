@@ -237,15 +237,17 @@ export async function skipChaser(chaserId: string): Promise<void> {
  */
 export async function approveAllChasers(
   ids: string[]
-): Promise<{ sent: number; error?: string }> {
+): Promise<{ sent: number; skipped: number; error?: string }> {
   const hotelId = await requireHotelId();
   const admin = createAdminClient();
 
   const confirmed = confirmedIds(ids);
-  if (confirmed.length === 0) return { sent: 0 };
+  if (confirmed.length === 0) return { sent: 0, skipped: 0 };
 
   const gmail = await getGmailClientForHotel(hotelId);
-  if (!gmail) return { sent: 0, error: "Gmail is not connected." };
+  if (!gmail) {
+    return { sent: 0, skipped: confirmed.length, error: "Gmail is not connected." };
+  }
 
   const [{ data: chasers }, { data: hotel }] = await Promise.all([
     admin
@@ -253,6 +255,7 @@ export async function approveAllChasers(
       .select(SENDABLE_COLUMNS)
       .eq("hotel_id", hotelId)
       .eq("status", "pending")
+      .not("guest_email", "is", null)
       .in("id", confirmed),
     admin.from("hotels").select("name").eq("id", hotelId).single(),
   ]);
@@ -285,5 +288,5 @@ export async function approveAllChasers(
   }
 
   revalidatePath("/dashboard/arrivals");
-  return { sent };
+  return { sent, skipped: confirmed.length - sent };
 }

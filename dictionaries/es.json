@@ -1190,6 +1190,7 @@
     "listLabel": "Lo que se enviará",
     "emptyLine": "(sin texto)",
     "send": "Enviar {count}",
-    "review": "Revisar uno a uno"
+    "review": "Revisar uno a uno",
+    "partial": "Se han enviado {sent} de {count}. El resto sigue en la cola: ábrelos uno a uno."
   }
 }

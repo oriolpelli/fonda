@@ -348,6 +348,8 @@ export function EmailInbox({
     (e) =>
       e.status === "pending" &&
       e.draft_reply &&
+      // An Ask-started draft has no recipient yet; it can't go in a batch.
+      e.from_email &&
       (e.classification === "arrival_info" ||
         e.classification === "general_inquiry")
   );
@@ -388,7 +390,16 @@ export function EmailInbox({
     setBulkOpen(false);
     run(async () => {
       const result = await approveAllStandard(ids);
-      return result.error ? { error: result.error } : undefined;
+      if (result.error) return { error: result.error };
+      // Say so when fewer went than were confirmed — never let "Send 5"
+      // quietly mean three. Set directly rather than returned as an error, so
+      // `run` still refreshes the list to show what did go.
+      if (result.skipped > 0) {
+        setActionError(
+          t(dict.bulkSend.partial, { sent: result.sent, count: ids.length })
+        );
+      }
+      return undefined;
     });
   }
 

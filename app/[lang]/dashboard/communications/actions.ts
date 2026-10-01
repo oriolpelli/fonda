@@ -304,16 +304,20 @@ const BULK_CLASSIFICATIONS = ["arrival_info", "general_inquiry"];
  */
 export async function approveAllStandard(ids: string[]): Promise<{
   sent: number;
+  /** How many of the confirmed ids did not go — ineligible, or failed. */
+  skipped: number;
   error?: string;
 }> {
   const hotelId = await requireHotelId();
   const admin = createAdminClient();
 
   const confirmed = confirmedIds(ids);
-  if (confirmed.length === 0) return { sent: 0 };
+  if (confirmed.length === 0) return { sent: 0, skipped: 0 };
 
   const gmail = await getGmailClientForHotel(hotelId);
-  if (!gmail) return { sent: 0, error: "Gmail is not connected." };
+  if (!gmail) {
+    return { sent: 0, skipped: confirmed.length, error: "Gmail is not connected." };
+  }
 
   const { data: emails } = await admin
     .from("emails")
@@ -322,6 +326,9 @@ export async function approveAllStandard(ids: string[]): Promise<{
     .eq("status", "pending")
     .in("classification", BULK_CLASSIFICATIONS)
     .not("draft_reply", "is", null)
+    // A draft started from Ask has no recipient yet (ROADMAP §3.2) — it can
+    // only be sent one by one, once someone has given it an address.
+    .not("from_email", "is", null)
     .in("id", confirmed);
 
   let sent = 0;
@@ -351,5 +358,5 @@ export async function approveAllStandard(ids: string[]): Promise<{
   }
 
   revalidateInbox();
-  return { sent };
+  return { sent, skipped: confirmed.length - sent };
 }

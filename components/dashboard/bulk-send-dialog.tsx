@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useId,
-  useRef,
-  type KeyboardEvent,
-  type RefObject,
-} from "react";
+import { useEffect, useId, useRef, type RefObject } from "react";
 
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
@@ -78,44 +72,75 @@ export function BulkSendDialog({
 }) {
   const { dict } = useDictionary();
   const titleId = useId();
-  const listId = useId();
+  const bodyId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLButtonElement>(null);
 
-  // Move focus in on open, onto the safe button. Return it on close.
+  // Keep the latest cancel handler without re-binding the listener below.
+  const cancelRef = useRef(onCancel);
+  useEffect(() => {
+    cancelRef.current = onCancel;
+  }, [onCancel]);
+
+  // Move focus in on open, onto the safe button. Return it on close — and if
+  // the opener is disabled at that moment (it is, while the batch it just
+  // started is sending), wait for it to come back rather than dropping focus
+  // on <body>.
   useEffect(() => {
     if (!open) return;
     reviewRef.current?.focus();
     const opener = returnFocusTo.current;
     return () => {
-      opener?.focus();
+      if (!opener) return;
+      if (!opener.hasAttribute("disabled")) {
+        opener.focus();
+        return;
+      }
+      const observer = new MutationObserver(() => {
+        if (!opener.hasAttribute("disabled")) {
+          observer.disconnect();
+          opener.focus();
+        }
+      });
+      observer.observe(opener, { attributes: true, attributeFilter: ["disabled"] });
+      setTimeout(() => observer.disconnect(), 10_000);
     };
   }, [open, returnFocusTo]);
 
-  if (!open) return null;
+  // Esc and the Tab trap on the DOCUMENT while open, not on the panel: a click
+  // on the panel's text can leave focus on <body>, and a panel-level handler
+  // would then hear nothing (the customize panel's discipline).
+  useEffect(() => {
+    if (!open) return;
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        cancelRef.current();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const panel = panelRef.current;
+      const focusables = Array.from(
+        panel?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []
+      );
+      if (!panel || focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const current = document.activeElement;
+      const inside = panel.contains(current) && current !== panel;
+      if (event.shiftKey && (current === first || !inside)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (current === last || !inside)) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
-  function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      onCancel();
-      return;
-    }
-    if (event.key !== "Tab") return;
-    const focusables = Array.from(
-      panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []
-    );
-    if (focusables.length === 0) return;
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-    const current = document.activeElement;
-    if (event.shiftKey && (current === first || !panelRef.current?.contains(current))) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && (current === last || !panelRef.current?.contains(current))) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
+  if (!open) return null;
 
   return (
     <>
@@ -129,8 +154,11 @@ export function BulkSendDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        onKeyDown={onKeyDown}
-        className="fixed left-1/2 top-[14vh] z-50 flex w-[min(520px,92vw)] -translate-x-1/2 flex-col gap-4 rounded-[20px] bg-[var(--fonda-white)] p-5 shadow-card ring-1 ring-[var(--fonda-border)]"
+        aria-describedby={bodyId}
+        // Focusable but out of the Tab order, so a click on the panel's text
+        // keeps focus inside the dialog.
+        tabIndex={-1}
+        className="fixed left-1/2 top-[14vh] z-50 flex w-[min(520px,92vw)] -translate-x-1/2 flex-col gap-4 rounded-[20px] bg-[var(--fonda-white)] p-5 shadow-card outline-none ring-1 ring-[var(--fonda-border)]"
       >
         <div className="flex flex-col gap-1.5">
           <h2
@@ -139,7 +167,7 @@ export function BulkSendDialog({
           >
             {title}
           </h2>
-          <p className="text-[13px] leading-relaxed text-[var(--fonda-text-2)]">
+          <p id={bodyId} className="text-[13px] leading-relaxed text-[var(--fonda-text-2)]">
             {dict.bulkSend.body}
           </p>
         </div>
@@ -147,7 +175,6 @@ export function BulkSendDialog({
         {/* Scrollable, so it is focusable: a keyboard user has to be able to
             scroll the list they are being asked to approve. */}
         <ul
-          id={listId}
           tabIndex={0}
           aria-label={dict.bulkSend.listLabel}
           className="flex max-h-[40vh] flex-col gap-0.5 overflow-y-auto rounded-[10px] bg-[var(--fonda-surface)] p-1.5"

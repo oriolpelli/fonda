@@ -1190,6 +1190,7 @@
     "listLabel": "El que s'enviarà",
     "emptyLine": "(sense text)",
     "send": "Envia {count}",
-    "review": "Revisa'ls un a un"
+    "review": "Revisa'ls un a un",
+    "partial": "S'han enviat {sent} de {count}. La resta continua a la cua: obre'ls un a un."
   }
 }
