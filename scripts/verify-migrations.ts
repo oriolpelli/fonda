@@ -1,6 +1,7 @@
 /**
  * Post-apply verification for migrations 0023 (chat_threads), 0024
- * (guest_profiles) and 0025 (AI provenance).
+ * (guest_profiles) and 0025 (AI provenance). 0028 adds indexes only, which the
+ * REST API cannot see — the closing note prints the one query that checks it.
  *
  *   npm run verify-migrations
  *
@@ -174,7 +175,13 @@ async function main() {
         "   order by tablename, policyname;\n\n" +
         "Expect: chat_logs has ONLY 'chat_logs: read own threads' (the old\n" +
         "'chat_logs: read own hotel' must be GONE), chat_threads has three, and\n" +
-        "guest_profiles has three.\n"
+        "guest_profiles has three.\n\n" +
+        "Migration 0028 (indexes only) — same editor:\n\n" +
+        "  select indexname from pg_indexes\n" +
+        "   where indexname in ('reservations_hotel_end_idx',\n" +
+        "                       'emails_hotel_created_idx',\n" +
+        "                       'emails_hotel_customer_idx');\n\n" +
+        "Expect three rows.\n"
     );
   }
   process.exit(failures === 0 ? 0 : 1);

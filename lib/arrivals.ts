@@ -165,8 +165,11 @@ export async function loadTodayMovements(): Promise<TodayMovements> {
   const from = `${addDays(today, -UTC_PAD_DAYS)}T00:00:00Z`;
   const to = `${addDays(today, 1 + UTC_PAD_DAYS)}T00:00:00Z`;
 
-  // Two narrow queries rather than one `.or()`: each hits its own index, and a
-  // day's movements are a few hundred rows at most. Paged anyway, because
+  // Two narrow queries rather than one `.or()`: each hits its own index —
+  // (hotel_id, start_utc) for arrivals, and (hotel_id, end_utc) for departures
+  // since migration 0028 (before it, departures had no index of their own and
+  // scanned the hotel's whole history) — and a day's movements are a few
+  // hundred rows at most. Paged anyway, because
   // PostgREST truncates at 1,000 silently and a half-listed arrivals board is
   // worse than none (lib/supabase/paged.ts).
   const [arrivalRows, departureRows] = await Promise.all([
