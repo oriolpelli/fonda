@@ -621,6 +621,7 @@
     "needsAttentionNote": "Este correo necesita tu atención personal — escribe una respuesta abajo.",
     "send": "Enviar",
     "sending": "Enviando…",
+    "actionFailed": "No se ha podido completar. Comprueba la conexión y vuelve a intentarlo.",
     "needsAttention": "Requiere atención",
     "ignore": "Ignorar",
     "sent": "Enviado",

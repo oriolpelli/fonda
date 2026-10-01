@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 
 import { aiHeaders } from "@/lib/ai-disclosure";
 import { sha256 } from "@/lib/ai-provenance";
@@ -262,14 +263,19 @@ export async function sendReply(
   }
 
   // After the send succeeded: we measure replies that reached a guest, not
-  // ones we attempted.
-  const bucket = await recordDraftSend({
-    hotelId,
-    surface: "email_reply",
-    drafted: email.draft_reply,
-    sent: content,
+  // ones we attempted. In after(): the acceptance metric is analytics
+  // (decision P-8), so the GM no longer waits for its write. The two writes
+  // that matter — status, then provenance — happened inside sendOne, before
+  // this line, in that order (95a1e7f).
+  after(async () => {
+    const bucket = await recordDraftSend({
+      hotelId,
+      surface: "email_reply",
+      drafted: email.draft_reply,
+      sent: content,
+    });
+    track(hotelId, "draft_sent", { edit_bucket: bucket, bulk: false });
   });
-  track(hotelId, "draft_sent", { edit_bucket: bucket, bulk: false });
 
   revalidateInbox();
   return {};
@@ -351,8 +357,14 @@ export async function approveAllStandard(ids: string[]): Promise<{
     .not("from_email", "is", null)
     .in("id", confirmed);
 
+  // BULK_CONCURRENCY at a time rather than one after another: each send is a
+  // thread lookup, the send and two writes, so a batch of eight used to keep
+  // the dialog's button busy for eight of those in a row (performance audit
+  // §4.6). Each email is still sent, recorded and counted exactly as before;
+  // only the waiting overlaps.
   let sent = 0;
-  for (const email of emails ?? []) {
+  const sentDrafts: (string | null)[] = [];
+  await forEachLimited(emails ?? [], BULK_CONCURRENCY, async (email) => {
     try {
       // Verbatim — there is no editor in this path — so the bucket is "none".
       await sendOne(admin, gmail, email, email.draft_reply ?? "", {
@@ -360,23 +372,55 @@ export async function approveAllStandard(ids: string[]): Promise<{
         edit: "none",
       });
       sent++;
-      // Bulk approval sends the draft verbatim — there is no editor in this
-      // path — so the bucket is always "none". Flagged `bulk` so the rollup
-      // can separate "the GM read this and approved it" from "the GM approved
-      // a batch"; counting them the same would flatter the acceptance rate.
-      const bucket = await recordDraftSend({
-        hotelId,
-        surface: "email_reply",
-        drafted: email.draft_reply,
-        sent: email.draft_reply,
-        bulk: true,
-      });
-      track(hotelId, "draft_sent", { edit_bucket: bucket, bulk: true });
+      sentDrafts.push(email.draft_reply);
     } catch {
       // Skip failures; they remain pending for manual handling.
     }
-  }
+  });
+
+  // Bulk approval sends the draft verbatim — there is no editor in this path —
+  // so the bucket is always "none". Flagged `bulk` so the rollup can separate
+  // "the GM read this and approved it" from "the GM approved a batch";
+  // counting them the same would flatter the acceptance rate. After the
+  // response, like the single send: it is analytics, not the send.
+  after(async () => {
+    for (const draft of sentDrafts) {
+      const bucket = await recordDraftSend({
+        hotelId,
+        surface: "email_reply",
+        drafted: draft,
+        sent: draft,
+        bulk: true,
+      });
+      track(hotelId, "draft_sent", { edit_bucket: bucket, bulk: true });
+    }
+  });
 
   revalidateInbox();
   return { sent, skipped: confirmed.length - sent };
+}
+
+/**
+ * How many emails "approve all" sends at once. Gmail allows far more per user;
+ * three keeps a batch quick without bursting a mailbox's quota or the
+ * function's outbound connections.
+ */
+const BULK_CONCURRENCY = 3;
+
+/** Runs `fn` over `items`, at most `limit` at a time, until all have run. */
+async function forEachLimited<T>(
+  items: readonly T[],
+  limit: number,
+  fn: (item: T) => Promise<void>
+): Promise<void> {
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const item = items[next++];
+      await fn(item);
+    }
+  };
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, worker)
+  );
 }

@@ -621,6 +621,7 @@
     "needsAttentionNote": "This email needs your personal attention — write a reply below.",
     "send": "Send",
     "sending": "Sending…",
+    "actionFailed": "That didn't go through. Check your connection and try again.",
     "needsAttention": "Needs attention",
     "ignore": "Ignore",
     "sent": "Sent",

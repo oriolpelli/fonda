@@ -621,6 +621,7 @@
     "needsAttentionNote": "Aquest correu necessita la teva atenció personal — escriu una resposta a sota.",
     "send": "Envia",
     "sending": "Enviant…",
+    "actionFailed": "No s'ha pogut completar. Comprova la connexió i torna-ho a provar.",
     "needsAttention": "Requereix atenció",
     "ignore": "Ignora",
     "sent": "Enviat",

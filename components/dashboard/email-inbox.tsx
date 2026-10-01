@@ -1,7 +1,14 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import {
+  useEffect,
+  useMemo,
+  useOptimistic,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { ArrowLeft } from "lucide-react";
 
 import {
@@ -21,7 +28,12 @@ import { EmptyState, type EmptyStateIcon } from "@/components/dashboard/empty-st
 import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
-import { byDate, byUrgency, type Urgency } from "@/lib/email-urgency";
+import {
+  byDate,
+  byUrgency,
+  computeUrgency,
+  type Urgency,
+} from "@/lib/email-urgency";
 import {
   isSortMode,
   SORT_COOKIE,
@@ -86,6 +98,23 @@ export interface InboxEmail {
    * one is opened.
    */
   body_truncated?: boolean;
+  /**
+   * Client-only: the reply is on its way. Set by the optimistic update when
+   * Send is clicked, and gone once the server's own render of the row lands —
+   * so the inbox can move on at once without claiming "sent" before Gmail has
+   * accepted it.
+   */
+  sending?: boolean;
+}
+
+/**
+ * What a click changes, applied to the list before the server has answered.
+ * The server's render replaces it when the action returns — the same row, now
+ * really sent (or flagged, or dismissed), or unchanged if the action failed.
+ */
+interface InboxChange {
+  ids: readonly string[];
+  status: "sent" | "needs_attention" | "ignored";
 }
 
 /**
@@ -206,6 +235,56 @@ export function EmailInbox({
   const [actionError, setActionError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const draftRef = useRef<HTMLTextAreaElement>(null);
+
+  /**
+   * The list as the user expects it to be: `emails` with every click still in
+   * flight already applied. Send, Flag and Dismiss used to hold the whole pane
+   * until Gmail and the database had answered and the window had re-rendered —
+   * one to three seconds of a disabled button (performance audit §4.6). Now
+   * the row moves the moment it is clicked, and the server's render takes over
+   * when the action returns: the same move, confirmed, or — if it failed — the
+   * row back where it was, with the error above the list.
+   *
+   * Urgency is recomputed with the same rule the server uses, so a flagged
+   * message ranks as one at once and a sent one drops out of the ranking.
+   */
+  const [shownEmails, applyChange] = useOptimistic(
+    emails,
+    (current: InboxEmail[], change: InboxChange): InboxEmail[] => {
+      const ids = new Set(change.ids);
+      const now = new Date();
+      return current.map((email) => {
+        // Already there — the server's render landed before the transition
+        // ended. Leave its row alone rather than restamp it.
+        if (!ids.has(email.id) || email.status === change.status) return email;
+        const sent = change.status === "sent";
+        return {
+          ...email,
+          status: change.status,
+          sent_at: sent ? now.toISOString() : email.sent_at,
+          sending: sent,
+          urgency: computeUrgency({
+            classification: email.classification,
+            status: change.status,
+            arrival: email.arrival,
+            createdAt: email.created_at,
+            today,
+            now,
+          }),
+        };
+      });
+    }
+  );
+
+  /**
+   * A reply's text while it is being sent. The editor unmounts the moment the
+   * row turns "sent", so if the send then fails and the row comes back, its
+   * editor would remount with the stored draft and silently drop the GM's
+   * edits. It reads from here first instead. Cleared once the send succeeds.
+   */
+  const [unsent, setUnsent] = useState<Record<string, string>>({});
+  /** Messages whose send has been clicked and not yet answered. */
+  const inFlight = useRef(new Set<string>());
   // The bulk-send confirmation (AI_ACT_PROMPTS.md A4) and the button it
   // returns focus to.
   const [bulkOpen, setBulkOpen] = useState(false);
@@ -244,7 +323,7 @@ export function EmailInbox({
     {}
   );
   const requested = useRef(new Set<string>());
-  const openTruncated = emails.find(
+  const openTruncated = shownEmails.find(
     (e) => e.id === selectedId && e.body_truncated
   );
   useEffect(() => {
@@ -309,20 +388,21 @@ export function EmailInbox({
     return Object.fromEntries(
       QUEUE_MODES.map((mode) => [
         mode,
-        emails.filter((e) => matchesQueue(e, mode, today, sentAtLocalDate, now))
-          .length,
+        shownEmails.filter((e) =>
+          matchesQueue(e, mode, today, sentAtLocalDate, now)
+        ).length,
       ])
     ) as Record<QueueMode, number>;
-  }, [emails, today, sentAtLocalDate]);
+  }, [shownEmails, today, sentAtLocalDate]);
 
   // Filter, then sort. Both are client-side so the controls are instant; the
   // server always sends the same rows with their urgency already computed.
   const sorted = useMemo(() => {
     const now = new Date();
-    return emails
+    return shownEmails
       .filter((e) => matchesQueue(e, queue, today, sentAtLocalDate, now))
       .sort(sort === "urgency" ? byUrgency : byDate);
-  }, [emails, queue, sort, today, sentAtLocalDate]);
+  }, [shownEmails, queue, sort, today, sentAtLocalDate]);
 
   function chooseSort(mode: SortMode) {
     setSort(mode);
@@ -336,7 +416,7 @@ export function EmailInbox({
     // row rather than leaving the reading pane showing something the list no
     // longer offers.
     setSelectedId((current) => {
-      const stillThere = emails.some(
+      const stillThere = shownEmails.some(
         (e) =>
           e.id === current && matchesQueue(e, mode, today, sentAtLocalDate)
       );
@@ -429,13 +509,33 @@ export function EmailInbox({
     firstLine: firstLineOf(e.draft_reply),
   }));
 
-  function run(fn: () => Promise<{ error?: string } | void>) {
+  /**
+   * Applies `change` to the list at once, then runs the action; `settled`
+   * hears whether it went through.
+   */
+  function run(
+    change: InboxChange,
+    fn: () => Promise<{ error?: string } | void>,
+    settled?: (ok: boolean) => void
+  ) {
     setActionError(null);
     startTransition(async () => {
-      const result = await fn();
-      if (result && "error" in result && result.error) {
-        setActionError(result.error);
+      applyChange(change);
+      let ok = true;
+      try {
+        const result = await fn();
+        if (result && "error" in result && result.error) {
+          ok = false;
+          setActionError(result.error);
+        }
+      } catch {
+        // A thrown action (network gone, server error) must not leave the row
+        // looking done: the optimistic change ends with this transition, and
+        // the GM is told it did not go through.
+        ok = false;
+        setActionError(dict.emails.actionFailed);
       }
+      settled?.(ok);
       // No router.refresh(). Every one of these actions ends in
       // revalidateInbox() (communications/actions.ts) — both windows and the
       // layout's badges — and a Server Action that revalidates the page being
@@ -447,8 +547,30 @@ export function EmailInbox({
 
   function handleSend() {
     if (!selected) return;
+    const id = selected.id;
+    // One send per message per flight. The button is gone as soon as the row
+    // turns "sent", so this only matters for a second click landing before
+    // that render — but a reply sent twice can't be unsent.
+    if (inFlight.current.has(id)) return;
+    inFlight.current.add(id);
     const content = draftRef.current?.value ?? "";
-    run(() => sendReply(selected.id, content));
+    setUnsent((prev) => ({ ...prev, [id]: content }));
+    run(
+      { ids: [id], status: "sent" },
+      () => sendReply(id, content),
+      // Sent: forget the text. Failed: keep it, so the editor comes back with
+      // the GM's words rather than the stored draft.
+      (ok) => {
+        inFlight.current.delete(id);
+        if (ok) {
+          setUnsent((prev) => {
+            const next = { ...prev };
+            delete next[id];
+            return next;
+          });
+        }
+      }
+    );
   }
 
   function handleBulk() {
@@ -461,12 +583,14 @@ export function EmailInbox({
     // a refresh could have changed the queue.
     const ids = bulkItems.map((item) => item.id);
     setBulkOpen(false);
-    run(async () => {
+    // All of them leave "Needs you" at once. Any that don't go come back when
+    // the server's render lands, and the partial notice below says how many.
+    run({ ids, status: "sent" }, async () => {
       const result = await approveAllStandard(ids);
       if (result.error) return { error: result.error };
       // Say so when fewer went than were confirmed — never let "Send 5"
-      // quietly mean three. Set directly rather than returned as an error, so
-      // `run` still refreshes the list to show what did go.
+      // quietly mean three. Set directly rather than returned as an error:
+      // this is a partial success, and the rows that did go stay gone.
       if (result.skipped > 0) {
         setActionError(
           t(dict.bulkSend.partial, { sent: result.sent, count: ids.length })
@@ -485,10 +609,10 @@ export function EmailInbox({
     : null;
 
   // Nothing in the inbox at all: the whole surface is the empty state, rather
-  // than an empty list sitting next to an empty reading pane. Note this is
-  // `emails`, not `sorted` — an empty QUEUE keeps its segmented control, since
-  // the way out of an empty queue is to pick another one.
-  if (emails.length === 0) {
+  // than an empty list sitting next to an empty reading pane. Note this is the
+  // whole list, not `sorted` — an empty QUEUE keeps its segmented control,
+  // since the way out of an empty queue is to pick another one.
+  if (shownEmails.length === 0) {
     return <EmptyState icon={emptyIcon} message={emptyMessage} />;
   }
 
@@ -702,7 +826,9 @@ export function EmailInbox({
                         // Handled is a finished state, not a live one — quiet
                         // grey, never the accent (§10).
                         <span className="text-xs font-medium text-[var(--fonda-text-3)]">
-                          {dict.emails.sent}
+                          {email.sending
+                            ? dict.emails.sending
+                            : dict.emails.sent}
                         </span>
                       ) : email.status === "ignored" ? (
                         <span className="text-xs text-muted-foreground">
@@ -782,8 +908,14 @@ export function EmailInbox({
 
               {selected.status === "sent" ? (
                 <div className="flex flex-col gap-1">
-                  <p className="text-sm font-medium text-[var(--fonda-text-2)]">
-                    {selected.sent_at
+                  <p
+                    role="status"
+                    className="text-sm font-medium text-[var(--fonda-text-2)]"
+                  >
+                    {/* Not "sent" until Gmail has said so. */}
+                    {selected.sending
+                      ? dict.emails.sending
+                      : selected.sent_at
                       ? t(dict.emails.replySentAt, {
                           time: shortTime(selected.sent_at),
                         })
@@ -816,7 +948,11 @@ export function EmailInbox({
                     id="draft"
                     key={selected.id}
                     ref={draftRef}
-                    defaultValue={selected.draft_reply ?? ""}
+                    // A send that failed comes back with what the GM wrote —
+                    // see `unsent`.
+                    defaultValue={
+                      unsent[selected.id] ?? selected.draft_reply ?? ""
+                    }
                     rows={10}
                     className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]"
                     placeholder={dict.emails.replyPlaceholder}
@@ -839,22 +975,31 @@ export function EmailInbox({
                       {dict.ai.draftLine}
                     </p>
                   ) : null}
+                  {/* Never disabled while something else is in flight: each
+                      click moves its own row at once (`shownEmails`), so the
+                      GM can work down the queue without waiting on Gmail. */}
                   <div className="flex flex-wrap gap-2">
-                    <Button onClick={handleSend} disabled={pending}>
-                      {pending ? dict.emails.sending : dict.emails.send}
-                    </Button>
+                    <Button onClick={handleSend}>{dict.emails.send}</Button>
                     {selected.status !== "needs_attention" ? (
                       <Button
-                        onClick={() => run(() => flagEmail(selected.id))}
-                        disabled={pending}
+                        onClick={() => {
+                          const id = selected.id;
+                          run({ ids: [id], status: "needs_attention" }, () =>
+                            flagEmail(id)
+                          );
+                        }}
                         variant="outline"
                       >
                         {dict.emails.needsAttention}
                       </Button>
                     ) : null}
                     <Button
-                      onClick={() => run(() => ignoreEmail(selected.id))}
-                      disabled={pending}
+                      onClick={() => {
+                        const id = selected.id;
+                        run({ ids: [id], status: "ignored" }, () =>
+                          ignoreEmail(id)
+                        );
+                      }}
                       variant="ghost"
                     >
                       {dict.emails.ignore}

@@ -1,5 +1,7 @@
 import "server-only";
 
+import { createHash } from "node:crypto";
+
 import { decryptSecret, encryptSecret } from "@/lib/encryption";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { TablesInsert } from "@/types/database";
@@ -208,11 +210,42 @@ function customHeaderLines(headers: Record<string, string> | undefined): string[
   });
 }
 
+/**
+ * Access tokens, kept across requests for as long as a server instance lives
+ * and Google says they are valid (an hour, minus a minute).
+ *
+ * Before 1 Oct every client — so every Send, every bulk batch, every inbox
+ * cron run — began with a round trip to Google's token endpoint, because the
+ * token lived only on a client object made for that one request
+ * (docs/audits/2026-10-01-performance.md §4.6). Keyed by a hash of the refresh
+ * token, so a reconnected mailbox never reuses its predecessor's token, and a
+ * 401 still forces a fresh one. Memory only: nothing is written anywhere, and
+ * a cold instance simply starts empty.
+ */
+const tokenCache = new Map<string, { token: string; expiresAt: number }>();
+
+/** In-flight refreshes, so concurrent calls (a bulk batch) share one. */
+const refreshing = new Map<string, Promise<string>>();
+
+function cacheKey(refreshToken: string): string {
+  return createHash("sha256").update(refreshToken).digest("hex");
+}
+
 export function createGmailClient(refreshToken: string): GmailClient {
+  const key = cacheKey(refreshToken);
   let accessToken: string | null = null;
   let expiresAt = 0;
 
-  async function refresh(): Promise<string> {
+  /** One refresh at a time per mailbox; everyone waiting gets its result. */
+  function refresh(): Promise<string> {
+    const inFlight = refreshing.get(key);
+    if (inFlight) return inFlight;
+    const next = requestToken().finally(() => refreshing.delete(key));
+    refreshing.set(key, next);
+    return next;
+  }
+
+  async function requestToken(): Promise<string> {
     const { clientId, clientSecret } = requireOAuthEnv();
     const res = await fetch(GOOGLE_TOKEN_URL, {
       method: "POST",
@@ -232,11 +265,18 @@ export function createGmailClient(refreshToken: string): GmailClient {
     const json = (await res.json()) as { access_token: string; expires_in: number };
     accessToken = json.access_token;
     expiresAt = Date.now() + (json.expires_in - 60) * 1000;
+    tokenCache.set(key, { token: accessToken, expiresAt });
     return accessToken;
   }
 
   async function getAccessToken(): Promise<string> {
     if (accessToken && Date.now() < expiresAt) return accessToken;
+    const cached = tokenCache.get(key);
+    if (cached && Date.now() < cached.expiresAt) {
+      accessToken = cached.token;
+      expiresAt = cached.expiresAt;
+      return accessToken;
+    }
     return refresh();
   }
 
@@ -268,10 +308,12 @@ export function createGmailClient(refreshToken: string): GmailClient {
         clearTimeout(timer);
       }
 
-      // Refresh once on a 401 (expired/revoked access token).
+      // Refresh once on a 401 (expired/revoked access token) — and drop the
+      // shared copy too, so no other request reuses the token Google refused.
       if (res.status === 401 && !forcedRefresh) {
         forcedRefresh = true;
         accessToken = null;
+        tokenCache.delete(key);
         continue;
       }
       if ((res.status === 429 || res.status >= 500) && attempt < DEFAULTS.maxRetries) {
