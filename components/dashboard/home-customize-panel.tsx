@@ -1,28 +1,9 @@
 "use client";
 
+import { Lock, Sparkles, X } from "lucide-react";
 import {
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-  type Announcements,
-  type DragEndEvent,
-  type ScreenReaderInstructions,
-  type UniqueIdentifier,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  arrayMove,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Lock, Sparkles, X } from "lucide-react";
-import { useRouter } from "next/navigation";
-import {
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useId,
@@ -35,6 +16,10 @@ import {
   recordLockedWidgetClick,
   updateHomeLayout,
 } from "@/app/[lang]/dashboard/actions";
+import {
+  WidgetRow,
+  type CustomizeRow,
+} from "@/components/dashboard/home-customize-row";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import type { HomeWidgetKey } from "@/lib/home-widgets";
@@ -67,27 +52,33 @@ import { cn } from "@/lib/utils";
  *   Home exists to answer.
  *
  * Drag-and-drop is `@dnd-kit` — the one dependency §8.2 approved, and only
- * here. Its keyboard sensor is the reason: space lifts, arrows move, space
- * drops, escape cancels, and every one of those is announced in the user's own
- * language through `announcements` below.
+ * here. It lives in home-customize-list.tsx and is fetched the first time the
+ * panel opens (or when the pointer or focus reaches the button, a moment
+ * earlier), not with Home: it was 18 KB gzipped on every Home load for a panel
+ * most visits never open (docs/audits/2026-10-01-performance.md §4.10). Until
+ * it arrives the rows render without it — ticking works, only the handle
+ * waits.
  */
+
+/** The drag-and-drop list, as its own chunk. */
+const loadList = () => import("@/components/dashboard/home-customize-list");
+const HomeCustomizeList = lazy(() =>
+  loadList().then((module) => ({ default: module.HomeCustomizeList }))
+);
 
 /** Everything the focus trap cycles through — the sidebar's list, verbatim. */
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-/** One storable widget as the panel holds it: the key, and whether it's ticked. */
-export interface CustomizeRow {
-  key: HomeWidgetKey;
-  enabled: boolean;
-}
+export type { CustomizeRow };
 
 export function HomeCustomizePanel({ layout }: { layout: readonly CustomizeRow[] }) {
   const { dict } = useDictionary();
   const copy = dict.home.customize;
-  const router = useRouter();
 
   const [open, setOpen] = useState(false);
+  /** Set on first open: from then on the drag-and-drop list is mounted. */
+  const [everOpened, setEverOpened] = useState(false);
   const [rows, setRows] = useState<CustomizeRow[]>(() =>
     layout.map((entry) => ({ ...entry }))
   );
@@ -119,6 +110,7 @@ export function HomeCustomizePanel({ layout }: { layout: readonly CustomizeRow[]
   const openPanel = useCallback(() => {
     setRows(layout.map((entry) => ({ ...entry })));
     setError(null);
+    setEverOpened(true);
     setOpen(true);
   }, [layout]);
 
@@ -169,14 +161,17 @@ export function HomeCustomizePanel({ layout }: { layout: readonly CustomizeRow[]
         }
         setError(null);
         finish();
-        // The action revalidates the route; this is what makes the page behind
-        // the panel actually re-render with the new order.
-        router.refresh();
+        // No router.refresh() here. The action revalidates this route
+        // (`revalidatePath("/[lang]/dashboard", "page")`), and a Server Action
+        // that revalidates the page being viewed returns its new render in the
+        // same response — the page behind the panel re-renders with the new
+        // order from that. A refresh on top rendered all of Home a second time
+        // (performance audit §4.6).
       } catch {
         setError(copy.saveFailed);
       }
     });
-  }, [copy.saveFailed, dirty, isSaving, rows, router]);
+  }, [copy.saveFailed, dirty, isSaving, rows]);
 
   // Escape + outside pointer-down, the sidebar's discipline.
   useEffect(() => {
@@ -253,59 +248,29 @@ export function HomeCustomizePanel({ layout }: { layout: readonly CustomizeRow[]
     };
   }, [open]);
 
-  const sensors = useSensors(
-    // A few pixels of slop so a click on the handle stays a click — a drag that
-    // starts on mousedown swallows focus from anyone using the keyboard next.
-    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
-
-  /** Position of a row in the *current* order, 1-based, for the announcements. */
-  const positionOf = (id: UniqueIdentifier | undefined) =>
-    id === undefined ? 0 : rows.findIndex((row) => row.key === String(id)) + 1;
-
-  const announce = (template: string, active: UniqueIdentifier, at: number) =>
-    t(template, {
-      title: widgetTitle(String(active) as HomeWidgetKey),
-      position: at,
-      total: rows.length,
-    });
-
-  // Translated, because a screen-reader user hears these and nothing else: the
-  // visual reorder is the announcement's whole content for them.
-  const announcements: Announcements = {
-    onDragStart: ({ active }) =>
-      announce(copy.announce.lifted, active.id, positionOf(active.id)),
-    onDragOver: ({ active, over }) =>
-      over ? announce(copy.announce.moved, active.id, positionOf(over.id)) : undefined,
-    onDragEnd: ({ active, over }) =>
-      over
-        ? announce(copy.announce.dropped, active.id, positionOf(over.id))
-        : undefined,
-    onDragCancel: ({ active }) =>
-      announce(copy.announce.cancelled, active.id, positionOf(active.id)),
-  };
-
-  const screenReaderInstructions: ScreenReaderInstructions = {
-    draggable: copy.announce.instructions,
-  };
-
-  function onDragEnd({ active, over }: DragEndEvent) {
-    draggingRef.current = false;
-    if (!over || active.id === over.id) return;
-    setRows((prev) => {
-      const from = prev.findIndex((row) => row.key === String(active.id));
-      const to = prev.findIndex((row) => row.key === String(over.id));
-      if (from < 0 || to < 0) return prev;
-      return arrayMove(prev, from, to);
-    });
-  }
-
   function toggle(key: HomeWidgetKey, enabled: boolean) {
     setRows((prev) =>
       prev.map((row) => (row.key === key ? { ...row, enabled } : row))
     );
   }
+
+  /**
+   * The same rows without drag-and-drop: what the panel shows before its
+   * first open (it stays mounted, `inert`) and while the list's chunk loads.
+   */
+  const staticRows = (
+    <ul className="flex flex-col gap-0.5">
+      {rows.map((row) => (
+        <WidgetRow
+          key={row.key}
+          row={row}
+          title={widgetTitle(row.key)}
+          handleLabel={t(copy.reorder, { title: widgetTitle(row.key) })}
+          onToggle={toggle}
+        />
+      ))}
+    </ul>
+  );
 
   return (
     <>
@@ -317,6 +282,10 @@ export function HomeCustomizePanel({ layout }: { layout: readonly CustomizeRow[]
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => (open ? requestClose() : openPanel())}
+        // Start fetching the drag-and-drop chunk as intent shows, so it is
+        // usually there by the time the panel has slid in.
+        onPointerEnter={() => void loadList()}
+        onFocus={() => void loadList()}
       >
         {copy.open}
       </Button>
@@ -397,35 +366,19 @@ export function HomeCustomizePanel({ layout }: { layout: readonly CustomizeRow[]
             </li>
           </ul>
 
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            accessibility={{ announcements, screenReaderInstructions }}
-            onDragStart={() => {
-              draggingRef.current = true;
-            }}
-            onDragCancel={() => {
-              draggingRef.current = false;
-            }}
-            onDragEnd={onDragEnd}
-          >
-            <SortableContext
-              items={rows.map((row) => row.key)}
-              strategy={verticalListSortingStrategy}
-            >
-              <ul className="flex flex-col gap-0.5">
-                {rows.map((row) => (
-                  <SortableWidgetRow
-                    key={row.key}
-                    row={row}
-                    title={widgetTitle(row.key)}
-                    handleLabel={t(copy.reorder, { title: widgetTitle(row.key) })}
-                    onToggle={toggle}
-                  />
-                ))}
-              </ul>
-            </SortableContext>
-          </DndContext>
+          {everOpened ? (
+            <Suspense fallback={staticRows}>
+              <HomeCustomizeList
+                rows={rows}
+                onReorder={setRows}
+                onToggle={toggle}
+                draggingRef={draggingRef}
+                widgetTitle={widgetTitle}
+              />
+            </Suspense>
+          ) : (
+            staticRows
+          )}
 
           <p
             id={lockedId}
@@ -457,79 +410,6 @@ export function HomeCustomizePanel({ layout }: { layout: readonly CustomizeRow[]
         ) : null}
       </aside>
     </>
-  );
-}
-
-/**
- * One draggable widget row: a native checkbox, the title, a handle.
- *
- * The drag listeners go on the handle alone (`setActivatorNodeRef`), never the
- * row — a row-wide drag surface would eat the click meant for the checkbox, and
- * the handle is also what the keyboard sensor needs to be focusable.
- */
-function SortableWidgetRow({
-  row,
-  title,
-  handleLabel,
-  onToggle,
-}: {
-  row: CustomizeRow;
-  title: string;
-  handleLabel: string;
-  onToggle: (key: HomeWidgetKey, enabled: boolean) => void;
-}) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    setActivatorNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: row.key });
-  const inputId = useId();
-
-  return (
-    <li
-      ref={setNodeRef}
-      style={{
-        // x is zeroed rather than pulled in with a modifier package: this is a
-        // vertical list, and a row that can also slide sideways only ever looks
-        // like a bug. (`@dnd-kit/modifiers` is a dependency we didn't take.)
-        transform: CSS.Translate.toString(transform ? { ...transform, x: 0 } : null),
-        transition,
-      }}
-      className={cn(
-        "flex items-center gap-3 rounded-[10px] px-3 py-2.5 transition-colors",
-        isDragging
-          ? "relative z-10 bg-[var(--fonda-surface-2)]"
-          : "hover:bg-[var(--fonda-surface-2)]"
-      )}
-    >
-      <input
-        id={inputId}
-        type="checkbox"
-        checked={row.enabled}
-        onChange={(event) => onToggle(row.key, event.target.checked)}
-        className="size-4 shrink-0 rounded-[4px] border-[var(--fonda-border-2)] accent-[var(--fonda-ink)]"
-      />
-      <label
-        htmlFor={inputId}
-        className="min-w-0 flex-1 cursor-pointer truncate text-[13px] font-medium text-foreground"
-      >
-        {title}
-      </label>
-      <button
-        ref={setActivatorNodeRef}
-        type="button"
-        aria-label={handleLabel}
-        className="-mr-1 inline-flex size-7 shrink-0 cursor-grab touch-none items-center justify-center rounded-[10px] text-[var(--fonda-text-3)] transition-colors hover:bg-[var(--fonda-inset)] hover:text-foreground active:cursor-grabbing"
-        {...attributes}
-        {...listeners}
-      >
-        <GripVertical aria-hidden="true" strokeWidth={1.5} className="size-4" />
-      </button>
-    </li>
   );
 }
 

@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import {
@@ -156,7 +155,6 @@ export function EmailInbox({
    */
   contextPanes?: Record<string, ReactNode>;
 }) {
-  const router = useRouter();
   const { dict, locale } = useDictionary();
   const [sort, setSort] = useState<SortMode>(initialSort);
   const [queue, setQueue] = useState<QueueMode>(initialQueue);
@@ -366,9 +364,13 @@ export function EmailInbox({
       const result = await fn();
       if (result && "error" in result && result.error) {
         setActionError(result.error);
-        return;
       }
-      router.refresh();
+      // No router.refresh(). Every one of these actions ends in
+      // revalidateInbox() (communications/actions.ts) — both windows and the
+      // layout's badges — and a Server Action that revalidates the page being
+      // viewed returns the new render in the same response. Refreshing on top
+      // rendered the layout and this window a second time after every send,
+      // flag and dismiss (docs/audits/2026-10-01-performance.md §4.6).
     });
   }
 

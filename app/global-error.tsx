@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import * as Sentry from "@sentry/nextjs";
+
+import { captureClientException } from "@/lib/sentry-client";
 
 // Catches errors in the root layout itself. Must render its own <html>/<body>.
 //
@@ -17,7 +18,9 @@ export default function GlobalError({
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
-    Sentry.captureException(error);
+    // Loads the SDK on demand (lib/sentry-client.ts) — importing it here
+    // statically put it back on every route.
+    captureClientException(error);
   }, [error]);
 
   return (

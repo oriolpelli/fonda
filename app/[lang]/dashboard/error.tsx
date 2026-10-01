@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import * as Sentry from "@sentry/nextjs";
 
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
+import { captureClientException } from "@/lib/sentry-client";
 
 // Scoped to the dashboard: the header/nav (in the layout) stays mounted, only
 // the page content is replaced with this fallback.
@@ -18,7 +18,9 @@ export default function DashboardError({
   const { dict } = useDictionary();
 
   useEffect(() => {
-    Sentry.captureException(error);
+    // Loads the SDK on demand (lib/sentry-client.ts) — importing it here
+    // statically put it back on every route.
+    captureClientException(error);
   }, [error]);
 
   return (
