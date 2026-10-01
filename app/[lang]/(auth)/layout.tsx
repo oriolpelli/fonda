@@ -19,7 +19,7 @@ export default async function AuthLayout({
       {/* Form column */}
       <div className="flex w-full flex-col px-6 py-8 lg:w-1/2 lg:px-16">
         <div className="flex items-center justify-between">
-          <Wordmark href={localizedHref(locale, "/")} />
+          <Wordmark withMark href={localizedHref(locale, "/")} />
           <LanguageSwitcher />
         </div>
         <div className="flex flex-1 items-center justify-center py-12">

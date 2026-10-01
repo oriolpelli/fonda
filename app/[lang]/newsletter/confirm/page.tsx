@@ -28,7 +28,7 @@ export default async function NewsletterConfirmPage({
           landing page for the sample-brief request flow: the lead clicks the
           confirm link in their email and arrives here mid-conversion, so it
           has to look like the site they just came from. */}
-      <Wordmark href={localizedHref(locale, "/")} />
+      <Wordmark withMark href={localizedHref(locale, "/")} />
       <div className="flex flex-1 items-center justify-center py-16">
         <div className="w-full max-w-[520px]">
           <NewsletterConfirm token={token ?? ""} />

@@ -40,7 +40,7 @@ export function SiteHeader({
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-[var(--fonda-bg)]/82 backdrop-blur">
       <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-6 md:px-8">
-        <Wordmark href={home} />
+        <Wordmark withMark href={home} />
         <nav className="flex items-center gap-3 sm:gap-6">
           {sectionLinks.map((link) => (
             <Link

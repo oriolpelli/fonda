@@ -42,7 +42,7 @@ export default async function SampleBriefPage({
       {/* Marketing nav (hidden in print — the PDF is the brief alone) */}
       <header className="sticky top-0 z-50 border-b border-border bg-[var(--fonda-bg)]/82 backdrop-blur print:hidden">
         <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-6 md:px-8">
-          <Wordmark href={localizedHref(locale, "/")} />
+          <Wordmark withMark href={localizedHref(locale, "/")} />
           <nav className="flex items-center gap-3 sm:gap-6">
             <LanguageSwitcher className="hidden min-[360px]:inline-flex" />
             {/* Short label below sm, exactly as SiteHeader does it. This bar

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 export default function LocaleNotFound() {
   return (
     <div className="marketing-surface flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
-      <Wordmark href="/" />
+      <Wordmark withMark href="/" />
       <p className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
         404
       </p>
