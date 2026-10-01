@@ -380,6 +380,7 @@ Held deliberately. Each has a trigger, not a date.
 | **Extra brief languages beyond en/es/ca** | an open question since 2 July that has never been answered anywhere. Answer it when a pilot asks |
 | **Database-level per-hotel-timezone lock** | duplicate briefs are prevented but not bullet-proof. Deferred, not forgotten |
 | **Founder-tune `lib/todo-rules.ts` thresholds** | is 38% occupancy next week really a to-do? Your call, from hospitality experience |
+| **RLS initplan rewrite** — every policy calls `current_hotel_id()` / `auth.uid()` per row; wrap them as `(select …)` (Supabase's "auth_rls_initplan" advice) | a table past ~10k rows per hotel, or a slow query flagged by Supabase's performance advisor. Found in the 1 Oct speed pass; not worth the policy churn at one pilot's row counts |
 | **Sentry read token (`SENTRY_AUTH_TOKEN`)** | would let Claude Code query issues directly |
 | **Quarterly competitive review** | first one **1 October** — the only dated commitment carried over |
 

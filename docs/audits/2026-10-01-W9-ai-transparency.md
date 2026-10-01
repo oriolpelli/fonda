@@ -96,3 +96,29 @@ Areas the reviewer found clean: PII (nothing about a guest reaches headers, prov
 - Non-ASCII subjects are sent as raw UTF-8, not RFC 2047-encoded (pre-existing; Gmail copes).
 - `guest_profiles` and `hotel_settings` provenance is written by the signed-in user's client by design, so it is not covered by the write-guard.
 - A GM can still edit `draft_reply` through the API (the triage policy); the stored hash then describes the original draft, which is the intent.
+
+---
+
+## 8. Addendum — found while testing the preview (1 Oct, afternoon)
+
+Oriol tested the preview and reported three things: an older conversation in Ask wouldn't open, Ask showed Anthropic's raw "credit balance is too low" error, and the app felt slow. All three were fixed on this branch, one commit each, every one gated by lint, tsc and a production build.
+
+| Commit | What | How it was checked |
+|---|---|---|
+| `671356b` | Ask label softened to "AI can make mistakes — double-check key figures" (Oriol's call) | tsc |
+| `0db092d` | **Older conversations open.** Root cause: picking a thread is a soft navigation on the same route, so React kept the chat surface mounted and its state never re-seeded. Keyed by thread now; "New conversation" resets. Pre-existing on `main` since 19 Sep | Reproduced in a headless browser (without the fix the transcript stayed blank), then verified A → B → A → New |
+| `1dff37e` | **No provider error text on screen, ever.** Ask, brief generation, onboarding and "Summarize reviews" show "Fondas AI isn't available right now…" (en/es/ca); the real reason goes to the log and Sentry, tagged `ai_failure`, `fatal` for billing/auth. The email cron reports the same way | tsc, lint, build |
+| `a8ef856` | **Functions pinned to Dublin (`dub1`)**, next to the database (AWS eu-west-1) | build; confirm the Supabase region before merging (below) |
+| `ac220ef` | **Session verified once per request** (`lib/auth.ts`, React `cache` + `getClaims`); layout queries in parallel; every action uses the helper | build; proxy behaviour tested against a production build |
+| `0d249ce` | **Proxy skips link prefetches** (Next 16's documented pattern) | production build: unauthenticated dashboard → login; prefetch → layout redirect, no hotel data |
+| `8eca917` | Inbox loaders fetch the hotel and the emails at the same time | tsc, build |
+
+**The credit error had a cause outside the code.** The Anthropic organization Oriol topped up showed $0 spent and no activity in 7 days, while the app was still getting "credit balance too low". So the key in Vercel belongs to a different organization. Fix: create a key in the funded organization, put it in Vercel for Production and Preview, and redeploy. If the other organization ran dry days ago, briefs, drafts and chasers have been failing since then. They resume on their next run once the key is swapped.
+
+**Owner checks for the speed work** (each takes a minute):
+1. Supabase → Project Settings → General → Region should be West EU (Ireland). If not, change `regions` in `vercel.json` to the matching Vercel region.
+2. Vercel → Settings → Functions → Function Region: once this branch is deployed, `vercel.json` sets it to Dublin.
+3. Optional, for the biggest auth saving: Supabase → Project Settings → JWT Keys → move to asymmetric signing keys. Until then `getClaims()` falls back to the old network check, so it is never slower.
+4. Sentry: add an alert on `ai_failure:billing OR ai_failure:auth`, so an empty account pages you instead of a hotel.
+
+**Not done, logged for later** (`ROADMAP.md` §3.6): RLS policies call `current_hotel_id()` per row. Wrapping them as `(select current_hotel_id())` is Supabase's own advice once tables grow. It isn't worth the risk at one pilot's row counts.
