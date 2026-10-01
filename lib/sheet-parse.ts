@@ -105,6 +105,15 @@ export function parseSheetDate(v: string): string | null {
   return isNaN(d.getTime()) ? null : d.toISOString();
 }
 
+/**
+ * Lower-case a header cell and strip its accents, so a Spanish or Catalan
+ * export's "Habitación", "Niños" or "Teléfono" matches the unaccented aliases
+ * above. Without this, those columns were silently dropped.
+ */
+function normHeader(cell: string): string {
+  return cell.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 /** Column-name hints used to find the header row when it is not row 1 (hotels
  * often put a title or notes above it, and multi-tab exports vary). */
 const HEADER_HINTS = [
@@ -125,12 +134,12 @@ export function matrixToRows(matrix: string[][]): Record<string, string>[] {
   let headerIdx = 0;
   for (let r = 0; r < Math.min(matrix.length, 30); r++) {
     const hits = matrix[r].filter((c) => {
-      const v = c.trim().toLowerCase();
+      const v = normHeader(c);
       return v.length > 0 && HEADER_HINTS.some((h) => v === h || v.includes(h));
     }).length;
     if (hits >= 2) { headerIdx = r; break; }
   }
-  const headers = matrix[headerIdx].map((h) => h.trim().toLowerCase());
+  const headers = matrix[headerIdx].map(normHeader);
   const out: Record<string, string>[] = [];
   for (let r = headerIdx + 1; r < matrix.length; r++) {
     const cells = matrix[r];
