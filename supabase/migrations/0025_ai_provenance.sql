@@ -170,4 +170,73 @@ comment on column public.hotel_settings.review_summary_model is
   'Model id that wrote review_summary. Null when the summary is empty or '
   'predates migration 0025.';
 
+-- ---------------------------------------------------------------------------
+-- Write-protection: the provenance on outbound text is the SERVER's record.
+--
+-- The existing RLS policies let a signed-in hotel user update any column of
+-- their hotel's emails, chasers and briefings ("triage", "mark opened") — and
+-- Postgres can't narrow that per column while the table-level grant stands.
+-- Without this guard, anyone with a session could rewrite draft_edited,
+-- sent_via or draft_model on their own rows through the REST API, which is
+-- the AI Act evidence and also what the X-Fondas-AI header is built from.
+--
+-- So: for the `authenticated` and `anon` roles, these columns cannot be set on
+-- insert or changed on update. The server writes them with the service role,
+-- which this does not touch, and every other column behaves exactly as before.
+-- Column names are passed as trigger arguments so one function serves all
+-- three tables.
+-- ---------------------------------------------------------------------------
+create or replace function public.guard_ai_provenance()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+declare
+  col text;
+  new_row jsonb := to_jsonb(new);
+  old_row jsonb := case when tg_op = 'UPDATE' then to_jsonb(old) else null end;
+begin
+  if current_user not in ('authenticated', 'anon') then
+    return new;
+  end if;
+  foreach col in array tg_argv loop
+    if tg_op = 'INSERT' then
+      if coalesce(new_row -> col, 'null'::jsonb) <> 'null'::jsonb then
+        raise exception using
+          errcode = '42501',
+          message = format('%s.%s is written by the server only (AI provenance)', tg_table_name, col);
+      end if;
+    elsif (new_row -> col) is distinct from (old_row -> col) then
+      raise exception using
+        errcode = '42501',
+        message = format('%s.%s is written by the server only (AI provenance)', tg_table_name, col);
+    end if;
+  end loop;
+  return new;
+end;
+$$;
+
+drop trigger if exists emails_guard_ai_provenance on public.emails;
+create trigger emails_guard_ai_provenance
+  before insert or update on public.emails
+  for each row execute function public.guard_ai_provenance(
+    'draft_model', 'draft_prompt_version', 'draft_generated_at',
+    'draft_sha256', 'draft_edited', 'sent_via'
+  );
+
+drop trigger if exists checkin_chasers_guard_ai_provenance on public.checkin_chasers;
+create trigger checkin_chasers_guard_ai_provenance
+  before insert or update on public.checkin_chasers
+  for each row execute function public.guard_ai_provenance(
+    'draft_model', 'draft_prompt_version', 'draft_generated_at',
+    'draft_sha256', 'draft_edited', 'sent_via'
+  );
+
+drop trigger if exists briefings_guard_ai_provenance on public.briefings;
+create trigger briefings_guard_ai_provenance
+  before insert or update on public.briefings
+  for each row execute function public.guard_ai_provenance(
+    'model', 'prompt_version'
+  );
+
 notify pgrst, 'reload schema';
