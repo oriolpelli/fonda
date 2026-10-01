@@ -158,6 +158,67 @@ function rememberQueue(queue: QueueMode): void {
  * the cookie itself fixes that, and agrees with the server on every hard load,
  * because the server read this same cookie a moment earlier.
  */
+/** A message's full body and draft, as fetched or as it arrived complete. */
+interface FullText {
+  body: string | null;
+  draft: string | null;
+  /** The list version it was fetched against (see `listVersion`). */
+  version: number;
+}
+
+/**
+ * Whether a cached full text belongs to the row the list shows now.
+ *
+ * Fetched against the current list: yes. From an earlier one, it must still
+ * extend the row's preview — the server may have written a draft since (a
+ * cached "no draft" must not stand in for a draft that now exists), or
+ * rewritten the body. A miss means fetch again; the editor never falls back
+ * to a preview.
+ */
+function fullTextFits(
+  entry: FullText | undefined,
+  email: InboxEmail,
+  listVersion: number
+): entry is FullText {
+  if (!entry) return false;
+  if (entry.version === listVersion) return true;
+  if (email.body_truncated && !(entry.body ?? "").startsWith(email.body ?? "")) {
+    return false;
+  }
+  if (
+    email.draft_truncated &&
+    !(entry.draft !== null && entry.draft.startsWith(email.draft_reply ?? ""))
+  ) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Remembers the messages that arrived complete. If one later comes back as a
+ * preview (it fell out of the top of the queue in a new render) while it is
+ * open, its cached text still extends the preview, so its editor stays exactly
+ * as it is — the GM's edits included — instead of swapping to a skeleton and
+ * back to the stored draft. Returns `prev` itself when nothing changed.
+ */
+function seedComplete(
+  prev: Record<string, FullText>,
+  emails: InboxEmail[],
+  version: number
+): Record<string, FullText> {
+  let next = prev;
+  for (const email of emails) {
+    if (email.body_truncated || email.draft_truncated) continue;
+    const known = prev[email.id];
+    if (known && known.body === email.body && known.draft === email.draft_reply) {
+      continue;
+    }
+    if (next === prev) next = { ...prev };
+    next[email.id] = { body: email.body, draft: email.draft_reply, version };
+  }
+  return next;
+}
+
 /** `record` without the given keys — for the per-message maps below. */
 function withoutIds<T>(
   record: Record<string, T>,
@@ -375,29 +436,61 @@ export function EmailInbox({
    * Server Action: those run one at a time, and a body would wait behind every
    * Send in flight.
    */
-  const [fullText, setFullText] = useState<
-    Record<string, { body: string | null; draft: string | null }>
-  >({});
+  // Seeded with the messages that arrived complete — see `seedComplete`.
+  const [fullText, setFullText] = useState<Record<string, FullText>>(() =>
+    seedComplete({}, emails, 0)
+  );
   /** Messages whose full text failed to load; the pane offers a retry. */
   const [loadFailed, setLoadFailed] = useState<Record<string, true>>({});
+  /** In-flight fetches, keyed `id@listVersion`: one per message per list. */
   const requested = useRef(new Set<string>());
+
+  /**
+   * Which list the server last sent. Moves every time `emails` changes — a
+   * Send's revalidated render, a refresh — so a cached full text can tell
+   * whether it was fetched against the list on screen (`fullTextFits`).
+   * Adjusted during render, React's pattern for state derived from a prop.
+   */
+  const [listVersion, setListVersion] = useState(0);
+  const [versionedList, setVersionedList] = useState(emails);
+  if (versionedList !== emails) {
+    const next = listVersion + 1;
+    setVersionedList(emails);
+    setListVersion(next);
+    setFullText((prev) => seedComplete(prev, emails, next));
+  }
+  // Mirrors for ensureFullText, which is stable and reads them at call time.
+  // Declared before the effects that call it, so they are current first.
+  const versionRef = useRef(listVersion);
+  const fullTextRef = useRef(fullText);
+  useEffect(() => {
+    versionRef.current = listVersion;
+    fullTextRef.current = fullText;
+  }, [listVersion, fullText]);
 
   const ensureFullText = useCallback((email: InboxEmail | null | undefined) => {
     if (!email || !(email.body_truncated || email.draft_truncated)) return;
     const id = email.id;
-    if (requested.current.has(id)) return;
-    requested.current.add(id);
+    const version = versionRef.current;
+    if (fullTextFits(fullTextRef.current[id], email, version)) return;
+    const key = `${id}@${version}`;
+    if (requested.current.has(key)) return;
+    requested.current.add(key);
     setLoadFailed((prev) => withoutIds(prev, [id]));
     fetch(`/api/emails/${encodeURIComponent(id)}`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data: { body: string | null; draft_reply: string | null }) => {
         setFullText((prev) => ({
           ...prev,
-          [id]: { body: data.body ?? null, draft: data.draft_reply ?? null },
+          [id]: {
+            body: data.body ?? null,
+            draft: data.draft_reply ?? null,
+            version,
+          },
         }));
       })
       .catch(() => {
-        requested.current.delete(id);
+        requested.current.delete(key);
         setLoadFailed((prev) => ({ ...prev, [id]: true }));
       });
   }, []);
@@ -587,10 +680,16 @@ export function EmailInbox({
       });
   }, [wide, selected, contextPanes, locale]);
 
+  /**
+   * The open message's full text, when the cache holds one that belongs to
+   * the row on screen (see `fullTextFits`). Never the list's preview.
+   */
+  const selectedFull =
+    selected && fullTextFits(fullText[selected.id], selected, listVersion)
+      ? fullText[selected.id]
+      : undefined;
   /** The open message's draft is still only its first lines. */
-  const draftPending = Boolean(
-    selected?.draft_truncated && !(selected.id in fullText)
-  );
+  const draftPending = Boolean(selected?.draft_truncated && !selectedFull);
   useEffect(() => {
     ensureFullText(selected);
     ensureFullText(nextRow);
@@ -1037,16 +1136,18 @@ export function EmailInbox({
               ) : null}
 
               <div className="max-h-48 overflow-y-auto whitespace-pre-line rounded-md bg-muted p-3 text-sm">
-                {selected.id in fullText
-                  ? fullText[selected.id].body || dict.emails.emptyMessage
-                  : selected.body_truncated
-                    ? `${selected.body ?? ""}…`
-                    : selected.body || dict.emails.emptyMessage}
+                {selected.body_truncated
+                  ? selectedFull
+                    ? selectedFull.body || dict.emails.emptyMessage
+                    : `${selected.body ?? ""}…`
+                  : selected.body || dict.emails.emptyMessage}
               </div>
 
               {/* The rest of a preview didn't arrive. Says so once, here, for
                   the body and the draft alike; Send stays held below. */}
-              {loadFailed[selected.id] && !(selected.id in fullText) ? (
+              {loadFailed[selected.id] &&
+              (selected.body_truncated || selected.draft_truncated) &&
+              !selectedFull ? (
                 <div className="flex items-center gap-3">
                   <p role="alert" className="text-sm text-destructive">
                     {dict.emails.loadFailed}
@@ -1124,9 +1225,9 @@ export function EmailInbox({
                       // list carried only its first lines.
                       defaultValue={
                         unsent[selected.id] ??
-                        fullText[selected.id]?.draft ??
-                        selected.draft_reply ??
-                        ""
+                        (selected.draft_truncated
+                          ? (selectedFull?.draft ?? "")
+                          : (selected.draft_reply ?? ""))
                       }
                       rows={10}
                       className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]"

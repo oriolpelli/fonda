@@ -756,11 +756,10 @@ function DrawerLink({
       onClick={onNavigate}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group relative flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
+        "group flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm font-medium transition-colors",
         rowStateClass(active, soon)
       )}
     >
-      <PendingHairline />
       <Icon className="size-[18px] shrink-0" strokeWidth={1.5} />
       <span className="min-w-0 truncate">{item.label}</span>
       {soon && item.comingSoonLabel ? (
@@ -1443,6 +1442,9 @@ export function Sidebar({
 /**
  * The click's acknowledgement (performance audit §4.12): a 2 px hairline along
  * the foot of the row whose navigation is still on its way.
+ *
+ * Desktop rows only: on a phone the drawer closes on the tap, so the row is
+ * gone before a hairline could show.
  *
  * Most sidebar clicks land on a prefetched loading state and need nothing.
  * This is for the rest: a click before the prefetch arrived, or a page whose

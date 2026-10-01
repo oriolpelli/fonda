@@ -48,6 +48,10 @@ const AREAS = [
   { name: "public", dir: LANG, own: PUBLIC, sends: PUBLIC, exclude: ["dashboard", "onboarding"] },
 ];
 
+// The one module allowed to index the dictionary by key: pickNamespaces,
+// which builds each area's subset from the lists above.
+const OPAQUE_ALLOWED = new Set(["lib/i18n/client-dictionary.ts"]);
+
 // ── module graph ─────────────────────────────────────────────────────────────
 const EXT = [".tsx", ".ts", "/index.tsx", "/index.ts"];
 function resolve(from, spec) {
@@ -74,6 +78,10 @@ function info(file) {
     server: /^\s*["']use server["']/.test(src),
     deps: imports.map((s) => resolve(file, s)).filter(Boolean),
     reads: new Set([...src.matchAll(/\bdict\.([A-Za-z]+)/g)].map((m) => m[1])),
+    // Reads this script can't see through: destructuring the dictionary, or
+    // indexing it. Fail-safe — reported as errors when they reach the browser,
+    // so a namespace can't slip past by being read a different way.
+    opaque: /\}\s*=\s*dict\b|\bdict\s*\[/.test(src),
   };
   cache.set(file, out);
   return out;
@@ -93,6 +101,7 @@ function routeFiles(dir, exclude = []) {
 let failed = false;
 for (const area of AREAS) {
   const needs = new Map(); // namespace → first file seen reading it
+  const opaque = new Set(); // browser files that read dict in a way we can't follow
   const seen = new Set();
   const walk = (file, inClient) => {
     const key = `${file}|${inClient}`;
@@ -102,10 +111,19 @@ for (const area of AREAS) {
     if (inClient && i.server) return;
     const browser = inClient || i.client;
     if (browser) for (const ns of i.reads) if (!needs.has(ns)) needs.set(ns, file);
+    if (browser && i.opaque && !OPAQUE_ALLOWED.has(path.relative(ROOT, file))) {
+      opaque.add(file);
+    }
     for (const dep of i.deps) walk(dep, browser);
   };
   for (const f of routeFiles(area.dir, area.exclude)) walk(f, false);
 
+  for (const file of opaque) {
+    failed = true;
+    console.error(
+      `✗ ${area.name}: ${path.relative(ROOT, file)} destructures or indexes dict in the browser — read it as dict.<namespace> so this check can follow it`
+    );
+  }
   const missing = [...needs.keys()].filter((ns) => !area.sends.has(ns));
   const unused = [...area.own].filter((ns) => !needs.has(ns));
   if (missing.length) {

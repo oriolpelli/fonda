@@ -118,3 +118,7 @@ alter policy "chat_logs: delete own threads" on public.chat_logs
         and t.hotel_id = (select public.current_hotel_id())
     )
   );
+
+-- PostgREST caches the schema; reload it so the new columns are usable at
+-- once (as every migration that adds columns does).
+notify pgrst, 'reload schema';
