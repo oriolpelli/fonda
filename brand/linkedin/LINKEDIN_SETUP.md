@@ -1,47 +1,52 @@
 # Fondas — LinkedIn Company Page setup (ES principal)
 
-Copy escrita según el posicionamiento de `FONDA_MARKETING_VOICE.md`: **gestión
-con IA para hoteles independientes** (ya no «recepción / front office»), tono
-seguro pero calmado, con la persona al mando en las decisiones que importan,
-independiente del PMS y con Barcelona / España primero.
+Copy reescrita el 23 sep 2026 según `gtm/POSITIONING_V3.md`: **la IA que lleva la
+operativa de tu hotel**, y solo lo que el producto hace hoy (§0.4 — nada de tarifas
+ni ofertas en presente). Sin *independiente* ni *boutique*: LinkedIn es entrada, y
+la página habla a cualquier hotel (§1.4). La versión anterior, escrita sobre el
+posicionamiento retirado de «gestión con IA», está en el historial de git.
 
 ## Eslogan / Tagline (campo corto bajo el nombre — máx. 120 caracteres)
 
-**ES:** Gestión con IA para hoteles independientes — tú llevas el hotel, Fondas se encarga del resto.
+**ES:** La IA que lleva la operativa de tu hotel — y tú, a los huéspedes.
 
-**EN:** The AI manager for independent hotels — you run the hotel, Fondas runs the rest.
+**EN:** The AI that runs your hotel's back of house, so you can run the front.
 
 ## Descripción / About (el campo con el que la página aparece en las búsquedas — máx. 2.000 caracteres)
 
 **ES:**
 
-Fondas es la gestión con IA para hoteles independientes y boutique.
+Fondas es la IA que lleva la operativa de tu hotel.
 
-Funciona sobre el PMS que ya usas (MEWS, Apaleo) y se encarga del trabajo de operaciones y de ingresos que un hotel pequeño haría a mano. Fondas ajusta tus tarifas según la competencia, impulsa mejoras y extras para subir la ocupación y el RevPAR, envía a cada huésped ofertas a su medida, redacta las respuestas al correo de huéspedes con la voz de tu hotel, persigue las horas de llegada sin confirmar y te prepara un resumen operativo cada mañana.
+Se conecta al PMS que ya usas y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, escrito antes de que abra recepción; las comunicaciones con el huésped, con cada correo cruzado con su reserva y la respuesta redactada con la voz del hotel; los check-ins, pidiendo las horas de llegada que faltan; y cualquier pregunta sobre tu hotel, en lenguaje normal.
 
-Tú mantienes el control de lo que importa: los correos se redactan para que los revises, y los cambios de tarifa y las ofertas se mueven dentro de las reglas que tú marcas. Fondas se encarga del trabajo incansable para que tú te dediques a la hospitalidad.
+Nada sale sin tu visto bueno. No modifica nada en tu PMS y no sustituye a nadie de recepción: le quita el trabajo administrativo para que esté con el huésped.
 
-Pensado para el hotel independiente de 20 a 80 habitaciones. Independiente del PMS, nativo en RGPD, y hecho en Barcelona.
+Funciona hoy con MEWS y Apaleo, y con cualquier otro PMS mediante una exportación diaria. Datos cifrados y alojados en la UE. Hecho en Barcelona.
 
-Incorporando hoteles piloto → fondas.app
+Buscando los primeros hoteles piloto → fondas.app
 
 **EN:**
 
-Fondas is the AI manager for independent and boutique hotels.
+Fondas is the AI that runs your hotel's back of house.
 
-It works on top of the PMS you already run (MEWS, Apaleo) to take on the operational and revenue work a small hotel would otherwise juggle by hand. Fondas prices your rooms against the competition and adjusts your rates, drives upgrades and extras to lift occupancy and RevPAR, sends each guest offers tailored to their stay, drafts replies to guest email in your hotel's voice, chases unconfirmed arrival times, and writes you a clear operational brief every morning.
+It connects to the PMS you already run and to the hotel inbox, and runs the four parts of the day: the morning brief, written before reception opens; guest communications, with every email matched to its reservation and the reply drafted in the hotel's voice; check-ins, chasing the arrival times that are missing; and any question about your hotel, in plain language.
 
-You stay in control of the calls that matter — guest emails are drafted for your review, and rate moves and offers stay within the rules you set. Fondas handles the tireless, always-on legwork so you can focus on hospitality.
+Nothing goes out without your yes. It changes nothing in your PMS and replaces nobody at reception — it takes the admin off them so they can be with the guest.
 
-Built for the 20–80-room independent hotel. PMS-neutral, GDPR-native, and made in Barcelona.
+Works today with MEWS and Apaleo, and with any other PMS through a daily export. Data encrypted and hosted in the EU. Made in Barcelona.
 
-Now onboarding pilot hotels → fondas.app
+Now onboarding our first pilot hotels → fondas.app
 
 ## Especialidades / palabras clave (ayuda a la búsqueda — campo separado por comas)
 
-software de gestión hotelera, IA para hoteles, hoteles independientes,
-hoteles boutique, revenue management, comunicación con huéspedes, upselling,
-operaciones hoteleras, PMS, MEWS, Apaleo, tecnología hotelera, software hotelero España
+software de gestión hotelera, IA para hoteles, operativa hotelera, comunicación con huéspedes,
+correo de huéspedes, resumen diario, recepción de hotel, check-in, PMS, MEWS, Apaleo,
+tecnología hotelera, software hotelero España
+
+> **Pendiente:** las imágenes de abajo llevan «Nosotros nos encargamos del resto», el
+> eslogan v2 retirado. No es falso, pero no es la línea actual; cámbialas cuando se
+> vuelvan a tocar (`gtm/README.md`, known issue 2).
 
 ## Qué imagen va en cada sitio (todas con el eslogan en español)
 
