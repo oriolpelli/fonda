@@ -2,7 +2,7 @@
 
 **Status:** Authority. This is the only roadmap.
 **Owner:** Oriol
-**Rewritten:** 2026-09-18
+**Rewritten:** 2026-09-18 · **Reordered:** 2026-10-01 — speed first (§1 Step 3, §2)
 **Cadence:** one release a week
 
 > **The rule this document exists to enforce.** Before today, ten documents
@@ -148,15 +148,24 @@ permissions spec that exists) into a short section of this file before archiving
 it. Add the retirement header `gtm/POSITIONING_V3.md` §6 asked for to
 `FONDA_MARKETING_VOICE.md`.
 
-### Step 3 — The release train — paused 23 Sep – 6 Oct for the pilot sprint
+### Step 3 — The release train — speed first ◀ **building here**
 
-§2 below. W2–W6 and the whole follow-on list shipped 18–19 Sep; **next, after
-the sprint: W9, AI transparency** (`AI_ACT_PROMPTS.md` A1–A4 — the EU AI Act's
-Art. 50(2) marking is due **2 Dec 2026**), **then the rate cache (B17)**, as §2
-says. §2's "How to run a release
-week" states the loop.
+§2 below. W2–W6 and the whole follow-on list shipped 18–19 Sep; W9 (AI
+transparency) and the Ask history changes reached `main` on 1 Oct.
 
-### Step 3a — The pilot sprint, 23 Sep – 6 Oct ◀ **you are here**
+**Oriol's call, 1 Oct: speed and responsiveness come before anything else that
+is built.** Signed in, the app is correct but not sharp — every click waits on
+6–9 database round trips in a row, several of them dragging data the page never
+shows, nothing streams, and every action renders the page twice
+(`docs/audits/2026-10-01-performance.md`). A GM judges a demo partly on how it
+*feels*, and a pilot lives in it every morning. So the train now runs:
+
+**S1 Speed, pass A → S2 Speed, pass B → B17 rate cache → W10 AI trust pack →
+Revenue Management**, with W10's 1 Dec date still binding (§2). No new surface
+starts until S1 and S2 are done, and from now on every one that ships keeps
+the speed rules in §5 #11. §2's "How to run a release week" states the loop.
+
+### Step 3a — The pilot sprint, 23 Sep – 6 Oct ◀ **selling, in parallel**
 
 **Selling outranks building until 6 October.** Zero pilots is the actual
 problem, and on 23 Sep all 40 rows of the outreach tracker still read `found`.
@@ -166,10 +175,14 @@ demo blockers in `gtm/PILOT_SPRINT.md` §4 (migrations 0023/0024, demo seed
 data, the demo run-through) and to fixes a demo or a live pilot needs. The
 release train resumes after the sprint review on 6 Oct.
 
-**One recorded exception (1 Oct, Oriol's call):** W9 (AI transparency) is built
-early on the branch `w9/ai-transparency`, one commit per prompt, so it can be
-previewed and tested without touching production. It merges to `main` only
-after migration 0025 is applied — selling still comes first until 6 Oct.
+**Two recorded exceptions (1 Oct, Oriol's calls):**
+
+1. W9 (AI transparency) was built early on `w9/ai-transparency`, one commit per
+   prompt, and reached `main` after migration 0025 was applied.
+2. **Speed starts now, not after the sprint.** S1 and S2 (§2) are built during
+   the sprint on `perf/…` branches, previewed, then merged. This changes what
+   gets *built*, not whether outreach happens: the sprint's selling days in
+   `gtm/PILOT_SPRINT.md` still run, and a faster demo is in their service.
 
 ### Running alongside all of it, from today
 
@@ -202,7 +215,9 @@ One release a week. Each row is a week's work and ships on its own.
 | **W6** ✅ *(19 Sep)* | **Communications, two windows** | `StayPhase` widened to four; In-house + Upcoming; Concierge absorbed; WhatsApp first-run card | ph. 7 · **prompts 11–12** |
 | **W7** | **Billing** | Stripe + trial gating (B20). Blocked on the legal entity — start §4 now, not in week 7 | B20 · Gate 2 · `EXECUTION_PLAYBOOK.md` |
 | **W8** | **Reputation** | The first real Commercial surface. Reviews fetched, themed, score movement | §6 · **prompts 13–14**, after decision P-4 |
-| **W9** 🟡 *built 1 Oct on `w9/ai-transparency`, 0025 applied — test, merge* | **AI transparency (EU AI Act, P0)** | Model IDs in one place + provenance on every output (migration 0025, also closes the two `emails` rows in §3.2); machine-readable AI headers on every sent reply, chaser and brief; quiet "Fondas AI" labels; recorded bulk-send confirmation. **Hard deadline 2 Dec 2026** | `AI_ACT_PROMPTS.md` **A1–A4** |
+| **W9** ✅ *(1 Oct, on `main`)* | **AI transparency (EU AI Act, P0)** | Model IDs in one place + provenance on every output (migration 0025, also closes the two `emails` rows in §3.2); machine-readable AI headers on every sent reply, chaser and brief; quiet "Fondas AI" labels; recorded bulk-send confirmation. **Hard deadline 2 Dec 2026** — met | `AI_ACT_PROMPTS.md` **A1–A4** |
+| **S1** 🟡 *building 1 Oct on `perf/pass-a`* | **Speed, pass A — nothing visible, everything faster** | Opt-in loader timings; read 5 keys of the PMS payload instead of all of it, no email bodies outside the inbox; one hotel read per request and parallel loads on every live page; two indexes (migration 0028); visited pages kept 30 s; Sentry loaded when idle; Customize loaded on open; one render per inbox action | `docs/audits/2026-10-01-performance.md` §6 **M1, P1–P4** |
+| **S2** | **Speed, pass B — feels instant** | Home, Brief, Communications and the sidebar badges stream in; the inbox sends full text only for open work; optimistic Send/Dismiss with a cached Gmail token and stored thread id; guest inference off the critical path; Ask caches the hotel context across turns | same, **P5–P8** |
 | **W10** | **AI trust pack (P1)** | "How Fondas uses AI" on `/trust`; AI-literacy onboarding + record (Art. 4); guest-notice wording; AI activity log + problem reports — un-parks *AI management*. **Before the first invoices, ~1 Dec** | `AI_ACT_PROMPTS.md` **A5–A8** |
 
 **Then, in order — ✅ all shipped 19 Sep:** the guest context pane (15) → chat
@@ -214,15 +229,19 @@ migration 0024) → chat source chips (18) → provenance chips (19) → ⌘K pa
 Guests depended on them. `npm run verify-migrations` re-checks both from your
 own terminal.
 
-**W9 status (1 Oct):** A1–A4 built and reviewed on `w9/ai-transparency`, one
-commit per step, each gated. Migration 0025 applied and verified (1 Oct). To
-ship: run the tests in
-`docs/audits/2026-10-01-W9-ai-transparency.md` §3 on the preview, merge.
+**W9 status (1 Oct):** A1–A4 built, reviewed and on `main`, with the
+after-test fixes (`docs/audits/2026-10-01-W9-ai-transparency.md` §8). Migration
+0025 applied and verified. Still to tick: the manual tests in that audit's §3,
+on production now, and the four owner checks in its §8 (which S1 repeats).
+Migration **0027** (Ask history delete) is on `main` too — until it is applied,
+deleting a conversation is a silent no-op.
 
-**Next, after the sprint:** W9 AI transparency → rate cache (B17) → W10 AI
-trust pack → Revenue Management. W9 goes first because it is small, it carries
-the only legal deadline on this page, and a pilot's DPO will ask about it. If
-W10 and B17 compete for a week, W10 wins before 1 Dec. The four parked house sections
+**Next, in order:** **S1 → S2** (speed — Oriol's call, 1 Oct, §1 Step 3) → rate
+cache (B17) → W10 AI trust pack → Revenue Management. Speed goes first because
+every surface after it inherits whatever the read path costs, and because a
+pilot judges the product on the mornings it is slow. If W10 and B17 compete for
+a week, W10 wins before 1 Dec. The speed pack's P9 (dictionary split) and P10
+(Cache Components spike) are parked in §3.6 with triggers. The four parked house sections
 (Housekeeping, F&B, Staff, Procurement) and the three business ones
 (Reporting & audit, Chargeback, Team activity) re-enter the nav the week each
 one ships, and not before — see §6.
@@ -244,12 +263,13 @@ If a prompt asks a question it doesn't answer, the answer is in
 chat. If the proposal is silent: stop, decide, write it into `APP_UX_PROPOSAL.md`
 §11, continue.
 
-**Three prompt documents, one boundary.** `APP_UX_PROMPTS.md` holds the app IA/UX
+**Four prompt documents, one boundary.** `APP_UX_PROMPTS.md` holds the app IA/UX
 prompts (W2–W8, prompts 1–21) **and the v4 design track (§D, prompts D1–D4)**. `EXECUTION_PLAYBOOK.md` holds the B-numbered
 build tasks, including B20 (billing, W7) and B15–B22. `AI_ACT_PROMPTS.md` holds
 the EU AI Act work (W9–W10, prompts A1–A8), its rules for unbuilt features (§R)
-and the non-code items (§L). None says *when* —
-that is this table. If they ever disagree with it, they are stale.
+and the non-code items (§L). `docs/audits/2026-10-01-performance.md` §6 holds the
+speed work (S1–S2, prompts M1 and P1–P10) and §7 how to measure it. None says
+*when* — that is this table. If they ever disagree with it, they are stale.
 
 **Why the prompts are not pasted into this file.** They run to 1,400 lines. This
 document is the thing you read to know what matters; burying the priorities
@@ -380,7 +400,10 @@ Held deliberately. Each has a trigger, not a date.
 | **Extra brief languages beyond en/es/ca** | an open question since 2 July that has never been answered anywhere. Answer it when a pilot asks |
 | **Database-level per-hotel-timezone lock** | duplicate briefs are prevented but not bullet-proof. Deferred, not forgotten |
 | **Founder-tune `lib/todo-rules.ts` thresholds** | is 38% occupancy next week really a to-do? Your call, from hospitality experience |
-| **RLS initplan rewrite** — every policy calls `current_hotel_id()` / `auth.uid()` per row; wrap them as `(select …)` (Supabase's "auth_rls_initplan" advice) | a table past ~10k rows per hotel, or a slow query flagged by Supabase's performance advisor. Found in the 1 Oct speed pass; not worth the policy churn at one pilot's row counts |
+| **RLS initplan rewrite** — every policy calls `current_hotel_id()` / `auth.uid()` per row; wrap them as `(select …)` (Supabase's "auth_rls_initplan" advice) | a table past ~10k rows per hotel, or a slow query flagged by Supabase's performance advisor. Found in the 1 Oct speed pass; not worth the policy churn at one pilot's row counts. **Run the advisor once as part of S1's owner checks** — if it flags `reservations` or `emails` with real counts, the trigger has fired |
+| **Speed P9 — ship only the dictionary namespaces client components use** (`docs/audits/2026-10-01-performance.md` §4.11) | mobile pilots, or `en.json` passing 100 KB. Today the whole dictionary is 58 of the login page's 86 KB |
+| **Speed P10 — Cache Components spike** (Next 16's prerendered shell + streamed data, §6 P10) | S1 and S2 done, and the M1 timings still show server render dominating a click |
+| **Reservations accumulate** — sync upserts today ±14 days and nothing prunes old stays | with S1's `(hotel_id, end_utc)` index it no longer slows reads; decide a retention window with the log pruning in §3.2 |
 | **Sentry read token (`SENTRY_AUTH_TOKEN`)** | would let Claude Code query issues directly |
 | **Quarterly competitive review** | first one **1 October** — the only dated commitment carried over |
 
@@ -452,6 +475,16 @@ so they don't vanish with them.
     Anything new that sends model-written text out of Fondas ships with
     provenance and machine-readable marking from day one, and anything a guest
     talks to says it is an AI. The per-feature rules are `AI_ACT_PROMPTS.md` §R.
+11. **Speed is a feature (1 Oct).** Every surface, new or changed, keeps these:
+    reads that don't depend on each other run together (`Promise.all`), and
+    the hotel row comes from the shared per-request helper, never a fresh
+    query; select only the columns the page renders — never `raw` or an
+    email `body` outside the screen that displays it; no model call inside a
+    page render (stream it in behind `<Suspense>`, or run it in the
+    background); a new page streams rather than waiting for its slowest read;
+    an action updates the screen once, optimistically where it can. Check
+    with the opt-in timings (`PERF_LOG=1`, speed prompt M1) before and after.
+    `docs/audits/2026-10-01-performance.md` is the reasoning.
 
 ---
 

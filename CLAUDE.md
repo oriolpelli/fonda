@@ -65,6 +65,10 @@ Situational docs live in the repo root, and go-to-market docs in `gtm/` — read
 - Do not add new dependencies without flagging it first; prefer libraries already
   in use.
 - Commit messages should be descriptive. Don't force-push to shared branches.
+- Any change that loads data or adds a page keeps the speed rules in
+  `ROADMAP.md` §5 #11 (parallel reads, the shared hotel helper, no `raw` or
+  email bodies where they aren't shown, no model call inside a render, stream,
+  one update per action). The reasoning is `docs/audits/2026-10-01-performance.md`.
 
 # Code style
 
