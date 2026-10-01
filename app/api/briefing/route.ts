@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { classifyAiError } from "@/lib/ai-errors";
 import { generateBriefing } from "@/lib/briefing";
 import { createClient } from "@/lib/supabase/server";
 
@@ -37,6 +38,11 @@ export async function POST() {
     const content = await generateBriefing(profile.hotel_id, "manual");
     return NextResponse.json({ content });
   } catch (err) {
-    return NextResponse.json({ error: (err as Error).message }, { status: 502 });
+    // A code, never the provider's text (lib/ai-errors.ts). A failure that
+    // wasn't the model's — a database write, say — is logged here and gets
+    // the generic "couldn't generate" message on screen.
+    const code = classifyAiError(err, "briefing");
+    if (!code) console.error("[briefing] manual generation failed:", err);
+    return NextResponse.json({ error: code ?? "failed" }, { status: 502 });
   }
 }

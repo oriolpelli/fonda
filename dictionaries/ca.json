@@ -40,7 +40,9 @@
     "loading": "S'està carregant…",
     "disconnect": "Desconnectar",
     "serverUnreachable": "No s'ha pogut connectar amb el servidor.",
-    "skipToContent": "Salta al contingut"
+    "skipToContent": "Salta al contingut",
+    "aiBusy": "Fondas té molta feina ara mateix. Torna-ho a provar d'aquí a un minut.",
+    "aiUnavailable": "Fondas AI no està disponible ara mateix. Torna-ho a provar d'aquí a uns minuts."
   },
   "nav": {
     "features": "Funcions",
@@ -699,7 +701,6 @@
       "Quina és la nostra política de cancel·lació per a reserves directes?"
     ],
     "placeholder": "Fes una pregunta…",
-    "errorPrefix": "Ho sento — {message}",
     "dockedCta": "Pregunta al teu hotel el que vulguis…",
     "close": "Tanca",
     "send": "Envia",

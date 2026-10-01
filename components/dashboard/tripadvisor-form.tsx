@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { aiFailureText } from "@/lib/ai-failure";
 
 interface TripAdvisorFormProps {
   tripadvisorUrl: string;
@@ -88,7 +89,9 @@ export function TripAdvisorForm({
 
           {state && "error" in state ? (
             <p role="alert" className="text-sm font-medium text-destructive">
-              {state.error}
+              {/* An AI failure arrives as a code (lib/ai-failure.ts); any
+                  other error is the server's own sentence. */}
+              {aiFailureText(dict, state.error) ?? state.error}
             </p>
           ) : null}
         </CardContent>

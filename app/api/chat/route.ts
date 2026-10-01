@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 
+import { classifyAiError } from "@/lib/ai-errors";
 import { AI_MODELS, provenance, sha256 } from "@/lib/ai-provenance";
 import { flushAnalytics, track } from "@/lib/analytics";
 import { sourcesFor } from "@/lib/chat-sources";
@@ -25,6 +26,11 @@ const LANGUAGES: Record<string, string> = {
 // Sentinel appended to the stream when a draft email was created from the chat.
 // The UI splits on this to render the "View in inbox" card.
 const DRAFT_SENTINEL = "__FONDA_DRAFT__";
+
+// Sentinel + code appended when the answer failed (lib/ai-failure.ts). The UI
+// swaps it for a calm sentence in the user's language; the provider's own
+// error text never goes down the stream.
+const ERROR_SENTINEL = "__FONDA_ERROR__";
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -242,9 +248,9 @@ export async function POST(request: Request) {
           }
         }
       } catch (err) {
-        controller.enqueue(
-          encoder.encode(`\n\n[Error: ${(err as Error).message}]`)
-        );
+        // The real reason goes to the log and Sentry; the person gets a code.
+        const code = classifyAiError(err, "chat") ?? "ai_unavailable";
+        controller.enqueue(encoder.encode(`${ERROR_SENTINEL}${code}`));
       } finally {
         // Length, turn count and whether it produced a draft — never the
         // question or the answer. Both can quote guest data verbatim.

@@ -40,7 +40,9 @@
     "loading": "Cargando…",
     "disconnect": "Desconectar",
     "serverUnreachable": "No se pudo conectar con el servidor.",
-    "skipToContent": "Saltar al contenido"
+    "skipToContent": "Saltar al contenido",
+    "aiBusy": "Fondas tiene mucho trabajo ahora mismo. Vuelve a intentarlo en un minuto.",
+    "aiUnavailable": "Fondas AI no está disponible en este momento. Vuelve a intentarlo en unos minutos."
   },
   "nav": {
     "features": "Funciones",
@@ -699,7 +701,6 @@
       "¿Cuál es nuestra política de cancelación para reservas directas?"
     ],
     "placeholder": "Haz una pregunta…",
-    "errorPrefix": "Lo siento — {message}",
     "dockedCta": "Pregunta a tu hotel lo que quieras…",
     "close": "Cerrar",
     "send": "Enviar",

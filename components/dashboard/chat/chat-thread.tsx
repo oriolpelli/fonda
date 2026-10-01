@@ -204,7 +204,7 @@ function AssistantTurn({
           finished answer. Held back while streaming, so the line doesn't sit
           under half a sentence; text-3 is AA on the canvas and on both wells
           a thread can sit in. */}
-      {message.content && !working ? (
+      {message.content && !working && !message.failed ? (
         <p className="mt-2 font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
           {dict.ai.askLine}
         </p>

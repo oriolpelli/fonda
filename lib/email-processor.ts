@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { classifyAiError } from "@/lib/ai-errors";
 import { AI_MODELS, provenance, sha256 } from "@/lib/ai-provenance";
 import { track } from "@/lib/analytics";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
@@ -395,6 +396,9 @@ export async function processNewEmails(
       // why, so a systemic failure can't masquerade as a quiet inbox.
       failed++;
       lastError = (err as Error).message;
+      // A provider failure (no credit, bad key, overload) also goes to Sentry,
+      // tagged — the overnight cron is where we would otherwise find out last.
+      classifyAiError(err, "email-process");
     }
   }
   return { processed, failed, lastError };

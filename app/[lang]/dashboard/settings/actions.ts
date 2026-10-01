@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { classifyAiError } from "@/lib/ai-errors";
 import { AI_MODELS, provenance, type Provenance } from "@/lib/ai-provenance";
 import { isLocale } from "@/lib/i18n/config";
 import { LOCALE_COOKIE } from "@/lib/i18n/get-locale";
@@ -333,7 +334,9 @@ export async function summarizeReviews(
       reviewSummary = block && block.type === "text" ? block.text.trim() : null;
       if (reviewSummary) summaryProvenance = provenance("reviewSummary");
     } catch (err) {
-      return { error: `Couldn't summarize reviews: ${(err as Error).message}` };
+      // A code, not the provider's text (lib/ai-errors.ts) — the form turns
+      // it into a sentence in the user's language.
+      return { error: classifyAiError(err, "review-summary") ?? "ai_unavailable" };
     }
   }
 

@@ -3,8 +3,8 @@
 import { useCallback, useState } from "react";
 
 import { useDictionary } from "@/components/i18n/dictionary-provider";
+import { aiFailureText } from "@/lib/ai-failure";
 import { isSourceKey, type SourceKey } from "@/lib/chat-sources";
-import { t } from "@/lib/i18n/format";
 
 /**
  * The one place the "Ask your hotel" conversation lives.
@@ -18,6 +18,9 @@ import { t } from "@/lib/i18n/format";
 
 /** Appended to the stream when the answer also created a draft email. */
 const DRAFT_SENTINEL = "__FONDA_DRAFT__";
+
+/** Appended, with a code from lib/ai-failure.ts, when the answer failed. */
+const ERROR_SENTINEL = "__FONDA_ERROR__";
 
 /**
  * Mirrors the server's draft heuristic (`wantsDraft` in app/api/chat/route.ts).
@@ -43,6 +46,12 @@ export interface ChatMessage {
    * week later would be inventing provenance.
    */
   sources?: SourceKey[];
+  /**
+   * True when this turn failed. Its content is then our own calm sentence
+   * (plus whatever had streamed before the failure), so the thread doesn't
+   * put the "AI can make mistakes" line under it.
+   */
+  failed?: boolean;
 }
 
 export interface HotelChat {
@@ -123,10 +132,24 @@ export function useHotelChat(
 
           let content = acc;
           let draftId: string | null = null;
-          const idx = acc.indexOf(DRAFT_SENTINEL);
-          if (idx !== -1) {
-            content = acc.slice(0, idx);
-            draftId = acc.slice(idx + DRAFT_SENTINEL.length) || null;
+          let failed = false;
+          const errorIdx = acc.indexOf(ERROR_SENTINEL);
+          if (errorIdx !== -1) {
+            // Keep anything that streamed before the failure, then say plainly
+            // that the rest didn't come — in the user's language, never the
+            // provider's words.
+            const partial = acc.slice(0, errorIdx).trim();
+            const notice =
+              aiFailureText(dict, acc.slice(errorIdx + ERROR_SENTINEL.length)) ??
+              dict.common.aiUnavailable;
+            content = partial ? `${partial}\n\n${notice}` : notice;
+            failed = true;
+          } else {
+            const idx = acc.indexOf(DRAFT_SENTINEL);
+            if (idx !== -1) {
+              content = acc.slice(0, idx);
+              draftId = acc.slice(idx + DRAFT_SENTINEL.length) || null;
+            }
           }
           setMessages((prev) => {
             const next = [...prev];
@@ -137,6 +160,7 @@ export function useHotelChat(
               content,
               sources,
               draftId,
+              failed,
               // Stamped once, on the read where the draft first appears, so the
               // card's timestamp doesn't tick with every later chunk.
               draftAt: draftId ? (current.draftAt ?? Date.now()) : undefined,
@@ -145,14 +169,19 @@ export function useHotelChat(
           });
         }
       } catch (err) {
+        // A non-OK response or a dropped connection. Never show the raw
+        // error: a network failure says so, anything else gets the calm
+        // "not available right now" line.
+        const offline = err instanceof TypeError;
         setMessages((prev) => {
           const next = [...prev];
           next[next.length - 1] = {
             role: "assistant",
             intent,
-            content: t(dict.askYourHotel.errorPrefix, {
-              message: (err as Error).message,
-            }),
+            failed: true,
+            content: offline
+              ? dict.common.serverUnreachable
+              : dict.common.aiUnavailable,
           };
           return next;
         });

@@ -40,7 +40,9 @@
     "loading": "Loading…",
     "disconnect": "Disconnect",
     "serverUnreachable": "Couldn't reach the server.",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "aiBusy": "Fondas is very busy right now. Please try again in a minute.",
+    "aiUnavailable": "Fondas AI isn't available right now. Please try again in a few minutes."
   },
   "nav": {
     "features": "Features",
@@ -699,7 +701,6 @@
       "What's our cancellation policy for direct bookings?"
     ],
     "placeholder": "Ask a question…",
-    "errorPrefix": "Sorry — {message}",
     "dockedCta": "Ask your hotel anything…",
     "close": "Close",
     "send": "Send",

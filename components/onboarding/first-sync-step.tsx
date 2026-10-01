@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
+import { aiFailureText } from "@/lib/ai-failure";
 import { plural, t } from "@/lib/i18n/format";
 
 /**
@@ -101,7 +102,8 @@ export function FirstSyncStep({
         const data = (await res.json().catch(() => null)) as {
           error?: string;
         } | null;
-        setError(data?.error ?? dict.briefing.generateError);
+        // Server sends a code (lib/ai-failure.ts), never provider text.
+        setError(aiFailureText(dict, data?.error) ?? dict.briefing.generateError);
         setPhase("synced");
         return;
       }
