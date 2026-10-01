@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Fragment,
+  Suspense,
+  use,
   useCallback,
   useEffect,
   useId,
@@ -87,7 +89,12 @@ export interface NavItem {
   key: string;
   label: string;
   href: string;
-  badge?: NavBadge;
+  /**
+   * A count chip. The Communications badges arrive as a PROMISE: the layout
+   * starts the read and doesn't wait for it, so the shell renders first and
+   * the counts stream in (docs/audits/2026-10-01-performance.md §4.4).
+   */
+  badge?: NavBadge | Promise<NavBadge>;
   /**
    * Not built yet (driven by `lib/roadmap.ts`). The item stays clickable — its
    * page explains what's coming — but reads as secondary: a small muted dot on
@@ -236,6 +243,36 @@ function SoonChip({
   );
 }
 
+/**
+ * A row's badge, whichever way it arrives. A promise is read with `use()`
+ * inside its own Suspense, whose fallback is nothing: an empty slot that fills
+ * in, rather than a placeholder chip that might turn out to be zero.
+ */
+function NavRowBadge({ badge }: { badge: NavItem["badge"] }) {
+  if (!badge) return null;
+  // A thenable check, not `instanceof Promise`: what arrives over the RSC
+  // stream is React's own thenable, and that is all `use()` needs.
+  if (isPromise(badge)) {
+    return (
+      <Suspense fallback={null}>
+        <StreamedRowBadge badge={badge} />
+      </Suspense>
+    );
+  }
+  return badge.count > 0 ? <RowBadge badge={badge} className="ml-auto" /> : null;
+}
+
+function isPromise<T>(value: T | Promise<T>): value is Promise<T> {
+  return typeof (value as { then?: unknown }).then === "function";
+}
+
+function StreamedRowBadge({ badge }: { badge: Promise<NavBadge> }) {
+  const resolved = use(badge);
+  return resolved.count > 0 ? (
+    <RowBadge badge={resolved} className="ml-auto" />
+  ) : null;
+}
+
 /** The count chip on a labelled row. */
 function RowBadge({
   badge,
@@ -347,9 +384,7 @@ function PanelLink({
           </span>
         )
       ) : null}
-      {item.badge && item.badge.count > 0 ? (
-        <RowBadge badge={item.badge} className="ml-auto" />
-      ) : null}
+      <NavRowBadge badge={item.badge} />
     </Link>
   );
 }
@@ -733,9 +768,7 @@ function DrawerLink({
           className="ml-auto"
         />
       ) : null}
-      {item.badge && item.badge.count > 0 ? (
-        <RowBadge badge={item.badge} className="ml-auto" />
-      ) : null}
+      <NavRowBadge badge={item.badge} />
     </Link>
   );
 }

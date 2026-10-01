@@ -8,6 +8,7 @@ import {
   approveAllStandard,
   flagEmail,
   ignoreEmail,
+  loadEmailBody,
   sendReply,
 } from "@/app/[lang]/dashboard/communications/actions";
 import {
@@ -79,6 +80,12 @@ export interface InboxEmail {
   /** Which guest-context pane this row shows — see lib/inbox.ts. Opaque. */
   contextKey: string;
   urgency: Urgency;
+  /**
+   * True when `body` is only the first lines: sent messages travel as a
+   * preview (communications/window.tsx), and the full text is fetched when
+   * one is opened.
+   */
+  body_truncated?: boolean;
 }
 
 /**
@@ -226,6 +233,35 @@ export function EmailInbox({
     const pane = mobileView === "detail" ? detailRef.current : listRef.current;
     pane?.focus();
   }, [mobileView]);
+
+  /**
+   * Full text of sent messages, fetched when one is opened (the list carries a
+   * preview of those). Kept for the life of the page, so going back to a
+   * message never fetches it twice; `requested` stops a double fetch while one
+   * is in flight. A failed fetch leaves the preview showing.
+   */
+  const [fullBodies, setFullBodies] = useState<Record<string, string | null>>(
+    {}
+  );
+  const requested = useRef(new Set<string>());
+  const openTruncated = emails.find(
+    (e) => e.id === selectedId && e.body_truncated
+  );
+  useEffect(() => {
+    if (!openTruncated) return;
+    const id = openTruncated.id;
+    if (requested.current.has(id)) return;
+    requested.current.add(id);
+    void loadEmailBody(id)
+      .then((result) => {
+        if (result.ok) {
+          setFullBodies((prev) => ({ ...prev, [id]: result.body }));
+        } else {
+          requested.current.delete(id);
+        }
+      })
+      .catch(() => requested.current.delete(id));
+  }, [openTruncated]);
 
   /** Select a message, and on a phone move into it. */
   function openEmail(id: string) {
@@ -737,7 +773,11 @@ export function EmailInbox({
               ) : null}
 
               <div className="max-h-48 overflow-y-auto whitespace-pre-line rounded-md bg-muted p-3 text-sm">
-                {selected.body || dict.emails.emptyMessage}
+                {selected.id in fullBodies
+                  ? fullBodies[selected.id] || dict.emails.emptyMessage
+                  : selected.body_truncated
+                    ? `${selected.body ?? ""}…`
+                    : selected.body || dict.emails.emptyMessage}
               </div>
 
               {selected.status === "sent" ? (

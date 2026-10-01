@@ -5,7 +5,11 @@ import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { AskYourHotel } from "@/components/dashboard/ask-your-hotel";
 import { deriveConnectionState } from "@/components/dashboard/connection-status";
 import { SetupBanner } from "@/components/dashboard/setup-banner";
-import { Sidebar, type NavItem } from "@/components/dashboard/sidebar";
+import {
+  Sidebar,
+  type NavBadge,
+  type NavItem,
+} from "@/components/dashboard/sidebar";
 import { getHotel, getSessionProfile } from "@/lib/auth";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { plural } from "@/lib/i18n/format";
@@ -22,20 +26,34 @@ export default async function DashboardLayout({
 }) {
   const { locale, dict } = await loadDictionary((await params).lang);
 
-  // Who, which hotel, and the sidebar badges — all three at once. None needs
-  // another: the hotel row and the badges are scoped by RLS, not by the
-  // profile. Each is resolved once per request and shared with the page
-  // rendering under this layout (lib/auth.ts, lib/inbox.ts). Badges fail soft
-  // to zero, so a bad inbox query can never blank the whole dashboard.
-  //
-  // Before 1 Oct this was session → [hotel ‖ badges]; the badges chain alone
-  // is three reads, and it sat behind the session read on every hard load
-  // (docs/audits/2026-10-01-performance.md §3).
-  const [user, hotel, inboxBadges] = await Promise.all([
+  // The sidebar badges start now and are NOT awaited. They are the slowest
+  // thing the layout reads — a chain of three, to split unanswered mail by
+  // stay window — and the whole page shell used to wait for them on every
+  // hard load (docs/audits/2026-10-01-performance.md §4.4). The promise goes to
+  // the client sidebar, which shows the two counts when they land. It never
+  // rejects: loadInboxBadges fails soft to zero.
+  const inboxBadges = timed("layout.badges", loadInboxBadges());
+
+  // Who, and which hotel — at once; neither needs the other (the hotel row is
+  // scoped by RLS, not by the profile). Each is resolved once per request and
+  // shared with the page rendering under this layout (lib/auth.ts).
+  const [user, hotel] = await Promise.all([
     timed("layout.session", getSessionProfile()),
     timed("layout.hotel", getHotel()),
-    timed("layout.badges", loadInboxBadges()),
   ]);
+
+  // One window's badge, worded for screen readers, as a promise the sidebar
+  // reads with `use()` inside its own Suspense.
+  const badgeFor = (window: "inHouse" | "upcoming"): Promise<NavBadge> =>
+    inboxBadges.then((badges) => ({
+      count: badges[window].count,
+      alert: badges[window].alert,
+      srLabel: plural(
+        badges[window].count,
+        dict.sidebar.waitingOne,
+        dict.sidebar.waitingOther
+      ),
+    }));
 
   // Proxy already guards this route; this is defense-in-depth so the page
   // never renders for an unauthenticated user.
@@ -144,15 +162,7 @@ export default async function DashboardLayout({
           href: localizedHref(locale, "/dashboard/communications/in-house"),
           sectionKey: "operation",
           group: "communications",
-          badge: {
-            count: inboxBadges.inHouse.count,
-            alert: inboxBadges.inHouse.alert,
-            srLabel: plural(
-              inboxBadges.inHouse.count,
-              dict.sidebar.waitingOne,
-              dict.sidebar.waitingOther
-            ),
-          },
+          badge: badgeFor("inHouse"),
         },
         {
           key: "communications",
@@ -160,15 +170,7 @@ export default async function DashboardLayout({
           href: localizedHref(locale, "/dashboard/communications/upcoming"),
           sectionKey: "operation",
           group: "communications",
-          badge: {
-            count: inboxBadges.upcoming.count,
-            alert: inboxBadges.upcoming.alert,
-            srLabel: plural(
-              inboxBadges.upcoming.count,
-              dict.sidebar.waitingOne,
-              dict.sidebar.waitingOther
-            ),
-          },
+          badge: badgeFor("upcoming"),
         },
         {
           // Live as of W-then (§5.4) — no longer a roadmap stub.

@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
+import { cache, Suspense, type ReactElement } from "react";
 
-import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { loadDictionary, type Dictionary } from "@/app/[lang]/dictionaries";
 import { FirstRunState } from "@/components/dashboard/first-run-state";
 import { HomeCustomizePanel } from "@/components/dashboard/home-customize-panel";
 import type { Stat } from "@/components/dashboard/stat-row";
@@ -15,6 +16,10 @@ import { OutlookWidget } from "@/components/dashboard/widgets/outlook-widget";
 import { SyncHealthWidget } from "@/components/dashboard/widgets/sync-health-widget";
 import { VipNoNoteWidget } from "@/components/dashboard/widgets/vip-no-note-widget";
 import { clockTime } from "@/components/dashboard/widgets/widget-section";
+import {
+  skeletonShapeFor,
+  WidgetSkeleton,
+} from "@/components/dashboard/widgets/widget-skeleton";
 import { loadTodayMovements, type TodayMovements } from "@/lib/arrivals";
 import { getHotel, getSessionProfile } from "@/lib/auth";
 import { loadTodaysBriefing, type TodaysBriefing } from "@/lib/briefing-latest";
@@ -27,7 +32,7 @@ import {
   type StoredLayout,
 } from "@/lib/home-layout";
 import { type HomeWidgetKey } from "@/lib/home-widgets";
-import { intlLocale } from "@/lib/i18n/config";
+import { intlLocale, type Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/format";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { loadInboxSummary, loadReservationThreads } from "@/lib/inbox";
@@ -40,9 +45,9 @@ import { buildTodoList } from "@/lib/todo-rules";
  * Home — the ten-second "what needs me, and how is the hotel right now?"
  * snapshot (APP_UX_PROPOSAL.md §3).
  *
- * This file is a *composer*, not a layout. It loads the data once and then
- * walks the user's resolved layout (`lib/home-layout.ts`), handing each widget
- * it names the slice it needs. Widths come from the registry
+ * This file is a *composer*, not a layout. It starts every read once and then
+ * walks the user's resolved layout (`lib/home-layout.ts`), letting each widget
+ * it names await the slice it needs — and stream in when that slice lands. Widths come from the registry
  * (`lib/home-widgets.ts`); order and visibility come from the user, falling
  * back to the role defaults when they have never opened Customize. Nothing
  * about the sequence of cards is decided here.
@@ -62,6 +67,96 @@ import { buildTodoList } from "@/lib/todo-rules";
 /** How many messages the "needs a reply" widget shows before deferring to the inbox. */
 const NEEDS_REPLY_LIMIT = 3;
 
+// ---------------------------------------------------------------------------
+// The reads — each once per request
+// ---------------------------------------------------------------------------
+//
+// Home streams (docs/audits/2026-10-01-performance.md §4.4). The greeting row
+// renders as soon as the three small reads it needs are back, and every widget
+// is its own <Suspense> boundary that awaits only the reads IT uses, so each
+// card appears the moment its data does — instead of the whole page waiting
+// behind a skeleton for the slowest of ten.
+//
+// React `cache` makes each read below run once per request however many
+// widgets ask for it: the snapshot feeds five widgets, the inbox four. They
+// all start together at the top of the page, before the greeting row is even
+// awaited.
+//
+// The brief uses the same loader the Morning Brief page does, so the teaser can
+// never claim a brief that page would deny. Its timezone comes from the
+// request's one hotel read (lib/auth.ts).
+
+const readSnapshot = cache(() =>
+  timed("home.snapshot", loadDashboardSnapshot())
+);
+// Summary: Home ranks and counts mail, it never shows a body or a draft.
+const readInbox = cache(() => timed("home.inbox", loadInboxSummary()));
+const readMovements = cache(() =>
+  soft(
+    () => timed("home.movements", loadTodayMovements()),
+    null as TodayMovements | null
+  )
+);
+const readSyncHealth = cache(() =>
+  soft(() => timed("home.syncHealth", loadSyncHealth()), [] as SourceHealth[])
+);
+const readBrief = cache(() =>
+  soft(
+    () =>
+      timed(
+        "home.brief",
+        getHotel().then((hotel) => loadTodaysBriefing(hotel?.timezone || "UTC"))
+      ),
+    null as TodaysBriefing | null
+  )
+);
+
+/**
+ * Unanswered mail, most urgent first — the same ranking the inbox uses under
+ * "by urgency". Not re-derived here (B7.1 owns it).
+ */
+const readUnanswered = cache(async () =>
+  (await readInbox()).emails
+    .filter((email) => email.urgency.kind !== "handled")
+    .sort(byUrgency)
+);
+
+/**
+ * Which conversation to open for each VIP arriving without a note — the one
+ * read that needs another's result (the snapshot's VIP list). Costs nothing
+ * when there is no such VIP.
+ */
+const readVipThreads = cache(async () => {
+  const snapshot = await readSnapshot();
+  return soft(
+    () =>
+      timed(
+        "home.vipThreads",
+        loadReservationThreads(
+          snapshot.vipArrivalsWithoutNote.map((vip) => vip.reservationId)
+        )
+      ),
+    new Map<string, string>()
+  );
+});
+
+const readTodos = cache(async () => {
+  const [snapshot, unanswered] = await Promise.all([
+    readSnapshot(),
+    readUnanswered(),
+  ]);
+  return buildTodoList({
+    // `receivedAt` is only read by the brief's "since" filter, but the rules
+    // take one email shape, so Home feeds it too.
+    emails: unanswered.map((email) => ({ ...email, receivedAt: email.created_at })),
+    vipArrivalsWithoutNote: snapshot.vipArrivalsWithoutNote,
+    unconfirmedEtasTomorrow: snapshot.unconfirmedEtasTomorrow,
+    outlook: snapshot.outlook,
+    rooms: snapshot.rooms,
+    hasSyncedData: snapshot.hasSyncedData,
+  });
+});
+
 export default async function DashboardPage({
   params,
 }: {
@@ -69,46 +164,33 @@ export default async function DashboardPage({
 }) {
   const { locale, dict } = await loadDictionary((await params).lang);
 
-  // Everything Home reads goes out at once. Only the VIP thread lookup, below,
-  // needs something another read produced. Before 1 Oct the brief, the
-  // movements and sync health waited for the whole first batch although they
-  // need nothing from it — two extra round trips on every visit
-  // (docs/audits/2026-10-01-performance.md §3). The cost of the change: a
-  // hotel with no PMS also reads its brief row and sync logs before the
-  // first-run state renders, three small reads on a screen nobody revisits.
-  //
-  // The brief uses the same loader the Morning Brief page does, so the teaser
-  // can never claim a brief that page would deny. Its timezone comes from the
-  // request's one hotel read (lib/auth.ts), which every loader here shares.
-  const hotelTimezone = getHotel().then((hotel) => hotel?.timezone || "UTC");
-  const [
-    snapshot,
-    inbox,
-    gmName,
-    layout,
-    todaysBrief,
-    movementsRead,
-    syncHealth,
-  ] = await Promise.all([
-    timed("home.snapshot", loadDashboardSnapshot()),
-    // Summary: Home ranks and counts mail, it never shows a body or a draft.
-    timed("home.inbox", loadInboxSummary()),
+  // Start every widget's reads now, alongside the greeting row's. Observed
+  // here so that a failure is never an unhandled rejection; each widget awaits
+  // the same cached promise and handles it there. (A hotel with no PMS returns
+  // the first-run state below and drops these — the snapshot and movements
+  // loaders return straight away for it, and the rest are small.)
+  for (const read of [
+    readSnapshot,
+    readInbox,
+    readMovements,
+    readSyncHealth,
+    readBrief,
+  ]) {
+    read().catch(() => {});
+  }
+
+  // The greeting row: whose hotel, whose name, which layout. Three small reads,
+  // and the only thing the page waits for before it starts to stream.
+  const [hotel, gmName, layout] = await Promise.all([
+    timed("home.hotel", getHotel()),
     timed("home.gmName", loadGmName()),
     timed("home.layout", loadViewerLayout()),
-    soft(
-      () => timed("home.brief", hotelTimezone.then(loadTodaysBriefing)),
-      null as TodaysBriefing | null
-    ),
-    soft(
-      () => timed("home.movements", loadTodayMovements()),
-      null as TodayMovements | null
-    ),
-    soft(() => timed("home.syncHealth", loadSyncHealth()), [] as SourceHealth[]),
   ]);
 
-  const greeting = gmName || snapshot.hotelName;
+  const timezone = hotel?.timezone || "UTC";
+  const greeting = gmName || hotel?.name || "";
   const todayLabel = new Intl.DateTimeFormat(intlLocale[locale], {
-    timeZone: snapshot.timezone,
+    timeZone: timezone,
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -127,7 +209,7 @@ export default async function DashboardPage({
   // point at the one action that fixes it, rather than rendering four zeroes.
   // The action is the setup wizard, not Settings — finishing setup is a guided
   // flow that ends in a real brief.
-  if (!snapshot.connected) {
+  if (!hotel?.pms_connected) {
     return (
       <div className="flex flex-col gap-8">
         {/* No Customize here. Before the first sync there are no widgets to
@@ -144,189 +226,10 @@ export default async function DashboardPage({
     );
   }
 
-  const stats: Stat[] = [
-    {
-      key: "occupancy",
-      label: dict.home.occupancyToday,
-      value: `${snapshot.occupancyPct}%`,
-    },
-    {
-      key: "free",
-      label: dict.home.freeRooms,
-      value: String(snapshot.freeRooms),
-    },
-    {
-      key: "checkins",
-      label: dict.home.checkinsToday,
-      value: String(snapshot.checkinsToday),
-    },
-    {
-      key: "checkouts",
-      label: dict.home.checkoutsToday,
-      value: String(snapshot.checkoutsToday),
-    },
-  ];
-
-  // Unanswered mail, most urgent first — the same ranking the inbox uses under
-  // "by urgency". Not re-derived here (B7.1 owns it).
-  const unanswered = inbox.emails
-    .filter((email) => email.urgency.kind !== "handled")
-    .sort(byUrgency);
-
-  // A failed movements read falls back to two empty lists in the hotel's own
-  // timezone, as it always has.
-  const movements: TodayMovements = movementsRead ?? {
-    timezone: snapshot.timezone,
-    arrivals: [],
-    departures: [],
-  };
-
-  // The one read that has to wait: which conversation to open for each VIP
-  // arriving without a note needs the snapshot's VIP list. It sits after the
-  // early return above, so a hotel with no PMS never pays for it.
-  const vipThreads = await soft(
-    () =>
-      timed(
-        "home.vipThreads",
-        loadReservationThreads(
-          snapshot.vipArrivalsWithoutNote.map((vip) => vip.reservationId)
-        )
-      ),
-    new Map<string, string>()
-  );
-
-  const todos = buildTodoList({
-    // `receivedAt` is only read by the brief's "since" filter, but the rules
-    // take one email shape, so Home feeds it too.
-    emails: unanswered.map((email) => ({ ...email, receivedAt: email.created_at })),
-    vipArrivalsWithoutNote: snapshot.vipArrivalsWithoutNote,
-    unconfirmedEtasTomorrow: snapshot.unconfirmedEtasTomorrow,
-    outlook: snapshot.outlook,
-    rooms: snapshot.rooms,
-    hasSyncedData: snapshot.hasSyncedData,
-  });
-
-  // Freshness lines (§7.4): each widget prints the clock time of the read it
-  // actually stands on, never a generic "just now". `inbox.emails` arrives
-  // newest-first from the loader, so [0] is the latest message.
-  const syncedAt = clockTime(locale, snapshot.timezone, snapshot.lastSyncedAt);
-  const briefAt = clockTime(locale, snapshot.timezone, todaysBrief?.generatedAt);
-  const inboxAt = clockTime(locale, snapshot.timezone, inbox.emails[0]?.created_at);
-
-  /**
-   * One widget. Every key in the registry has a renderer now, and the switch is
-   * exhaustive on purpose: adding a key to lib/home-widgets.ts fails the build
-   * here until it gets one, so the registry can never declare a widget Home
-   * silently drops.
-   */
-  function widgetFor(key: HomeWidgetKey) {
-    switch (key) {
-      case "needs-you":
-        return (
-          <NeedsYouWidget
-            dict={dict}
-            locale={locale}
-            items={todos}
-            syncedAt={syncedAt}
-          />
-        );
-      case "brief":
-        return (
-          <BriefWidget
-            dict={dict}
-            locale={locale}
-            summary={todaysBrief?.content.summary ?? null}
-            generatedAt={briefAt}
-            arrivals={snapshot.hasSyncedData ? snapshot.checkinsToday : null}
-            waiting={unanswered.length}
-          />
-        );
-      case "numbers":
-        return (
-          <NumbersWidget
-            dict={dict}
-            stats={stats}
-            hasSyncedData={snapshot.hasSyncedData}
-            syncedAt={syncedAt}
-          />
-        );
-      case "outlook":
-        return (
-          <OutlookWidget
-            dict={dict}
-            locale={locale}
-            outlook={snapshot.outlook}
-            today={snapshot.today}
-            syncedAt={syncedAt}
-          />
-        );
-      case "needs-reply":
-        return (
-          <NeedsReplyWidget
-            dict={dict}
-            locale={locale}
-            emails={unanswered.slice(0, NEEDS_REPLY_LIMIT)}
-            updatedAt={inboxAt}
-          />
-        );
-      case "arrivals-today":
-        return (
-          <ArrivalsWidget
-            dict={dict}
-            locale={locale}
-            arrivals={movements.arrivals}
-            syncedAt={syncedAt}
-          />
-        );
-      case "departures-today":
-        return (
-          <DeparturesWidget
-            dict={dict}
-            locale={locale}
-            departures={movements.departures}
-            timezone={movements.timezone}
-            syncedAt={syncedAt}
-          />
-        );
-      case "vip-no-note":
-        return (
-          <VipNoNoteWidget
-            dict={dict}
-            locale={locale}
-            vips={snapshot.vipArrivalsWithoutNote}
-            threads={vipThreads}
-            syncedAt={syncedAt}
-          />
-        );
-      case "inbox-pulse":
-        return (
-          <InboxPulseWidget
-            dict={dict}
-            draftsReady={inbox.draftsReady}
-            sentToday={inbox.sentToday}
-            avgResponseHours={inbox.avgResponseHours}
-            updatedAt={inboxAt}
-          />
-        );
-      case "sync-health":
-        return (
-          <SyncHealthWidget
-            dict={dict}
-            locale={locale}
-            sources={syncHealth}
-            timezone={snapshot.timezone}
-          />
-        );
-    }
-  }
-
   // Pinned widgets first whatever the user chose, then their enabled ones in
   // their order. Disabled widgets are skipped here but stay in the stored array
   // so Customize can show them unchecked where they were left.
-  const rendered = homeWidgetsForLayout(layout).map((def) => ({
-    def,
-    node: widgetFor(def.key),
-  }));
+  const widgets = homeWidgetsForLayout(layout);
 
   return (
     <div className="flex flex-col gap-8">
@@ -345,21 +248,209 @@ export default async function DashboardPage({
 
           grid-cols-1 rather than a bare `grid`: Tailwind's grid-cols-* tracks
           are minmax(0,1fr), so a long unbreakable line inside a card can't
-          widen the column past the viewport. An implicit `auto` track can. */}
+          widen the column past the viewport. An implicit `auto` track can.
+
+          Each slot holds its widget's own skeleton shape until that widget's
+          reads land; the slot itself never moves, so nothing jumps. */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {rendered.map(({ def, node }) => (
+        {widgets.map((def) => (
           <div
             key={def.key}
             className={
               def.width === "full" ? "min-w-0 lg:col-span-2" : "min-w-0"
             }
           >
-            {node}
+            <Suspense
+              fallback={<WidgetSkeleton shape={skeletonShapeFor(def.key)} />}
+            >
+              <HomeWidget
+                widgetKey={def.key}
+                dict={dict}
+                locale={locale}
+                timezone={timezone}
+                lastSyncedAt={hotel.last_synced_at}
+              />
+            </Suspense>
           </div>
         ))}
       </div>
     </div>
   );
+}
+
+/**
+ * One widget, awaiting only its own reads. Every key in the registry has a
+ * renderer, and the switch is exhaustive on purpose (the return type has no
+ * `undefined`): adding a key to lib/home-widgets.ts fails the build here until
+ * it gets one, so the registry can never declare a widget Home silently drops.
+ *
+ * Freshness lines (§7.4): each widget prints the clock time of the read it
+ * actually stands on, never a generic "just now". The inbox arrives
+ * newest-first, so its [0] is the latest message.
+ */
+async function HomeWidget({
+  widgetKey,
+  dict,
+  locale,
+  timezone,
+  lastSyncedAt,
+}: {
+  widgetKey: HomeWidgetKey;
+  dict: Dictionary;
+  locale: Locale;
+  timezone: string;
+  lastSyncedAt: string | null;
+}): Promise<ReactElement> {
+  const syncedAt = clockTime(locale, timezone, lastSyncedAt);
+
+  switch (widgetKey) {
+    case "needs-you":
+      return (
+        <NeedsYouWidget
+          dict={dict}
+          locale={locale}
+          items={await readTodos()}
+          syncedAt={syncedAt}
+        />
+      );
+    case "brief": {
+      const [brief, snapshot, unanswered] = await Promise.all([
+        readBrief(),
+        readSnapshot(),
+        readUnanswered(),
+      ]);
+      return (
+        <BriefWidget
+          dict={dict}
+          locale={locale}
+          summary={brief?.content.summary ?? null}
+          generatedAt={clockTime(locale, timezone, brief?.generatedAt)}
+          arrivals={snapshot.hasSyncedData ? snapshot.checkinsToday : null}
+          waiting={unanswered.length}
+        />
+      );
+    }
+    case "numbers": {
+      const snapshot = await readSnapshot();
+      const stats: Stat[] = [
+        {
+          key: "occupancy",
+          label: dict.home.occupancyToday,
+          value: `${snapshot.occupancyPct}%`,
+        },
+        {
+          key: "free",
+          label: dict.home.freeRooms,
+          value: String(snapshot.freeRooms),
+        },
+        {
+          key: "checkins",
+          label: dict.home.checkinsToday,
+          value: String(snapshot.checkinsToday),
+        },
+        {
+          key: "checkouts",
+          label: dict.home.checkoutsToday,
+          value: String(snapshot.checkoutsToday),
+        },
+      ];
+      return (
+        <NumbersWidget
+          dict={dict}
+          stats={stats}
+          hasSyncedData={snapshot.hasSyncedData}
+          syncedAt={syncedAt}
+        />
+      );
+    }
+    case "outlook": {
+      const snapshot = await readSnapshot();
+      return (
+        <OutlookWidget
+          dict={dict}
+          locale={locale}
+          outlook={snapshot.outlook}
+          today={snapshot.today}
+          syncedAt={syncedAt}
+        />
+      );
+    }
+    case "needs-reply": {
+      const [inbox, unanswered] = await Promise.all([
+        readInbox(),
+        readUnanswered(),
+      ]);
+      return (
+        <NeedsReplyWidget
+          dict={dict}
+          locale={locale}
+          emails={unanswered.slice(0, NEEDS_REPLY_LIMIT)}
+          updatedAt={clockTime(locale, timezone, inbox.emails[0]?.created_at)}
+        />
+      );
+    }
+    case "arrivals-today": {
+      const movements = await readMovements();
+      return (
+        <ArrivalsWidget
+          dict={dict}
+          locale={locale}
+          arrivals={movements?.arrivals ?? []}
+          syncedAt={syncedAt}
+        />
+      );
+    }
+    case "departures-today": {
+      // A failed movements read falls back to an empty list in the hotel's own
+      // timezone, as it always has.
+      const movements = await readMovements();
+      return (
+        <DeparturesWidget
+          dict={dict}
+          locale={locale}
+          departures={movements?.departures ?? []}
+          timezone={movements?.timezone ?? timezone}
+          syncedAt={syncedAt}
+        />
+      );
+    }
+    case "vip-no-note": {
+      const [snapshot, threads] = await Promise.all([
+        readSnapshot(),
+        readVipThreads(),
+      ]);
+      return (
+        <VipNoNoteWidget
+          dict={dict}
+          locale={locale}
+          vips={snapshot.vipArrivalsWithoutNote}
+          threads={threads}
+          syncedAt={syncedAt}
+        />
+      );
+    }
+    case "inbox-pulse": {
+      const inbox = await readInbox();
+      return (
+        <InboxPulseWidget
+          dict={dict}
+          draftsReady={inbox.draftsReady}
+          sentToday={inbox.sentToday}
+          avgResponseHours={inbox.avgResponseHours}
+          updatedAt={clockTime(locale, timezone, inbox.emails[0]?.created_at)}
+        />
+      );
+    }
+    case "sync-health":
+      return (
+        <SyncHealthWidget
+          dict={dict}
+          locale={locale}
+          sources={await readSyncHealth()}
+          timezone={timezone}
+        />
+      );
+  }
 }
 
 /**

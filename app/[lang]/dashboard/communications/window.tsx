@@ -1,14 +1,16 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
+import { Suspense } from "react";
 
-import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { loadDictionary, type Dictionary } from "@/app/[lang]/dictionaries";
 import { EmailInbox } from "@/components/dashboard/email-inbox";
 import { FirstRunState } from "@/components/dashboard/first-run-state";
 import { InboxStats } from "@/components/dashboard/inbox-stats";
 import { GuestContextPanel } from "@/components/dashboard/guest-context-panel";
 import { WhatsAppConnectButton } from "@/components/dashboard/whatsapp-connect-button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getHotel } from "@/lib/auth";
-import { loadGuestContexts } from "@/lib/guest-context";
+import { loadGuestContexts, type GuestContext } from "@/lib/guest-context";
 import { loadInbox, type InboxEmail } from "@/lib/inbox";
 // Server-readable sort contract — deliberately NOT imported from the client
 // inbox module, whose exports become throwing client references here.
@@ -21,6 +23,7 @@ import {
 } from "@/lib/inbox-queue";
 import { hotelToday, localDateOf } from "@/lib/stay-phase";
 import { timed } from "@/lib/timing";
+import type { Locale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
 
 /**
@@ -131,18 +134,38 @@ export async function CommunicationsWindow({
    *
    * This is the whole reason the pane is a Server Component: the nationality,
    * language and party size it shows never enter the client payload.
+   *
+   * Streamed (performance audit §4.4): the list and the open message no longer
+   * wait for the guests' details. Each slot is a Suspense boundary over the
+   * same one read, so the panes fill in together a beat after the inbox.
    */
-  const contexts = await timed("comms.contexts", loadGuestContexts(emails));
+  const contexts = timed("comms.contexts", loadGuestContexts(emails));
+  // Observed here; each pane awaits the same promise and handles it there.
+  contexts.catch(() => {});
+  const contextKeys = [...new Set(emails.map((email) => email.contextKey))];
   const contextPanes = Object.fromEntries(
-    [...contexts.values()].map((context) => [
-      context.key,
-      <GuestContextPanel
-        key={context.key}
-        context={context}
-        dict={dict}
-        locale={locale}
-      />,
+    contextKeys.map((key) => [
+      key,
+      <Suspense key={key} fallback={<ContextPaneSkeleton />}>
+        <StreamedContextPane
+          contextKey={key}
+          contexts={contexts}
+          dict={dict}
+          locale={locale}
+        />
+      </Suspense>,
     ])
+  );
+
+  // What the client list carries. A sent message shows its text only when it
+  // is opened, and never its draft (the reading pane shows neither for a sent
+  // reply), so it travels as a preview and the full text is fetched on open
+  // (loadEmailBody). Mail still waiting on someone — and ignored mail, which
+  // can still be sent — keeps everything, so the work a GM actually does is
+  // never a fetch away. The page payload used to carry every body and draft of
+  // the window's share of 200 messages (performance audit §4.2).
+  const listEmails = emails.map((email) =>
+    email.status === "sent" ? toSentPreview(email) : email
   );
 
   const isInHouse = windowKey === "in_house";
@@ -223,7 +246,7 @@ export async function CommunicationsWindow({
         />
       ) : (
         <EmailInbox
-          emails={emails}
+          emails={listEmails}
           emptyMessage={emptyMessage}
           emptyIcon="emails"
           initialSort={initialSort}
@@ -235,5 +258,67 @@ export async function CommunicationsWindow({
         />
       )}
     </div>
+  );
+}
+
+/** Characters of a sent message's body that travel with the list. */
+const SENT_PREVIEW_CHARS = 280;
+
+/**
+ * A sent message as the list carries it: the first lines of its body, no
+ * draft, and a flag saying the rest is a fetch away. The inbox loads the full
+ * text when the message is opened.
+ */
+function toSentPreview(
+  email: InboxEmail
+): InboxEmail & { body_truncated: boolean } {
+  const body = email.body ?? null;
+  const truncated = body !== null && body.length > SENT_PREVIEW_CHARS;
+  return {
+    ...email,
+    body: truncated ? body.slice(0, SENT_PREVIEW_CHARS) : body,
+    draft_reply: null,
+    body_truncated: truncated,
+  };
+}
+
+/** One guest's pane, once the window's single guest-context read lands. */
+async function StreamedContextPane({
+  contextKey,
+  contexts,
+  dict,
+  locale,
+}: {
+  contextKey: string;
+  contexts: Promise<Map<string, GuestContext>>;
+  dict: Dictionary;
+  locale: Locale;
+}) {
+  const context = (await contexts).get(contextKey);
+  return context ? (
+    <GuestContextPanel context={context} dict={dict} locale={locale} />
+  ) : null;
+}
+
+/** The pane's frame while it streams in — same width, same well, no data. */
+function ContextPaneSkeleton() {
+  return (
+    <aside
+      aria-hidden="true"
+      className="flex w-[280px] shrink-0 flex-col gap-5 border-l border-[var(--fonda-border-2)] bg-[var(--fonda-surface)] p-5"
+    >
+      <div className="flex items-start gap-3">
+        <Skeleton className="size-9 shrink-0 rounded-full bg-inset" />
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <Skeleton className="h-4 w-2/3 bg-inset" />
+          <Skeleton className="h-3 w-1/3 bg-inset" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-3 w-full bg-inset" />
+        <Skeleton className="h-3 w-5/6 bg-inset" />
+        <Skeleton className="h-3 w-2/3 bg-inset" />
+      </div>
+    </aside>
   );
 }

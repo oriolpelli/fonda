@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 
-import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { loadDictionary, type Dictionary } from "@/app/[lang]/dictionaries";
 import { BriefHero } from "@/components/dashboard/brief-hero";
 import { BriefingArticle } from "@/components/dashboard/briefing-article";
 import { BriefingGenerating } from "@/components/dashboard/briefing-generating";
@@ -12,11 +13,14 @@ import { TodoList } from "@/components/dashboard/todo-list";
 import { Button } from "@/components/ui/button";
 import { getHotel } from "@/lib/auth";
 import { loadTodaysBriefing } from "@/lib/briefing-latest";
-import { loadDashboardSnapshot } from "@/lib/dashboard-snapshot";
+import {
+  loadDashboardSnapshot,
+  type DashboardSnapshot,
+} from "@/lib/dashboard-snapshot";
 import { byUrgency } from "@/lib/email-urgency";
-import { intlLocale } from "@/lib/i18n/config";
+import { intlLocale, type Locale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
-import { loadInboxSummary } from "@/lib/inbox";
+import { loadInboxSummary, type InboxData } from "@/lib/inbox";
 import { createClient } from "@/lib/supabase/server";
 import { timed } from "@/lib/timing";
 import { buildTodoList, type TodoItem } from "@/lib/todo-rules";
@@ -70,7 +74,8 @@ export default async function BriefingPage({
     timed("brief.inbox", loadInboxSummary()),
   ]);
   // Observed even when unused, so a failure here is never an unhandled
-  // rejection; when it IS used, awaiting it below rethrows as before.
+  // rejection; when it IS used, <SinceTheBrief> awaits it inside its own
+  // Suspense, and a failure there reaches the error boundary as before.
   sinceInputs.catch(() => {});
 
   const [hotel, { data: settings }, today, { data: firstBrief }] =
@@ -111,22 +116,6 @@ export default async function BriefingPage({
   const tz = hotel?.timezone || "UTC";
   const briefing = today?.content ?? null;
 
-  let sinceTheBrief: TodoItem[] = [];
-  if (today) {
-    const [snapshot, inbox] = await sinceInputs;
-    sinceTheBrief = buildTodoList({
-      emails: inbox.emails
-        .filter((email) => email.urgency.kind !== "handled")
-        .sort(byUrgency)
-        .map((email) => ({ ...email, receivedAt: email.created_at })),
-      vipArrivalsWithoutNote: snapshot.vipArrivalsWithoutNote,
-      unconfirmedEtasTomorrow: snapshot.unconfirmedEtasTomorrow,
-      outlook: snapshot.outlook,
-      rooms: snapshot.rooms,
-      hasSyncedData: snapshot.hasSyncedData,
-      since: new Date(today.generatedAt),
-    });
-  }
 
   const quickActions = [
     // The unscoped parent on purpose: it redirects to whichever Communications
@@ -179,20 +168,20 @@ export default async function BriefingPage({
           {/* Nothing at all when nothing has landed — no heading, no empty
               state. An empty "Since the brief" would say the brief is stale in
               the one case where it isn't. */}
-          {sinceTheBrief.length > 0 ? (
-            <section className="flex flex-col gap-3 border-t border-border pt-6">
-              <h2 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
-                {dict.briefing.sinceTitle}
-              </h2>
-              {/* showPrimary={false}: the sunrise hero is this page's one
-                  accent (§7.2), so no row leads by darkness here. */}
-              <TodoList
+          {/* Streams in after the brief itself (performance audit §4.4): the
+              brief is what this page is for, and it no longer waits for the
+              two reads behind this section. No skeleton — most afternoons the
+              section is empty, and a placeholder that then vanishes would be
+              the bigger jump. */}
+          {today ? (
+            <Suspense fallback={null}>
+              <SinceTheBrief
+                inputs={sinceInputs}
+                since={today.generatedAt}
                 dict={dict}
                 locale={locale}
-                items={sinceTheBrief}
-                showPrimary={false}
               />
-            </section>
+            </Suspense>
           ) : null}
 
           <div className="flex flex-wrap gap-3 border-t border-border pt-6">
@@ -232,5 +221,53 @@ export default async function BriefingPage({
         timezone={tz}
       />
     </div>
+  );
+}
+
+/**
+ * "Since the brief" (APP_UX_PROPOSAL.md §5.1) — the brief is a 07:00 snapshot,
+ * and this keeps the page true at 14:00. Same rules as Home, run with a `since`
+ * window, which leaves exactly the two rules that carry an event instant: an
+ * unanswered complaint that arrived after the brief, and a VIP arrival booked
+ * or changed after it.
+ *
+ * Its own async component so the page can render the brief without waiting
+ * for its two reads; `inputs` is the promise the page started at the top.
+ */
+async function SinceTheBrief({
+  inputs,
+  since,
+  dict,
+  locale,
+}: {
+  inputs: Promise<[DashboardSnapshot, InboxData]>;
+  since: string;
+  dict: Dictionary;
+  locale: Locale;
+}) {
+  const [snapshot, inbox] = await inputs;
+  const items: TodoItem[] = buildTodoList({
+    emails: inbox.emails
+      .filter((email) => email.urgency.kind !== "handled")
+      .sort(byUrgency)
+      .map((email) => ({ ...email, receivedAt: email.created_at })),
+    vipArrivalsWithoutNote: snapshot.vipArrivalsWithoutNote,
+    unconfirmedEtasTomorrow: snapshot.unconfirmedEtasTomorrow,
+    outlook: snapshot.outlook,
+    rooms: snapshot.rooms,
+    hasSyncedData: snapshot.hasSyncedData,
+    since: new Date(since),
+  });
+  if (items.length === 0) return null;
+
+  return (
+    <section className="flex flex-col gap-3 border-t border-border pt-6">
+      <h2 className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+        {dict.briefing.sinceTitle}
+      </h2>
+      {/* showPrimary={false}: the sunrise hero is this page's one accent
+          (§7.2), so no row leads by darkness here. */}
+      <TodoList dict={dict} locale={locale} items={items} showPrimary={false} />
+    </section>
   );
 }
