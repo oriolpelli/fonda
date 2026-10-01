@@ -1,6 +1,13 @@
 import type { Dictionary } from "@/app/[lang]/dictionaries";
 
 /**
+ * The two namespaces a roadmap row's label and blurb read. Narrow on purpose:
+ * the Customize panel calls these in the browser, which is sent only part of
+ * the dictionary (lib/i18n/client-dictionary.ts).
+ */
+export type RoadmapDict = Pick<Dictionary, "sidebar" | "roadmap">;
+
+/**
  * Product surfaces that started life as roadmap items — the single place that
  * decides what is real yet.
  *
@@ -46,12 +53,12 @@ export interface RoadmapFeature {
   route?: string;
   status: FeatureStatus;
   /** Sidebar label and page title. */
-  label: (dict: Dictionary) => string;
+  label: (dict: RoadmapDict) => string;
   /**
    * One line naming what the feature will do, shown on its page while the
    * status is "coming-soon". Say what a GM will get, not "coming soon" again.
    */
-  blurb: (dict: Dictionary) => string;
+  blurb: (dict: RoadmapDict) => string;
 }
 
 /**
@@ -77,8 +84,8 @@ export const ROADMAP = [
     key: "chat",
     route: "/dashboard/chat",
     status: "live",
-    label: (dict: Dictionary) => dict.sidebar.chat,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.chat,
+    label: (dict: RoadmapDict) => dict.sidebar.chat,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.chat,
   },
 
   // --- Operation, the first pillar (APP_UX_PROPOSAL.md §2.2) ---------------
@@ -86,8 +93,8 @@ export const ROADMAP = [
     key: "front-desk-info",
     route: "/dashboard/front-desk/information",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.frontDeskInfo,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.frontDeskInfo,
+    label: (dict: RoadmapDict) => dict.sidebar.frontDeskInfo,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.frontDeskInfo,
   },
   {
     // Shared between both pillars (APP_UX_PROPOSAL.md §2.2), so it sits under
@@ -96,8 +103,8 @@ export const ROADMAP = [
     key: "reputation",
     route: "/dashboard/reputation",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.reputation,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.reputation,
+    label: (dict: RoadmapDict) => dict.sidebar.reputation,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.reputation,
   },
 
   // --- Commercial, the second pillar (APP_UX_PROPOSAL.md §2.2) -------------
@@ -105,43 +112,43 @@ export const ROADMAP = [
     key: "revenue-management",
     route: "/dashboard/revenue/management",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.revenueManagement,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.revenueManagement,
+    label: (dict: RoadmapDict) => dict.sidebar.revenueManagement,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.revenueManagement,
   },
   {
     key: "demand-forecasting",
     route: "/dashboard/revenue/forecasting",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.demandForecasting,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.demandForecasting,
+    label: (dict: RoadmapDict) => dict.sidebar.demandForecasting,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.demandForecasting,
   },
   {
     key: "ota-parity",
     route: "/dashboard/revenue/parity",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.otaParity,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.otaParity,
+    label: (dict: RoadmapDict) => dict.sidebar.otaParity,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.otaParity,
   },
   {
     key: "upsell-ai",
     route: "/dashboard/revenue/upsell",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.upsellAi,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.upsellAi,
+    label: (dict: RoadmapDict) => dict.sidebar.upsellAi,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.upsellAi,
   },
   {
     key: "room-upgrade-ai",
     route: "/dashboard/revenue/upgrades",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.roomUpgradeAi,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.roomUpgradeAi,
+    label: (dict: RoadmapDict) => dict.sidebar.roomUpgradeAi,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.roomUpgradeAi,
   },
   {
     key: "sales-marketing",
     route: "/dashboard/sales-marketing",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.salesMarketing,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.salesMarketing,
+    label: (dict: RoadmapDict) => dict.sidebar.salesMarketing,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.salesMarketing,
   },
 
   // --- The eight parked sections -------------------------------------------
@@ -152,57 +159,57 @@ export const ROADMAP = [
     key: "staff",
     route: "/dashboard/operations/staff",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.staff,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.staff,
+    label: (dict: RoadmapDict) => dict.sidebar.staff,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.staff,
   },
   {
     key: "housekeeping",
     route: "/dashboard/operations/housekeeping",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.housekeeping,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.housekeeping,
+    label: (dict: RoadmapDict) => dict.sidebar.housekeeping,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.housekeeping,
   },
   {
     key: "fnb",
     route: "/dashboard/operations/fnb",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.fnb,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.fnb,
+    label: (dict: RoadmapDict) => dict.sidebar.fnb,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.fnb,
   },
   {
     key: "procurement",
     route: "/dashboard/operations/procurement",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.procurement,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.procurement,
+    label: (dict: RoadmapDict) => dict.sidebar.procurement,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.procurement,
   },
   {
     key: "finance-reporting",
     route: "/dashboard/finance/reporting",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.financeReporting,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.financeReporting,
+    label: (dict: RoadmapDict) => dict.sidebar.financeReporting,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.financeReporting,
   },
   {
     key: "chargeback",
     route: "/dashboard/finance/chargeback",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.chargeback,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.chargeback,
+    label: (dict: RoadmapDict) => dict.sidebar.chargeback,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.chargeback,
   },
   {
     key: "ai-management",
     route: "/dashboard/oversight/ai",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.aiManagement,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.aiManagement,
+    label: (dict: RoadmapDict) => dict.sidebar.aiManagement,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.aiManagement,
   },
   {
     key: "team-activity",
     route: "/dashboard/oversight/team",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.sidebar.teamActivity,
-    blurb: (dict: Dictionary) => dict.roadmap.blurb.teamActivity,
+    label: (dict: RoadmapDict) => dict.sidebar.teamActivity,
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb.teamActivity,
   },
 
   // --- Future Home widgets (APP_UX_PROPOSAL.md §3.4) ------------------------
@@ -219,32 +226,32 @@ export const ROADMAP = [
   {
     key: "adr-revpar",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.roadmap.label["adr-revpar"],
-    blurb: (dict: Dictionary) => dict.roadmap.blurb["adr-revpar"],
+    label: (dict: RoadmapDict) => dict.roadmap.label["adr-revpar"],
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb["adr-revpar"],
   },
   {
     key: "pickup-pace",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.roadmap.label["pickup-pace"],
-    blurb: (dict: Dictionary) => dict.roadmap.blurb["pickup-pace"],
+    label: (dict: RoadmapDict) => dict.roadmap.label["pickup-pace"],
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb["pickup-pace"],
   },
   {
     key: "review-score",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.roadmap.label["review-score"],
-    blurb: (dict: Dictionary) => dict.roadmap.blurb["review-score"],
+    label: (dict: RoadmapDict) => dict.roadmap.label["review-score"],
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb["review-score"],
   },
   {
     key: "upsell-revenue",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.roadmap.label["upsell-revenue"],
-    blurb: (dict: Dictionary) => dict.roadmap.blurb["upsell-revenue"],
+    label: (dict: RoadmapDict) => dict.roadmap.label["upsell-revenue"],
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb["upsell-revenue"],
   },
   {
     key: "labour-cost",
     status: "coming-soon",
-    label: (dict: Dictionary) => dict.roadmap.label["labour-cost"],
-    blurb: (dict: Dictionary) => dict.roadmap.blurb["labour-cost"],
+    label: (dict: RoadmapDict) => dict.roadmap.label["labour-cost"],
+    blurb: (dict: RoadmapDict) => dict.roadmap.blurb["labour-cost"],
   },
 
   // --- How to add a future roadmap feature ---------------------------------
@@ -257,8 +264,8 @@ export const ROADMAP = [
   //   key: "groups",
   //   route: "/dashboard/revenue/groups",
   //   status: "coming-soon",
-  //   label: (dict: Dictionary) => dict.sidebar.groups,
-  //   blurb: (dict: Dictionary) => dict.roadmap.blurb.groups,
+  //   label: (dict: RoadmapDict) => dict.sidebar.groups,
+  //   blurb: (dict: RoadmapDict) => dict.roadmap.blurb.groups,
   // },
   //
   // Three small things have to exist alongside it:

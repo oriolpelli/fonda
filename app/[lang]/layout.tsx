@@ -5,6 +5,10 @@ import { notFound } from "next/navigation";
 import "../globals.css";
 import { getDictionary } from "@/app/[lang]/dictionaries";
 import { DictionaryProvider } from "@/components/i18n/dictionary-provider";
+import {
+  PUBLIC_CLIENT_NAMESPACES,
+  pickNamespaces,
+} from "@/lib/i18n/client-dictionary";
 import { isLocale, locales } from "@/lib/i18n/config";
 import { openGraphFor, SITE_URL } from "@/lib/seo";
 
@@ -76,7 +80,12 @@ export default async function LocaleLayout({
   return (
     <html lang={lang} className={`${geist.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full antialiased">
-        <DictionaryProvider locale={lang} dict={dict}>
+        {/* Only the namespaces every page reads in the browser; onboarding and
+            the dashboard add their own (lib/i18n/client-dictionary.ts). */}
+        <DictionaryProvider
+          locale={lang}
+          dict={pickNamespaces(dict, PUBLIC_CLIENT_NAMESPACES)}
+        >
           {/* WCAG 2.4.1 (Bypass Blocks) — first tab stop on every page, so a
               keyboard or screen-reader user can jump the sticky nav. Visually
               hidden until focused, then a normal ink chip in the top-left. */}

@@ -21,7 +21,7 @@ export function isAiFailureCode(value: unknown): value is AiFailureCode {
 
 /** The sentence for a code, or null when `value` isn't one of ours. */
 export function aiFailureText(
-  dict: Dictionary,
+  dict: Pick<Dictionary, "common">,
   value: unknown
 ): string | null {
   if (!isAiFailureCode(value)) return null;

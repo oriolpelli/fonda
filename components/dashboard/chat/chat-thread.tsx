@@ -14,7 +14,7 @@ import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { LocaleLink } from "@/components/i18n/locale-link";
 import { SourceChip } from "@/components/dashboard/source-chip";
 import { Card } from "@/components/ui/card";
-import type { Dictionary } from "@/app/[lang]/dictionaries";
+import type { ClientDictionary } from "@/lib/i18n/client-dictionary";
 import type { Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 
@@ -70,7 +70,7 @@ function DraftResultCard({
 }: {
   at: number | undefined;
   locale: Locale;
-  dict: Dictionary;
+  dict: ClientDictionary;
   nested: boolean;
   onNavigate?: () => void;
 }) {
@@ -161,7 +161,7 @@ function AssistantTurn({
   message: ChatMessage;
   working: boolean;
   locale: Locale;
-  dict: Dictionary;
+  dict: ClientDictionary;
   nested: boolean;
   onNavigate?: () => void;
 }) {

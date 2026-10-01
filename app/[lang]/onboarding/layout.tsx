@@ -4,7 +4,12 @@ import { redirect } from "next/navigation";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { BrandPanel } from "@/components/brand/brand-panel";
 import { Wordmark } from "@/components/brand/wordmark";
+import { DictionaryProvider } from "@/components/i18n/dictionary-provider";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import {
+  ONBOARDING_CLIENT_NAMESPACES,
+  pickNamespaces,
+} from "@/lib/i18n/client-dictionary";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { t } from "@/lib/i18n/format";
 import { createClient } from "@/lib/supabase/server";
@@ -43,7 +48,14 @@ export default async function OnboardingLayout({
           <LanguageSwitcher />
         </div>
         <div className="flex flex-1 items-center justify-center py-12">
-          {children}
+          {/* The wizard's own namespaces, on top of the public ones the
+              [lang] layout sends (lib/i18n/client-dictionary.ts). */}
+          <DictionaryProvider
+            locale={locale}
+            dict={pickNamespaces(dict, ONBOARDING_CLIENT_NAMESPACES)}
+          >
+            {children}
+          </DictionaryProvider>
         </div>
         <p className="text-xs text-muted-foreground">
           {t(dict.footer.rights, { year: new Date().getFullYear() })}
