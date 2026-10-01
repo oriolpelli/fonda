@@ -242,6 +242,14 @@ Already a triggered item in `ROADMAP.md` §3.6. Supabase's benchmarks show wrapp
 
 The first four carry over from the W9 addendum. Tick them here when done.
 
+**Done 1 Oct, read-only, in the dashboards** (details: `2026-10-01-S3-speed-pass-c.md` §2).
+1. ✅ Ireland.
+2. ✅ Dublin.
+3. ✅ ES256 is Current.
+4. Not checked (needs Sentry sign-in).
+5. ✅ Cold starts 4.7%, Fluid on. But `/[lang]/dashboard` p75 was 7 s, because of the database, not the host.
+6. ✗ The instance was **Nano and swapping**, with the PMS sync's upserts at 97% of database time. Oriol upgraded it to Micro the same day; S3 makes the sync write only changed rows.
+
 1. **Supabase region.** Project Settings → General. It must be **West EU (Ireland)** to match `dub1`. If it's Frankfurt, every RT in §3 costs ~20 ms more. Change `vercel.json` to `fra1` rather than moving the database.
 2. **Vercel function region.** Settings → Functions shows Dublin after the W9 merge deploys.
 3. **JWT signing key.** Production publishes an ES256 key (checked today at `/auth/v1/.well-known/jwks.json`). In Project Settings → JWT Keys, confirm the ES256 key is **Current** and not just Standby. If the legacy secret still signs tokens, `getClaims()` falls back to a network call on every request and in the proxy.

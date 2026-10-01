@@ -218,6 +218,7 @@ One release a week. Each row is a week's work and ships on its own.
 | **W9** ✅ *(1 Oct, on `main`)* | **AI transparency (EU AI Act, P0)** | Model IDs in one place + provenance on every output (migration 0025, also closes the two `emails` rows in §3.2); machine-readable AI headers on every sent reply, chaser and brief; quiet "Fondas AI" labels; recorded bulk-send confirmation. **Hard deadline 2 Dec 2026** — met | `AI_ACT_PROMPTS.md` **A1–A4** |
 | **S1** 🟢 *merged to `main` 1 Oct (`94e9c77`), 0028 applied* | **Speed, pass A — nothing visible, everything faster** | Opt-in loader timings; read 5 keys of the PMS payload instead of all of it, no email bodies outside the inbox; one hotel read per request and parallel loads on every live page; two indexes (migration 0028); visited pages kept 30 s; Sentry loaded when idle; Customize loaded on open; one render per inbox action | `docs/audits/2026-10-01-performance.md` §6 **M1, P1–P4** |
 | **S2** 🟡 *built 1 Oct on `perf/pass-b` (on `main` after S1), no migration — preview, merge* | **Speed, pass B — feels instant** | Home, Brief, Communications and the sidebar badges stream in; the inbox sends full text only for open work; optimistic Send/Dismiss/Flag with a cached Gmail token (stored thread id skipped — needs a migration, nothing gained behind an optimistic row); guest inference off the critical path with a 10-minute back-off; Ask caches the hotel context across turns | same, **P5–P8** |
+| **S3** 🟡 *built 1 Oct on `perf/pass-c` (contains S2); migration 0029 — apply, preview, merge* | **Speed, pass C — the database stops fighting the dashboard** | Sync writes only changed rows (it was 97% of production DB time); lighter Communications page (1.7 MB → 0.55 MB) with full text on hover; guest panes on demand; only the needed dictionary in the browser (login 87 → 33 KB); pending hairline + prefetched ⌘K results; Ask caches the conversation; stored Gmail thread; durable AI back-off; 10 RLS policies per-query | `docs/audits/2026-10-01-S3-speed-pass-c.md` (P9, §4.12, owner checks; P10 spike: later) |
 | **W10** | **AI trust pack (P1)** | "How Fondas uses AI" on `/trust`; AI-literacy onboarding + record (Art. 4); guest-notice wording; AI activity log + problem reports — un-parks *AI management*. **Before the first invoices, ~1 Dec** | `AI_ACT_PROMPTS.md` **A5–A8** |
 
 **Then, in order — ✅ all shipped 19 Sep:** the guest context pane (15) → chat
@@ -255,12 +256,27 @@ migration. To ship: run the clicks in
 `docs/audits/2026-10-01-S2-speed-pass-b.md` §4 on the preview, then merge. Its §6
 has four small decisions, none blocking.
 
-**Next, in order:** **S1 → S2** (speed — Oriol's call, 1 Oct, §1 Step 3) → rate
+**S3 status (1 Oct):** the rest of the speed pack, built on `perf/pass-c`
+(which contains S2). The owner checks were run in the dashboards (read-only)
+and found the main cause of the slowness: a Nano database (0.5 GB, swapping)
+spending 97% of its time on the PMS sync rewriting every row every 15
+minutes. Home's p75 in production was 7 s. Oriol upgraded the database to
+Micro (free on Pro) and paid the overdue Vercel and Supabase invoices the same
+day. S3 makes the sync write only what changed (migration 0029). It also
+lightens Communications from 1.7 MB to 0.55 MB, sends the browser only the
+dictionary it reads, acknowledges every click, and caches Ask's whole
+conversation. Independently reviewed; the one high finding (a stale cached
+draft) is fixed and tested. To ship: apply `APPLY_0029.sql`, push
+`perf/pass-c`, run S2 §4 and S3 §4 on the preview, merge. The P10 spike says
+Cache Components *later* (report in `docs/audits/`).
+
+**Next, in order:** **S1 → S2 → S3** (speed — Oriol's call, 1 Oct, §1 Step 3) → rate
 cache (B17) → W10 AI trust pack → Revenue Management. Speed goes first because
 every surface after it inherits whatever the read path costs, and because a
 pilot judges the product on the mornings it is slow. If W10 and B17 compete for
-a week, W10 wins before 1 Dec. The speed pack's P9 (dictionary split) and P10
-(Cache Components spike) are parked in §3.6 with triggers. The four parked house sections
+a week, W10 wins before 1 Dec. The speed pack is done apart from adopting Cache
+Components, which stays parked in §3.6 with the spike's measurements as its
+trigger. The four parked house sections
 (Housekeeping, F&B, Staff, Procurement) and the three business ones
 (Reporting & audit, Chargeback, Team activity) re-enter the nav the week each
 one ships, and not before — see §6.
@@ -419,10 +435,9 @@ Held deliberately. Each has a trigger, not a date.
 | **Extra brief languages beyond en/es/ca** | an open question since 2 July that has never been answered anywhere. Answer it when a pilot asks |
 | **Database-level per-hotel-timezone lock** | duplicate briefs are prevented but not bullet-proof. Deferred, not forgotten |
 | **Founder-tune `lib/todo-rules.ts` thresholds** | is 38% occupancy next week really a to-do? Your call, from hospitality experience |
-| **RLS initplan rewrite** — every policy calls `current_hotel_id()` / `auth.uid()` per row; wrap them as `(select …)` (Supabase's "auth_rls_initplan" advice) | a table past ~10k rows per hotel, or a slow query flagged by Supabase's performance advisor. Found in the 1 Oct speed pass; not worth the policy churn at one pilot's row counts. **Run the advisor once as part of S1's owner checks** — if it flags `reservations` or `emails` with real counts, the trigger has fired |
-| **Speed P9 — ship only the dictionary namespaces client components use** (`docs/audits/2026-10-01-performance.md` §4.11) | mobile pilots, or `en.json` passing 100 KB. Today the whole dictionary is 58 of the login page's 86 KB |
-| **Speed P10 — Cache Components spike** (Next 16's prerendered shell + streamed data, §6 P10) | S1 and S2 done, and the M1 timings still show server render dominating a click |
-| **Reservations accumulate** — sync upserts today ±14 days and nothing prunes old stays | with S1's `(hotel_id, end_utc)` index it no longer slows reads; decide a retention window with the log pruning in §3.2 |
+| **RLS initplan rewrite** — every policy calls `current_hotel_id()` / `auth.uid()` per row; wrap them as `(select …)` (Supabase's "auth_rls_initplan" advice) | the Performance Advisor flagging `reservations` or `emails`. **Advisor run 1 Oct (S3):** it flagged only `users`, `dashboard_layouts`, `chat_threads` and `chat_logs`, and those ten policies are rewritten in 0029. The big tables aren't flagged, so not fired |
+| **Cache Components** (Next 16's prerendered shell + streamed data). Spiked 1 Oct: builds with ~24 files touched; only the frame gets faster; kept-alive routes bring a chat bug (report: `docs/audits/2026-10-01-P10-cache-components-spike.md`) | `layout.session` + `layout.hotel` on production above ~50 ms after S3, or a click-to-skeleton time that still feels slow |
+| **Reservations accumulate** — sync upserts today ±14 days and nothing prunes old stays | with S1's `(hotel_id, end_utc)` index it no longer slows reads, and since S3 the sync no longer rewrites unchanged rows; decide a retention window with the log pruning in §3.2 |
 | **Sentry read token (`SENTRY_AUTH_TOKEN`)** | would let Claude Code query issues directly |
 | **Quarterly competitive review** | first one **1 October** — the only dated commitment carried over |
 
