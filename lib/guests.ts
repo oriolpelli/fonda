@@ -29,6 +29,9 @@ export type Occasion = "birthday" | "anniversary" | "honeymoon";
 
 export type PreferenceSource = "email" | "reservation" | "staff";
 
+/** Who set a trip-purpose or occasion tag (migration 0025). */
+export type TagSource = "staff" | "inferred";
+
 export interface GuestPreference {
   text: string;
   source: PreferenceSource;
@@ -39,6 +42,12 @@ export interface GuestPreference {
 export interface GuestProfile {
   tripPurpose: TripPurpose | null;
   occasion: Occasion | null;
+  /**
+   * Who set each tag. Null when unknown (written before migration 0025) —
+   * the UI then attributes the tag to nobody rather than guessing.
+   */
+  tripPurposeSource: TagSource | null;
+  occasionSource: TagSource | null;
   preferences: GuestPreference[];
   /** Staff-written. Never touched by inference — see migration 0024. */
   notes: string | null;
@@ -114,6 +123,8 @@ function parsePreferences(raw: Json): GuestPreference[] {
 function toProfile(row: {
   trip_purpose: string | null;
   occasion: string | null;
+  trip_purpose_source: TagSource | null;
+  occasion_source: TagSource | null;
   preferences: Json;
   notes: string | null;
   inferred_at: string | null;
@@ -121,6 +132,8 @@ function toProfile(row: {
   return {
     tripPurpose: (row?.trip_purpose as TripPurpose | null) ?? null,
     occasion: (row?.occasion as Occasion | null) ?? null,
+    tripPurposeSource: row?.trip_purpose_source ?? null,
+    occasionSource: row?.occasion_source ?? null,
     preferences: parsePreferences(row?.preferences ?? null),
     notes: row?.notes ?? null,
     inferredAt: row?.inferred_at ?? null,
@@ -310,7 +323,9 @@ export async function loadGuestRecord(
         .overrideTypes<ReservationRow[]>(),
       supabase
         .from("guest_profiles")
-        .select("trip_purpose, occasion, preferences, notes, inferred_at")
+        .select(
+          "trip_purpose, occasion, trip_purpose_source, occasion_source, preferences, notes, inferred_at"
+        )
         .eq("hotel_id", hotelId)
         .eq("customer_mews_id", customerMewsId)
         .maybeSingle(),

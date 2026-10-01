@@ -101,17 +101,31 @@ export async function setGuestTag(
   };
   const onConflict = { onConflict: "hotel_id,customer_mews_id" } as const;
 
+  // The source travels with the value (migration 0025): a person set it, so
+  // it is 'staff' — or nobody's once cleared, which hands it back to inference.
+  const source = value === null ? null : ("staff" as const);
   const { error } =
     field === "trip_purpose"
       ? await supabase
           .from("guest_profiles")
           .upsert(
-            { ...base, trip_purpose: value as TripPurpose | null },
+            {
+              ...base,
+              trip_purpose: value as TripPurpose | null,
+              trip_purpose_source: source,
+            },
             onConflict
           )
       : await supabase
           .from("guest_profiles")
-          .upsert({ ...base, occasion: value as Occasion | null }, onConflict);
+          .upsert(
+            {
+              ...base,
+              occasion: value as Occasion | null,
+              occasion_source: source,
+            },
+            onConflict
+          );
   if (error) return { error: "save_failed" };
 
   revalidateGuest(customerMewsId);

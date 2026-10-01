@@ -649,6 +649,8 @@ export type Database = {
           /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
           inference_model: string | null;
           inference_prompt_version: string | null;
+          trip_purpose_source: "staff" | "inferred" | null;
+          occasion_source: "staff" | "inferred" | null;
         };
         Insert: {
           hotel_id: string;
@@ -663,6 +665,8 @@ export type Database = {
           /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
           inference_model?: string | null;
           inference_prompt_version?: string | null;
+          trip_purpose_source?: "staff" | "inferred" | null;
+          occasion_source?: "staff" | "inferred" | null;
         };
         Update: {
           hotel_id?: string;
@@ -677,6 +681,8 @@ export type Database = {
           /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
           inference_model?: string | null;
           inference_prompt_version?: string | null;
+          trip_purpose_source?: "staff" | "inferred" | null;
+          occasion_source?: "staff" | "inferred" | null;
         };
         Relationships: [
           {

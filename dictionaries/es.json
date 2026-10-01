@@ -1145,6 +1145,7 @@
     "sourceStaff": "Añadido por el equipo",
     "sourceEmail": "Deducido por Fondas AI del correo",
     "sourceReservation": "Deducido por Fondas AI de la reserva",
+    "sourceInferred": "Deducido por Fondas AI",
     "clear": "Borrar",
     "none": "Sin definir",
     "kindEmail": "Correo",

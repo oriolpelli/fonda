@@ -1145,6 +1145,7 @@
     "sourceStaff": "Added by staff",
     "sourceEmail": "Inferred by Fondas AI from email",
     "sourceReservation": "Inferred by Fondas AI from the booking",
+    "sourceInferred": "Inferred by Fondas AI",
     "clear": "Clear",
     "none": "Not set",
     "kindEmail": "Email",

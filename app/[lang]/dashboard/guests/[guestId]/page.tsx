@@ -189,6 +189,8 @@ export default async function GuestRecordPage({
               customerId={record.customerId}
               tripPurpose={guestProfile.tripPurpose}
               occasion={guestProfile.occasion}
+              tripPurposeSource={guestProfile.tripPurposeSource}
+              occasionSource={guestProfile.occasionSource}
               inferredAt={guestProfile.inferredAt}
             />
           </div>

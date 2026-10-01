@@ -1145,6 +1145,7 @@
     "sourceStaff": "Afegit per l'equip",
     "sourceEmail": "Deduït per Fondas AI del correu",
     "sourceReservation": "Deduït per Fondas AI de la reserva",
+    "sourceInferred": "Deduït per Fondas AI",
     "clear": "Esborra",
     "none": "Sense definir",
     "kindEmail": "Correu",

@@ -6,7 +6,7 @@ import {
   setGuestTag,
 } from "@/app/[lang]/dashboard/guests/actions";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
-import type { Occasion, TripPurpose } from "@/lib/guests";
+import type { Occasion, TagSource, TripPurpose } from "@/lib/guests";
 import { cn } from "@/lib/utils";
 
 const PURPOSES: TripPurpose[] = [
@@ -22,10 +22,15 @@ const OCCASIONS: Occasion[] = ["birthday", "anniversary", "honeymoon"];
 /**
  * The two inferred tags, editable inline (§5.4).
  *
- * Each says WHERE IT CAME FROM on hover and focus — "Added by staff" or
- * "Inferred from email, 12 Sep". That line is the whole reason a GM can trust
- * the tag: an unattributed guess about a guest is worse than no guess, because
- * it looks like a fact the PMS supplied.
+ * Each says WHERE IT CAME FROM — "Added by staff" or "Inferred by Fondas AI,
+ * 12 Sep" — as a line under the field and in its title. That line is the whole
+ * reason a GM can trust the tag: an unattributed guess about a guest is worse
+ * than no guess, because it looks like a fact the PMS supplied.
+ *
+ * The source is per field (migration 0025), not derived from `inferredAt`: a
+ * record that inference has ever touched used to label EVERY tag as inferred,
+ * including one a GM picked by hand — a false AI claim. A tag with no recorded
+ * source (set before 0025) carries no attribution at all rather than a guess.
  *
  * Setting a tag makes it a staff value, and lib/guest-inference.ts leaves an
  * existing value alone — so once a person has said "business", the model stops
@@ -36,74 +41,95 @@ export function GuestTags({
   customerId,
   tripPurpose,
   occasion,
+  tripPurposeSource,
+  occasionSource,
   inferredAt,
 }: {
   customerId: string;
   tripPurpose: TripPurpose | null;
   occasion: Occasion | null;
-  /** When inference last ran — the provenance line's date. */
+  tripPurposeSource: TagSource | null;
+  occasionSource: TagSource | null;
+  /** When inference last ran — the date on an inferred tag's line. */
   inferredAt: string | null;
 }) {
   const { dict, locale } = useDictionary();
   const [pending, startTransition] = useTransition();
   const [purpose, setPurpose] = useState(tripPurpose);
   const [occ, setOcc] = useState(occasion);
+  // A pick made here is a staff value from that moment, before the server
+  // round-trip — the line under the field must not keep saying "AI".
+  const [purposeSource, setPurposeSource] = useState(tripPurposeSource);
+  const [occSource, setOccSource] = useState(occasionSource);
 
   const purposeLabels = dict.guests.purpose as Record<string, string>;
   const occasionLabels = dict.guests.occasion as Record<string, string>;
 
-  const provenance = inferredAt
-    ? `${dict.guests.sourceEmail}, ${new Intl.DateTimeFormat(locale, {
+  const inferredLine = inferredAt
+    ? `${dict.guests.sourceInferred}, ${new Intl.DateTimeFormat(locale, {
         day: "numeric",
         month: "short",
       }).format(new Date(inferredAt))}`
-    : dict.guests.sourceStaff;
+    : dict.guests.sourceInferred;
+
+  const attribution = (source: TagSource | null): string | null =>
+    source === "staff"
+      ? dict.guests.sourceStaff
+      : source === "inferred"
+        ? inferredLine
+        : null;
 
   const field = (
     label: string,
     value: string | null,
+    source: TagSource | null,
     options: string[],
     labels: Record<string, string>,
     onChange: (next: string | null) => void
-  ) => (
-    <div className="flex flex-col gap-1.5">
-      <label className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fonda-text-3)]">
-        {label}
-      </label>
-      <select
-        value={value ?? ""}
-        disabled={pending}
-        title={value ? provenance : undefined}
-        onChange={(e) => onChange(e.target.value || null)}
-        className={cn(
-          "h-9 rounded-[10px] border border-input bg-surface px-3 text-[13px] text-[var(--fonda-text)] transition-colors focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]",
-          pending && "opacity-60"
-        )}
-      >
-        <option value="">{dict.guests.none}</option>
-        {options.map((o) => (
-          <option key={o} value={o}>
-            {labels[o] ?? o}
-          </option>
-        ))}
-      </select>
-      {value ? (
-        <span className="text-[11px] text-[var(--fonda-text-3)]">
-          {provenance}
-        </span>
-      ) : null}
-    </div>
-  );
+  ) => {
+    const provenance = value ? attribution(source) : null;
+    return (
+      <div className="flex flex-col gap-1.5">
+        <label className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fonda-text-3)]">
+          {label}
+        </label>
+        <select
+          value={value ?? ""}
+          disabled={pending}
+          title={provenance ?? undefined}
+          onChange={(e) => onChange(e.target.value || null)}
+          className={cn(
+            "h-9 rounded-[10px] border border-input bg-surface px-3 text-[13px] text-[var(--fonda-text)] transition-colors focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]",
+            pending && "opacity-60"
+          )}
+        >
+          <option value="">{dict.guests.none}</option>
+          {options.map((o) => (
+            <option key={o} value={o}>
+              {labels[o] ?? o}
+            </option>
+          ))}
+        </select>
+        {provenance ? (
+          <span className="text-[11px] text-[var(--fonda-text-3)]">
+            {provenance}
+          </span>
+        ) : null}
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col gap-3">
       {field(
         dict.guests.purposeLabel,
         purpose,
+        purposeSource,
         PURPOSES,
         purposeLabels,
         (next) => {
           setPurpose(next as TripPurpose | null);
+          setPurposeSource(next ? "staff" : null);
           startTransition(() => {
             void setGuestTag(
               customerId,
@@ -116,10 +142,12 @@ export function GuestTags({
       {field(
         dict.guests.occasionLabel,
         occ,
+        occSource,
         OCCASIONS,
         occasionLabels,
         (next) => {
           setOcc(next as Occasion | null);
+          setOccSource(next ? "staff" : null);
           startTransition(() => {
             void setGuestTag(customerId, "occasion", next as Occasion | null);
           });

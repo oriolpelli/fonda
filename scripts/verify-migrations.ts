@@ -103,7 +103,12 @@ async function main() {
       "sent_via",
     ],
     briefings: ["model", "prompt_version"],
-    guest_profiles: ["inference_model", "inference_prompt_version"],
+    guest_profiles: [
+      "inference_model",
+      "inference_prompt_version",
+      "trip_purpose_source",
+      "occasion_source",
+    ],
     chat_logs: ["model"],
     hotel_settings: [
       "review_summary_model",

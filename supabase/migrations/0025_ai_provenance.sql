@@ -131,6 +131,22 @@ comment on column public.guest_profiles.inference_model is
   'Model id behind the most recent inference run (see inferred_at). Staff-'
   'entered values are never written by inference; this describes the rest.';
 
+-- Who set each of the two tags. Without these, the guest record could only
+-- guess from inferred_at, and labelled a tag a GM picked by hand as "Inferred
+-- by Fondas AI" — a false AI claim (A3). 'staff' from setGuestTag, 'inferred'
+-- when inference fills a blank. Null on rows written before 0025, which the
+-- UI shows with no attribution rather than a guess.
+alter table public.guest_profiles
+  add column if not exists trip_purpose_source text,
+  add column if not exists occasion_source     text;
+
+alter table public.guest_profiles drop constraint if exists guest_profiles_trip_purpose_source_check;
+alter table public.guest_profiles add constraint guest_profiles_trip_purpose_source_check
+  check (trip_purpose_source in ('staff', 'inferred'));
+alter table public.guest_profiles drop constraint if exists guest_profiles_occasion_source_check;
+alter table public.guest_profiles add constraint guest_profiles_occasion_source_check
+  check (occasion_source in ('staff', 'inferred'));
+
 -- ---------------------------------------------------------------------------
 -- chat_logs — Ask. Assistant rows only; user rows stay null.
 -- ---------------------------------------------------------------------------

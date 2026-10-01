@@ -204,6 +204,21 @@ export async function inferGuestProfile(
       // clearing one is a deliberate act in the UI.
       tripPurpose: existing.tripPurpose ?? result.trip_purpose,
       occasion: existing.occasion ?? result.occasion,
+      // A value that was already there keeps whatever source it had (staff,
+      // inferred, or unknown for pre-0025 rows). A blank this run filled is
+      // 'inferred' — that is the label the guest record shows (A3).
+      tripPurposeSource:
+        existing.tripPurpose !== null
+          ? existing.tripPurposeSource
+          : result.trip_purpose
+            ? "inferred"
+            : null,
+      occasionSource:
+        existing.occasion !== null
+          ? existing.occasionSource
+          : result.occasion
+            ? "inferred"
+            : null,
       preferences: [...staffPreferences, ...inferred],
       // Rule 1. Carried through untouched, and absent from the write below.
       notes: existing.notes,
@@ -217,6 +232,8 @@ export async function inferGuestProfile(
         customer_mews_id: input.customerMewsId,
         trip_purpose: merged.tripPurpose,
         occasion: merged.occasion,
+        trip_purpose_source: merged.tripPurposeSource,
+        occasion_source: merged.occasionSource,
         preferences: merged.preferences as unknown as Json,
         // `notes` IS DELIBERATELY ABSENT. An upsert that included it —
         // even set to its current value — would overwrite a note a colleague
