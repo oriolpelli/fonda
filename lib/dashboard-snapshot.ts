@@ -198,15 +198,28 @@ export async function loadDashboardSnapshot(): Promise<DashboardSnapshot> {
       // index (migration 0028) to the stays that haven't finished, instead of
       // the mews_id index across every booking the hotel has ever had —
       // ~40 ms → ~7 ms on a 45k-reservation test hotel. mews_id breaks ties,
-      // and with it the order is unique within one hotel, so paging can't
-      // skip or repeat a row. Nothing below depends on the order beyond the
-      // listing order of today's VIPs, which was GUID order before.
+      // so the order is unique within one hotel. (Below: the rows are put
+      // back in mews_id order, the order everything downstream always saw.)
       .order("end_utc", { ascending: true })
       .order("mews_id", { ascending: true })
       .range(from, to)
       .overrideTypes<ReservationRow[]>()
   );
-  const reservationRows = withSlimRaw<ReservationRow>(pagedRows);
+  // Back to mews_id order, deduplicated. Order: today's VIP list is listed in
+  // reservation order, which was mews_id order before the read was reordered
+  // for the index. Dedupe: paging is by offset, and end_utc — unlike mews_id —
+  // can change if a sync rewrites a stay between two page reads, which could
+  // show one row on both pages (past 1,000 rows only). A duplicate would count
+  // a stay twice; dropping it costs nothing. (A row skipped in that same race
+  // is the rarer half and was already possible with inserts under mews_id
+  // paging; the next render corrects it.)
+  const byMewsId = new Map<string, ReservationRow>();
+  for (const row of withSlimRaw<ReservationRow>(pagedRows)) {
+    byMewsId.set(row.mews_id, row);
+  }
+  const reservationRows = [...byMewsId.values()].sort((a, b) =>
+    a.mews_id < b.mews_id ? -1 : a.mews_id > b.mews_id ? 1 : 0
+  );
 
   const reservations = reservationRows.filter(
     (r) => r.state !== CANCELLED_STATE && r.start_utc && r.end_utc

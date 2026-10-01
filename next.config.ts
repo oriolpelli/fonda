@@ -12,10 +12,15 @@ const nextConfig: NextConfig = {
      * §4.5). The browser's Back and Forward were always cached; this is for
      * link clicks.
      *
-     * Never stale after an action: a Server Action that calls revalidatePath,
-     * and every router.refresh(), clears this cache. The only data that can be
-     * up to 30 s old is a background sync or email landing while you click
-     * between pages — and every widget prints the time of the read it shows.
+     * Never stale after something the user did, as long as every mutation
+     * clears this cache — and they all do: Server Actions that call
+     * revalidatePath clear it, and the few mutations that go through fetch()
+     * to a route handler call router.refresh() when they finish (Ask, brief
+     * generation, the onboarding sync). A new fetch()-based mutation must do
+     * the same. Cookies the client writes itself are read back on the client
+     * (the inbox's sort and queue). The only data that can be up to 30 s old
+     * is a background sync or email landing while you click between pages —
+     * and every widget prints the time of the read it shows.
      */
     staleTimes: {
       dynamic: 30,

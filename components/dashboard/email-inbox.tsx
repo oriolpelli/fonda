@@ -21,9 +21,15 @@ import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import { byDate, byUrgency, type Urgency } from "@/lib/email-urgency";
-import { SORT_COOKIE, SORT_MODES, type SortMode } from "@/lib/inbox-sort";
+import {
+  isSortMode,
+  SORT_COOKIE,
+  SORT_MODES,
+  type SortMode,
+} from "@/lib/inbox-sort";
 import {
   DEFAULT_QUEUE,
+  isQueueMode,
   matchesQueue,
   QUEUE_COOKIE,
   QUEUE_MODES,
@@ -92,6 +98,26 @@ function rememberQueue(queue: QueueMode): void {
   document.cookie = `${QUEUE_COOKIE}=${queue}; path=/; max-age=31536000; samesite=lax`;
 }
 
+/**
+ * A cookie's current value in the browser, or undefined on the server.
+ *
+ * Why the client reads the cookies it writes. The server reads them to render
+ * (so nothing flips after paint), but since 1 Oct the client router keeps a
+ * visited page for 30 s (next.config.ts staleTimes), and a cookie written here
+ * does not clear that cache. Change the sort in Upcoming, click In-house within
+ * 30 s, and its cached render would carry the old choice. Seeding state from
+ * the cookie itself fixes that, and agrees with the server on every hard load,
+ * because the server read this same cookie a moment earlier.
+ */
+function readCookie(name: string): string | undefined {
+  if (typeof document === "undefined") return undefined;
+  const prefix = `${name}=`;
+  return document.cookie
+    .split("; ")
+    .find((entry) => entry.startsWith(prefix))
+    ?.slice(prefix.length);
+}
+
 // Quiet, neutral badges (one signal only). Negative categories that need
 // attention get the single destructive tint; everything else stays neutral.
 const NEUTRAL = "bg-[var(--fonda-surface)] text-[var(--fonda-text-2)]";
@@ -156,8 +182,17 @@ export function EmailInbox({
   contextPanes?: Record<string, ReactNode>;
 }) {
   const { dict, locale } = useDictionary();
-  const [sort, setSort] = useState<SortMode>(initialSort);
-  const [queue, setQueue] = useState<QueueMode>(initialQueue);
+  const [sort, setSort] = useState<SortMode>(() => {
+    const saved = readCookie(SORT_COOKIE);
+    return isSortMode(saved) ? saved : initialSort;
+  });
+  const [queue, setQueue] = useState<QueueMode>(() => {
+    // A deep link's queue was chosen on the server to contain that message
+    // (communications/window.tsx) — it outranks the remembered one.
+    if (initialSelectedId) return initialQueue;
+    const saved = readCookie(QUEUE_COOKIE);
+    return isQueueMode(saved) ? saved : initialQueue;
+  });
   const [selectedId, setSelectedId] = useState<string | null>(
     initialSelectedId ?? emails[0]?.id ?? null
   );

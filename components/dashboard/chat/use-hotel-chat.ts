@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 import { useDictionary } from "@/components/i18n/dictionary-provider";
@@ -77,6 +78,7 @@ export function useHotelChat(
   initial?: { threadId: string | null; messages: ChatMessage[] }
 ): HotelChat {
   const { dict } = useDictionary();
+  const router = useRouter();
   const [messages, setMessages] = useState<ChatMessage[]>(
     initial?.messages ?? []
   );
@@ -191,9 +193,15 @@ export function useHotelChat(
         });
       } finally {
         setStreaming(false);
+        // The turn changed server data the client router may hold for up to
+        // 30 s (next.config.ts staleTimes): this conversation's transcript,
+        // the thread list, and — for "draft an email" — the inbox. A refresh
+        // clears that cache and re-renders the page in the background, keeping
+        // this surface's state (it is keyed by thread, and seeded once).
+        router.refresh();
       }
     },
-    [dict, messages, streaming, threadId]
+    [dict, messages, router, streaming, threadId]
   );
 
   const reset = useCallback(() => {

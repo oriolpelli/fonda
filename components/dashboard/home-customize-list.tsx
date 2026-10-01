@@ -20,9 +20,11 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { RefObject } from "react";
-
-import { WidgetRow, type CustomizeRow } from "@/components/dashboard/home-customize-row";
+import {
+  WidgetRow,
+  type CustomizeListProps,
+  type CustomizeRow,
+} from "@/components/dashboard/home-customize-row";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import type { HomeWidgetKey } from "@/lib/home-widgets";
 import { t } from "@/lib/i18n/format";
@@ -45,14 +47,7 @@ export function HomeCustomizeList({
   onToggle,
   draggingRef,
   widgetTitle,
-}: {
-  rows: CustomizeRow[];
-  onReorder: (update: (prev: CustomizeRow[]) => CustomizeRow[]) => void;
-  onToggle: (key: HomeWidgetKey, enabled: boolean) => void;
-  /** Shared with the panel: Escape means "cancel the drag" while one is live. */
-  draggingRef: RefObject<boolean>;
-  widgetTitle: (key: HomeWidgetKey) => string;
-}) {
+}: CustomizeListProps) {
   const { dict } = useDictionary();
   const copy = dict.home.customize;
 

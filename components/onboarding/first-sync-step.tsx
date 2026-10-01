@@ -69,6 +69,10 @@ export function FirstSyncStep({
         }
         setResult({ reservations: data?.reservations ?? 0 });
         setPhase("synced");
+        // The first sync changes what every dashboard page shows. Clear the
+        // client router cache (next.config.ts staleTimes) so one seen before
+        // onboarding isn't served from it with its pre-sync empty state.
+        router.refresh();
       } catch {
         if (cancelled) return;
         setError(dict.common.serverUnreachable);
@@ -79,7 +83,7 @@ export function FirstSyncStep({
     return () => {
       cancelled = true;
     };
-  }, [attempt, dict]);
+  }, [attempt, dict, router]);
 
   function retry() {
     setError(null);
@@ -107,6 +111,8 @@ export function FirstSyncStep({
         setPhase("synced");
         return;
       }
+      // Same reason as after the sync: the brief now exists.
+      router.refresh();
       router.push(previewDoneHref);
     } catch {
       setError(dict.common.serverUnreachable);

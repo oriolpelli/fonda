@@ -5,7 +5,9 @@ import { loadSentry } from "@/lib/sentry-client";
 // it saves and the one trade it makes. Disabled until NEXT_PUBLIC_SENTRY_DSN
 // is set, exactly as before.
 if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_SENTRY_DSN) {
-  const start = () => void loadSentry();
+  // A blocked or offline SDK chunk is dropped here; reporting must never
+  // become the failure.
+  const start = () => void loadSentry()?.catch(() => {});
   if ("requestIdleCallback" in window) {
     window.requestIdleCallback(start, { timeout: 4000 });
   } else {

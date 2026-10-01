@@ -1,9 +1,17 @@
 "use client";
 
 import { GripVertical } from "lucide-react";
-import { useId, type CSSProperties, type HTMLAttributes, type Ref } from "react";
+import {
+  useId,
+  type CSSProperties,
+  type HTMLAttributes,
+  type Ref,
+  type RefObject,
+} from "react";
 
+import { useDictionary } from "@/components/i18n/dictionary-provider";
 import type { HomeWidgetKey } from "@/lib/home-widgets";
+import { t } from "@/lib/i18n/format";
 import { cn } from "@/lib/utils";
 
 /** One storable widget as the panel holds it: the key, and whether it's ticked. */
@@ -87,5 +95,46 @@ export function WidgetRow({
         <GripVertical aria-hidden="true" strokeWidth={1.5} className="size-4" />
       </button>
     </li>
+  );
+}
+
+/** What the panel hands its widget list — the drag-and-drop one or this one. */
+export interface CustomizeListProps {
+  rows: CustomizeRow[];
+  onReorder: (update: (prev: CustomizeRow[]) => CustomizeRow[]) => void;
+  onToggle: (key: HomeWidgetKey, enabled: boolean) => void;
+  /** Shared with the panel: Escape means "cancel the drag" while one is live. */
+  draggingRef: RefObject<boolean>;
+  widgetTitle: (key: HomeWidgetKey) => string;
+}
+
+/**
+ * The widget rows without drag-and-drop. What the panel shows before its first
+ * open (it stays mounted, `inert`), while the drag-and-drop chunk loads, and
+ * for good if that chunk fails to load — an old tab after a deploy, a dropped
+ * connection — so the panel still ticks and saves instead of taking Home down
+ * through the error boundary. Accepts the drag list's props and ignores the
+ * ones it has no use for.
+ */
+export function StaticCustomizeList({
+  rows,
+  onToggle,
+  widgetTitle,
+}: CustomizeListProps) {
+  const { dict } = useDictionary();
+  return (
+    <ul className="flex flex-col gap-0.5">
+      {rows.map((row) => (
+        <WidgetRow
+          key={row.key}
+          row={row}
+          title={widgetTitle(row.key)}
+          handleLabel={t(dict.home.customize.reorder, {
+            title: widgetTitle(row.key),
+          })}
+          onToggle={onToggle}
+        />
+      ))}
+    </ul>
   );
 }

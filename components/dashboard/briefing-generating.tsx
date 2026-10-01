@@ -26,7 +26,13 @@ export function BriefingGenerating() {
     (async () => {
       try {
         const res = await fetch("/api/briefing", { method: "POST" });
-        if (cancelled) return;
+        if (cancelled) {
+          // Left the page mid-generation. The brief exists now, but Home and
+          // this page may be held in the client router cache (staleTimes) with
+          // "no brief yet" — a refresh clears it from wherever the user is.
+          if (res.ok) router.refresh();
+          return;
+        }
         if (!res.ok) {
           const data = (await res.json().catch(() => null)) as {
             error?: string;

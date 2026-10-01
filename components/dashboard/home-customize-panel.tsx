@@ -4,6 +4,7 @@ import { Lock, Sparkles, X } from "lucide-react";
 import {
   lazy,
   Suspense,
+  type ComponentType,
   useCallback,
   useEffect,
   useId,
@@ -17,13 +18,13 @@ import {
   updateHomeLayout,
 } from "@/app/[lang]/dashboard/actions";
 import {
-  WidgetRow,
+  StaticCustomizeList,
+  type CustomizeListProps,
   type CustomizeRow,
 } from "@/components/dashboard/home-customize-row";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
 import type { HomeWidgetKey } from "@/lib/home-widgets";
-import { t } from "@/lib/i18n/format";
 import { HOME_LOCKED_WIDGETS, roadmapFeature } from "@/lib/roadmap";
 import { cn } from "@/lib/utils";
 
@@ -62,9 +63,19 @@ import { cn } from "@/lib/utils";
 
 /** The drag-and-drop list, as its own chunk. */
 const loadList = () => import("@/components/dashboard/home-customize-list");
-const HomeCustomizeList = lazy(() =>
-  loadList().then((module) => ({ default: module.HomeCustomizeList }))
+const HomeCustomizeList = lazy<ComponentType<CustomizeListProps>>(() =>
+  loadList().then(
+    (module) => ({ default: module.HomeCustomizeList }),
+    // If the chunk can't load, the panel keeps working without the drag rather
+    // than throwing into the dashboard's error boundary.
+    () => ({ default: StaticCustomizeList })
+  )
 );
+
+/** Warm the chunk on intent. A failure here is retried, or caught, on open. */
+function prefetchList(): void {
+  loadList().catch(() => {});
+}
 
 /** Everything the focus trap cycles through — the sidebar's list, verbatim. */
 const FOCUSABLE =
@@ -259,17 +270,13 @@ export function HomeCustomizePanel({ layout }: { layout: readonly CustomizeRow[]
    * first open (it stays mounted, `inert`) and while the list's chunk loads.
    */
   const staticRows = (
-    <ul className="flex flex-col gap-0.5">
-      {rows.map((row) => (
-        <WidgetRow
-          key={row.key}
-          row={row}
-          title={widgetTitle(row.key)}
-          handleLabel={t(copy.reorder, { title: widgetTitle(row.key) })}
-          onToggle={toggle}
-        />
-      ))}
-    </ul>
+    <StaticCustomizeList
+      rows={rows}
+      onReorder={setRows}
+      onToggle={toggle}
+      draggingRef={draggingRef}
+      widgetTitle={widgetTitle}
+    />
   );
 
   return (
@@ -284,8 +291,8 @@ export function HomeCustomizePanel({ layout }: { layout: readonly CustomizeRow[]
         onClick={() => (open ? requestClose() : openPanel())}
         // Start fetching the drag-and-drop chunk as intent shows, so it is
         // usually there by the time the panel has slid in.
-        onPointerEnter={() => void loadList()}
-        onFocus={() => void loadList()}
+        onPointerEnter={prefetchList}
+        onFocus={prefetchList}
       >
         {copy.open}
       </Button>
