@@ -623,6 +623,8 @@
     "sending": "Sending…",
     "actionFailed": "That didn't go through. Check your connection and try again.",
     "notDone": "Didn't go through",
+    "loadFailed": "Couldn't load the full message.",
+    "loadingDraft": "Loading the draft…",
     "needsAttention": "Needs attention",
     "ignore": "Ignore",
     "sent": "Sent",

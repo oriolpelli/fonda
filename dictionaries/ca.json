@@ -623,6 +623,8 @@
     "sending": "Enviant…",
     "actionFailed": "No s'ha pogut completar. Comprova la connexió i torna-ho a provar.",
     "notDone": "No s'ha completat",
+    "loadFailed": "No s'ha pogut carregar el missatge complet.",
+    "loadingDraft": "Carregant l'esborrany…",
     "needsAttention": "Requereix atenció",
     "ignore": "Ignora",
     "sent": "Enviat",

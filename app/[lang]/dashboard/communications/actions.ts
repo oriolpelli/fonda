@@ -13,7 +13,6 @@ import { measureDraftEdit } from "@/lib/draft-edit";
 import { getGmailClientForHotel, type GmailClient } from "@/lib/gmail";
 import { migrationApplied } from "@/lib/schema-features";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
@@ -32,32 +31,6 @@ function revalidateInbox(): void {
   revalidatePath("/[lang]/dashboard/communications/upcoming", "page");
   // The sidebar badge is rendered by the dashboard layout, above the page.
   revalidatePath("/[lang]/dashboard", "layout");
-}
-
-/**
- * The full text of one message — what the inbox fetches when a SENT message is
- * opened, since the list carries only a preview of those
- * (docs/audits/2026-10-01-performance.md §4.2).
- *
- * Read through the signed-in user's RLS client, never the service role: an id
- * from another hotel, or one that doesn't exist, comes back as nothing, and is
- * reported only as `{ ok: false }` so the call can't be used to probe ids.
- * Changes nothing, so it revalidates nothing.
- */
-export async function loadEmailBody(
-  emailId: string
-): Promise<{ ok: true; body: string | null } | { ok: false }> {
-  if (typeof emailId !== "string" || emailId.length === 0 || emailId.length > 64) {
-    return { ok: false };
-  }
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("emails")
-    .select("body")
-    .eq("id", emailId)
-    .maybeSingle();
-  if (error || !data) return { ok: false };
-  return { ok: true, body: data.body };
 }
 
 /**

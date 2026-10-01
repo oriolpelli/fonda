@@ -476,6 +476,18 @@ async function pendingWithDraft(db: Db, ids: string[]): Promise<Set<string>> {
 export async function loadEmailStayPhase(
   emailId: string
 ): Promise<StayPhase | null> {
+  return (await loadInboxEmail(emailId))?.stayPhase ?? null;
+}
+
+/**
+ * One message as the inbox list carries it — summary columns, booking
+ * context, urgency and `contextKey` — through the same withGuestContext as the
+ * list, for one row instead of two hundred. Null when the caller can't see it
+ * (RLS). No body or draft.
+ */
+export async function loadInboxEmail(
+  emailId: string
+): Promise<InboxEmail | null> {
   const supabase = await createClient();
   const [hotel, { data }] = await Promise.all([
     getHotel(),
@@ -492,7 +504,7 @@ export async function loadEmailStayPhase(
     hotel.timezone,
     withoutText([data])
   );
-  return email?.stayPhase ?? null;
+  return email ?? null;
 }
 
 export interface InboxBadge {

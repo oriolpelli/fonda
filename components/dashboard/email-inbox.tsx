@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import {
+  useCallback,
   useEffect,
   useMemo,
   useOptimistic,
@@ -16,19 +17,21 @@ import {
   approveAllStandard,
   flagEmail,
   ignoreEmail,
-  loadEmailBody,
   sendReply,
 } from "@/app/[lang]/dashboard/communications/actions";
+import { loadContextPane } from "@/app/[lang]/dashboard/communications/pane-actions";
 import {
   BulkSendDialog,
   firstLineOf,
   firstNameOf,
   type BulkSendItem,
 } from "@/components/dashboard/bulk-send-dialog";
+import { ContextPaneSkeleton } from "@/components/dashboard/context-pane-skeleton";
 import { EmptyState, type EmptyStateIcon } from "@/components/dashboard/empty-state";
 import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   byDate,
   byUrgency,
@@ -74,6 +77,9 @@ import { cn } from "@/lib/utils";
 /** Tailwind's `lg` breakpoint — kept in sync with the `lg:` classes below. */
 const LG_QUERY = "(min-width: 64rem)";
 
+/** Tailwind's `xl` breakpoint: where the guest-context column exists. */
+const XL_QUERY = "(min-width: 80rem)";
+
 export interface InboxEmail {
   id: string;
   from_email: string | null;
@@ -99,6 +105,12 @@ export interface InboxEmail {
    * one is opened.
    */
   body_truncated?: boolean;
+  /**
+   * True when `draft_reply` is only its first lines (communications/window.tsx
+   * sends most open messages that way). The editor and Send wait for the full
+   * draft — a preview is never what goes out.
+   */
+  draft_truncated?: boolean;
   /**
    * Client-only: the reply is on its way. Set by the optimistic update when
    * Send is clicked, and gone once the server's own render of the row lands —
@@ -355,33 +367,40 @@ export function EmailInbox({
   }, [mobileView]);
 
   /**
-   * Full text of sent messages, fetched when one is opened (the list carries a
-   * preview of those). Kept for the life of the page, so going back to a
-   * message never fetches it twice; `requested` stops a double fetch while one
-   * is in flight. A failed fetch leaves the preview showing.
+   * The full body and draft of messages the list carries as a preview
+   * (communications/window.tsx), fetched from app/api/emails/[id] when one is
+   * hovered, focused or opened — usually before the click lands. Kept for the
+   * page's life, so going back to a message never fetches it twice;
+   * `requested` stops a double fetch while one is in flight. A GET, not a
+   * Server Action: those run one at a time, and a body would wait behind every
+   * Send in flight.
    */
-  const [fullBodies, setFullBodies] = useState<Record<string, string | null>>(
-    {}
-  );
+  const [fullText, setFullText] = useState<
+    Record<string, { body: string | null; draft: string | null }>
+  >({});
+  /** Messages whose full text failed to load; the pane offers a retry. */
+  const [loadFailed, setLoadFailed] = useState<Record<string, true>>({});
   const requested = useRef(new Set<string>());
-  const openTruncated = shownEmails.find(
-    (e) => e.id === selectedId && e.body_truncated
-  );
-  useEffect(() => {
-    if (!openTruncated) return;
-    const id = openTruncated.id;
+
+  const ensureFullText = useCallback((email: InboxEmail | null | undefined) => {
+    if (!email || !(email.body_truncated || email.draft_truncated)) return;
+    const id = email.id;
     if (requested.current.has(id)) return;
     requested.current.add(id);
-    void loadEmailBody(id)
-      .then((result) => {
-        if (result.ok) {
-          setFullBodies((prev) => ({ ...prev, [id]: result.body }));
-        } else {
-          requested.current.delete(id);
-        }
+    setLoadFailed((prev) => withoutIds(prev, [id]));
+    fetch(`/api/emails/${encodeURIComponent(id)}`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+      .then((data: { body: string | null; draft_reply: string | null }) => {
+        setFullText((prev) => ({
+          ...prev,
+          [id]: { body: data.body ?? null, draft: data.draft_reply ?? null },
+        }));
       })
-      .catch(() => requested.current.delete(id));
-  }, [openTruncated]);
+      .catch(() => {
+        requested.current.delete(id);
+        setLoadFailed((prev) => ({ ...prev, [id]: true }));
+      });
+  }, []);
 
   /** Select a message, and on a phone move into it. */
   function openEmail(id: string) {
@@ -530,6 +549,52 @@ export function EmailInbox({
   }
 
   const selected = sorted.find((e) => e.id === selectedId) ?? null;
+
+  // The open message's full text, and the next one down the list's — the one
+  // a GM opens after dealing with this.
+  const nextRow = selected ? sorted[sorted.indexOf(selected) + 1] : undefined;
+
+  /**
+   * Guest-context panes fetched for messages whose pane didn't travel with the
+   * page (communications/window.tsx sends panes for the top of the queues
+   * only). Rendered on the server by loadContextPane — the guest's details
+   * still arrive as markup, never as props. Only from `xl` up, the one width
+   * that shows the pane; `null` is kept too, so a guest with no pane is asked
+   * about once.
+   */
+  const [fetchedPanes, setFetchedPanes] = useState<Record<string, ReactNode>>(
+    {}
+  );
+  const panesRequested = useRef(new Set<string>());
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia(XL_QUERY);
+    const update = () => setWide(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    if (!wide || !selected) return;
+    const key = selected.contextKey;
+    if (contextPanes?.[key] || panesRequested.current.has(key)) return;
+    panesRequested.current.add(key);
+    loadContextPane(locale, selected.id)
+      .then((pane) => setFetchedPanes((prev) => ({ ...prev, [key]: pane })))
+      .catch(() => {
+        panesRequested.current.delete(key);
+        setFetchedPanes((prev) => ({ ...prev, [key]: null }));
+      });
+  }, [wide, selected, contextPanes, locale]);
+
+  /** The open message's draft is still only its first lines. */
+  const draftPending = Boolean(
+    selected?.draft_truncated && !(selected.id in fullText)
+  );
+  useEffect(() => {
+    ensureFullText(selected);
+    ensureFullText(nextRow);
+  }, [selected, nextRow, ensureFullText]);
   const complaints = sorted.filter((e) => e.urgency.kind === "complaint");
   // What "approve all" would send from the queue on screen. The server action
   // re-applies the same filter to these ids (communications/actions.ts) —
@@ -603,7 +668,8 @@ export function EmailInbox({
   }
 
   function handleSend() {
-    if (!selected) return;
+    // Never send a draft the list carried as a preview (see `draftPending`).
+    if (!selected || draftPending) return;
     const id = selected.id;
     // One send per message per flight. The button is gone as soon as the row
     // turns "sent", so this only matters for a second click landing before
@@ -657,9 +723,18 @@ export function EmailInbox({
 
   // The pane for whoever is open. Absent when nothing is selected, and absent
   // on every width below `xl` because the column itself is not rendered there.
-  const contextPane = selected
-    ? (contextPanes?.[selected.contextKey] ?? null)
-    : null;
+  // A pane that didn't travel with the page is fetched (see `fetchedPanes`),
+  // and its column holds a skeleton meanwhile, so the message column doesn't
+  // jump narrower when it lands.
+  const selectedKey = selected?.contextKey;
+  const contextPane = !selectedKey
+    ? null
+    : (contextPanes?.[selectedKey] ??
+      (selectedKey in fetchedPanes
+        ? fetchedPanes[selectedKey]
+        : wide
+          ? <ContextPaneSkeleton />
+          : null));
 
   // Nothing in the inbox at all: the whole surface is the empty state, rather
   // than an empty list sitting next to an empty reading pane. Note this is the
@@ -841,6 +916,10 @@ export function EmailInbox({
               <button
                 key={email.id}
                 onClick={() => openEmail(email.id)}
+                // Fetch a preview's full text on the way to the click, so the
+                // message is usually complete by the time it opens.
+                onMouseEnter={() => ensureFullText(email)}
+                onFocus={() => ensureFullText(email)}
                 className={cn(
                   "flex items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-muted",
                   // The selected row only reads as selected next to a detail
@@ -958,12 +1037,29 @@ export function EmailInbox({
               ) : null}
 
               <div className="max-h-48 overflow-y-auto whitespace-pre-line rounded-md bg-muted p-3 text-sm">
-                {selected.id in fullBodies
-                  ? fullBodies[selected.id] || dict.emails.emptyMessage
+                {selected.id in fullText
+                  ? fullText[selected.id].body || dict.emails.emptyMessage
                   : selected.body_truncated
                     ? `${selected.body ?? ""}…`
                     : selected.body || dict.emails.emptyMessage}
               </div>
+
+              {/* The rest of a preview didn't arrive. Says so once, here, for
+                  the body and the draft alike; Send stays held below. */}
+              {loadFailed[selected.id] && !(selected.id in fullText) ? (
+                <div className="flex items-center gap-3">
+                  <p role="alert" className="text-sm text-destructive">
+                    {dict.emails.loadFailed}
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => ensureFullText(selected)}
+                  >
+                    {dict.common.tryAgain}
+                  </Button>
+                </div>
+              ) : null}
 
               {selected.status === "sent" ? (
                 <div className="flex flex-col gap-1">
@@ -1003,19 +1099,40 @@ export function EmailInbox({
                       {dict.emails.draftLabel}
                     </label>
                   )}
-                  <textarea
-                    id="draft"
-                    key={selected.id}
-                    ref={draftRef}
-                    // A send that failed comes back with what the GM wrote —
-                    // see `unsent`.
-                    defaultValue={
-                      unsent[selected.id] ?? selected.draft_reply ?? ""
-                    }
-                    rows={10}
-                    className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]"
-                    placeholder={dict.emails.replyPlaceholder}
-                  />
+                  {draftPending ? (
+                    // The list carried only the draft's first lines; the
+                    // whole draft is on its way (usually already, from the
+                    // hover). The editor waits for it, and so does Send: a
+                    // preview must never be what a guest receives.
+                    // Failed: the alert under the body says so and offers the
+                    // retry; the editor's place stays empty until it works.
+                    loadFailed[selected.id] ? null : (
+                      <div aria-busy="true">
+                        <span role="status" className="sr-only">
+                          {dict.emails.loadingDraft}
+                        </span>
+                        <Skeleton className="h-[226px] w-full" />
+                      </div>
+                    )
+                  ) : (
+                    <textarea
+                      id="draft"
+                      key={selected.id}
+                      ref={draftRef}
+                      // A send that failed comes back with what the GM wrote
+                      // (`unsent`); otherwise the whole draft, fetched if the
+                      // list carried only its first lines.
+                      defaultValue={
+                        unsent[selected.id] ??
+                        fullText[selected.id]?.draft ??
+                        selected.draft_reply ??
+                        ""
+                      }
+                      rows={10}
+                      className="w-full rounded-[10px] border border-input bg-popover p-3 text-sm transition-colors placeholder:text-[var(--fonda-text-3)] focus-visible:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-[var(--fonda-accent-tint)]"
+                      placeholder={dict.emails.replyPlaceholder}
+                    />
+                  )}
                   {/* A LINE, not a chip (§7.4). The brief's sections get chips
                       because a chip sits in a heading row and reads as a label;
                       a chip under a draft would sit beside the Send button and
@@ -1046,7 +1163,9 @@ export function EmailInbox({
                       click moves its own row at once (`shownEmails`), so the
                       GM can work down the queue without waiting on Gmail. */}
                   <div className="flex flex-wrap gap-2">
-                    <Button onClick={handleSend}>{dict.emails.send}</Button>
+                    <Button onClick={handleSend} disabled={draftPending}>
+                      {dict.emails.send}
+                    </Button>
                     {selected.status !== "needs_attention" ? (
                       <Button
                         onClick={() => {

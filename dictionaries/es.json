@@ -623,6 +623,8 @@
     "sending": "Enviando…",
     "actionFailed": "No se ha podido completar. Comprueba la conexión y vuelve a intentarlo.",
     "notDone": "No se completó",
+    "loadFailed": "No se ha podido cargar el mensaje completo.",
+    "loadingDraft": "Cargando el borrador…",
     "needsAttention": "Requiere atención",
     "ignore": "Ignorar",
     "sent": "Enviado",
