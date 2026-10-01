@@ -97,3 +97,81 @@ export function readRoom(raw: Json, spaceId?: string | null): string | null {
 export function readEta(raw: Json): string | null {
   return readString(raw, ["Eta", "eta", "ArrivalTime", "arrivalTime"]);
 }
+
+// --- Reading only these keys from the database ------------------------------
+
+/**
+ * Every key the readers above look at, per table. The rest of `raw` — the bulk
+ * of a MEWS payload — is never read by any page, so it is never fetched.
+ *
+ * Before 1 Oct every dashboard read selected `raw` whole: Home pulled the full
+ * provider payload of every reservation in a 16-night window to answer "is
+ * there a note?" (docs/audits/2026-10-01-performance.md §4.1). A reader that
+ * starts looking at a new key must add it here, or it will only ever see null.
+ */
+const RAW_KEYS = {
+  reservation: [
+    "Notes",
+    "notes",
+    "RoomType",
+    "roomType",
+    "roomtype",
+    "Room",
+    "room",
+    "SpaceName",
+    "Eta",
+    "eta",
+    "ArrivalTime",
+    "arrivalTime",
+  ],
+  customer: ["IsVip", "Classifications"],
+} as const;
+
+type RawTable = keyof typeof RAW_KEYS;
+
+/**
+ * Positional aliases (`pf_raw_0`…) rather than the key names: several keys
+ * differ only by case, and an alias collision would silently drop one.
+ */
+const ALIAS = "pf_raw_";
+
+/**
+ * A PostgREST select fragment for just those keys, as JSON values (`->`, not
+ * `->>`), so a boolean stays a boolean and an array an array — the readers
+ * check types, and text would change their answers.
+ */
+function rawSelect(table: RawTable): string {
+  return RAW_KEYS[table].map((key, i) => `${ALIAS}${i}:raw->${key}`).join(", ");
+}
+
+/** Use in place of `raw` in a `reservations` select. */
+export const RESERVATION_RAW_SELECT = rawSelect("reservation");
+/** Use in place of `raw` in a `customers` select. */
+export const CUSTOMER_RAW_SELECT = rawSelect("customer");
+
+/**
+ * Puts a `raw` object back on rows read with one of the fragments above,
+ * holding only the selected keys, and drops the aliases. The readers in this
+ * file then work unchanged, and stay the only place that knows the keys'
+ * meaning. A key the provider didn't send is simply absent, as it was before.
+ */
+export function withSlimRaw<T extends { raw: Json }>(
+  rows: readonly unknown[],
+  table: RawTable
+): T[] {
+  const keys = RAW_KEYS[table];
+  return rows.map((row) => {
+    const source = row as Record<string, unknown>;
+    const out: Record<string, unknown> = {};
+    for (const [field, value] of Object.entries(source)) {
+      if (!field.startsWith(ALIAS)) out[field] = value;
+    }
+    const raw: Record<string, Json> = {};
+    keys.forEach((key, i) => {
+      const value = source[`${ALIAS}${i}`];
+      if (value !== null && value !== undefined) raw[key] = value as Json;
+    });
+    out.raw = raw;
+    return out as T;
+  });
+}

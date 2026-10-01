@@ -7,7 +7,13 @@ import {
   occupiedOn,
   type StayDates,
 } from "@/lib/occupancy";
-import { readNotes, readVip } from "@/lib/pms-fields";
+import {
+  CUSTOMER_RAW_SELECT,
+  readNotes,
+  readVip,
+  RESERVATION_RAW_SELECT,
+  withSlimRaw,
+} from "@/lib/pms-fields";
 import { localDate, localDateOf } from "@/lib/stay-phase";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllPages, fetchInChunks } from "@/lib/supabase/paged";
@@ -156,11 +162,15 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
   // Reservations overlapping [today, +14d], active only. Paged: a busy hotel
   // exceeds PostgREST's silent 1,000-row cap, which would understate occupancy
   // in the brief without any error to notice.
-  const reservationsRaw = await fetchAllPages<ReservationRow>((from, to) =>
+  //
+  // Only the `raw` keys lib/pms-fields.ts reads — this runs before every Ask
+  // answer, and the whole provider payload was most of its cost
+  // (docs/audits/2026-10-01-performance.md §4.1, §4.8).
+  const pagedRows = await fetchAllPages<ReservationRow>((from, to) =>
     admin
       .from("reservations")
       .select(
-        "mews_id, state, start_utc, end_utc, customer_mews_id, adult_count, child_count, arrival_time, raw"
+        `mews_id, state, start_utc, end_utc, customer_mews_id, adult_count, child_count, arrival_time, ${RESERVATION_RAW_SELECT}`
       )
       .eq("hotel_id", hotelId)
       .lt("start_utc", horizonEnd.toISOString())
@@ -170,6 +180,7 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
       .range(from, to)
       .overrideTypes<ReservationRow[]>()
   );
+  const reservationsRaw = withSlimRaw<ReservationRow>(pagedRows, "reservation");
 
   const reservations = reservationsRaw.filter(
     (r) => r.state !== "Canceled" && r.start_utc && r.end_utc
@@ -185,15 +196,17 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
     string,
     { first_name: string | null; last_name: string | null; raw: Json }
   >();
-  const customers = await fetchInChunks<CustomerRow>(guestIds, (chunk) =>
+  const customerRows = await fetchInChunks<CustomerRow>(guestIds, (chunk) =>
     admin
       .from("customers")
-      .select("mews_id, first_name, last_name, raw")
+      .select(`mews_id, first_name, last_name, ${CUSTOMER_RAW_SELECT}`)
       .eq("hotel_id", hotelId)
       .in("mews_id", chunk)
       .overrideTypes<CustomerRow[]>()
   );
-  for (const c of customers) guestById.set(c.mews_id, c);
+  for (const c of withSlimRaw<CustomerRow>(customerRows, "customer")) {
+    guestById.set(c.mews_id, c);
+  }
 
   const nameOf = (customerMewsId: string | null) => {
     const c = customerMewsId ? guestById.get(customerMewsId) : undefined;

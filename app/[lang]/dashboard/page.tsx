@@ -30,7 +30,7 @@ import { type HomeWidgetKey } from "@/lib/home-widgets";
 import { intlLocale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/format";
 import { localizedHref } from "@/lib/i18n/navigation";
-import { loadInbox, loadReservationThreads } from "@/lib/inbox";
+import { loadInboxSummary, loadReservationThreads } from "@/lib/inbox";
 import { createClient } from "@/lib/supabase/server";
 import { loadSyncHealth, type SourceHealth } from "@/lib/sync-health";
 import { timed } from "@/lib/timing";
@@ -71,7 +71,8 @@ export default async function DashboardPage({
 
   const [snapshot, inbox, gmName, layout] = await Promise.all([
     timed("home.snapshot", loadDashboardSnapshot()),
-    timed("home.inbox", loadInbox()),
+    // Summary: Home ranks and counts mail, it never shows a body or a draft.
+    timed("home.inbox", loadInboxSummary()),
     timed("home.gmName", loadGmName()),
     timed("home.layout", loadViewerLayout()),
   ]);

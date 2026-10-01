@@ -15,7 +15,7 @@ import { loadDashboardSnapshot } from "@/lib/dashboard-snapshot";
 import { byUrgency } from "@/lib/email-urgency";
 import { intlLocale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
-import { loadInbox } from "@/lib/inbox";
+import { loadInboxSummary } from "@/lib/inbox";
 import { createClient } from "@/lib/supabase/server";
 import { timed } from "@/lib/timing";
 import { buildTodoList, type TodoItem } from "@/lib/todo-rules";
@@ -87,7 +87,7 @@ export default async function BriefingPage({
   if (today) {
     const [snapshot, inbox] = await Promise.all([
       timed("brief.snapshot", loadDashboardSnapshot()),
-      timed("brief.inbox", loadInbox()),
+      timed("brief.inbox", loadInboxSummary()),
     ]);
     sinceTheBrief = buildTodoList({
       emails: inbox.emails

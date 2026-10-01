@@ -37,6 +37,23 @@ type Db = SupabaseClient<Database>;
 const EMAIL_COLUMNS =
   "id, from_email, subject, body, classification, draft_reply, status, created_at, sent_at, reservation_mews_id, customer_mews_id, draft_edited";
 
+/**
+ * EMAIL_COLUMNS without the two big text columns. Gmail bodies are stored
+ * whole, quoted reply chains included, and a draft is a whole letter — so for
+ * every surface that counts, ranks or lists mail without showing it (the
+ * sidebar badges, Home, the brief's "since"), the text was most of what the
+ * read carried and none of what it used
+ * (docs/audits/2026-10-01-performance.md §4.2). Rows read with these come back
+ * with `body` and `draft_reply` null.
+ */
+const SUMMARY_COLUMNS =
+  "id, from_email, subject, classification, status, created_at, sent_at, reservation_mews_id, customer_mews_id, draft_edited";
+
+/** Summary rows in the EmailRow shape, the text columns explicitly absent. */
+function withoutText(rows: Omit<EmailRow, "body" | "draft_reply">[]): EmailRow[] {
+  return rows.map((row) => ({ ...row, body: null, draft_reply: null }));
+}
+
 const RESERVATION_COLUMNS =
   "mews_id, customer_mews_id, number, start_utc, end_utc";
 
@@ -351,17 +368,42 @@ export interface InboxData {
  * switching is instant.
  */
 export async function loadInbox(): Promise<InboxData> {
+  return readInbox("full");
+}
+
+/**
+ * The inbox for surfaces that never show a message's text — Home and the
+ * brief's "since the brief". The same rows, order, guest context, urgency and
+ * stats as loadInbox, with `body` and `draft_reply` null on every email.
+ *
+ * `draftsReady` is unchanged: it is asked separately, as "which of the pending
+ * rows in this list have a non-empty draft", so the number matches loadInbox
+ * to the message without the drafts themselves crossing the wire.
+ */
+export async function loadInboxSummary(): Promise<InboxData> {
+  return readInbox("summary");
+}
+
+async function readInbox(mode: "full" | "summary"): Promise<InboxData> {
   const supabase = await createClient();
   // The hotel row and the email list don't depend on each other — RLS scopes
   // the emails read on its own — so both go out at once instead of one after
   // the other. One fewer round trip on every Communications load.
-  const [hotel, { data }] = await Promise.all([
+  const [hotel, rows] = await Promise.all([
     currentHotel(supabase),
-    supabase
-      .from("emails")
-      .select(EMAIL_COLUMNS)
-      .order("created_at", { ascending: false })
-      .limit(200),
+    mode === "full"
+      ? supabase
+          .from("emails")
+          .select(EMAIL_COLUMNS)
+          .order("created_at", { ascending: false })
+          .limit(200)
+          .then(({ data }) => (data ?? []) as EmailRow[])
+      : supabase
+          .from("emails")
+          .select(SUMMARY_COLUMNS)
+          .order("created_at", { ascending: false })
+          .limit(200)
+          .then(({ data }) => withoutText(data ?? [])),
   ]);
 
   const empty: InboxData = {
@@ -372,17 +414,18 @@ export async function loadInbox(): Promise<InboxData> {
   };
   if (!hotel) return empty;
 
-  const emails = await withGuestContext(
-    supabase,
-    hotel.id,
-    hotel.timezone,
-    (data ?? []) as EmailRow[]
-  );
+  // In summary mode, which pending rows have a draft is one small extra read —
+  // run alongside the guest-context lookups, so it adds no wait.
+  const pendingIds = rows.filter((r) => r.status === "pending").map((r) => r.id);
+  const [emails, draftedIds] = await Promise.all([
+    withGuestContext(supabase, hotel.id, hotel.timezone, rows),
+    mode === "summary" ? pendingWithDraft(supabase, pendingIds) : null,
+  ]);
 
   const today = hotelToday(hotel.timezone);
-  const draftsReady = emails.filter(
-    (e) => e.status === "pending" && e.draft_reply
-  ).length;
+  const draftsReady = draftedIds
+    ? draftedIds.size
+    : emails.filter((e) => e.status === "pending" && e.draft_reply).length;
   const sentToday = emails.filter(
     (e) =>
       e.status === "sent" &&
@@ -403,6 +446,22 @@ export async function loadInbox(): Promise<InboxData> {
       : null;
 
   return { emails, draftsReady, sentToday, avgResponseHours };
+}
+
+/**
+ * Of these pending emails, the ones whose draft is non-empty — the same test
+ * loadInbox applies to the text (`e.draft_reply` truthy), asked of the
+ * database instead. Fails soft to "none": it feeds one number on one widget.
+ */
+async function pendingWithDraft(db: Db, ids: string[]): Promise<Set<string>> {
+  if (ids.length === 0) return new Set();
+  const { data } = await db
+    .from("emails")
+    .select("id")
+    .in("id", ids)
+    .not("draft_reply", "is", null)
+    .neq("draft_reply", "");
+  return new Set((data ?? []).map((row) => row.id));
 }
 
 export interface InboxBadge {
@@ -446,11 +505,14 @@ export async function loadInboxBadges(): Promise<InboxBadges> {
     const supabase = await createClient();
     // In parallel, as in loadInbox: this runs in the dashboard layout, so it
     // sits in front of every page load.
+    // Summary columns: a badge counts messages, it never shows one. This read
+    // used to carry the body and draft of every unanswered email, on every
+    // hard load of every dashboard page (§4.2 of the performance audit).
     const [hotel, { data, error }] = await Promise.all([
       currentHotel(supabase),
       supabase
         .from("emails")
-        .select(EMAIL_COLUMNS)
+        .select(SUMMARY_COLUMNS)
         .in("status", [...UNHANDLED_STATUSES])
         .limit(500),
     ]);
@@ -461,7 +523,7 @@ export async function loadInboxBadges(): Promise<InboxBadges> {
       supabase,
       hotel.id,
       hotel.timezone,
-      (data ?? []) as EmailRow[]
+      withoutText(data ?? [])
     );
 
     const tally = (rows: InboxEmail[]): InboxBadge => ({

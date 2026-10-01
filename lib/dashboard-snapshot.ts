@@ -10,7 +10,13 @@ import {
   type OccupancyDay,
   type StayDates,
 } from "@/lib/occupancy";
-import { readNotes, readVip } from "@/lib/pms-fields";
+import {
+  CUSTOMER_RAW_SELECT,
+  readNotes,
+  readVip,
+  RESERVATION_RAW_SELECT,
+  withSlimRaw,
+} from "@/lib/pms-fields";
 import { hotelToday, localDateOf } from "@/lib/stay-phase";
 import { fetchAllPages } from "@/lib/supabase/paged";
 import { createClient } from "@/lib/supabase/server";
@@ -179,11 +185,14 @@ export async function loadDashboardSnapshot(): Promise<DashboardSnapshot> {
 
   // Paged: a busy fortnight easily exceeds PostgREST's 1,000-row cap, and a
   // truncated read would quietly report a half-empty hotel.
-  const reservationRows = await fetchAllPages<ReservationRow>((from, to) =>
+  //
+  // Only the `raw` keys lib/pms-fields.ts reads, never the whole provider
+  // payload (docs/audits/2026-10-01-performance.md §4.1).
+  const pagedRows = await fetchAllPages<ReservationRow>((from, to) =>
     supabase
       .from("reservations")
       .select(
-        "mews_id, state, start_utc, end_utc, customer_mews_id, arrival_time, mews_updated_utc, raw"
+        `mews_id, state, start_utc, end_utc, customer_mews_id, arrival_time, mews_updated_utc, ${RESERVATION_RAW_SELECT}`
       )
       .eq("hotel_id", hotel.id)
       .lt("start_utc", windowEnd)
@@ -193,6 +202,7 @@ export async function loadDashboardSnapshot(): Promise<DashboardSnapshot> {
       .range(from, to)
       .overrideTypes<ReservationRow[]>()
   );
+  const reservationRows = withSlimRaw<ReservationRow>(pagedRows, "reservation");
 
   const reservations = reservationRows.filter(
     (r) => r.state !== CANCELLED_STATE && r.start_utc && r.end_utc
@@ -226,11 +236,14 @@ export async function loadDashboardSnapshot(): Promise<DashboardSnapshot> {
   if (arrivingTodayIds.length > 0) {
     const { data: customers } = await supabase
       .from("customers")
-      .select("mews_id, first_name, last_name, raw")
+      .select(`mews_id, first_name, last_name, ${CUSTOMER_RAW_SELECT}`)
       .eq("hotel_id", hotel.id)
       .in("mews_id", arrivingTodayIds);
     customerById = new Map(
-      ((customers ?? []) as CustomerRow[]).map((c) => [c.mews_id, c])
+      withSlimRaw<CustomerRow>(customers ?? [], "customer").map((c) => [
+        c.mews_id,
+        c,
+      ])
     );
   }
 

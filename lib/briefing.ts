@@ -5,6 +5,13 @@ import Anthropic from "@anthropic-ai/sdk";
 import { AI_MODELS, provenance } from "@/lib/ai-provenance";
 import { track } from "@/lib/analytics";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
+import {
+  CUSTOMER_RAW_SELECT,
+  readNotes,
+  readVip,
+  RESERVATION_RAW_SELECT,
+  withSlimRaw,
+} from "@/lib/pms-fields";
 import { pseudoName } from "@/lib/pseudonymise";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Json } from "@/types/database";
@@ -137,35 +144,28 @@ function addDays(dateStr: string, days: number): string {
 }
 
 // ---------------------------------------------------------------------------
-// Pseudonymisation + best-effort raw extraction
+// Reading the PMS payload: the shared readers in lib/pms-fields.ts, so the
+// brief, Home and Ask can never disagree about who is a VIP or what a note
+// says. (This file used to carry its own copies; they were identical.)
 // ---------------------------------------------------------------------------
 
-
-function asObject(raw: Json): Record<string, unknown> | null {
-  return raw && typeof raw === "object" && !Array.isArray(raw)
-    ? (raw as Record<string, unknown>)
-    : null;
+/** The reservation columns the brief reads, with only the `raw` keys it needs. */
+interface BriefReservationRow {
+  mews_id: string;
+  state: string | null;
+  start_utc: string | null;
+  end_utc: string | null;
+  customer_mews_id: string | null;
+  adult_count: number | null;
+  child_count: number | null;
+  raw: Json;
 }
 
-/** Best-effort special-request note from a reservation's raw PMS payload. */
-function readNotes(raw: Json): string | null {
-  const r = asObject(raw);
-  const note = r?.Notes ?? r?.notes;
-  return typeof note === "string" && note.trim() ? note.trim() : null;
-}
-
-/** Best-effort VIP flag from a customer's raw PMS payload. */
-function readVip(raw: Json): boolean {
-  const r = asObject(raw);
-  if (!r) return false;
-  if (typeof r.IsVip === "boolean") return r.IsVip;
-  const classifications = r.Classifications;
-  return (
-    Array.isArray(classifications) &&
-    classifications.some(
-      (c) => typeof c === "string" && c.toLowerCase().includes("vip")
-    )
-  );
+interface BriefCustomerRow {
+  mews_id: string;
+  first_name: string | null;
+  last_name: string | null;
+  raw: Json;
 }
 
 const LANGUAGES: Record<string, string> = {
@@ -210,16 +210,21 @@ export async function generateBriefing(
   );
 
   // Reservations overlapping [today, today+14d].
-  const { data: reservations } = await admin
+  const { data: reservationRows } = await admin
     .from("reservations")
     .select(
-      "mews_id, state, start_utc, end_utc, customer_mews_id, adult_count, child_count, raw"
+      `mews_id, state, start_utc, end_utc, customer_mews_id, adult_count, child_count, ${RESERVATION_RAW_SELECT}`
     )
     .eq("hotel_id", hotelId)
     .lt("start_utc", horizonEnd.toISOString())
-    .gt("end_utc", todayStart.toISOString());
+    .gt("end_utc", todayStart.toISOString())
+    .overrideTypes<BriefReservationRow[]>();
+  const reservations = withSlimRaw<BriefReservationRow>(
+    reservationRows ?? [],
+    "reservation"
+  );
 
-  const active = (reservations ?? []).filter(
+  const active = reservations.filter(
     (r) => r.state !== "Canceled" && r.start_utc && r.end_utc
   );
 
@@ -246,10 +251,13 @@ export async function generateBriefing(
   if (arrivalCustomerIds.length > 0) {
     const { data: customers } = await admin
       .from("customers")
-      .select("mews_id, first_name, last_name, raw")
+      .select(`mews_id, first_name, last_name, ${CUSTOMER_RAW_SELECT}`)
       .eq("hotel_id", hotelId)
-      .in("mews_id", arrivalCustomerIds);
-    for (const c of customers ?? []) customerById.set(c.mews_id, c);
+      .in("mews_id", arrivalCustomerIds)
+      .overrideTypes<BriefCustomerRow[]>();
+    for (const c of withSlimRaw<BriefCustomerRow>(customers ?? [], "customer")) {
+      customerById.set(c.mews_id, c);
+    }
   }
 
   const arrivals = arrivalsRaw.map((r) => {

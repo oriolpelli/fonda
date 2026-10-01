@@ -1,7 +1,13 @@
 import "server-only";
 
 import { addDays } from "@/lib/occupancy";
-import { readEta, readRoom, readRoomType } from "@/lib/pms-fields";
+import {
+  readEta,
+  readRoom,
+  readRoomType,
+  RESERVATION_RAW_SELECT,
+  withSlimRaw,
+} from "@/lib/pms-fields";
 import { hotelToday, localDateOf } from "@/lib/stay-phase";
 import { fetchAllPages, fetchInChunks } from "@/lib/supabase/paged";
 import { createClient } from "@/lib/supabase/server";
@@ -94,8 +100,9 @@ export interface MovementGuest {
   last_name: string | null;
 }
 
-const COLUMNS =
-  "mews_id, state, start_utc, end_utc, customer_mews_id, requested_category_id, assigned_space_id, arrival_time, raw";
+// Only the `raw` keys lib/pms-fields.ts reads — room, room type, ETA — never
+// the whole provider payload (docs/audits/2026-10-01-performance.md §4.1).
+const COLUMNS = `mews_id, state, start_utc, end_utc, customer_mews_id, requested_category_id, assigned_space_id, arrival_time, ${RESERVATION_RAW_SELECT}`;
 
 function fullName(customer: MovementGuest | undefined): string | null {
   if (!customer) return null;
@@ -191,8 +198,18 @@ export async function loadTodayMovements(): Promise<TodayMovements> {
     ),
   ]);
 
-  const arriving = movingToday(arrivalRows, tz, today, "arrival");
-  const leaving = movingToday(departureRows, tz, today, "departure");
+  const arriving = movingToday(
+    withSlimRaw<MovementRow>(arrivalRows, "reservation"),
+    tz,
+    today,
+    "arrival"
+  );
+  const leaving = movingToday(
+    withSlimRaw<MovementRow>(departureRows, "reservation"),
+    tz,
+    today,
+    "departure"
+  );
 
   const guestIds = (rows: MovementRow[]) =>
     [...new Set(rows.map((r) => r.customer_mews_id).filter(Boolean))] as string[];

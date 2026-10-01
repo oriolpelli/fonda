@@ -1,6 +1,10 @@
 import "server-only";
 
-import { readRoomType } from "@/lib/pms-fields";
+import {
+  readRoomType,
+  RESERVATION_RAW_SELECT,
+  withSlimRaw,
+} from "@/lib/pms-fields";
 import { hotelToday, localDateOf, stayPhaseFor } from "@/lib/stay-phase";
 import { createClient } from "@/lib/supabase/server";
 import type { InboxEmail } from "@/lib/inbox";
@@ -165,8 +169,11 @@ export async function loadGuestContexts(
       .overrideTypes<CustomerRow[]>(),
     supabase
       .from("reservations")
+      // The room-type keys of `raw`, not the whole payload (§4.1 of
+      // docs/audits/2026-10-01-performance.md) — this reads every stay of
+      // every guest in the window.
       .select(
-        "mews_id, customer_mews_id, start_utc, end_utc, adult_count, child_count, requested_category_id, raw"
+        `mews_id, customer_mews_id, start_utc, end_utc, adult_count, child_count, requested_category_id, ${RESERVATION_RAW_SELECT}`
       )
       .eq("hotel_id", hotel.id)
       .in("customer_mews_id", customerIds)
@@ -175,7 +182,7 @@ export async function loadGuestContexts(
 
   const customerById = new Map((customers ?? []).map((c) => [c.mews_id, c]));
   const byCustomer = new Map<string, ReservationRow[]>();
-  for (const r of reservations ?? []) {
+  for (const r of withSlimRaw<ReservationRow>(reservations ?? [], "reservation")) {
     if (!r.customer_mews_id) continue;
     const list = byCustomer.get(r.customer_mews_id) ?? [];
     list.push(r);
