@@ -1174,7 +1174,7 @@
   },
   "ai": {
     "draftLine": "Redactat per Fondas AI a partir d'aquest fil i del to de la teva casa — revisa'l abans d'enviar-lo",
-    "chaserLine": "Redactat per Fondas AI a partir de la reserva i del to de la teva casa — revisa'l abans d'enviar-lo",
+    "chaserLine": "Redactat per Fondas AI — revisa'l abans d'enviar-lo",
     "sentAsDrafted": "Redactat per Fondas AI · enviat tal com era",
     "sentEdited": "Redactat per Fondas AI · editat abans d'enviar-lo",
     "askLine": "Fondas AI · es pot equivocar — comprova les xifres importants",

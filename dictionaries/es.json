@@ -1174,7 +1174,7 @@
   },
   "ai": {
     "draftLine": "Redactado por Fondas AI a partir de este hilo y del tono de tu casa — revísalo antes de enviarlo",
-    "chaserLine": "Redactado por Fondas AI a partir de la reserva y del tono de tu casa — revísalo antes de enviarlo",
+    "chaserLine": "Redactado por Fondas AI — revísalo antes de enviarlo",
     "sentAsDrafted": "Redactado por Fondas AI · enviado tal cual",
     "sentEdited": "Redactado por Fondas AI · editado antes de enviarlo",
     "askLine": "Fondas AI · puede equivocarse — comprueba las cifras importantes",

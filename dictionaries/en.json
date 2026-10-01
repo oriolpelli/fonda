@@ -1174,7 +1174,7 @@
   },
   "ai": {
     "draftLine": "Drafted by Fondas AI from this thread and your house tone — check before sending",
-    "chaserLine": "Drafted by Fondas AI from the booking and your house tone — check before sending",
+    "chaserLine": "Drafted by Fondas AI — check before sending",
     "sentAsDrafted": "Drafted by Fondas AI · sent as drafted",
     "sentEdited": "Drafted by Fondas AI · edited before sending",
     "askLine": "Fondas AI · can be wrong — check figures that matter",
