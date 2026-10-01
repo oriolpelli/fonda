@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { AI_MODELS, provenance, sha256 } from "@/lib/ai-provenance";
 import { track } from "@/lib/analytics";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -16,10 +17,10 @@ export type EtaSource = "email_reply" | "manual";
  * yet. Drafts are saved as pending checkin_chasers for the GM to review + send.
  *
  * Model note: check-in chasers are short, formulaic guest messages, so Sonnet
- * is plenty — and much cheaper than Opus at this volume. Drop to
- * claude-haiku-4-5-20251001 for further savings if quality holds.
+ * is plenty — and much cheaper than Opus at this volume. The ID lives in
+ * lib/ai-provenance.ts (AI_MODELS.chaser); Haiku is the next step down if
+ * quality holds, minus the `effort` knob Haiku rejects.
  */
-const CHASER_MODEL = "claude-sonnet-4-6";
 const HORIZON_DAYS = 7;
 const DEDUPE_DAYS = 7;
 
@@ -93,7 +94,7 @@ async function generateChase(
     .join("\n");
 
   const response = await client.messages.create({
-    model: CHASER_MODEL,
+    model: AI_MODELS.chaser,
     max_tokens: 800,
     output_config: { effort: "low" },
     system,
@@ -192,6 +193,7 @@ export async function runCheckinChaser(hotelId: string): Promise<number> {
       profileSummary,
       language: LANGUAGES[langCode] ?? "English",
     });
+    const made = provenance("chaser");
 
     rows.push({
       hotel_id: hotelId,
@@ -199,6 +201,12 @@ export async function runCheckinChaser(hotelId: string): Promise<number> {
       guest_email: guest.email,
       draft_content: draft,
       status: "pending",
+      // Art. 50(2) evidence (migration 0025) — model, prompt version, time and
+      // a hash of the draft as stored. Never guest text.
+      draft_model: made.model,
+      draft_prompt_version: made.promptVersion,
+      draft_generated_at: made.generatedAt,
+      draft_sha256: sha256(draft),
     });
   }
 

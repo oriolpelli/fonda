@@ -110,6 +110,9 @@ export type Database = {
           generated_at: string;
           delivered_at: string | null;
           opened_at: string | null;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          model: string | null;
+          prompt_version: string | null;
         };
         Insert: {
           id?: string;
@@ -118,6 +121,9 @@ export type Database = {
           generated_at?: string;
           delivered_at?: string | null;
           opened_at?: string | null;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          model?: string | null;
+          prompt_version?: string | null;
         };
         Update: {
           id?: string;
@@ -126,6 +132,9 @@ export type Database = {
           generated_at?: string;
           delivered_at?: string | null;
           opened_at?: string | null;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          model?: string | null;
+          prompt_version?: string | null;
         };
         Relationships: [
           {
@@ -152,6 +161,14 @@ export type Database = {
           sent_at: string | null;
           reservation_mews_id: string | null;
           customer_mews_id: string | null;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          draft_model: string | null;
+          draft_prompt_version: string | null;
+          draft_generated_at: string | null;
+          draft_sha256: string | null;
+          draft_edited: boolean | null;
+          sent_via: "single" | "bulk" | null;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -167,6 +184,14 @@ export type Database = {
           sent_at?: string | null;
           reservation_mews_id?: string | null;
           customer_mews_id?: string | null;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          draft_model?: string | null;
+          draft_prompt_version?: string | null;
+          draft_generated_at?: string | null;
+          draft_sha256?: string | null;
+          draft_edited?: boolean | null;
+          sent_via?: "single" | "bulk" | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
@@ -182,6 +207,14 @@ export type Database = {
           sent_at?: string | null;
           reservation_mews_id?: string | null;
           customer_mews_id?: string | null;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          draft_model?: string | null;
+          draft_prompt_version?: string | null;
+          draft_generated_at?: string | null;
+          draft_sha256?: string | null;
+          draft_edited?: boolean | null;
+          sent_via?: "single" | "bulk" | null;
+          updated_at?: string | null;
         };
         Relationships: [
           {
@@ -203,6 +236,13 @@ export type Database = {
           status: Database["public"]["Enums"]["chaser_status"];
           sent_at: string | null;
           created_at: string;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          draft_model: string | null;
+          draft_prompt_version: string | null;
+          draft_generated_at: string | null;
+          draft_sha256: string | null;
+          draft_edited: boolean | null;
+          sent_via: "single" | "bulk" | null;
         };
         Insert: {
           id?: string;
@@ -213,6 +253,13 @@ export type Database = {
           status?: Database["public"]["Enums"]["chaser_status"];
           sent_at?: string | null;
           created_at?: string;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          draft_model?: string | null;
+          draft_prompt_version?: string | null;
+          draft_generated_at?: string | null;
+          draft_sha256?: string | null;
+          draft_edited?: boolean | null;
+          sent_via?: "single" | "bulk" | null;
         };
         Update: {
           id?: string;
@@ -223,6 +270,13 @@ export type Database = {
           status?: Database["public"]["Enums"]["chaser_status"];
           sent_at?: string | null;
           created_at?: string;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          draft_model?: string | null;
+          draft_prompt_version?: string | null;
+          draft_generated_at?: string | null;
+          draft_sha256?: string | null;
+          draft_edited?: boolean | null;
+          sent_via?: "single" | "bulk" | null;
         };
         Relationships: [
           {
@@ -544,6 +598,8 @@ export type Database = {
           /** Null for every row written before migration 0023. */
           thread_id: string | null;
           user_id: string | null;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          model: string | null;
         };
         Insert: {
           id?: string;
@@ -553,6 +609,8 @@ export type Database = {
           created_at?: string;
           thread_id?: string | null;
           user_id?: string | null;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          model?: string | null;
         };
         Update: {
           id?: string;
@@ -562,6 +620,8 @@ export type Database = {
           created_at?: string;
           thread_id?: string | null;
           user_id?: string | null;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          model?: string | null;
         };
         Relationships: [
           {
@@ -586,6 +646,9 @@ export type Database = {
           inferred_at: string | null;
           last_stay_end: string | null;
           updated_at: string;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          inference_model: string | null;
+          inference_prompt_version: string | null;
         };
         Insert: {
           hotel_id: string;
@@ -597,6 +660,9 @@ export type Database = {
           inferred_at?: string | null;
           last_stay_end?: string | null;
           updated_at?: string;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          inference_model?: string | null;
+          inference_prompt_version?: string | null;
         };
         Update: {
           hotel_id?: string;
@@ -608,6 +674,9 @@ export type Database = {
           inferred_at?: string | null;
           last_stay_end?: string | null;
           updated_at?: string;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          inference_model?: string | null;
+          inference_prompt_version?: string | null;
         };
         Relationships: [
           {
@@ -692,6 +761,10 @@ export type Database = {
           brief_recipients: Json;
           brief_send_hour: number;
           upsells: Json;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          review_summary_model: string | null;
+          review_summary_prompt_version: string | null;
+          review_summary_generated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -723,6 +796,10 @@ export type Database = {
           brief_recipients?: Json;
           brief_send_hour?: number;
           upsells?: Json;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          review_summary_model?: string | null;
+          review_summary_prompt_version?: string | null;
+          review_summary_generated_at?: string | null;
         };
         Update: {
           id?: string;
@@ -754,6 +831,10 @@ export type Database = {
           brief_recipients?: Json;
           brief_send_hour?: number;
           upsells?: Json;
+          /** Migration 0025 — AI provenance (lib/ai-provenance.ts). Never guest text. */
+          review_summary_model?: string | null;
+          review_summary_prompt_version?: string | null;
+          review_summary_generated_at?: string | null;
         };
         Relationships: [
           {

@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 
-import { track } from "@/lib/analytics";
+import { track, type EditBucket } from "@/lib/analytics";
 import { recordDraftSend } from "@/lib/draft-acceptance";
+import { measureDraftEdit } from "@/lib/draft-edit";
 import { getGmailClientForHotel, type GmailClient } from "@/lib/gmail";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -79,10 +80,31 @@ interface SendableEmail {
   draft_reply: string | null;
 }
 
+/**
+ * How a reply went out — recorded on the row (migration 0025) as the human
+ * oversight half of the AI Act evidence: was there a draft, did a person change
+ * it, and was it sent one at a time or in a batch.
+ */
+interface SendRecord {
+  /** "single" from the editor; "bulk" from "approve all". */
+  via: "single" | "bulk";
+  /**
+   * The edit bucket of what is being sent against the stored draft, or null
+   * when there was no draft to edit (a reply written from scratch).
+   */
+  edit: EditBucket | null;
+}
+
+/** The draft's edit bucket, or null when Fondas wrote nothing to edit. */
+function editOf(drafted: string | null, sent: string): EditBucket | null {
+  return drafted?.trim() ? measureDraftEdit(drafted, sent).bucket : null;
+}
+
 async function sendOne(
   admin: Admin,
   gmail: GmailClient,
-  email: SendableEmail
+  email: SendableEmail,
+  record: SendRecord
 ): Promise<void> {
   if (!email.from_email) throw new Error("This email has no sender address.");
   if (!email.draft_reply?.trim()) throw new Error("The reply is empty.");
@@ -104,9 +126,16 @@ async function sendOne(
     threadId,
   });
 
+  const now = new Date().toISOString();
   await admin
     .from("emails")
-    .update({ status: "sent", sent_at: new Date().toISOString() })
+    .update({
+      status: "sent",
+      sent_at: now,
+      updated_at: now,
+      sent_via: record.via,
+      draft_edited: record.edit === null ? null : record.edit !== "none",
+    })
     .eq("id", email.id);
 }
 
@@ -132,8 +161,19 @@ export async function sendReply(
   const gmail = await getGmailClientForHotel(hotelId);
   if (!gmail) return { error: "Gmail is not connected." };
 
+  // Measured BEFORE the send, so the row records whether a person changed the
+  // draft (and, from A2, so the outbound marking can say so). The measurement
+  // is pure; the acceptance metric below is still recorded after the send,
+  // exactly as before.
+  const edit = editOf(email.draft_reply, content);
+
   try {
-    await sendOne(admin, gmail, { ...email, draft_reply: content });
+    await sendOne(
+      admin,
+      gmail,
+      { ...email, draft_reply: content },
+      { via: "single", edit }
+    );
   } catch (err) {
     return { error: (err as Error).message };
   }
@@ -160,7 +200,9 @@ async function setStatus(
   const admin = createAdminClient();
   await admin
     .from("emails")
-    .update({ status })
+    // updated_at is the only record of WHEN a message was flagged or ignored
+    // (ROADMAP §3.2, decision P-7) — sent_at covers only sends.
+    .update({ status, updated_at: new Date().toISOString() })
     .eq("id", emailId)
     .eq("hotel_id", hotelId);
   revalidateInbox();
@@ -203,7 +245,8 @@ export async function approveAllStandard(): Promise<{
   let sent = 0;
   for (const email of emails ?? []) {
     try {
-      await sendOne(admin, gmail, email);
+      // Verbatim — there is no editor in this path — so the bucket is "none".
+      await sendOne(admin, gmail, email, { via: "bulk", edit: "none" });
       sent++;
       // Bulk approval sends the draft verbatim — there is no editor in this
       // path — so the bucket is always "none". Flagged `bulk` so the rollup

@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { AI_MODELS, provenance } from "@/lib/ai-provenance";
 import { track } from "@/lib/analytics";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { pseudoName } from "@/lib/pseudonymise";
@@ -21,10 +22,9 @@ export type BriefingTrigger = "cron" | "manual";
  * Model note: intentionally kept on Opus. The morning briefing is the flagship,
  * customer-facing output GMs judge Fondas on, and it runs only once per day per
  * hotel — so the quality is worth the cost even though other surfaces have been
- * moved to Sonnet/Haiku. Change BRIEFING_MODEL to trade quality for cost
- * (e.g. "claude-sonnet-4-6") if needed.
+ * moved to Sonnet/Haiku. The ID lives in lib/ai-provenance.ts
+ * (AI_MODELS.briefing); change it there to trade quality for cost.
  */
-const BRIEFING_MODEL = "claude-opus-4-8";
 const LOW_OCCUPANCY_THRESHOLD = 0.6; // flag days under 60% occupancy
 const OCCUPANCY_HORIZON_DAYS = 14;
 
@@ -333,7 +333,7 @@ export async function generateBriefing(
 
   const client = new Anthropic();
   const response = await client.messages.create({
-    model: BRIEFING_MODEL,
+    model: AI_MODELS.briefing,
     max_tokens: 8000,
     thinking: { type: "adaptive" },
     output_config: {
@@ -349,6 +349,7 @@ export async function generateBriefing(
     throw new Error("Claude returned no briefing content.");
   }
   const content = JSON.parse(textBlock.text) as BriefingContent;
+  const made = provenance("briefing");
 
   // Stamped here rather than inferred when the brief is read: "synced 06:40"
   // describes the morning this brief was made, and by the time anyone opens
@@ -362,6 +363,9 @@ export async function generateBriefing(
   const { error: saveError } = await admin.from("briefings").insert({
     hotel_id: hotelId,
     content_json: content as unknown as Json,
+    // Art. 50(2) evidence (migration 0025). generated_at is the row default.
+    model: made.model,
+    prompt_version: made.promptVersion,
   });
   if (saveError) {
     throw new Error(`Failed to save briefing: ${saveError.message}`);

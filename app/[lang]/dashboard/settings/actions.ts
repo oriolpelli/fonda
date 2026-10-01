@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { AI_MODELS, provenance, type Provenance } from "@/lib/ai-provenance";
 import { isLocale } from "@/lib/i18n/config";
 import { LOCALE_COOKIE } from "@/lib/i18n/get-locale";
 import { localizedHref } from "@/lib/i18n/navigation";
@@ -311,11 +312,12 @@ export async function summarizeReviews(
   }
 
   let reviewSummary: string | null = null;
+  let summaryProvenance: Provenance | null = null;
   if (reviewHighlights) {
     try {
       const client = new Anthropic();
       const response = await client.messages.create({
-        model: "claude-haiku-4-5-20251001",
+        model: AI_MODELS.reviewSummary,
         max_tokens: 300,
         output_config: { effort: "low" },
         system:
@@ -327,6 +329,7 @@ export async function summarizeReviews(
       });
       const block = response.content.find((b) => b.type === "text");
       reviewSummary = block && block.type === "text" ? block.text.trim() : null;
+      if (reviewSummary) summaryProvenance = provenance("reviewSummary");
     } catch (err) {
       return { error: `Couldn't summarize reviews: ${(err as Error).message}` };
     }
@@ -339,6 +342,10 @@ export async function summarizeReviews(
       tripadvisor_url: tripadvisorUrl || null,
       review_highlights: reviewHighlights || null,
       review_summary: reviewSummary,
+      // What wrote the summary (migration 0025) — cleared with it when empty.
+      review_summary_model: summaryProvenance?.model ?? null,
+      review_summary_prompt_version: summaryProvenance?.promptVersion ?? null,
+      review_summary_generated_at: summaryProvenance?.generatedAt ?? null,
     })
     .eq("hotel_id", hotelId);
   if (error) {

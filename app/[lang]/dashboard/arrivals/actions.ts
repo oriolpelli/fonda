@@ -2,9 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 
-import { track } from "@/lib/analytics";
+import { track, type EditBucket } from "@/lib/analytics";
 import { runCheckinChaser } from "@/lib/checkin-chaser";
 import { recordDraftSend } from "@/lib/draft-acceptance";
+import { measureDraftEdit } from "@/lib/draft-edit";
 import { getGmailClientForHotel, type GmailClient } from "@/lib/gmail";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -33,11 +34,21 @@ interface SendableChaser {
   draft_content: string | null;
 }
 
+/**
+ * How a chaser went out — recorded on the row (migration 0025). Same contract
+ * as the communications action: `edit` is null only when there was no draft.
+ */
+interface SendRecord {
+  via: "single" | "bulk";
+  edit: EditBucket | null;
+}
+
 async function sendOne(
   admin: Admin,
   gmail: GmailClient,
   hotelName: string,
-  chaser: SendableChaser
+  chaser: SendableChaser,
+  record: SendRecord
 ): Promise<void> {
   if (!chaser.guest_email) throw new Error("This chaser has no guest email.");
   if (!chaser.draft_content?.trim()) throw new Error("The message is empty.");
@@ -50,7 +61,12 @@ async function sendOne(
 
   await admin
     .from("checkin_chasers")
-    .update({ status: "sent", sent_at: new Date().toISOString() })
+    .update({
+      status: "sent",
+      sent_at: new Date().toISOString(),
+      sent_via: record.via,
+      draft_edited: record.edit === null ? null : record.edit !== "none",
+    })
     .eq("id", chaser.id);
 }
 
@@ -113,11 +129,21 @@ export async function sendChaser(
   const gmail = await getGmailClientForHotel(hotelId);
   if (!gmail) return { error: "Gmail is not connected." };
 
+  // Measured before the send so the row (and, from A2, the outbound marking)
+  // records whether a person changed the draft. Pure; the metric below is
+  // still recorded after the send, unchanged.
+  const edit = chaser.draft_content?.trim()
+    ? measureDraftEdit(chaser.draft_content, content).bucket
+    : null;
+
   try {
-    await sendOne(admin, gmail, hotel?.name ?? "our hotel", {
-      ...chaser,
-      draft_content: content,
-    });
+    await sendOne(
+      admin,
+      gmail,
+      hotel?.name ?? "our hotel",
+      { ...chaser, draft_content: content },
+      { via: "single", edit }
+    );
   } catch (err) {
     return { error: (err as Error).message };
   }
@@ -164,7 +190,10 @@ export async function approveAllChasers(): Promise<{ sent: number; error?: strin
   let sent = 0;
   for (const chaser of chasers ?? []) {
     try {
-      await sendOne(admin, gmail, hotel?.name ?? "our hotel", chaser);
+      await sendOne(admin, gmail, hotel?.name ?? "our hotel", chaser, {
+        via: "bulk",
+        edit: "none",
+      });
       sent++;
       // Sent verbatim — no editor in the bulk path. See the same note in the
       // communications action for why these are flagged rather than merged.

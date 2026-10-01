@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 
+import { AI_MODELS, provenance, sha256 } from "@/lib/ai-provenance";
 import { flushAnalytics, track } from "@/lib/analytics";
 import { sourcesFor } from "@/lib/chat-sources";
 import { buildHotelContext } from "@/lib/hotel-context";
@@ -13,9 +14,8 @@ export const maxDuration = 60;
 
 // Interactive Q&A over the hotel's own data. Sonnet gives strong reasoning at a
 // fraction of Opus's cost — important because chat resends context each turn and
-// is the highest-token surface. Bump to claude-opus-4-8 if you later offer a
-// premium tier.
-const CHAT_MODEL = "claude-sonnet-4-6";
+// is the highest-token surface. The ID is AI_MODELS.chat in lib/ai-provenance.ts;
+// bump it there if you later offer a premium tier.
 const LANGUAGES: Record<string, string> = {
   en: "English",
   es: "Spanish",
@@ -196,7 +196,7 @@ export async function POST(request: Request) {
       let producedDraft = false;
       try {
         const claude = client.messages.stream({
-          model: CHAT_MODEL,
+          model: AI_MODELS.chat,
           max_tokens: 2048,
           output_config: { effort: "low" },
           system,
@@ -215,14 +215,22 @@ export async function POST(request: Request) {
 
         // Action routing: turn the answer into a draft email when asked.
         if (wantsDraft && assistantText.trim()) {
+          const draftText = assistantText.trim();
+          // Written by Ask, so it carries Ask's provenance (migration 0025):
+          // the same model and prompt that produced the answer.
+          const made = provenance("chat");
           const { data: draft } = await admin
             .from("emails")
             .insert({
               hotel_id: hotelId,
-              draft_reply: assistantText.trim(),
+              draft_reply: draftText,
               classification: "general_inquiry",
               status: "pending",
               subject: "Draft from Ask Your Hotel",
+              draft_model: made.model,
+              draft_prompt_version: made.promptVersion,
+              draft_generated_at: made.generatedAt,
+              draft_sha256: sha256(draftText),
             })
             .select("id")
             .single();
@@ -277,6 +285,8 @@ export async function POST(request: Request) {
                   user_id: user.id,
                   role: "assistant",
                   content: reduceSurnames(assistantText, names),
+                  // Art. 50(2) evidence: which model wrote the answer.
+                  model: AI_MODELS.chat,
                 }
               : null,
           ].filter((row) => row !== null);

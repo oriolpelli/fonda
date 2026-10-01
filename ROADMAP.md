@@ -300,8 +300,8 @@ It is not urgent at one hotel and it is unpleasant at fifty. **Recommended: keep
 30 days of `cron_logs` and `sync_logs` and prune nightly** — `RELIABILITY.md`'s
 morning ritual only ever looks at recent runs, so nothing is lost. Do it at the
 same time as the guest-profile retention cron; it is the same job.
-| | `emails` has no `draft_edited` | §7.4 wants a "· edited" marker under a draft reply, and `draft_edit_events` has no email id — by design, since it is an analytics table (decision P-8). A boolean written by `sendReply`, which already computes the similarity, is the cheap fix. Same migration as the row below. |
-| | `emails` has no `updated_at` | So the moment a message was *ignored* is recorded nowhere, and Communications' "Done today" queue can only count what was *sent* today (decision P-7). Ignored mail falls into no queue at all, which is why the **All** segment is currently load-bearing rather than a convenience. A one-column migration closes both. |
+| ✅ | ~~`emails` has no `draft_edited`~~ — **closed by `AI_ACT_PROMPTS.md` A1 (migration 0025, branch `w9/ai-transparency`, 1 Oct).** `sendReply`/approve-all now write `draft_edited` (null when there was no draft) and `sent_via`. Was: §7.4 wants a "· edited" marker under a draft reply, and `draft_edit_events` has no email id — by design, since it is an analytics table (decision P-8). A boolean written by `sendReply`, which already computes the similarity, is the cheap fix. Same migration as the row below. |
+| ✅ | ~~`emails` has no `updated_at`~~ — **closed by A1 (migration 0025).** Set on every status change (processed, sent, flagged, ignored); old rows stay null. Communications' "Done today" can now count ignored mail — not wired yet. Was: So the moment a message was *ignored* is recorded nowhere, and Communications' "Done today" queue can only count what was *sent* today (decision P-7). Ignored mail falls into no queue at all, which is why the **All** segment is currently load-bearing rather than a convenience. A one-column migration closes both. |
 
 ### 3.3 Before charging
 

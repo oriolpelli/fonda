@@ -1,6 +1,6 @@
 /**
- * Post-apply verification for migrations 0023 (chat_threads) and 0024
- * (guest_profiles).
+ * Post-apply verification for migrations 0023 (chat_threads), 0024
+ * (guest_profiles) and 0025 (AI provenance).
  *
  *   npm run verify-migrations
  *
@@ -81,6 +81,40 @@ async function main() {
     "updated_at",
   ]) {
     report(await columnExists("guest_profiles", col), `guest_profiles.${col}`);
+  }
+
+  console.log("\n=== migration 0025 — AI provenance ===");
+  const provenanceColumns: Record<string, string[]> = {
+    emails: [
+      "draft_model",
+      "draft_prompt_version",
+      "draft_generated_at",
+      "draft_sha256",
+      "draft_edited",
+      "sent_via",
+      "updated_at",
+    ],
+    checkin_chasers: [
+      "draft_model",
+      "draft_prompt_version",
+      "draft_generated_at",
+      "draft_sha256",
+      "draft_edited",
+      "sent_via",
+    ],
+    briefings: ["model", "prompt_version"],
+    guest_profiles: ["inference_model", "inference_prompt_version"],
+    chat_logs: ["model"],
+    hotel_settings: [
+      "review_summary_model",
+      "review_summary_prompt_version",
+      "review_summary_generated_at",
+    ],
+  };
+  for (const [table, cols] of Object.entries(provenanceColumns)) {
+    for (const col of cols) {
+      report(await columnExists(table, col), `${table}.${col}`);
+    }
   }
 
   console.log("\n=== retention boundary (the /trust promise) ===");

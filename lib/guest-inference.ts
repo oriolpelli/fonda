@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { AI_MODELS, PROMPT_VERSIONS } from "@/lib/ai-provenance";
 import type {
   GuestPreference,
   GuestProfile,
@@ -16,9 +17,10 @@ import type { Json } from "@/types/database";
  * What Fondas works out about a guest from their mail and their bookings
  * (APP_UX_PROPOSAL.md §5.4).
  *
- * Haiku, same shape as lib/email-processor.ts's classifier — a small, cheap,
- * structured call. No `output_config.effort`: Haiku 4.5 rejects it, which is the
- * mistake that silently broke every classification once already.
+ * Haiku (AI_MODELS.guestInference in lib/ai-provenance.ts), same shape as
+ * lib/email-processor.ts's classifier — a small, cheap, structured call. No
+ * `output_config.effort`: Haiku 4.5 rejects it, which is the mistake that
+ * silently broke every classification once already.
  *
  * TWO WRITE RULES, and they are the reason this file exists rather than an
  * inline update somewhere:
@@ -38,8 +40,6 @@ import type { Json } from "@/types/database";
  * the model is working out whether this was a honeymoon, and it does not need
  * the surname to do it.
  */
-
-const INFERENCE_MODEL = "claude-haiku-4-5-20251001";
 
 /** Re-run at most this often, however many times a record is opened. */
 const STALE_AFTER_MS = 24 * 60 * 60 * 1000;
@@ -163,7 +163,7 @@ export async function inferGuestProfile(
 
     const client = new Anthropic();
     const response = await client.messages.create({
-      model: INFERENCE_MODEL,
+      model: AI_MODELS.guestInference,
       max_tokens: 1024,
       output_config: { format: { type: "json_schema", schema: SCHEMA } },
       system:
@@ -222,6 +222,10 @@ export async function inferGuestProfile(
         // even set to its current value — would overwrite a note a colleague
         // saved between this record being read and this write landing.
         inferred_at: merged.inferredAt,
+        // Art. 50(2) evidence (migration 0025): what wrote the inferred values.
+        // inferred_at above is the "when".
+        inference_model: AI_MODELS.guestInference,
+        inference_prompt_version: PROMPT_VERSIONS.guestInference,
         updated_at: now,
       },
       { onConflict: "hotel_id,customer_mews_id" }

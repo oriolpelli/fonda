@@ -2,6 +2,7 @@ import "server-only";
 
 import Anthropic from "@anthropic-ai/sdk";
 
+import { AI_MODELS, provenance, sha256 } from "@/lib/ai-provenance";
 import { track } from "@/lib/analytics";
 import { buildHotelProfileSummary, HOTEL_PROFILE_COLUMNS } from "@/lib/hotel-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -16,7 +17,8 @@ import type { EmailStatus } from "@/types";
  *
  * Model split (cost/quality): classification is a cheap, structured task, so it
  * runs on Haiku; drafting is guest-facing, so it runs on Sonnet — a strong
- * balance of quality and cost. Dial either up (e.g. claude-opus-5) as needed.
+ * balance of quality and cost. Both IDs live in lib/ai-provenance.ts
+ * (AI_MODELS.emailClassify / .emailDraft); change them there.
  *
  * IMPORTANT — `output_config.effort` is NOT supported on Haiku 4.5 and returns
  * a 400 ("This model does not support the effort parameter"). It IS supported
@@ -24,8 +26,6 @@ import type { EmailStatus } from "@/types";
  * both. Sending `effort` to Haiku is what silently broke every classification
  * until 28 Jul — if you change either model, re-check which knobs it accepts.
  */
-const EMAIL_CLASSIFY_MODEL = "claude-haiku-4-5-20251001";
-const EMAIL_DRAFT_MODEL = "claude-sonnet-4-6";
 
 export const EMAIL_CLASSIFICATIONS = [
   "booking_inquiry",
@@ -99,7 +99,7 @@ async function classify(
   emailText: string
 ): Promise<Classification> {
   const response = await client.messages.create({
-    model: EMAIL_CLASSIFY_MODEL,
+    model: AI_MODELS.emailClassify,
     max_tokens: 1024,
     // No `effort` here: Haiku 4.5 rejects it. Structured output is supported.
     output_config: {
@@ -236,7 +236,7 @@ async function generateDraft(
     .join("\n");
 
   const response = await client.messages.create({
-    model: EMAIL_DRAFT_MODEL,
+    model: AI_MODELS.emailDraft,
     max_tokens: 1500,
     output_config: { effort: "low" },
     system,
@@ -290,6 +290,9 @@ export async function processEmail(
   const context = await enrich(admin, hotelId, email.from_email, bookingReference);
 
   let draft: string | null = null;
+  // Stamped when the draft comes back, beside it (migration 0025). Stays null
+  // for complaints and irrelevant mail — nothing was written for those.
+  let draftProvenance: ReturnType<typeof provenance> | null = null;
   let status: EmailStatus;
   if (classification === "complaint") {
     // Flag for personal GM review; no auto-draft.
@@ -306,6 +309,7 @@ export async function processEmail(
       emailText,
       context,
     });
+    draftProvenance = provenance("emailDraft");
     status = "pending";
   }
 
@@ -327,6 +331,13 @@ export async function processEmail(
       status,
       reservation_mews_id: reservationMewsId,
       customer_mews_id: customerMewsId,
+      // Art. 50(2) evidence: which model, which prompt version, when, and a
+      // hash of the draft exactly as stored here. No guest text in any of it.
+      draft_model: draftProvenance?.model ?? null,
+      draft_prompt_version: draftProvenance?.promptVersion ?? null,
+      draft_generated_at: draftProvenance?.generatedAt ?? null,
+      draft_sha256: draft !== null ? sha256(draft) : null,
+      updated_at: new Date().toISOString(),
     })
     .eq("id", emailId);
   if (updateError) {
