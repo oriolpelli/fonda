@@ -622,6 +622,7 @@
     "send": "Send",
     "sending": "Sending…",
     "actionFailed": "That didn't go through. Check your connection and try again.",
+    "notDone": "Didn't go through",
     "needsAttention": "Needs attention",
     "ignore": "Ignore",
     "sent": "Sent",

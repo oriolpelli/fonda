@@ -310,10 +310,12 @@ export function createGmailClient(refreshToken: string): GmailClient {
 
       // Refresh once on a 401 (expired/revoked access token) — and drop the
       // shared copy too, so no other request reuses the token Google refused.
+      // Only if it IS that token: in a bulk batch another send may already
+      // have replaced it with a fresh one, which must survive.
       if (res.status === 401 && !forcedRefresh) {
         forcedRefresh = true;
         accessToken = null;
-        tokenCache.delete(key);
+        if (tokenCache.get(key)?.token === token) tokenCache.delete(key);
         continue;
       }
       if ((res.status === 429 || res.status >= 500) && attempt < DEFAULTS.maxRetries) {

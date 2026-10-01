@@ -274,9 +274,12 @@ function toSentPreview(
 ): InboxEmail & { body_truncated: boolean } {
   const body = email.body ?? null;
   const truncated = body !== null && body.length > SENT_PREVIEW_CHARS;
+  // Never cut between the two halves of an emoji (a surrogate pair).
+  let cut = SENT_PREVIEW_CHARS;
+  if (truncated && /[\uD800-\uDBFF]/.test(body[cut - 1])) cut -= 1;
   return {
     ...email,
-    body: truncated ? body.slice(0, SENT_PREVIEW_CHARS) : body,
+    body: truncated ? body.slice(0, cut) : body,
     draft_reply: null,
     body_truncated: truncated,
   };

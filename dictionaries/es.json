@@ -622,6 +622,7 @@
     "send": "Enviar",
     "sending": "Enviando…",
     "actionFailed": "No se ha podido completar. Comprueba la conexión y vuelve a intentarlo.",
+    "notDone": "No se completó",
     "needsAttention": "Requiere atención",
     "ignore": "Ignorar",
     "sent": "Enviado",

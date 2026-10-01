@@ -10,6 +10,7 @@ import {
   useTransition,
 } from "react";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import {
   approveAllStandard,
@@ -145,6 +146,17 @@ function rememberQueue(queue: QueueMode): void {
  * the cookie itself fixes that, and agrees with the server on every hard load,
  * because the server read this same cookie a moment earlier.
  */
+/** `record` without the given keys — for the per-message maps below. */
+function withoutIds<T>(
+  record: Record<string, T>,
+  ids: readonly string[]
+): Record<string, T> {
+  if (!ids.some((id) => id in record)) return record;
+  const next = { ...record };
+  for (const id of ids) delete next[id];
+  return next;
+}
+
 function readCookie(name: string): string | undefined {
   if (typeof document === "undefined") return undefined;
   const prefix = `${name}=`;
@@ -218,6 +230,7 @@ export function EmailInbox({
   contextPanes?: Record<string, ReactNode>;
 }) {
   const { dict, locale } = useDictionary();
+  const router = useRouter();
   const [sort, setSort] = useState<SortMode>(() => {
     const saved = readCookie(SORT_COOKIE);
     return isSortMode(saved) ? saved : initialSort;
@@ -248,7 +261,7 @@ export function EmailInbox({
    * Urgency is recomputed with the same rule the server uses, so a flagged
    * message ranks as one at once and a sent one drops out of the ranking.
    */
-  const [shownEmails, applyChange] = useOptimistic(
+  const [optimisticEmails, applyChange] = useOptimistic(
     emails,
     (current: InboxEmail[], change: InboxChange): InboxEmail[] => {
       const ids = new Set(change.ids);
@@ -283,6 +296,34 @@ export function EmailInbox({
    * edits. It reads from here first instead. Cleared once the send succeeds.
    */
   const [unsent, setUnsent] = useState<Record<string, string>>({});
+
+  /**
+   * Messages whose last action failed, with what went wrong. Shown on the row
+   * and in the reading pane until the next action on that message.
+   */
+  const [failures, setFailures] = useState<Record<string, string>>({});
+
+  /**
+   * What the inbox shows: the optimistic list, except that a message whose
+   * action has already failed is back to its real row straight away. Without
+   * this, a failed send kept reading "Sending…" until every other click still
+   * in flight had finished — React settles all of them together.
+   */
+  const shownEmails = useMemo(() => {
+    if (Object.keys(failures).length === 0) return optimisticEmails;
+    const real = new Map(emails.map((email) => [email.id, email]));
+    return optimisticEmails.map((email) =>
+      email.id in failures ? (real.get(email.id) ?? email) : email
+    );
+  }, [optimisticEmails, emails, failures]);
+
+  /** A failure still worth showing: the message is still waiting on someone. */
+  function failureOf(email: InboxEmail): string | null {
+    if (!(email.id in failures)) return null;
+    return email.status === "pending" || email.status === "needs_attention"
+      ? failures[email.id]
+      : null;
+  }
   /** Messages whose send has been clicked and not yet answered. */
   const inFlight = useRef(new Set<string>());
   // The bulk-send confirmation (AI_ACT_PROMPTS.md A4) and the button it
@@ -512,31 +553,47 @@ export function EmailInbox({
   /**
    * Applies `change` to the list at once, then runs the action; `settled`
    * hears whether it went through.
+   *
+   * A failure is recorded against the message itself (`failures`), not in one
+   * shared banner: the GM may have sent three more replies by the time the
+   * first one fails, and a banner the next click clears would let that row
+   * slip back into the queue unexplained. The bulk send keeps the banner — it
+   * reports on a batch, not a row.
    */
   function run(
     change: InboxChange,
     fn: () => Promise<{ error?: string } | void>,
-    settled?: (ok: boolean) => void
+    { settled, bulk = false }: { settled?: (ok: boolean) => void; bulk?: boolean } = {}
   ) {
     setActionError(null);
+    setFailures((prev) => withoutIds(prev, change.ids));
     startTransition(async () => {
       applyChange(change);
-      let ok = true;
+      let error: string | null = null;
       try {
         const result = await fn();
-        if (result && "error" in result && result.error) {
-          ok = false;
-          setActionError(result.error);
-        }
+        if (result && "error" in result && result.error) error = result.error;
       } catch {
-        // A thrown action (network gone, server error) must not leave the row
-        // looking done: the optimistic change ends with this transition, and
-        // the GM is told it did not go through.
-        ok = false;
-        setActionError(dict.emails.actionFailed);
+        // A thrown action — the connection dropped, the function timed out —
+        // may still have done its work before the answer was lost. Fetch the
+        // real state rather than show a row as undone that the guest has in
+        // fact received. (sendReply also refuses to send a sent row twice.)
+        error = dict.emails.actionFailed;
+        router.refresh();
       }
-      settled?.(ok);
-      // No router.refresh(). Every one of these actions ends in
+      if (error !== null) {
+        const message = error;
+        if (bulk) {
+          setActionError(message);
+        } else {
+          setFailures((prev) => ({
+            ...prev,
+            ...Object.fromEntries(change.ids.map((id) => [id, message])),
+          }));
+        }
+      }
+      settled?.(error === null);
+      // No router.refresh() on success. Every one of these actions ends in
       // revalidateInbox() (communications/actions.ts) — both windows and the
       // layout's badges — and a Server Action that revalidates the page being
       // viewed returns the new render in the same response. Refreshing on top
@@ -555,22 +612,14 @@ export function EmailInbox({
     inFlight.current.add(id);
     const content = draftRef.current?.value ?? "";
     setUnsent((prev) => ({ ...prev, [id]: content }));
-    run(
-      { ids: [id], status: "sent" },
-      () => sendReply(id, content),
+    run({ ids: [id], status: "sent" }, () => sendReply(id, content), {
       // Sent: forget the text. Failed: keep it, so the editor comes back with
       // the GM's words rather than the stored draft.
-      (ok) => {
+      settled: (ok) => {
         inFlight.current.delete(id);
-        if (ok) {
-          setUnsent((prev) => {
-            const next = { ...prev };
-            delete next[id];
-            return next;
-          });
-        }
-      }
-    );
+        if (ok) setUnsent((prev) => withoutIds(prev, [id]));
+      },
+    });
   }
 
   function handleBulk() {
@@ -585,19 +634,23 @@ export function EmailInbox({
     setBulkOpen(false);
     // All of them leave "Needs you" at once. Any that don't go come back when
     // the server's render lands, and the partial notice below says how many.
-    run({ ids, status: "sent" }, async () => {
-      const result = await approveAllStandard(ids);
-      if (result.error) return { error: result.error };
-      // Say so when fewer went than were confirmed — never let "Send 5"
-      // quietly mean three. Set directly rather than returned as an error:
-      // this is a partial success, and the rows that did go stay gone.
-      if (result.skipped > 0) {
-        setActionError(
-          t(dict.bulkSend.partial, { sent: result.sent, count: ids.length })
-        );
-      }
-      return undefined;
-    });
+    run(
+      { ids, status: "sent" },
+      async () => {
+        const result = await approveAllStandard(ids);
+        if (result.error) return { error: result.error };
+        // Say so when fewer went than were confirmed — never let "Send 5"
+        // quietly mean three. Set directly rather than returned as an error:
+        // this is a partial success, and the rows that did go stay gone.
+        if (result.skipped > 0) {
+          setActionError(
+            t(dict.bulkSend.partial, { sent: result.sent, count: ids.length })
+          );
+        }
+        return undefined;
+      },
+      { bulk: true }
+    );
   }
 
   const selectedContext = selected ? bookingContext(selected) : null;
@@ -822,7 +875,13 @@ export function EmailInbox({
                       >
                         {badgeLabel(email.classification)}
                       </span>
-                      {email.status === "sent" ? (
+                      {failureOf(email) ? (
+                        // Back in the queue because the last click failed —
+                        // the one row state that must not look like the rest.
+                        <span className="text-xs font-medium text-destructive">
+                          {dict.emails.notDone}
+                        </span>
+                      ) : email.status === "sent" ? (
                         // Handled is a finished state, not a live one — quiet
                         // grey, never the accent (§10).
                         <span className="text-xs font-medium text-[var(--fonda-text-3)]">
@@ -973,6 +1032,14 @@ export function EmailInbox({
                   {selected.draft_reply ? (
                     <p className="font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
                       {dict.ai.draftLine}
+                    </p>
+                  ) : null}
+                  {failureOf(selected) ? (
+                    <p
+                      role="alert"
+                      className="text-sm font-medium text-destructive"
+                    >
+                      {failureOf(selected)}
                     </p>
                   ) : null}
                   {/* Never disabled while something else is in flight: each

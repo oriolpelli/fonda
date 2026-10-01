@@ -241,11 +241,21 @@ export async function sendReply(
   // the single moment the acceptance metric can be measured.
   const { data: email } = await admin
     .from("emails")
-    .select(SENDABLE_COLUMNS)
+    .select(`${SENDABLE_COLUMNS}, status`)
     .eq("id", emailId)
     .eq("hotel_id", hotelId)
     .single();
   if (!email) return { error: "Email not found." };
+
+  // Already sent: say so and send nothing. The inbox moves a row the moment
+  // Send is clicked (email-inbox.tsx), so a response lost on a bad connection
+  // can bring back a row the guest has in fact received — and a second click
+  // on it must not email them twice. It also covers two people sending the
+  // same reply a moment apart, as far as one read before the send can.
+  if (email.status === "sent") {
+    revalidateInbox();
+    return {};
+  }
 
   const gmail = await getGmailClientForHotel(hotelId);
   if (!gmail) return { error: "Gmail is not connected." };
@@ -284,10 +294,10 @@ export async function sendReply(
 async function setStatus(
   emailId: string,
   status: "needs_attention" | "ignored"
-): Promise<void> {
+): Promise<{ error?: string }> {
   const hotelId = await requireHotelId();
   const admin = createAdminClient();
-  await admin
+  const { error } = await admin
     .from("emails")
     // updated_at is the only record of WHEN a message was flagged or ignored
     // (ROADMAP §3.2, decision P-7) — sent_at covers only sends.
@@ -295,14 +305,26 @@ async function setStatus(
     .eq("id", emailId)
     .eq("hotel_id", hotelId);
   revalidateInbox();
+  // The inbox has already moved the row; a failed write has to say so, or the
+  // row snaps back with no explanation. Logged by row id only.
+  if (error) {
+    console.error(
+      `[communications] could not set ${status} on ${emailId}:`,
+      error.message
+    );
+    return { error: "That change wasn't saved." };
+  }
+  return {};
 }
 
-export async function flagEmail(emailId: string): Promise<void> {
-  await setStatus(emailId, "needs_attention");
+export async function flagEmail(emailId: string): Promise<{ error?: string }> {
+  return setStatus(emailId, "needs_attention");
 }
 
-export async function ignoreEmail(emailId: string): Promise<void> {
-  await setStatus(emailId, "ignored");
+export async function ignoreEmail(
+  emailId: string
+): Promise<{ error?: string }> {
+  return setStatus(emailId, "ignored");
 }
 
 /**

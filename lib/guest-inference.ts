@@ -228,7 +228,10 @@ async function runInference(input: InferenceInput): Promise<GuestProfile> {
       .filter(Boolean)
       .join(", ");
 
-    const client = new Anthropic();
+    // Bounded: the record is already on screen and its pickers are held while
+    // this runs, so a hung call must end as a failure (and a pause) in seconds,
+    // not after the SDK's default ten minutes and two retries.
+    const client = new Anthropic({ timeout: 20_000, maxRetries: 1 });
     const response = await client.messages.create({
       model: AI_MODELS.guestInference,
       max_tokens: 1024,
@@ -293,7 +296,7 @@ async function runInference(input: InferenceInput): Promise<GuestProfile> {
     };
 
     const supabase = await createClient();
-    await supabase.from("guest_profiles").upsert(
+    const { error: writeError } = await supabase.from("guest_profiles").upsert(
       {
         hotel_id: input.hotelId,
         customer_mews_id: input.customerMewsId,
@@ -315,6 +318,17 @@ async function runInference(input: InferenceInput): Promise<GuestProfile> {
       { onConflict: "hotel_id,customer_mews_id" }
     );
 
+    // Not stored means inferred_at never moves, and every later view would run
+    // the model again. Show this run's result, and pause the guest like any
+    // other failure. Row-level only in the log.
+    if (writeError) {
+      console.error(
+        "[guest-inference] could not store the result; pausing this guest:",
+        writeError.code ?? "unknown"
+      );
+      pauseGuest(guestKey(input.hotelId, input.customerMewsId));
+    }
+
     return merged;
   } catch (err) {
     // A record with fewer guesses on it is still a good record. Say so once,
@@ -326,8 +340,15 @@ async function runInference(input: InferenceInput): Promise<GuestProfile> {
     // lib/ai-errors.ts). Anything else, a malformed answer most likely, pauses
     // this guest only, and is logged by name alone: a JSON parse error's
     // message quotes the model's output, which quotes the guest.
-    classifyAiError(err, "guest-inference");
+    const reported = classifyAiError(err, "guest-inference");
     if (err instanceof Anthropic.AnthropicError) {
+      // An SDK error that never reached the provider — a missing key — isn't
+      // reported by classifyAiError, and it fails every run until it is fixed.
+      if (!reported) {
+        console.error(
+          `[guest-inference] SDK error (${err.name}); pausing inference for 10 minutes`
+        );
+      }
       providerPausedUntil = Date.now() + RETRY_AFTER_FAILURE_MS;
     } else {
       console.error(
