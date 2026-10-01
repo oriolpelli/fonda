@@ -503,25 +503,20 @@ export default async function Home({
                 Every other section on the page keeps max-w-[1120px]. */}
             <Reveal className="mx-auto max-w-[1200px] text-center">
               {/* Tightened on phones, and only here. This is much the
-                  longest eyebrow on the page — es runs 34 characters — and at
-                  the shared 12px/0.14em it wrapped to two lines inside the
-                  pill at 360px, which a leading dot makes look broken. The
-                  string is not the thing to cut: 11px at 0.08em holds all
-                  three languages on one line down to 320px, and the section
-                  eyebrows keep the full treatment because they are short.
+                  longest eyebrow on the page — ca runs 32 characters — and at
+                  the shared 12px/0.14em it wraps at 360px. The string is not
+                  the thing to cut: 11px at 0.08em holds all three languages on
+                  one line down to 320px, and the section eyebrows keep the
+                  full treatment because they are short.
 
-                  The colour is stepped up too, and only here. Eyebrows are
-                  --fonda-text-3 everywhere else, which is 5.02:1 on the flat
-                  ground — fine. This one sits over the watercolour, where the
-                  lightest pixel beneath it is rgb(226,226,216) and text-3
-                  measures 4.26:1, under the 4.5:1 floor for 11-12px text.
-                  --fonda-text-2 measures 5.89:1 over that same pixel. No new
-                  token, and the hero is the only place the art is behind the
-                  type. */}
-              <Eyebrow className="text-[var(--fonda-text-2)] max-sm:text-[11px] max-sm:tracking-[0.08em]">
-                <svg width="6" height="6" viewBox="0 0 6 6" aria-hidden>
-                  <circle cx="3" cy="3" r="3" fill="var(--fonda-accent)" />
-                </svg>
+                  The weight and colour are stepped up too, and only here: the
+                  category line is a plain statement, set in --fonda-text at
+                  600 with no leading dot (1 Oct 2026). Eyebrows are
+                  --fonda-text-3 everywhere else; this one sits over the
+                  watercolour, where text-3 measures 4.26:1 against the
+                  lightest pixel beneath it (rgb(226,226,216)). --fonda-text
+                  clears it with room to spare. */}
+              <Eyebrow className="font-semibold text-[var(--fonda-text)] max-sm:text-[11px] max-sm:tracking-[0.08em]">
                 {dict.hero.badge}
               </Eyebrow>
               {/* Two-tone: the turn from problem to promise happens on the
