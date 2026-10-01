@@ -1,7 +1,7 @@
 # W9 — AI transparency: build audit
 
 **Date:** 1 October 2026 · **Branch:** `w9/ai-transparency` (cut from `main` at `72b7213`)
-**Scope:** `AI_ACT_PROMPTS.md` A1–A4 · **Status:** built and gated, **not merged** — needs migration 0025 applied and the manual tests below.
+**Scope:** `AI_ACT_PROMPTS.md` A1–A4 · **Status:** built and gated, **not merged** — migration 0025 is applied and verified; the manual tests below are what remains.
 **Why now:** a recorded exception to the pilot sprint (`ROADMAP.md` Step 3a), Oriol's call on 1 Oct. Production is untouched until the merge.
 
 This is the record of what was changed, why, how each step was checked, and what is still owed. One commit per step so any one can be reverted on its own.
@@ -14,6 +14,11 @@ This is the record of what was changed, why, how each step was checked, and what
 2. From your own terminal: `npm run verify-migrations` → expect PASS, including the new "migration 0025" block.
 3. Push the branch. Vercel builds a **preview**; production stays on `main`.
 4. Run the tests in §3 on the preview, then merge to `main`.
+
+**Done 1 Oct:** 0025 applied to production Supabase by Oriol. `npm run
+verify-migrations` → PASS (all 23 columns of 0025, plus 0023/0024 and the
+retention boundary). `information_schema.triggers` shows
+`briefings_`, `checkin_chasers_` and `emails_guard_ai_provenance`.
 
 If the branch is ever deployed against a database without 0025: inbox reads, briefs, chasers and new drafts fail (missing columns), but **sends no longer double-send** — the status write is separate from the provenance write (commit `95a1e7f`).
 

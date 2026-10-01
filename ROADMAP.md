@@ -202,7 +202,7 @@ One release a week. Each row is a week's work and ships on its own.
 | **W6** ✅ *(19 Sep)* | **Communications, two windows** | `StayPhase` widened to four; In-house + Upcoming; Concierge absorbed; WhatsApp first-run card | ph. 7 · **prompts 11–12** |
 | **W7** | **Billing** | Stripe + trial gating (B20). Blocked on the legal entity — start §4 now, not in week 7 | B20 · Gate 2 · `EXECUTION_PLAYBOOK.md` |
 | **W8** | **Reputation** | The first real Commercial surface. Reviews fetched, themed, score movement | §6 · **prompts 13–14**, after decision P-4 |
-| **W9** 🟡 *built 1 Oct on `w9/ai-transparency` — apply 0025, test, merge* | **AI transparency (EU AI Act, P0)** | Model IDs in one place + provenance on every output (migration 0025, also closes the two `emails` rows in §3.2); machine-readable AI headers on every sent reply, chaser and brief; quiet "Fondas AI" labels; recorded bulk-send confirmation. **Hard deadline 2 Dec 2026** | `AI_ACT_PROMPTS.md` **A1–A4** |
+| **W9** 🟡 *built 1 Oct on `w9/ai-transparency`, 0025 applied — test, merge* | **AI transparency (EU AI Act, P0)** | Model IDs in one place + provenance on every output (migration 0025, also closes the two `emails` rows in §3.2); machine-readable AI headers on every sent reply, chaser and brief; quiet "Fondas AI" labels; recorded bulk-send confirmation. **Hard deadline 2 Dec 2026** | `AI_ACT_PROMPTS.md` **A1–A4** |
 | **W10** | **AI trust pack (P1)** | "How Fondas uses AI" on `/trust`; AI-literacy onboarding + record (Art. 4); guest-notice wording; AI activity log + problem reports — un-parks *AI management*. **Before the first invoices, ~1 Dec** | `AI_ACT_PROMPTS.md` **A5–A8** |
 
 **Then, in order — ✅ all shipped 19 Sep:** the guest context pane (15) → chat
@@ -215,7 +215,8 @@ Guests depended on them. `npm run verify-migrations` re-checks both from your
 own terminal.
 
 **W9 status (1 Oct):** A1–A4 built and reviewed on `w9/ai-transparency`, one
-commit per step, each gated. To ship: apply `supabase/APPLY_0025.sql`, run the tests in
+commit per step, each gated. Migration 0025 applied and verified (1 Oct). To
+ship: run the tests in
 `docs/audits/2026-10-01-W9-ai-transparency.md` §3 on the preview, merge.
 
 **Next, after the sprint:** W9 AI transparency → rate cache (B17) → W10 AI
