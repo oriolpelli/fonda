@@ -1,7 +1,7 @@
 # S1 — Speed, pass A: build record
 
 **Date:** 1 October 2026 · **Branch:** `perf/pass-a` (cut from `main` at `ffed0e3`)
-**Scope:** `docs/audits/2026-10-01-performance.md` §6, prompts **M1, P1–P4** · **Status:** built and gated, **not merged**. Migration 0028 still has to be applied, the preview tested, then merge.
+**Scope:** `docs/audits/2026-10-01-performance.md` §6, prompts **M1, P1–P4** · **Status:** built and gated, **not merged**. Migration 0028 is applied and verified (1 Oct); what remains is to test the preview, then merge.
 **Why now:** this was Oriol's call on 1 Oct: speed comes before anything else that is built (`ROADMAP.md` §1 Step 3).
 
 This record covers what changed, what it measured, how each step was checked and what is still owed. There is one commit per step, so any one can be reverted on its own. Nothing a user sees changes, apart from speed.
@@ -10,7 +10,7 @@ This record covers what changed, what it measured, how each step was checked and
 
 ## 1. Before you deploy this branch
 
-1. **Apply `supabase/APPLY_0028.sql`** in the Supabase SQL editor. It only adds indexes and is safe to run twice. The check query is in its header; expect three rows.
+1. ✅ **Apply `supabase/APPLY_0028.sql`** in the Supabase SQL editor. It only adds indexes and is safe to run twice. The check query is in its header; expect three rows. **Done 1 Oct by Oriol: all three indexes present.**
 2. Push `perf/pass-a`. Vercel builds a **preview**, and production stays on `main`.
 3. Optional, but it gives you the numbers: on the preview, set **`PERF_LOG=1`** (Vercel → Settings → Environment Variables → Preview only) and redeploy. The function logs then print one line per read, for example `[perf] home.snapshot 41ms`. For a before-and-after, push the branch at `30ad07e` first, note the numbers, then push the rest.
 4. Run the clicks in §3, then merge to `main`.
