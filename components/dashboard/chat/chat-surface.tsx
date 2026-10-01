@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { ChatComposer } from "@/components/dashboard/chat/chat-composer";
@@ -26,10 +26,13 @@ export function ChatSurface({
   threads,
   threadId,
   initialMessages,
+  historyLimit,
   prefill,
 }: {
   userEmail: string;
   threads: ChatThreadSummary[];
+  /** How many conversations are kept (lib/chat-threads.ts). */
+  historyLimit: number;
   /** The conversation named by `?thread=`, if it resolved to one of ours. */
   threadId: string | null;
   /** Its transcript, already pseudonymised — see lib/chat-threads.ts. */
@@ -38,9 +41,17 @@ export function ChatSurface({
   prefill?: string | null;
 }) {
   const { dict } = useDictionary();
+  // A question whose answer never arrived (Fondas AI unavailable, a dropped
+  // connection) is stored without one. Restored as it is, it looked like the
+  // answer had gone missing; it gets a quiet line saying so instead. Marked
+  // `failed`, so it is shown but never sent back to the model as context.
+  const seeded = useMemo(
+    () => withUnansweredNotes(initialMessages, dict.askYourHotel.noAnswerSaved),
+    [initialMessages, dict]
+  );
   const { messages, streaming, send, reset } = useHotelChat({
     threadId,
-    messages: initialMessages,
+    messages: seeded,
   });
   const blank = messages.length === 0;
   // True for a conversation loaded from the database rather than had just now.
@@ -115,15 +126,50 @@ export function ChatSurface({
     </div>
   );
 
+  // `data-chat-surface` lets the dashboard layout drop its centred, padded
+  // column on this page from `lg` (a `:has()` rule in layout.tsx), so the
+  // thread list can sit flush against the sidebar. The conversation keeps its
+  // own padding and a comfortable measure, centred in what's left.
   return (
-    <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:gap-6">
+    <div
+      data-chat-surface
+      className="flex flex-1 flex-col gap-4 lg:flex-row lg:gap-0"
+    >
       {/* "New conversation" from a conversation you started on this page has
           nowhere new to navigate to (both are the bare /chat URL, so the key
           in page.tsx doesn't change) — so it resets the hook directly. */}
-      <ChatThreadList threads={threads} onNewConversation={reset} />
-      {body}
+      <ChatThreadList
+        threads={threads}
+        limit={historyLimit}
+        onNewConversation={reset}
+      />
+      <div className="flex min-w-0 flex-1 flex-col lg:px-10 lg:pt-10">
+        <div className="mx-auto flex w-full max-w-[860px] flex-1 flex-col">
+          {body}
+        </div>
+      </div>
     </div>
   );
+}
+
+/**
+ * Adds a quiet "no answer was saved" turn after any question that has no
+ * answer following it — the shape a failed turn leaves in chat_logs, since
+ * only text that actually streamed is stored.
+ */
+function withUnansweredNotes(
+  messages: ChatMessage[],
+  note: string
+): ChatMessage[] {
+  const out: ChatMessage[] = [];
+  messages.forEach((message, i) => {
+    out.push(message);
+    const next = messages[i + 1];
+    if (message.role === "user" && next?.role !== "assistant") {
+      out.push({ role: "assistant", content: note, failed: true });
+    }
+  });
+  return out;
 }
 
 /**

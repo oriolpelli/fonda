@@ -265,7 +265,11 @@ export default async function DashboardLayout({
         {/* Column, not a plain block, so the docked "Ask your hotel" bar below
             can take the remaining height with `mt-auto` and sit at the foot of
             the column on short pages as well as long ones. */}
-        <main className="mx-auto flex w-full max-w-[1120px] flex-1 flex-col px-5 pb-6 pt-6 md:px-8 md:pb-8 md:pt-10">
+        {/* From `lg`, a page that renders `data-chat-surface` (Ask, and its
+            loading skeleton) takes the whole column instead: no centring, no
+            padding, so its conversation list sits flush against the sidebar
+            (APP_UX_PROPOSAL.md §11 #11). Every other page is unchanged. */}
+        <main className="mx-auto flex w-full max-w-[1120px] flex-1 flex-col px-5 pb-6 pt-6 md:px-8 md:pb-8 md:pt-10 lg:has-[[data-chat-surface]]:mx-0 lg:has-[[data-chat-surface]]:max-w-none lg:has-[[data-chat-surface]]:px-0 lg:has-[[data-chat-surface]]:pb-0 lg:has-[[data-chat-surface]]:pt-0">
           {/* No PMS means every page below is empty for a reason the page
               itself can't explain. Say so once, at the top, wherever they are. */}
           {!hotel?.pms_connected ? (

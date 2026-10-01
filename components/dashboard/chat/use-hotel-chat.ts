@@ -97,6 +97,10 @@ export function useHotelChat(
         ...messages,
         { role: "user", content: trimmed },
       ];
+      // What goes to the model: never a failed turn. Those carry OUR words
+      // ("isn't available right now", "no answer was saved"), and fed back as
+      // if the assistant had said them they would only confuse the next answer.
+      const context = history.filter((m) => !m.failed);
       setMessages([...history, { role: "assistant", content: "", intent }]);
       setStreaming(true);
 
@@ -105,7 +109,7 @@ export function useHotelChat(
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            messages: history.map((m) => ({ role: m.role, content: m.content })),
+            messages: context.map((m) => ({ role: m.role, content: m.content })),
             threadId,
           }),
         });

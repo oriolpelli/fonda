@@ -558,6 +558,8 @@ Each phase is independently shippable and independently reviewable. Phases 1–3
 
 | 10 | P-8 · No "· edited" marker on drafts | **Decided 19 Sep; resolved 1 Oct** by migration 0025 — see below |
 
+| 11 | Ask's conversation list: placement, cap, deletion | **Decided 1 Oct** (Oriol) — see below |
+
 ### 6 · The guest-data position
 
 **Decided:**
@@ -636,6 +638,34 @@ under "Reply sent": *"Drafted by Fondas AI · edited before sending"* or
 *"· sent as drafted"*. A pending draft carries the A3 line instead (*"Drafted by
 Fondas AI from this thread and your house tone — check before sending"*). A
 reply with no draft, or one sent before 0025, shows nothing.
+
+### 11 · Ask's conversation list *(1 October)*
+
+Raised by Oriol after using the W9 preview: older conversations are hard to
+judge, the list will grow without end, and it floats in the middle of the page
+with a gap between it and the sidebar.
+
+**Decided:**
+
+1. **Placement — flush against the sidebar, still not in it.** From `lg` the
+   list is a full-height 240px column right next to the sidebar: white canvas
+   beside the sidebar's warm chrome, a hairline on its right, sticky while the
+   transcript scrolls. The dashboard layout drops its centred, padded column
+   for this one page via `data-chat-surface` and a `:has()` rule. It stays OUT
+   of the sidebar itself, as §4.1 and P-6 decided: the nav is five sections.
+   Below `lg` it is still a disclosure.
+2. **Cap — the last 10.** `CHAT_HISTORY_LIMIT` in `lib/chat-threads.ts`.
+3. **Older conversations are deleted automatically** when a new one starts,
+   not hidden: the list can't overgrow, and there is less stored chat for a
+   DPO to ask about. The list says so in one quiet line.
+4. **Deletion — per conversation and "Clear history"**, each with an inline
+   confirm (Cancel has focus; Escape cancels), never a native dialog. Both run
+   as the signed-in user through RLS — migration 0027 adds the two delete
+   policies; nothing uses the service role.
+5. **A question with no stored answer** (the AI failed, so nothing streamed
+   and nothing was saved) is restored with a quiet "No answer was saved for
+   this question." instead of looking like the answer went missing. Such
+   turns are never sent back to the model as context.
 
 ### 8 · P-6 · The rail becomes a labelled sidebar *(19 September)*
 

@@ -3,7 +3,11 @@ import type { Metadata } from "next";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { ChatSurface } from "@/components/dashboard/chat/chat-surface";
 import { getSessionUser } from "@/lib/auth";
-import { loadChatThreads, loadThreadMessages } from "@/lib/chat-threads";
+import {
+  CHAT_HISTORY_LIMIT,
+  loadChatThreads,
+  loadThreadMessages,
+} from "@/lib/chat-threads";
 
 // The full "Ask your hotel" conversation (FONDA_SANA_REDESIGN.md §8.5). The
 // docked bar on every other dashboard page is the shortcut into it; this is the
@@ -63,6 +67,7 @@ export default async function ChatPage({
       threads={threads}
       threadId={threadId}
       initialMessages={initialMessages}
+      historyLimit={CHAT_HISTORY_LIMIT}
       prefill={prefill}
     />
   );

@@ -165,6 +165,24 @@ function AssistantTurn({
   nested: boolean;
   onNavigate?: () => void;
 }) {
+  // A turn that never got an answer: our own quiet sentence, without the
+  // source chips or the "Done" tick, which would claim work that didn't happen.
+  if (message.failed && !working) {
+    return (
+      <div className="relative pl-6">
+        <Sparkles
+          aria-hidden="true"
+          className="absolute left-0 top-[3px] size-[14px] text-[var(--fonda-text-3)]"
+          strokeWidth={1.5}
+        />
+        <p className="max-w-[68ch] whitespace-pre-line text-[14px] leading-[1.6] text-[var(--fonda-text-2)]">
+          <span className="sr-only">{dict.askYourHotel.assistant}: </span>
+          {message.content}
+        </p>
+      </div>
+    );
+  }
+
   const sourceLabels = dict.askYourHotel.sources as Record<string, string>;
   const status = working
     ? message.intent === "draft"
