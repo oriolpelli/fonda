@@ -1,5 +1,7 @@
 import "server-only";
 
+import { createHash } from "node:crypto";
+
 import * as Sentry from "@sentry/nextjs";
 
 import type {
@@ -8,7 +10,9 @@ import type {
   GetReservationsOptions,
 } from "@/lib/mews";
 import { getPmsClientForHotel } from "@/lib/pms";
+import { migrationApplied } from "@/lib/schema-features";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { fetchAllPages, fetchInChunks } from "@/lib/supabase/paged";
 import type { Json, TablesInsert } from "@/types/database";
 
 /**
@@ -90,11 +94,100 @@ function customerRow(
   };
 }
 
+/**
+ * A row's content, fingerprinted: everything the PMS gave us, and none of our
+ * own bookkeeping. `synced_at` changes on every run, so it is left out, or no
+ * row would ever look unchanged.
+ */
+function contentHash(row: { synced_at?: string | null }): string {
+  const { synced_at: _syncedAt, ...content } = row;
+  void _syncedAt;
+  return createHash("sha256").update(JSON.stringify(content)).digest("hex");
+}
+
+interface StoredHash {
+  mews_id: string;
+  content_hash: string | null;
+}
+
+/**
+ * The rows that are new or whose content changed, each with its hash.
+ *
+ * Until 1 Oct every run rewrote every row in the window — today ±14 days of
+ * reservations and every guest they reference, each with its full PMS payload
+ * — every 15 minutes, changed or not. In production that was 97% of the
+ * database's time, and on a 0.5 GB instance the I/O it caused stalled every
+ * dashboard read behind it (docs/audits/2026-10-01-S3-speed-pass-c.md). Each
+ * row now carries a hash of its content (migration 0029); a run reads the
+ * stored hashes and skips every row whose hash matches. A row written before
+ * 0029 has no hash, so the first run after it writes everything once.
+ *
+ * Without 0029 applied (lib/schema-features.ts) every row is returned, with
+ * no hash, exactly as before.
+ *
+ * `inWindow` reads the stored hashes in bulk. `byIds` looks up whatever that
+ * missed — a stay whose dates moved, or one the PMS counts as in the window by
+ * a slightly different rule — so it isn't rewritten on every run for that.
+ */
+async function changedRows<R extends { mews_id: string; synced_at?: string | null }>(
+  rows: R[],
+  inWindow: () => Promise<StoredHash[]>,
+  byIds: (ids: string[]) => Promise<StoredHash[]>
+): Promise<(R & { content_hash?: string })[]> {
+  if (rows.length === 0 || !(await migrationApplied("0029"))) return rows;
+
+  const stored = new Map(
+    (await inWindow()).map((r) => [r.mews_id, r.content_hash])
+  );
+  const missing = rows.map((r) => r.mews_id).filter((id) => !stored.has(id));
+  if (missing.length > 0) {
+    for (const r of await byIds(missing)) stored.set(r.mews_id, r.content_hash);
+  }
+
+  const changed: (R & { content_hash: string })[] = [];
+  for (const row of rows) {
+    const hash = contentHash(row);
+    if (stored.get(row.mews_id) !== hash) changed.push({ ...row, content_hash: hash });
+  }
+  return changed;
+}
+
+interface WriteCount {
+  written: number;
+  unchanged: number;
+}
+
 async function upsertReservations(
-  rows: TablesInsert<"reservations">[]
-): Promise<void> {
+  hotelId: string,
+  rows: TablesInsert<"reservations">[],
+  window: { start: string; end: string }
+): Promise<WriteCount> {
   const admin = createAdminClient();
-  for (const batch of chunk(rows, UPSERT_BATCH)) {
+  const toWrite = await changedRows(
+    rows,
+    // The same window the PMS was asked for, in pages: a handful of small
+    // reads rather than one per id.
+    () =>
+      fetchAllPages<StoredHash>((from, to) =>
+        admin
+          .from("reservations")
+          .select("mews_id, content_hash")
+          .eq("hotel_id", hotelId)
+          .lt("start_utc", window.end)
+          .gt("end_utc", window.start)
+          .order("mews_id", { ascending: true })
+          .range(from, to)
+      ),
+    (ids) =>
+      fetchInChunks<StoredHash>(ids, (chunk) =>
+        admin
+          .from("reservations")
+          .select("mews_id, content_hash")
+          .eq("hotel_id", hotelId)
+          .in("mews_id", chunk)
+      )
+  );
+  for (const batch of chunk(toWrite, UPSERT_BATCH)) {
     const { error } = await admin
       .from("reservations")
       .upsert(batch, { onConflict: "hotel_id,mews_id" });
@@ -102,13 +195,30 @@ async function upsertReservations(
       throw new Error(`Failed to upsert reservations: ${error.message}`);
     }
   }
+  return { written: toWrite.length, unchanged: rows.length - toWrite.length };
 }
 
 async function upsertCustomers(
+  hotelId: string,
   rows: TablesInsert<"customers">[]
-): Promise<void> {
+): Promise<WriteCount> {
   const admin = createAdminClient();
-  for (const batch of chunk(rows, UPSERT_BATCH)) {
+  const lookup = (ids: string[]) =>
+    fetchInChunks<StoredHash>(ids, (chunk) =>
+      admin
+        .from("customers")
+        .select("mews_id, content_hash")
+        .eq("hotel_id", hotelId)
+        .in("mews_id", chunk)
+    );
+  // Customers have no window of their own: the ids are the window, so the
+  // bulk read already covers every row and there is nothing left to look up.
+  const toWrite = await changedRows(
+    rows,
+    () => lookup(rows.map((r) => r.mews_id)),
+    async () => []
+  );
+  for (const batch of chunk(toWrite, UPSERT_BATCH)) {
     const { error } = await admin
       .from("customers")
       .upsert(batch, { onConflict: "hotel_id,mews_id" });
@@ -116,6 +226,7 @@ async function upsertCustomers(
       throw new Error(`Failed to upsert customers: ${error.message}`);
     }
   }
+  return { written: toWrite.length, unchanged: rows.length - toWrite.length };
 }
 
 /** Fetches the given customers from MEWS and upserts them into Supabase. */
@@ -133,7 +244,10 @@ export async function syncCustomers(
 
   const customers = await pms.getCustomers(ids);
   const syncedAt = new Date().toISOString();
-  await upsertCustomers(customers.map((c) => customerRow(hotelId, c, syncedAt)));
+  await upsertCustomers(
+    hotelId,
+    customers.map((c) => customerRow(hotelId, c, syncedAt))
+  );
   return customers.length;
 }
 
@@ -156,8 +270,13 @@ export async function syncReservations(
   const reservations = await pms.getReservations(startDate, endDate, options);
   const syncedAt = new Date().toISOString();
 
-  await upsertReservations(
-    reservations.map((r) => reservationRow(hotelId, r, syncedAt))
+  const reservationWrites = await upsertReservations(
+    hotelId,
+    reservations.map((r) => reservationRow(hotelId, r, syncedAt)),
+    {
+      start: new Date(startDate).toISOString(),
+      end: new Date(endDate).toISOString(),
+    }
   );
 
   // Pull the guest profiles referenced by these reservations.
@@ -166,14 +285,22 @@ export async function syncReservations(
     .filter((id): id is string => Boolean(id));
 
   let customers = 0;
+  let customerWrites: WriteCount = { written: 0, unchanged: 0 };
   if (customerIds.length > 0) {
     const ids = [...new Set(customerIds)];
     const profiles = await pms.getCustomers(ids);
-    await upsertCustomers(
+    customerWrites = await upsertCustomers(
+      hotelId,
       profiles.map((c) => customerRow(hotelId, c, syncedAt))
     );
     customers = profiles.length;
   }
+
+  // Counts only — what the run wrote against what it skipped as unchanged.
+  // No hotel, no guest: just whether the change-only write is working.
+  console.log(
+    `[sync] reservations ${reservationWrites.written} written, ${reservationWrites.unchanged} unchanged; customers ${customerWrites.written} written, ${customerWrites.unchanged} unchanged`
+  );
 
   return { reservations: reservations.length, customers };
 }

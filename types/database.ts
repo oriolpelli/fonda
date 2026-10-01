@@ -169,6 +169,8 @@ export type Database = {
           draft_edited: boolean | null;
           sent_via: "single" | "bulk" | null;
           updated_at: string | null;
+          /** Migration 0029 — the Gmail thread, stored at ingest or first send. */
+          gmail_thread_id: string | null;
         };
         Insert: {
           id?: string;
@@ -192,6 +194,8 @@ export type Database = {
           draft_edited?: boolean | null;
           sent_via?: "single" | "bulk" | null;
           updated_at?: string | null;
+          /** Migration 0029 — the Gmail thread, stored at ingest or first send. */
+          gmail_thread_id?: string | null;
         };
         Update: {
           id?: string;
@@ -215,6 +219,8 @@ export type Database = {
           draft_edited?: boolean | null;
           sent_via?: "single" | "bulk" | null;
           updated_at?: string | null;
+          /** Migration 0029 — the Gmail thread, stored at ingest or first send. */
+          gmail_thread_id?: string | null;
         };
         Relationships: [
           {
@@ -309,6 +315,8 @@ export type Database = {
           raw: Json;
           mews_updated_utc: string | null;
           synced_at: string;
+          /** Migration 0029 — SHA-256 of the synced content (lib/mews-sync.ts). */
+          content_hash: string | null;
         };
         Insert: {
           id?: string;
@@ -330,6 +338,8 @@ export type Database = {
           raw?: Json;
           mews_updated_utc?: string | null;
           synced_at?: string;
+          /** Migration 0029 — SHA-256 of the synced content (lib/mews-sync.ts). */
+          content_hash?: string | null;
         };
         Update: {
           id?: string;
@@ -351,6 +361,8 @@ export type Database = {
           raw?: Json;
           mews_updated_utc?: string | null;
           synced_at?: string;
+          /** Migration 0029 — SHA-256 of the synced content (lib/mews-sync.ts). */
+          content_hash?: string | null;
         };
         Relationships: [
           {
@@ -376,6 +388,8 @@ export type Database = {
           raw: Json;
           mews_updated_utc: string | null;
           synced_at: string;
+          /** Migration 0029 — SHA-256 of the synced content (lib/mews-sync.ts). */
+          content_hash: string | null;
         };
         Insert: {
           id?: string;
@@ -390,6 +404,8 @@ export type Database = {
           raw?: Json;
           mews_updated_utc?: string | null;
           synced_at?: string;
+          /** Migration 0029 — SHA-256 of the synced content (lib/mews-sync.ts). */
+          content_hash?: string | null;
         };
         Update: {
           id?: string;
@@ -404,6 +420,8 @@ export type Database = {
           raw?: Json;
           mews_updated_utc?: string | null;
           synced_at?: string;
+          /** Migration 0029 — SHA-256 of the synced content (lib/mews-sync.ts). */
+          content_hash?: string | null;
         };
         Relationships: [
           {
@@ -651,6 +669,8 @@ export type Database = {
           inference_prompt_version: string | null;
           trip_purpose_source: "staff" | "inferred" | null;
           occasion_source: "staff" | "inferred" | null;
+          /** Migration 0029 — last failed inference run; operational only. */
+          inference_failed_at: string | null;
         };
         Insert: {
           hotel_id: string;
@@ -667,6 +687,8 @@ export type Database = {
           inference_prompt_version?: string | null;
           trip_purpose_source?: "staff" | "inferred" | null;
           occasion_source?: "staff" | "inferred" | null;
+          /** Migration 0029 — last failed inference run; operational only. */
+          inference_failed_at?: string | null;
         };
         Update: {
           hotel_id?: string;
@@ -683,6 +705,8 @@ export type Database = {
           inference_prompt_version?: string | null;
           trip_purpose_source?: "staff" | "inferred" | null;
           occasion_source?: "staff" | "inferred" | null;
+          /** Migration 0029 — last failed inference run; operational only. */
+          inference_failed_at?: string | null;
         };
         Relationships: [
           {
