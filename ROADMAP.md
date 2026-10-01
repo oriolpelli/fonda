@@ -216,7 +216,7 @@ One release a week. Each row is a week's work and ships on its own.
 | **W7** | **Billing** | Stripe + trial gating (B20). Blocked on the legal entity — start §4 now, not in week 7 | B20 · Gate 2 · `EXECUTION_PLAYBOOK.md` |
 | **W8** | **Reputation** | The first real Commercial surface. Reviews fetched, themed, score movement | §6 · **prompts 13–14**, after decision P-4 |
 | **W9** ✅ *(1 Oct, on `main`)* | **AI transparency (EU AI Act, P0)** | Model IDs in one place + provenance on every output (migration 0025, also closes the two `emails` rows in §3.2); machine-readable AI headers on every sent reply, chaser and brief; quiet "Fondas AI" labels; recorded bulk-send confirmation. **Hard deadline 2 Dec 2026** — met | `AI_ACT_PROMPTS.md` **A1–A4** |
-| **S1** 🟡 *building 1 Oct on `perf/pass-a`* | **Speed, pass A — nothing visible, everything faster** | Opt-in loader timings; read 5 keys of the PMS payload instead of all of it, no email bodies outside the inbox; one hotel read per request and parallel loads on every live page; two indexes (migration 0028); visited pages kept 30 s; Sentry loaded when idle; Customize loaded on open; one render per inbox action | `docs/audits/2026-10-01-performance.md` §6 **M1, P1–P4** |
+| **S1** 🟡 *built 1 Oct on `perf/pass-a` — apply 0028, preview, merge* | **Speed, pass A — nothing visible, everything faster** | Opt-in loader timings; read 5 keys of the PMS payload instead of all of it, no email bodies outside the inbox; one hotel read per request and parallel loads on every live page; two indexes (migration 0028); visited pages kept 30 s; Sentry loaded when idle; Customize loaded on open; one render per inbox action | `docs/audits/2026-10-01-performance.md` §6 **M1, P1–P4** |
 | **S2** | **Speed, pass B — feels instant** | Home, Brief, Communications and the sidebar badges stream in; the inbox sends full text only for open work; optimistic Send/Dismiss with a cached Gmail token and stored thread id; guest inference off the critical path; Ask caches the hotel context across turns | same, **P5–P8** |
 | **W10** | **AI trust pack (P1)** | "How Fondas uses AI" on `/trust`; AI-literacy onboarding + record (Art. 4); guest-notice wording; AI activity log + problem reports — un-parks *AI management*. **Before the first invoices, ~1 Dec** | `AI_ACT_PROMPTS.md` **A5–A8** |
 
@@ -235,6 +235,13 @@ after-test fixes (`docs/audits/2026-10-01-W9-ai-transparency.md` §8). Migration
 on production now, and the four owner checks in its §8 (which S1 repeats).
 Migration **0027** (Ask history delete) is on `main` too — until it is applied,
 deleting a conversation is a silent no-op.
+
+**S1 status (1 Oct):** M1 and P1–P4 built on `perf/pass-a`, one commit per
+step plus one review-fix commit, each gated by lint, tsc and a production build.
+Home's first-load JavaScript is 268 → 184 KB, and its window read 40 ms / 2.5 MB →
+7.7 ms / 0.27 MB on a test-hotel-sized database. To ship: apply
+`supabase/APPLY_0028.sql`, run the clicks in
+`docs/audits/2026-10-01-S1-speed-pass-a.md` §4 on the preview, merge.
 
 **Next, in order:** **S1 → S2** (speed — Oriol's call, 1 Oct, §1 Step 3) → rate
 cache (B17) → W10 AI trust pack → Revenue Management. Speed goes first because
