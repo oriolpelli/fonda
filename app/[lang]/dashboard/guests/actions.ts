@@ -8,6 +8,7 @@ import {
   type Occasion,
   type TripPurpose,
 } from "@/lib/guests";
+import { getSessionProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database";
 
@@ -21,17 +22,8 @@ import type { Json } from "@/types/database";
  */
 
 async function currentHotelId(): Promise<string | null> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data: profile } = await supabase
-    .from("users")
-    .select("hotel_id")
-    .eq("id", user.id)
-    .maybeSingle();
-  return profile?.hotel_id ?? null;
+  // lib/auth.ts — verified identity + hotel in one call.
+  return (await getSessionProfile())?.hotelId ?? null;
 }
 
 function revalidateGuest(customerMewsId: string): void {

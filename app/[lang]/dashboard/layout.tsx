@@ -6,6 +6,7 @@ import { AskYourHotel } from "@/components/dashboard/ask-your-hotel";
 import { deriveConnectionState } from "@/components/dashboard/connection-status";
 import { SetupBanner } from "@/components/dashboard/setup-banner";
 import { Sidebar, type NavItem } from "@/components/dashboard/sidebar";
+import { getSessionProfile } from "@/lib/auth";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { plural } from "@/lib/i18n/format";
 import { loadInboxBadges } from "@/lib/inbox";
@@ -21,10 +22,9 @@ export default async function DashboardLayout({
 }) {
   const { locale, dict } = await loadDictionary((await params).lang);
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Who, and which hotel — resolved once and shared with the page rendering
+  // under this layout (lib/auth.ts), instead of each asking Supabase again.
+  const user = await getSessionProfile();
 
   // Proxy already guards this route; this is defense-in-depth so the page
   // never renders for an unauthenticated user.
@@ -33,29 +33,27 @@ export default async function DashboardLayout({
   }
 
   // A signed-up user without a hotel hasn't onboarded yet.
-  const { data: profile } = await supabase
-    .from("users")
-    .select("hotel_id")
-    .eq("id", user.id)
-    .maybeSingle();
-  if (!profile) {
+  if (!user.hotelId) {
     redirect(localizedHref(locale, "/onboarding"));
   }
 
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("name, pms_connected, last_synced_at")
-    .eq("id", profile.hotel_id)
-    .single();
+  // The hotel row and the inbox badges don't depend on each other, so they go
+  // out together rather than one after the other. Badges fail soft to zero, so
+  // a bad inbox query can never blank the whole dashboard.
+  const supabase = await createClient();
+  const [{ data: hotel }, inboxBadges] = await Promise.all([
+    supabase
+      .from("hotels")
+      .select("name, pms_connected, last_synced_at")
+      .eq("id", user.hotelId)
+      .single(),
+    loadInboxBadges(),
+  ]);
 
   const connectionState = deriveConnectionState(
     hotel?.pms_connected ?? false,
     hotel?.last_synced_at ?? null
   );
-
-  // Unhandled message count for the inbox badge. Fails soft to zero, so a bad
-  // inbox query can never blank the whole dashboard.
-  const inboxBadges = await loadInboxBadges();
 
   // Everything that isn't built yet takes its label, blurb and "Coming soon"
   // status from lib/roadmap.ts, so all three languages stay in step. The

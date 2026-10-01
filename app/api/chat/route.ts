@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 
 import { classifyAiError } from "@/lib/ai-errors";
+import { getSessionProfile } from "@/lib/auth";
 import { AI_MODELS, provenance, sha256 } from "@/lib/ai-provenance";
 import { flushAnalytics, track } from "@/lib/analytics";
 import { sourcesFor } from "@/lib/chat-sources";
@@ -95,21 +96,17 @@ async function guestNamesNearToday(
 export async function POST(request: Request) {
   // Resolve the hotel from the session — never trust a client-supplied id.
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Verified identity + hotel in one helper (lib/auth.ts): a local JWT check
+  // when Supabase uses asymmetric signing keys, instead of an Auth round trip
+  // before every question.
+  const user = await getSessionProfile();
   if (!user) {
     return new Response("Unauthorized", { status: 401 });
   }
-  const { data: profile } = await supabase
-    .from("users")
-    .select("hotel_id")
-    .eq("id", user.id)
-    .maybeSingle();
-  if (!profile) {
+  if (!user.hotelId) {
     return new Response("No hotel for user", { status: 400 });
   }
-  const hotelId = profile.hotel_id;
+  const hotelId = user.hotelId;
 
   const body = (await request.json().catch(() => null)) as {
     messages?: ChatMessage[];

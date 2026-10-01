@@ -23,6 +23,7 @@ import { t } from "@/lib/i18n/format";
 import { localizedHref } from "@/lib/i18n/navigation";
 import type { PmsType } from "@/lib/pms";
 import { settingsGroups } from "@/lib/settings-groups";
+import { getSessionProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 
@@ -103,23 +104,17 @@ export default async function ConnectionsSettingsPage({
 
   // Select explicit columns — the encrypted token columns are revoked from the
   // client role (migration 0002), so `select('*')` would error here.
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("name, pms_type, pms_connected, gmail_email, last_synced_at")
-    .single();
-
   // The sync view is owner-only, exactly as the Admin page was. The dashboard
-  // layout has already established there is a signed-in, onboarded user.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: profile } = user
-    ? await supabase
-        .from("users")
-        .select("role")
-        .eq("id", user.id)
-        .maybeSingle()
-    : { data: null };
+  // layout has already established there is a signed-in, onboarded user, and
+  // its lookup is shared with this one (lib/auth.ts) — so the hotel row and
+  // the role arrive together.
+  const [{ data: hotel }, profile] = await Promise.all([
+    supabase
+      .from("hotels")
+      .select("name, pms_type, pms_connected, gmail_email, last_synced_at")
+      .single(),
+    getSessionProfile(),
+  ]);
   const isOwner = profile?.role === "owner";
 
   // Owner-only, so only queried for an owner — RLS scopes these rows to the

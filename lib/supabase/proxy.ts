@@ -65,11 +65,18 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Do not run code between createServerClient and getUser(). A simple mistake
-  // here can make it very hard to debug random session-logout issues.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Do not run code between createServerClient and getClaims(). A simple
+  // mistake here can make it very hard to debug random session-logout issues.
+  //
+  // getClaims(), not getUser(): it refreshes an expired session exactly as
+  // getUser() did (both go through the session loader, which writes the new
+  // cookies via setAll above), then verifies the JWT — locally against the
+  // project's published keys when Supabase uses asymmetric signing keys, or
+  // with the same Auth round trip getUser() made when it doesn't. This runs on
+  // every page request, so the local path is the single biggest saving on
+  // the way into the app. See lib/auth.ts.
+  const { data: claimsData } = await supabase.auth.getClaims();
+  const user = claimsData?.claims?.sub ? claimsData.claims : null;
 
   const isProtected =
     rest.startsWith("/dashboard") || rest.startsWith("/onboarding");

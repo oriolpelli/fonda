@@ -7,12 +7,12 @@ import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { Fact, Section } from "@/components/dashboard/guest-context-panel";
 import { GuestNotes } from "@/components/dashboard/guest-notes";
 import { GuestTags } from "@/components/dashboard/guest-tags";
+import { getSessionProfile } from "@/lib/auth";
 import { inferGuestProfile, shouldInfer } from "@/lib/guest-inference";
 import { loadGuestRecord } from "@/lib/guests";
 import { intlLocale, type Locale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { plural, t } from "@/lib/i18n/format";
-import { createClient } from "@/lib/supabase/server";
 
 /**
  * Guests v1 — the record (APP_UX_PROPOSAL.md §5.4).
@@ -53,19 +53,12 @@ export default async function GuestRecordPage({
   const { lang, guestId } = await params;
   const { locale, dict } = await loadDictionary(lang);
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: profile } = await supabase
-    .from("users")
-    .select("hotel_id")
-    .eq("id", user?.id ?? "")
-    .maybeSingle();
-  if (!profile?.hotel_id) redirect(localizedHref(locale, "/dashboard"));
+  // Shared with the dashboard layout's lookup in the same render (lib/auth.ts).
+  const profile = await getSessionProfile();
+  if (!profile?.hotelId) redirect(localizedHref(locale, "/dashboard"));
 
   const customerId = decodeURIComponent(guestId);
-  const record = await loadGuestRecord(profile.hotel_id, customerId);
+  const record = await loadGuestRecord(profile.hotelId, customerId);
   if (!record) notFound();
 
   /**
@@ -83,7 +76,7 @@ export default async function GuestRecordPage({
         [5, 6].includes(new Date(`${record.arrival}T00:00:00Z`).getUTCDay())
     );
     guestProfile = await inferGuestProfile({
-      hotelId: profile.hotel_id,
+      hotelId: profile.hotelId,
       customerMewsId: customerId,
       emails: record.timeline
         .filter((e) => e.kind === "email")

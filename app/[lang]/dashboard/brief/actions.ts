@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { getSessionProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database";
 
@@ -44,19 +45,12 @@ const MAX_RECIPIENTS = 3;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function requireHotelId(): Promise<string> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated.");
-
-  const { data: profile, error } = await supabase
-    .from("users")
-    .select("hotel_id")
-    .eq("id", user.id)
-    .single();
-  if (error || !profile) throw new Error("No hotel associated with this user.");
-  return profile.hotel_id;
+  // Verified identity + hotel via lib/auth.ts (getClaims: a local JWT check
+  // when Supabase uses asymmetric signing keys). Same errors as before.
+  const profile = await getSessionProfile();
+  if (!profile) throw new Error("Not authenticated.");
+  if (!profile.hotelId) throw new Error("No hotel associated with this user.");
+  return profile.hotelId;
 }
 
 /** Trims, dedupes (case-insensitive), caps at 3, and validates recipient emails. */

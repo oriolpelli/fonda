@@ -5,30 +5,23 @@ import { revalidatePath } from "next/cache";
 import { aiHeaders } from "@/lib/ai-disclosure";
 import { sha256 } from "@/lib/ai-provenance";
 import { track, type EditBucket } from "@/lib/analytics";
+import { getSessionProfile } from "@/lib/auth";
 import { confirmedIds } from "@/lib/bulk-ids";
 import { runCheckinChaser } from "@/lib/checkin-chaser";
 import { recordDraftSend } from "@/lib/draft-acceptance";
 import { measureDraftEdit } from "@/lib/draft-edit";
 import { getGmailClientForHotel, type GmailClient } from "@/lib/gmail";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
 async function requireHotelId(): Promise<string> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated.");
-
-  const { data: profile, error } = await supabase
-    .from("users")
-    .select("hotel_id")
-    .eq("id", user.id)
-    .single();
-  if (error || !profile) throw new Error("No hotel associated with this user.");
-  return profile.hotel_id;
+  // Verified identity + hotel via lib/auth.ts (getClaims: a local JWT check
+  // when Supabase uses asymmetric signing keys). Same errors as before.
+  const profile = await getSessionProfile();
+  if (!profile) throw new Error("Not authenticated.");
+  if (!profile.hotelId) throw new Error("No hotel associated with this user.");
+  return profile.hotelId;
 }
 
 /** The row as stored: `draft_content` is what Fondas wrote, never what is sent. */

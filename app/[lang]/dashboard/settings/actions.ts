@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 
 import { classifyAiError } from "@/lib/ai-errors";
 import { AI_MODELS, provenance, type Provenance } from "@/lib/ai-provenance";
+import { getSessionProfile } from "@/lib/auth";
 import { isLocale } from "@/lib/i18n/config";
 import { LOCALE_COOKIE } from "@/lib/i18n/get-locale";
 import { localizedHref } from "@/lib/i18n/navigation";
@@ -362,23 +363,12 @@ export async function summarizeReviews(
 }
 
 async function requireHotelId(): Promise<string> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    throw new Error("Not authenticated.");
-  }
-
-  const { data: profile, error } = await supabase
-    .from("users")
-    .select("hotel_id")
-    .eq("id", user.id)
-    .single();
-  if (error || !profile) {
-    throw new Error("No hotel associated with this user.");
-  }
-  return profile.hotel_id;
+  // Verified identity + hotel via lib/auth.ts (getClaims: a local JWT check
+  // when Supabase uses asymmetric signing keys). Same errors as before.
+  const profile = await getSessionProfile();
+  if (!profile) throw new Error("Not authenticated.");
+  if (!profile.hotelId) throw new Error("No hotel associated with this user.");
+  return profile.hotelId;
 }
 
 export async function connectMews(

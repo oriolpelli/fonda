@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { ChatSurface } from "@/components/dashboard/chat/chat-surface";
+import { getSessionUser } from "@/lib/auth";
 import { loadChatThreads, loadThreadMessages } from "@/lib/chat-threads";
-import { createClient } from "@/lib/supabase/server";
 
 // The full "Ask your hotel" conversation (FONDA_SANA_REDESIGN.md §8.5). The
 // docked bar on every other dashboard page is the shortcut into it; this is the
@@ -28,15 +28,13 @@ export default async function ChatPage({
   const [{ lang }, query] = await Promise.all([params, searchParams]);
   const { locale } = await loadDictionary(lang);
 
-  // Only the first letter is ever rendered — it's the avatar on the user's own
-  // turns. The address itself never reaches the markup.
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  // All three at once: who you are (shared with the layout's lookup — see
+  // lib/auth.ts), your conversations, and the one you opened. Only the first
+  // letter of the address is ever rendered — it's the avatar on your own
+  // turns; the address itself never reaches the markup.
   const requested = typeof query.thread === "string" ? query.thread : null;
-  const [threads, initialMessages] = await Promise.all([
+  const [user, threads, initialMessages] = await Promise.all([
+    getSessionUser(),
     loadChatThreads(locale),
     requested ? loadThreadMessages(requested) : Promise.resolve([]),
   ]);

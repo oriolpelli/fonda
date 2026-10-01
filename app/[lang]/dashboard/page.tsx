@@ -16,6 +16,7 @@ import { SyncHealthWidget } from "@/components/dashboard/widgets/sync-health-wid
 import { VipNoNoteWidget } from "@/components/dashboard/widgets/vip-no-note-widget";
 import { clockTime } from "@/components/dashboard/widgets/widget-section";
 import { loadTodayMovements, type TodayMovements } from "@/lib/arrivals";
+import { getSessionProfile } from "@/lib/auth";
 import { loadTodaysBriefing, type TodaysBriefing } from "@/lib/briefing-latest";
 import { loadDashboardSnapshot } from "@/lib/dashboard-snapshot";
 import { byUrgency } from "@/lib/email-urgency";
@@ -364,20 +365,12 @@ function soft<T>(load: () => Promise<T>, fallback: T): Promise<T> {
  * them, the same bargain `soft()` makes for the widgets below.
  */
 async function loadViewerLayout(): Promise<StoredLayout> {
+  // Shared with the dashboard layout's own lookup in the same render.
+  const viewer = await getSessionProfile();
+  if (!viewer) return defaultLayoutFor("manager");
+
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return defaultLayoutFor("manager");
-
-  const { data: profile } = await supabase
-    .from("users")
-    .select("role")
-    .eq("id", user.id)
-    .maybeSingle();
-  const role = profile?.role ?? "manager";
-
-  return loadHomeLayout(supabase, user.id, role);
+  return loadHomeLayout(supabase, viewer.id, viewer.role ?? "manager");
 }
 
 /** The GM's name for the greeting. Falls back to the hotel name. */

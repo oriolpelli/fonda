@@ -5,10 +5,10 @@ import { redirect } from "next/navigation";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { GuestAvatar } from "@/components/dashboard/guest-avatar";
+import { getSessionProfile } from "@/lib/auth";
 import { listGuests, type GuestView } from "@/lib/guests";
 import { guestHref, localizedHref } from "@/lib/i18n/navigation";
 import { intlLocale, type Locale } from "@/lib/i18n/config";
-import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 
 /**
@@ -63,22 +63,15 @@ export default async function GuestsPage({
   const [{ lang }, query] = await Promise.all([params, searchParams]);
   const { locale, dict } = await loadDictionary(lang);
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { data: profile } = await supabase
-    .from("users")
-    .select("hotel_id")
-    .eq("id", user?.id ?? "")
-    .maybeSingle();
-  if (!profile?.hotel_id) redirect(localizedHref(locale, "/dashboard"));
+  // Shared with the dashboard layout's lookup in the same render (lib/auth.ts).
+  const profile = await getSessionProfile();
+  if (!profile?.hotelId) redirect(localizedHref(locale, "/dashboard"));
 
   const view: GuestView =
     query.view === "all" ? "all" : "in_house_and_arriving";
   const q = typeof query.q === "string" ? query.q : "";
 
-  const guests = await listGuests(profile.hotel_id, { view, q });
+  const guests = await listGuests(profile.hotelId, { view, q });
 
   const viewHref = (next: GuestView) => {
     const p = new URLSearchParams();

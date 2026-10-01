@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { track } from "@/lib/analytics";
+import { getSessionProfile } from "@/lib/auth";
 import { loadHomeLayout, saveHomeLayout, type StoredLayout } from "@/lib/home-layout";
 import type { HomeWidgetKey } from "@/lib/home-widgets";
 import { HOME_LOCKED_WIDGETS, type HomeLockedWidgetKey } from "@/lib/roadmap";
@@ -30,19 +31,13 @@ async function requireViewer(): Promise<{
   hotelId: string;
   role: Role;
 }> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated.");
-
-  const { data: profile, error } = await supabase
-    .from("users")
-    .select("hotel_id, role")
-    .eq("id", user.id)
-    .single();
-  if (error || !profile) throw new Error("No hotel associated with this user.");
-  return { userId: user.id, hotelId: profile.hotel_id, role: profile.role };
+  // lib/auth.ts — verified once, same errors as before.
+  const profile = await getSessionProfile();
+  if (!profile) throw new Error("Not authenticated.");
+  if (!profile.hotelId || !profile.role) {
+    throw new Error("No hotel associated with this user.");
+  }
+  return { userId: profile.id, hotelId: profile.hotelId, role: profile.role };
 }
 
 /**
