@@ -352,7 +352,17 @@ export interface InboxData {
  */
 export async function loadInbox(): Promise<InboxData> {
   const supabase = await createClient();
-  const hotel = await currentHotel(supabase);
+  // The hotel row and the email list don't depend on each other — RLS scopes
+  // the emails read on its own — so both go out at once instead of one after
+  // the other. One fewer round trip on every Communications load.
+  const [hotel, { data }] = await Promise.all([
+    currentHotel(supabase),
+    supabase
+      .from("emails")
+      .select(EMAIL_COLUMNS)
+      .order("created_at", { ascending: false })
+      .limit(200),
+  ]);
 
   const empty: InboxData = {
     emails: [],
@@ -361,12 +371,6 @@ export async function loadInbox(): Promise<InboxData> {
     avgResponseHours: null,
   };
   if (!hotel) return empty;
-
-  const { data } = await supabase
-    .from("emails")
-    .select(EMAIL_COLUMNS)
-    .order("created_at", { ascending: false })
-    .limit(200);
 
   const emails = await withGuestContext(
     supabase,
@@ -440,14 +444,17 @@ export async function loadInboxBadges(): Promise<InboxBadges> {
 
   try {
     const supabase = await createClient();
-    const hotel = await currentHotel(supabase);
+    // In parallel, as in loadInbox: this runs in the dashboard layout, so it
+    // sits in front of every page load.
+    const [hotel, { data, error }] = await Promise.all([
+      currentHotel(supabase),
+      supabase
+        .from("emails")
+        .select(EMAIL_COLUMNS)
+        .in("status", [...UNHANDLED_STATUSES])
+        .limit(500),
+    ]);
     if (!hotel) return none;
-
-    const { data, error } = await supabase
-      .from("emails")
-      .select(EMAIL_COLUMNS)
-      .in("status", [...UNHANDLED_STATUSES])
-      .limit(500);
     if (error) return none;
 
     const emails = await withGuestContext(
