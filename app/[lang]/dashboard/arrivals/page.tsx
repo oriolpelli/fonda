@@ -15,6 +15,7 @@ import {
   type WidgetListRow,
 } from "@/components/dashboard/widgets/widget-list";
 import { loadTodayMovements } from "@/lib/arrivals";
+import { getHotel } from "@/lib/auth";
 // Server-readable tab contract, kept out of any "use client" module for the
 // same reason the inbox keeps its sort contract in lib/inbox-sort.ts.
 import { ARRIVALS_TABS, isArrivalsTab, type ArrivalsTab } from "@/lib/arrivals-tab";
@@ -63,16 +64,21 @@ export default async function ArrivalsPage({
   const requested = typeof query.tab === "string" ? query.tab : undefined;
   const tab: ArrivalsTab = isArrivalsTab(requested) ? requested : "arrivals";
 
+  // All three reads at once: the hotel (the request's shared row,
+  // lib/auth.ts), today's movements and the pending chasers. The two lists
+  // used to wait for the hotel read first (performance audit §4.3); on a hotel
+  // with no PMS they are now read and dropped — the movements loader returns
+  // empty straight away there, and the chaser read is small.
+  const [hotel, movements, cards] = await Promise.all([
+    timed("arrivals.hotel", getHotel()),
+    timed("arrivals.movements", loadTodayMovements()),
+    timed("arrivals.chasers", loadChaserCards(supabase, dict)),
+  ]);
+
   // Chasing arrival times means knowing who is arriving, which means a PMS.
   // Without one, "Generate chasers" can only fail — so don't offer it, and
   // don't claim an empty day either: "No arrivals today" would be a lie when
   // the real answer is that nothing is connected yet.
-  const { data: hotel } = await timed(
-    "arrivals.hotel",
-    Promise.resolve(
-      supabase.from("hotels").select("pms_connected, timezone").maybeSingle()
-    )
-  );
 
   const today = headingDate(locale, hotel?.timezone || "UTC");
 
@@ -89,11 +95,6 @@ export default async function ArrivalsPage({
       </div>
     );
   }
-
-  const [movements, cards] = await Promise.all([
-    timed("arrivals.movements", loadTodayMovements()),
-    timed("arrivals.chasers", loadChaserCards(supabase, dict)),
-  ]);
 
   const counts = {
     arrivals: movements.arrivals.length,

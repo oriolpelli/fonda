@@ -3,6 +3,7 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { intlLocale, type Locale } from "@/lib/i18n/config";
+import { getHotel } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
@@ -55,13 +56,14 @@ export async function loadChatThreads(
   locale: Locale
 ): Promise<ChatThreadSummary[]> {
   const supabase = await createClient();
-  const [{ data }, { data: hotel }] = await Promise.all([
+  const [{ data }, hotel] = await Promise.all([
     supabase
       .from("chat_threads")
       .select("id, title, last_message_at")
       .order("last_message_at", { ascending: false })
       .limit(CHAT_HISTORY_LIMIT),
-    supabase.from("hotels").select("timezone").maybeSingle(),
+    // The request's one hotels read (lib/auth.ts), shared with the layout.
+    getHotel(),
   ]);
 
   let fmt: Intl.DateTimeFormat;

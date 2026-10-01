@@ -7,9 +7,9 @@ import { FirstRunState } from "@/components/dashboard/first-run-state";
 import { InboxStats } from "@/components/dashboard/inbox-stats";
 import { GuestContextPanel } from "@/components/dashboard/guest-context-panel";
 import { WhatsAppConnectButton } from "@/components/dashboard/whatsapp-connect-button";
+import { getHotel } from "@/lib/auth";
 import { loadGuestContexts } from "@/lib/guest-context";
 import { loadInbox, type InboxEmail } from "@/lib/inbox";
-import { createClient } from "@/lib/supabase/server";
 // Server-readable sort contract — deliberately NOT imported from the client
 // inbox module, whose exports become throwing client references here.
 import { isSortMode, SORT_COOKIE } from "@/lib/inbox-sort";
@@ -66,21 +66,18 @@ export async function CommunicationsWindow({
   query: { [key: string]: string | string[] | undefined };
 }) {
   const { locale, dict } = await loadDictionary(lang);
-  const [inbox, cookieStore, supabase] = await Promise.all([
+  // The hotel row is the request's one hotels read (lib/auth.ts), shared with
+  // the inbox loader and the guest-context panes. It used to be read again
+  // here, after the inbox had finished (performance audit §4.3).
+  const [inbox, cookieStore, hotel] = await Promise.all([
     timed("comms.inbox", loadInbox()),
     cookies(),
-    createClient(),
+    timed("comms.hotel", getHotel()),
   ]);
 
   // This inbox is fed by Gmail, not the PMS — a hotel can be fully synced and
   // still have nothing here. "No guest messages right now" would be a lie when
   // the real answer is that no mailbox is connected yet.
-  const { data: hotel } = await timed(
-    "comms.hotel",
-    Promise.resolve(
-      supabase.from("hotels").select("gmail_email, timezone").maybeSingle()
-    )
-  );
   const inboxConnected = Boolean(hotel?.gmail_email);
 
   // "Done today" is a hotel-local question, so the hotel's today and its

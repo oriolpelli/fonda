@@ -7,7 +7,7 @@ import { GuestAvatar } from "@/components/dashboard/guest-avatar";
 import { Fact, Section } from "@/components/dashboard/guest-context-panel";
 import { GuestNotes } from "@/components/dashboard/guest-notes";
 import { GuestTags } from "@/components/dashboard/guest-tags";
-import { getSessionProfile } from "@/lib/auth";
+import { getHotel, getSessionProfile } from "@/lib/auth";
 import { inferGuestProfile, shouldInfer } from "@/lib/guest-inference";
 import { loadGuestRecord } from "@/lib/guests";
 import { intlLocale, type Locale } from "@/lib/i18n/config";
@@ -53,6 +53,10 @@ export default async function GuestRecordPage({
 }) {
   const { lang, guestId } = await params;
   const { locale, dict } = await loadDictionary(lang);
+
+  // Start the hotel read alongside the session (lib/auth.ts) — the record
+  // loader needs its timezone and awaits this same promise.
+  getHotel().catch(() => null);
 
   // Shared with the dashboard layout's lookup in the same render (lib/auth.ts).
   const profile = await timed("guest.session", getSessionProfile());

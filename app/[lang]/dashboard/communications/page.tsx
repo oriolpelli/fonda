@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { localizedHref } from "@/lib/i18n/navigation";
-import { loadInbox, UNHANDLED_STATUSES } from "@/lib/inbox";
+import { loadEmailStayPhase, loadInboxBadges } from "@/lib/inbox";
 import { timed } from "@/lib/timing";
 import { phasesFor } from "./window";
 
@@ -29,7 +29,6 @@ export default async function CommunicationsPage({
 }) {
   const [{ lang }, query] = await Promise.all([params, searchParams]);
   const { locale } = await loadDictionary(lang);
-  const inbox = await timed("comms.redirect.inbox", loadInbox());
 
   const forwarded = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
@@ -37,39 +36,42 @@ export default async function CommunicationsPage({
     else if (Array.isArray(value)) for (const v of value) forwarded.append(key, v);
   }
 
+  // What it costs to decide. This used to load the whole inbox — 200 messages
+  // with their bodies, drafts and guest context — and then the window loaded
+  // it all again (docs/audits/2026-10-01-performance.md §3). Now a deep link
+  // reads the one message it names, and a bare visit asks the badge question,
+  // which the sidebar has usually already answered in this request.
   const requested = typeof query.email === "string" ? query.email : undefined;
-  const target = requested
-    ? inbox.emails.find((e) => e.id === requested)
-    : undefined;
+  const targetPhase = requested
+    ? await timed("comms.redirect.target", loadEmailStayPhase(requested))
+    : null;
 
   let window: "in-house" | "upcoming";
 
-  if (target) {
+  if (targetPhase) {
     // Send a deep link to the window that actually owns the message, so it can
     // be selected on arrival. An id we cannot see belongs to another hotel or
     // no longer exists; it falls through to the no-link path below rather than
     // being reported, so the parameter can't be used to probe for ids.
-    window = target.stayPhase === "in_house" ? "in-house" : "upcoming";
+    window = targetPhase === "in_house" ? "in-house" : "upcoming";
     // post_stay and unmatched live behind Upcoming's chip, which is off by
     // default — so a link to one of those has to turn the chip on, or it would
     // arrive at a window that does not contain the message it named.
-    if (!phasesFor("upcoming", false).includes(target.stayPhase)) {
+    if (!phasesFor("upcoming", false).includes(targetPhase)) {
       if (window === "upcoming") forwarded.set("past", "1");
     }
   } else {
     // No particular message: go where the work is. In-house only wins when it
     // has unanswered mail and Upcoming does not — otherwise Upcoming, which is
     // the bigger window and the one a GM works through in the morning.
-    const unanswered = (phase: "in-house" | "upcoming") =>
-      inbox.emails.some(
-        (e) =>
-          (UNHANDLED_STATUSES as readonly string[]).includes(e.status) &&
-          (phase === "in-house"
-            ? e.stayPhase === "in_house"
-            : e.stayPhase !== "in_house")
-      );
+    //
+    // Asked of the sidebar badges, which count exactly "unanswered, by window"
+    // (lib/inbox.ts — UNHANDLED_STATUSES says this route and the badge must ask
+    // the same question; now they are literally one question). Badges fail soft
+    // to zero, which lands on Upcoming, as an empty inbox always did.
+    const badges = await timed("comms.redirect.badges", loadInboxBadges());
     window =
-      unanswered("in-house") && !unanswered("upcoming")
+      badges.inHouse.count > 0 && badges.upcoming.count === 0
         ? "in-house"
         : "upcoming";
   }

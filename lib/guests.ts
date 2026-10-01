@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getHotel } from "@/lib/auth";
 import {
   readRoomType,
   RESERVATION_RAW_SELECT,
@@ -161,12 +162,9 @@ export async function listGuests(
   hotelId: string,
   { view, q }: { view: GuestView; q?: string }
 ): Promise<GuestListRow[]> {
-  const supabase = await createClient();
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("timezone")
-    .eq("id", hotelId)
-    .maybeSingle();
+  // The request's one hotels read (lib/auth.ts) — the page starts it next to
+  // the session, so it is usually resolved before this line runs.
+  const [supabase, hotel] = await Promise.all([createClient(), getHotel()]);
   const tz = hotel?.timezone || "UTC";
   const today = hotelToday(tz);
 
@@ -302,48 +300,53 @@ export async function loadGuestRecord(
   customerMewsId: string
 ): Promise<GuestRecord | null> {
   const supabase = await createClient();
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("timezone")
-    .eq("id", hotelId)
-    .maybeSingle();
-  const tz = hotel?.timezone || "UTC";
-  const today = hotelToday(tz);
 
-  const { data: customer } = await supabase
-    .from("customers")
-    .select(CUSTOMER_COLUMNS)
-    .eq("hotel_id", hotelId)
-    .eq("mews_id", customerMewsId)
-    .maybeSingle<CustomerRow>();
+  // Everything that needs only the two ids goes out at once — the hotel (the
+  // request's shared read, lib/auth.ts), the guest, their stays, their profile
+  // and their mail. This used to be hotel → guest → the rest → chasers, four
+  // waits before inference could even start (performance audit §4.3). A guest
+  // that doesn't exist costs four wasted reads, and is a 404 anyway.
+  const [
+    hotel,
+    { data: customer },
+    { data: reservations },
+    { data: profileRow },
+    { data: emails },
+  ] = await Promise.all([
+    getHotel(),
+    supabase
+      .from("customers")
+      .select(CUSTOMER_COLUMNS)
+      .eq("hotel_id", hotelId)
+      .eq("mews_id", customerMewsId)
+      .maybeSingle<CustomerRow>(),
+    supabase
+      .from("reservations")
+      .select(RESERVATION_COLUMNS)
+      .eq("hotel_id", hotelId)
+      .eq("customer_mews_id", customerMewsId)
+      .order("start_utc", { ascending: false })
+      .overrideTypes<ReservationRow[]>(),
+    supabase
+      .from("guest_profiles")
+      .select(
+        "trip_purpose, occasion, trip_purpose_source, occasion_source, preferences, notes, inferred_at"
+      )
+      .eq("hotel_id", hotelId)
+      .eq("customer_mews_id", customerMewsId)
+      .maybeSingle(),
+    supabase
+      .from("emails")
+      .select("id, subject, status, created_at")
+      .eq("hotel_id", hotelId)
+      .eq("customer_mews_id", customerMewsId)
+      .order("created_at", { ascending: false })
+      .limit(50),
+  ]);
   if (!customer) return null;
 
-  const [{ data: reservations }, { data: profileRow }, { data: emails }] =
-    await Promise.all([
-      supabase
-        .from("reservations")
-        .select(RESERVATION_COLUMNS)
-        .eq("hotel_id", hotelId)
-        .eq("customer_mews_id", customerMewsId)
-        .order("start_utc", { ascending: false })
-        .overrideTypes<ReservationRow[]>(),
-      supabase
-        .from("guest_profiles")
-        .select(
-          "trip_purpose, occasion, trip_purpose_source, occasion_source, preferences, notes, inferred_at"
-        )
-        .eq("hotel_id", hotelId)
-        .eq("customer_mews_id", customerMewsId)
-        .maybeSingle(),
-      supabase
-        .from("emails")
-        .select("id, subject, status, created_at")
-        .eq("hotel_id", hotelId)
-        .eq("customer_mews_id", customerMewsId)
-        .order("created_at", { ascending: false })
-        .limit(50),
-    ]);
-
+  const tz = hotel?.timezone || "UTC";
+  const today = hotelToday(tz);
   const stays = withSlimRaw<ReservationRow>(reservations ?? [], "reservation");
   const current =
     stays.find((r) => {

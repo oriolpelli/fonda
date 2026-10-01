@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import type { BriefingContent } from "@/lib/briefing";
 import { intlLocale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
+import { getHotel } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 export async function generateMetadata({
@@ -40,20 +41,19 @@ export default async function BriefingHistoryDetailPage({
   const { locale, dict } = await loadDictionary(lang);
   const supabase = await createClient();
 
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("name, timezone")
-    .single();
-  const tz = hotel?.timezone || "UTC";
-
-  // RLS ("briefings: read own hotel") already scopes this to the caller's
+  // Both at once; the hotel row is the request's shared read (lib/auth.ts).
+  // RLS ("briefings: read own hotel") already scopes the brief to the caller's
   // hotel, so selecting by id alone is safe.
-  const { data: row } = await supabase
-    .from("briefings")
-    .select("content_json, generated_at")
-    .eq("id", id)
-    .not("content_json->>summary", "is", null)
-    .maybeSingle();
+  const [hotel, { data: row }] = await Promise.all([
+    getHotel(),
+    supabase
+      .from("briefings")
+      .select("content_json, generated_at")
+      .eq("id", id)
+      .not("content_json->>summary", "is", null)
+      .maybeSingle(),
+  ]);
+  const tz = hotel?.timezone || "UTC";
 
   if (!row) notFound();
 

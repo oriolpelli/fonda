@@ -16,7 +16,7 @@ import { SyncHealthWidget } from "@/components/dashboard/widgets/sync-health-wid
 import { VipNoNoteWidget } from "@/components/dashboard/widgets/vip-no-note-widget";
 import { clockTime } from "@/components/dashboard/widgets/widget-section";
 import { loadTodayMovements, type TodayMovements } from "@/lib/arrivals";
-import { getSessionProfile } from "@/lib/auth";
+import { getHotel, getSessionProfile } from "@/lib/auth";
 import { loadTodaysBriefing, type TodaysBriefing } from "@/lib/briefing-latest";
 import { loadDashboardSnapshot } from "@/lib/dashboard-snapshot";
 import { byUrgency } from "@/lib/email-urgency";
@@ -69,12 +69,41 @@ export default async function DashboardPage({
 }) {
   const { locale, dict } = await loadDictionary((await params).lang);
 
-  const [snapshot, inbox, gmName, layout] = await Promise.all([
+  // Everything Home reads goes out at once. Only the VIP thread lookup, below,
+  // needs something another read produced. Before 1 Oct the brief, the
+  // movements and sync health waited for the whole first batch although they
+  // need nothing from it — two extra round trips on every visit
+  // (docs/audits/2026-10-01-performance.md §3). The cost of the change: a
+  // hotel with no PMS also reads its brief row and sync logs before the
+  // first-run state renders, three small reads on a screen nobody revisits.
+  //
+  // The brief uses the same loader the Morning Brief page does, so the teaser
+  // can never claim a brief that page would deny. Its timezone comes from the
+  // request's one hotel read (lib/auth.ts), which every loader here shares.
+  const hotelTimezone = getHotel().then((hotel) => hotel?.timezone || "UTC");
+  const [
+    snapshot,
+    inbox,
+    gmName,
+    layout,
+    todaysBrief,
+    movementsRead,
+    syncHealth,
+  ] = await Promise.all([
     timed("home.snapshot", loadDashboardSnapshot()),
     // Summary: Home ranks and counts mail, it never shows a body or a draft.
     timed("home.inbox", loadInboxSummary()),
     timed("home.gmName", loadGmName()),
     timed("home.layout", loadViewerLayout()),
+    soft(
+      () => timed("home.brief", hotelTimezone.then(loadTodaysBriefing)),
+      null as TodaysBriefing | null
+    ),
+    soft(
+      () => timed("home.movements", loadTodayMovements()),
+      null as TodayMovements | null
+    ),
+    soft(() => timed("home.syncHealth", loadSyncHealth()), [] as SourceHealth[]),
   ]);
 
   const greeting = gmName || snapshot.hotelName;
@@ -144,35 +173,27 @@ export default async function DashboardPage({
     .filter((email) => email.urgency.kind !== "handled")
     .sort(byUrgency);
 
-  // The second read batch, in parallel like the first. It sits after the early
-  // return above so a hotel with no PMS never pays for any of it, and after the
-  // snapshot because two of the four need something it produced — the hotel's
-  // timezone, and the VIP reservations to look up threads for.
-  //
-  // The brief uses the same loader the Morning Brief page does, so the teaser
-  // can never claim a brief that page would deny.
-  const [todaysBrief, movements, vipThreads, syncHealth] = await Promise.all([
-    soft(
-      () => timed("home.brief", loadTodaysBriefing(snapshot.timezone)),
-      null as TodaysBriefing | null
-    ),
-    soft(() => timed("home.movements", loadTodayMovements()), {
-      timezone: snapshot.timezone,
-      arrivals: [],
-      departures: [],
-    } satisfies TodayMovements),
-    soft(
-      () =>
-        timed(
-          "home.vipThreads",
-          loadReservationThreads(
-            snapshot.vipArrivalsWithoutNote.map((vip) => vip.reservationId)
-          )
-        ),
-      new Map<string, string>()
-    ),
-    soft(() => timed("home.syncHealth", loadSyncHealth()), [] as SourceHealth[]),
-  ]);
+  // A failed movements read falls back to two empty lists in the hotel's own
+  // timezone, as it always has.
+  const movements: TodayMovements = movementsRead ?? {
+    timezone: snapshot.timezone,
+    arrivals: [],
+    departures: [],
+  };
+
+  // The one read that has to wait: which conversation to open for each VIP
+  // arriving without a note needs the snapshot's VIP list. It sits after the
+  // early return above, so a hotel with no PMS never pays for it.
+  const vipThreads = await soft(
+    () =>
+      timed(
+        "home.vipThreads",
+        loadReservationThreads(
+          snapshot.vipArrivalsWithoutNote.map((vip) => vip.reservationId)
+        )
+      ),
+    new Map<string, string>()
+  );
 
   const todos = buildTodoList({
     // `receivedAt` is only read by the brief's "since" filter, but the rules

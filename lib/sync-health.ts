@@ -4,6 +4,7 @@ import {
   deriveConnectionState,
   type ConnectionState,
 } from "@/components/dashboard/connection-status";
+import { getHotel } from "@/lib/auth";
 import type { PmsType } from "@/lib/pms";
 import { createClient } from "@/lib/supabase/server";
 
@@ -85,12 +86,8 @@ function toPmsType(value: string | null | undefined): PmsType {
  * RLS scopes both log tables to the caller's hotel.
  */
 export async function loadSyncHealth(): Promise<SourceHealth[]> {
-  const supabase = await createClient();
-
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("pms_type, pms_connected, last_synced_at, gmail_email")
-    .maybeSingle();
+  // The request's one hotels read (lib/auth.ts).
+  const [supabase, hotel] = await Promise.all([createClient(), getHotel()]);
 
   if (!hotel) return [];
 

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import type { BriefingContent } from "@/lib/briefing";
 import { intlLocale } from "@/lib/i18n/config";
 import { localizedHref } from "@/lib/i18n/navigation";
+import { getHotel } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -55,21 +56,22 @@ export default async function BriefingHistoryPage({
   const { locale, dict } = await loadDictionary((await params).lang);
   const supabase = await createClient();
 
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("timezone")
-    .single();
-  const tz = hotel?.timezone || "UTC";
-
   const now = new Date();
   const cutoff = new Date(now.getTime() - HISTORY_DAYS * 24 * 60 * 60 * 1000);
-  const { data: history } = await supabase
-    .from("briefings")
-    .select("id, generated_at, content_json")
-    .not("content_json->>summary", "is", null)
-    .gte("generated_at", cutoff.toISOString())
-    .order("generated_at", { ascending: false })
-    .limit(HISTORY_DAYS);
+
+  // Both at once — the list doesn't need the timezone, only its labels do.
+  // The hotel row is the request's shared read (lib/auth.ts).
+  const [hotel, { data: history }] = await Promise.all([
+    getHotel(),
+    supabase
+      .from("briefings")
+      .select("id, generated_at, content_json")
+      .not("content_json->>summary", "is", null)
+      .gte("generated_at", cutoff.toISOString())
+      .order("generated_at", { ascending: false })
+      .limit(HISTORY_DAYS),
+  ]);
+  const tz = hotel?.timezone || "UTC";
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-6">

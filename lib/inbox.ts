@@ -1,7 +1,9 @@
 import "server-only";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { cache } from "react";
 
+import { getHotel, type SessionHotel } from "@/lib/auth";
 import { computeUrgency, type Urgency } from "@/lib/email-urgency";
 import {
   hotelToday,
@@ -344,12 +346,12 @@ export async function withGuestContext(
   });
 }
 
-/** The caller's hotel id + timezone, via RLS (`hotels: read own`). */
-async function currentHotel(
-  db: Db
-): Promise<{ id: string; timezone: string | null } | null> {
-  const { data } = await db.from("hotels").select("id, timezone").maybeSingle();
-  return data ?? null;
+/**
+ * The caller's hotel, via RLS — the request's one hotels read (lib/auth.ts),
+ * shared with the layout and every other loader in the same render.
+ */
+function currentHotel(): Promise<SessionHotel | null> {
+  return getHotel();
 }
 
 export interface InboxData {
@@ -390,7 +392,7 @@ async function readInbox(mode: "full" | "summary"): Promise<InboxData> {
   // the emails read on its own — so both go out at once instead of one after
   // the other. One fewer round trip on every Communications load.
   const [hotel, rows] = await Promise.all([
-    currentHotel(supabase),
+    currentHotel(),
     mode === "full"
       ? supabase
           .from("emails")
@@ -464,6 +466,35 @@ async function pendingWithDraft(db: Db, ids: string[]): Promise<Set<string>> {
   return new Set((data ?? []).map((row) => row.id));
 }
 
+/**
+ * Which stay phase one message is in right now, or null when the caller can't
+ * see it (another hotel's, deleted, or not an id at all — RLS answers all
+ * three with nothing). The Communications parent route uses it to pick the
+ * window for a `?email=` deep link: the same phase loadInbox would derive,
+ * through the same withGuestContext, for one row instead of two hundred.
+ */
+export async function loadEmailStayPhase(
+  emailId: string
+): Promise<StayPhase | null> {
+  const supabase = await createClient();
+  const [hotel, { data }] = await Promise.all([
+    getHotel(),
+    supabase
+      .from("emails")
+      .select(SUMMARY_COLUMNS)
+      .eq("id", emailId)
+      .maybeSingle(),
+  ]);
+  if (!hotel || !data) return null;
+  const [email] = await withGuestContext(
+    supabase,
+    hotel.id,
+    hotel.timezone,
+    withoutText([data])
+  );
+  return email?.stayPhase ?? null;
+}
+
 export interface InboxBadge {
   /** Messages still waiting on a human (pending or flagged). */
   count: number;
@@ -496,8 +527,11 @@ export interface InboxBadges {
  * emptying, not the 200-row history `loadInbox` pages through. If a property
  * ever lets this grow into the hundreds, the badge is the wrong thing to
  * optimise — the queue is.
+ *
+ * Render-scoped (React `cache`): the layout and the Communications parent
+ * route ask the same question in one request and share one answer.
  */
-export async function loadInboxBadges(): Promise<InboxBadges> {
+export const loadInboxBadges = cache(async (): Promise<InboxBadges> => {
   const zero: InboxBadge = { count: 0, alert: false };
   const none: InboxBadges = { inHouse: zero, upcoming: { ...zero } };
 
@@ -509,7 +543,7 @@ export async function loadInboxBadges(): Promise<InboxBadges> {
     // used to carry the body and draft of every unanswered email, on every
     // hard load of every dashboard page (§4.2 of the performance audit).
     const [hotel, { data, error }] = await Promise.all([
-      currentHotel(supabase),
+      currentHotel(),
       supabase
         .from("emails")
         .select(SUMMARY_COLUMNS)
@@ -545,7 +579,7 @@ export async function loadInboxBadges(): Promise<InboxBadges> {
   } catch {
     return none;
   }
-}
+});
 
 /**
  * The newest email linked to each of these reservations, as

@@ -51,8 +51,15 @@ async function loadSyncView(supabase: ServerClient) {
       .select("*")
       .order("created_at", { ascending: false })
       .limit(20),
-    supabase.from("reservations").select("*", { count: "exact", head: true }),
-    supabase.from("customers").select("*", { count: "exact", head: true }),
+    // "estimated", not "exact": PostgREST counts exactly up to its row cap and
+    // takes the planner's estimate beyond it. An exact count walks every row
+    // the hotel has ever synced, and nothing prunes these tables, so it got
+    // slower every week for a number nobody reads to the unit (performance
+    // audit §4.3).
+    supabase
+      .from("reservations")
+      .select("*", { count: "estimated", head: true }),
+    supabase.from("customers").select("*", { count: "estimated", head: true }),
     supabase
       .from("reservations")
       .select("mews_id, state, start_utc, end_utc, synced_at")

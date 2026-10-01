@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { GuestAvatar } from "@/components/dashboard/guest-avatar";
-import { getSessionProfile } from "@/lib/auth";
+import { getHotel, getSessionProfile } from "@/lib/auth";
 import { listGuests, type GuestView } from "@/lib/guests";
 import { guestHref, localizedHref } from "@/lib/i18n/navigation";
 import { intlLocale, type Locale } from "@/lib/i18n/config";
@@ -63,6 +63,13 @@ export default async function GuestsPage({
 }) {
   const [{ lang }, query] = await Promise.all([params, searchParams]);
   const { locale, dict } = await loadDictionary(lang);
+
+  // Start the hotel read now, alongside the session: listGuests needs its
+  // timezone, and both are the request's shared reads (lib/auth.ts), so by
+  // the time it asks, the row is already here. (The `.catch` only marks this
+  // early start as observed; listGuests awaits the same promise and sees any
+  // failure itself.)
+  getHotel().catch(() => null);
 
   // Shared with the dashboard layout's lookup in the same render (lib/auth.ts).
   const profile = await timed("guests.session", getSessionProfile());

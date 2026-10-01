@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getHotel } from "@/lib/auth";
 import {
   readRoomType,
   RESERVATION_RAW_SELECT,
@@ -119,11 +120,9 @@ export async function loadGuestContexts(
   const out = new Map<string, GuestContext>();
   if (emails.length === 0) return out;
 
-  const supabase = await createClient();
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("id, timezone")
-    .maybeSingle();
+  // The request's one hotels read (lib/auth.ts) — already resolved by the
+  // time the window gets here.
+  const [supabase, hotel] = await Promise.all([createClient(), getHotel()]);
   if (!hotel) return out;
 
   const tz = hotel.timezone || "UTC";

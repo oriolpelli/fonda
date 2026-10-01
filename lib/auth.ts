@@ -69,3 +69,44 @@ export const getSessionProfile = cache(
     };
   }
 );
+
+/**
+ * The signed-in user's hotel row — read ONCE per request, like the session.
+ *
+ * Before 1 Oct the dashboard read `hotels` four times on a click into Home and
+ * six times on a hard load — the layout, the badge loader, the inbox, the
+ * snapshot, the movements and sync health each asked again, several of them
+ * as the first step of a chain (docs/audits/2026-10-01-performance.md §4.3).
+ *
+ * RLS-scoped (`hotels: read own`), so it needs no id and can start at the same
+ * moment as getSessionProfile() instead of after it. Null when signed out or
+ * not yet onboarded. The columns are the union of what the dashboard reads;
+ * the encrypted credential columns are never selectable by a signed-in user
+ * (migrations 0002, 0006) and are not in this list.
+ *
+ * Render-scoped like everything here: a server action or route handler that
+ * calls it simply reads the row.
+ */
+const HOTEL_COLUMNS =
+  "id, name, timezone, rooms_count, pms_type, pms_connected, last_synced_at, gmail_email";
+
+export type SessionHotel = Pick<
+  Database["public"]["Tables"]["hotels"]["Row"],
+  | "id"
+  | "name"
+  | "timezone"
+  | "rooms_count"
+  | "pms_type"
+  | "pms_connected"
+  | "last_synced_at"
+  | "gmail_email"
+>;
+
+export const getHotel = cache(async (): Promise<SessionHotel | null> => {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("hotels")
+    .select(HOTEL_COLUMNS)
+    .maybeSingle();
+  return data ?? null;
+});

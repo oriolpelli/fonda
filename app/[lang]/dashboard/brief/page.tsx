@@ -10,6 +10,7 @@ import { BriefDeliverySettingsForm } from "@/components/dashboard/brief-delivery
 import { FirstRunState } from "@/components/dashboard/first-run-state";
 import { TodoList } from "@/components/dashboard/todo-list";
 import { Button } from "@/components/ui/button";
+import { getHotel } from "@/lib/auth";
 import { loadTodaysBriefing } from "@/lib/briefing-latest";
 import { loadDashboardSnapshot } from "@/lib/dashboard-snapshot";
 import { byUrgency } from "@/lib/email-urgency";
@@ -46,34 +47,13 @@ export default async function BriefingPage({
 }) {
   const { locale, dict } = await loadDictionary((await params).lang);
   const supabase = await createClient();
-
-  const { data: hotel } = await timed(
-    "brief.hotel",
-    Promise.resolve(
-      supabase
-        .from("hotels")
-        .select("name, timezone, pms_connected, last_synced_at")
-        .single()
-    )
-  );
-
-  const tz = hotel?.timezone || "UTC";
   const now = new Date();
 
-  const { data: settings } = await timed(
-    "brief.settings",
-    Promise.resolve(
-      supabase
-        .from("hotel_settings")
-        .select("brief_recipients, brief_send_hour, briefing_language")
-        .maybeSingle()
-    )
-  );
-
-  // Shared with the dashboard's summary card (lib/briefing-latest.ts), so the
-  // teaser and this page can never disagree about whether a brief exists.
-  const today = await timed("brief.today", loadTodaysBriefing(tz));
-  const briefing = today?.content ?? null;
+  // Everything this page reads goes out at once. It used to be six reads one
+  // after another — hotel, settings, today's brief, then the two "since"
+  // loaders, then the history check (docs/audits/2026-10-01-performance.md
+  // §4.3). The hotel row is the request's shared one (lib/auth.ts).
+  const hotelRead = getHotel();
 
   // "Since the brief" (APP_UX_PROPOSAL.md §5.1) — the brief is a 07:00
   // snapshot, and this keeps the page true at 14:00. Same rules as Home, run
@@ -81,14 +61,59 @@ export default async function BriefingPage({
   // event instant: an unanswered complaint that arrived after the brief, and a
   // VIP arrival booked or changed after it.
   //
-  // Only loaded when there is a brief to be "since" — a hotel mid-onboarding
-  // never pays for these two reads.
+  // Its two reads start now, alongside the rest, because they are needed
+  // whenever today's brief exists — every morning after the 07:00 run. Before
+  // a hotel's first brief they are read and dropped; that costs two lean reads
+  // on a screen that is generating, against a wait on every normal morning.
+  const sinceInputs = Promise.all([
+    timed("brief.snapshot", loadDashboardSnapshot()),
+    timed("brief.inbox", loadInboxSummary()),
+  ]);
+  // Observed even when unused, so a failure here is never an unhandled
+  // rejection; when it IS used, awaiting it below rethrows as before.
+  sinceInputs.catch(() => {});
+
+  const [hotel, { data: settings }, today, { data: firstBrief }] =
+    await Promise.all([
+      timed("brief.hotel", hotelRead),
+      timed(
+        "brief.settings",
+        Promise.resolve(
+          supabase
+            .from("hotel_settings")
+            .select("brief_recipients, brief_send_hour, briefing_language")
+            .maybeSingle()
+        )
+      ),
+      // Shared with the dashboard's summary card (lib/briefing-latest.ts), so
+      // the teaser and this page can never disagree about whether a brief
+      // exists. The timezone only decides "is it today's" after the read.
+      timed(
+        "brief.today",
+        hotelRead.then((h) => loadTodaysBriefing(h?.timezone || "UTC"))
+      ),
+      // Only whether there is a history, not the history itself — the list
+      // lives at /dashboard/brief/history now, and the hero link shouldn't
+      // point at an empty page on a hotel's first morning.
+      timed(
+        "brief.firstBrief",
+        Promise.resolve(
+          supabase
+            .from("briefings")
+            .select("id")
+            .not("content_json->>summary", "is", null)
+            .limit(1)
+            .maybeSingle()
+        )
+      ),
+    ]);
+
+  const tz = hotel?.timezone || "UTC";
+  const briefing = today?.content ?? null;
+
   let sinceTheBrief: TodoItem[] = [];
   if (today) {
-    const [snapshot, inbox] = await Promise.all([
-      timed("brief.snapshot", loadDashboardSnapshot()),
-      timed("brief.inbox", loadInboxSummary()),
-    ]);
+    const [snapshot, inbox] = await sinceInputs;
     sinceTheBrief = buildTodoList({
       emails: inbox.emails
         .filter((email) => email.urgency.kind !== "handled")
@@ -102,21 +127,6 @@ export default async function BriefingPage({
       since: new Date(today.generatedAt),
     });
   }
-
-  // Only whether there is a history, not the history itself — the list lives at
-  // /dashboard/brief/history now, and the hero link shouldn't point at an empty
-  // page on a hotel's first morning.
-  const { data: firstBrief } = await timed(
-    "brief.firstBrief",
-    Promise.resolve(
-      supabase
-        .from("briefings")
-        .select("id")
-        .not("content_json->>summary", "is", null)
-        .limit(1)
-        .maybeSingle()
-    )
-  );
 
   const quickActions = [
     // The unscoped parent on purpose: it redirects to whichever Communications

@@ -34,17 +34,17 @@ export default async function HotelSettingsPage({
 
   // Select explicit columns — the encrypted token columns are revoked from the
   // client role (migration 0002), so `select('*')` would error here.
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("name, rooms_count")
-    .single();
-
-  const { data: settings } = await supabase
-    .from("hotel_settings")
-    .select(
-      "star_rating, property_type, check_in_time, check_out_time, policies, positioning_vibe, target_guest, local_recommendations, preferred_greeting, signoff_name, languages_spoken, tripadvisor_url, review_highlights, review_summary, parking_transport, wifi_info, breakfast_info, room_types, upsells"
-    )
-    .maybeSingle();
+  //
+  // Both reads at once; neither needs the other.
+  const [{ data: hotel }, { data: settings }] = await Promise.all([
+    supabase.from("hotels").select("name, rooms_count").single(),
+    supabase
+      .from("hotel_settings")
+      .select(
+        "star_rating, property_type, check_in_time, check_out_time, policies, positioning_vibe, target_guest, local_recommendations, preferred_greeting, signoff_name, languages_spoken, tripadvisor_url, review_highlights, review_summary, parking_transport, wifi_info, breakfast_info, room_types, upsells"
+      )
+      .maybeSingle(),
+  ]);
 
   return (
     <div className="flex max-w-2xl flex-col gap-8">

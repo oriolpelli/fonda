@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getHotel } from "@/lib/auth";
 import {
   addDays,
   arrivalsOn,
@@ -153,12 +154,9 @@ function emptySnapshot(
  * `.eq("hotel_id", …)` on top is belt-and-braces, matching lib/inbox.ts.
  */
 export async function loadDashboardSnapshot(): Promise<DashboardSnapshot> {
-  const supabase = await createClient();
-
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("id, name, timezone, rooms_count, pms_connected, last_synced_at")
-    .maybeSingle();
+  // The request's one hotels read (lib/auth.ts), shared with the layout and
+  // every other loader rendering alongside this one.
+  const [supabase, hotel] = await Promise.all([createClient(), getHotel()]);
 
   if (!hotel) return emptySnapshot();
 

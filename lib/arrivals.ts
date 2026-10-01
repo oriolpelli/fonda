@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getHotel } from "@/lib/auth";
 import { addDays } from "@/lib/occupancy";
 import {
   readEta,
@@ -153,12 +154,8 @@ const EMPTY: TodayMovements = { timezone: "UTC", arrivals: [], departures: [] };
  * show, and they need the total to say "+N more".
  */
 export async function loadTodayMovements(): Promise<TodayMovements> {
-  const supabase = await createClient();
-
-  const { data: hotel } = await supabase
-    .from("hotels")
-    .select("id, timezone, pms_connected")
-    .maybeSingle();
+  // The request's one hotels read (lib/auth.ts).
+  const [supabase, hotel] = await Promise.all([createClient(), getHotel()]);
 
   if (!hotel) return EMPTY;
   const tz = hotel.timezone || "UTC";
