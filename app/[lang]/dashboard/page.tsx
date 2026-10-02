@@ -24,6 +24,7 @@ import { loadTodayMovements, type TodayMovements } from "@/lib/arrivals";
 import { getHotel, getSessionProfile } from "@/lib/auth";
 import { loadTodaysBriefing, type TodaysBriefing } from "@/lib/briefing-latest";
 import { loadDashboardSnapshot } from "@/lib/dashboard-snapshot";
+import { loadHomeRates, type HomeRates } from "@/lib/rate-outlook";
 import { byUrgency } from "@/lib/email-urgency";
 import {
   defaultLayoutFor,
@@ -61,7 +62,8 @@ import { buildTodoList } from "@/lib/todo-rules";
  * to-do ranking is rules only (lib/todo-rules.ts), so a GM can predict what
  * appears here and why.
  *
- * Rates are absent on purpose. See components/dashboard/occupancy-strip.tsx.
+ * Rates (B17) come from the rate cache the sync keeps (lib/rate-sync.ts) —
+ * read here, never computed, so there is no PMS call on this page either.
  */
 
 /** How many messages the "needs a reply" widget shows before deferring to the inbox. */
@@ -96,6 +98,10 @@ const readMovements = cache(() =>
     () => timed("home.movements", loadTodayMovements()),
     null as TodayMovements | null
   )
+);
+// The rate cache (B17): two small reads; null when it isn't there yet.
+const readRates = cache(() =>
+  soft(() => timed("home.rates", loadHomeRates()), null as HomeRates | null)
 );
 const readSyncHealth = cache(() =>
   soft(() => timed("home.syncHealth", loadSyncHealth()), [] as SourceHealth[])
@@ -175,6 +181,7 @@ export default async function DashboardPage({
     readMovements,
     readSyncHealth,
     readBrief,
+    readRates,
   ]) {
     read().catch(() => {});
   }
@@ -364,7 +371,7 @@ async function HomeWidget({
       );
     }
     case "outlook": {
-      const snapshot = await readSnapshot();
+      const [snapshot, rates] = await Promise.all([readSnapshot(), readRates()]);
       return (
         <OutlookWidget
           dict={dict}
@@ -372,6 +379,7 @@ async function HomeWidget({
           outlook={snapshot.outlook}
           today={snapshot.today}
           syncedAt={syncedAt}
+          rates={rates}
         />
       );
     }

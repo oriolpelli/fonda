@@ -27,6 +27,8 @@ export const SOURCE_KEYS = [
   "vip",
   "requests",
   "housePolicies",
+  /** The rate cache (B17): average rate, selling price, pickup. */
+  "rates",
   /** Nothing specific was in play — the generic fallback. */
   "hotelData",
 ] as const;
@@ -50,6 +52,7 @@ export interface SourceProbe {
     specialRequests: unknown[];
   };
   emails: { pendingCount: number };
+  rates?: { nights?: unknown[] };
 }
 
 /**
@@ -74,5 +77,6 @@ export function sourcesFor(
   if (context.guests.vipArrivals.length > 0) keys.push("vip");
   if (context.guests.specialRequests.length > 0) keys.push("requests");
   if (hasHouseProfile) keys.push("housePolicies");
+  if ((context.rates?.nights?.length ?? 0) > 0) keys.push("rates");
   return keys.length > 0 ? keys : ["hotelData"];
 }

@@ -12,6 +12,7 @@ import {
   withSlimRaw,
 } from "@/lib/pms-fields";
 import { pseudoName } from "@/lib/pseudonymise";
+import { loadRateOutlook } from "@/lib/rate-outlook";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Json } from "@/types/database";
 
@@ -83,7 +84,7 @@ const BRIEFING_SCHEMA = {
     rate_alert: {
       type: "string",
       description:
-        "Occupancy / rate alerts for the next 14 days, or a note that none apply.",
+        "Occupancy for the next 14 days with its revenue signal — average rate, selling price and pickup where the data gives them — or a note that nothing stands out.",
     },
   },
   required: ["summary", "arrivals", "emails", "rate_alert"],
@@ -208,6 +209,10 @@ export async function generateBriefing(
     addDays(todayStr, OCCUPANCY_HORIZON_DAYS)
   );
 
+  // The rate cache (B17) — started now, read at the end; it needs only the
+  // hotel's date. Null before migration 0030 or the first sync after it.
+  const rateRead = loadRateOutlook(admin, hotelId, todayStr).catch(() => null);
+
   // Reservations overlapping [today, today+14d].
   const { data: reservationRows } = await admin
     .from("reservations")
@@ -299,6 +304,31 @@ export async function generateBriefing(
 
   const language = LANGUAGES[settings?.briefing_language ?? "en"] ?? "English";
 
+  // Rates, per night, beside the occupancy the brief already has. Money is
+  // excl. VAT (ROADMAP B17, Oriol's call). Nights with nothing known are
+  // still listed so the model sees the whole fortnight, with nulls.
+  const rateOutlook = await rateRead;
+  const occupancyByDate = new Map(occupancy.map((o) => [o.date, o.occupancyPct]));
+  const rates =
+    rateOutlook &&
+    (rateOutlook.hasRevenue ||
+      rateOutlook.hasSellingPrice ||
+      rateOutlook.pickupYesterdayTotal !== null)
+      ? {
+          currency: rateOutlook.currency,
+          basis: "excluding VAT",
+          pickedUpYesterdayTotal: rateOutlook.pickupYesterdayTotal,
+          nights: rateOutlook.nights.map((night) => ({
+            date: night.date,
+            occupancyPct: Math.round((occupancyByDate.get(night.date) ?? 0) * 100),
+            averageRate: night.adr,
+            sellingFrom: night.sellFrom,
+            pickedUpYesterday: night.pickupYesterday,
+            pickedUpLast7Days: night.pickupWeek,
+          })),
+        }
+      : null;
+
   const data = {
     hotel: { name: hotel.name, date: todayStr, rooms: hotel.rooms_count },
     gmName: settings?.gm_name ?? null,
@@ -319,6 +349,7 @@ export async function generateBriefing(
       classification: e.classification,
     })),
     lowOccupancyDays,
+    rates,
   };
 
   const system = [
@@ -329,6 +360,12 @@ export async function generateBriefing(
     `Always refer to the hotel by name (${hotel.name}).`,
     "Cover: today's arrivals and departures, any VIP guests, special requests, an overnight email summary, and occupancy/rate alerts for the next 14 days.",
     buildHotelProfileSummary(settings),
+    rates
+      ? [
+          `The "rates" data gives, for each of the next 14 nights, the average rate of the rooms already sold (averageRate) and the lowest public price the hotel is still selling at (sellingFrom), both in ${rates.currency ?? "the hotel's currency"} excluding VAT, plus the rooms booked yesterday for that night net of cancellations (pickedUpYesterday) and over the last 7 days (pickedUpLast7Days). A null is unknown: leave it out.`,
+          "In the rate_alert section, give a short revenue signal alongside occupancy: name the soft nights with their average rate and selling price, and any notable pickup. State facts only. Never recommend a specific price, discount or rate change, and never compare with last year or any period the data does not cover. Say once that the rates exclude VAT.",
+        ].join(" ")
+      : "",
     "If a section has nothing noteworthy, say so briefly rather than inventing detail.",
     "Guest surnames have already been reduced to initials for privacy — keep them that way.",
     "Do not expose internal IDs.",

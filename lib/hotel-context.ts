@@ -13,6 +13,7 @@ import {
   readVip,
   withSlimRaw,
 } from "@/lib/pms-fields";
+import { loadRateOutlook } from "@/lib/rate-outlook";
 import { localDate, localDateOf } from "@/lib/stay-phase";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllPages, fetchInChunks } from "@/lib/supabase/paged";
@@ -57,8 +58,23 @@ export interface HotelContext {
     classifications: Record<string, number>;
   };
   rates: {
-    currentRates: Record<string, never>; // rate plans aren't cached yet
     occupancyAlerts: { date: string; occupancyRate: number }[];
+    /**
+     * The rate cache (B17), per night, when there is one: what the rooms
+     * already sold pay on average, the lowest public price still on sale,
+     * and yesterday's pickup. Money excl. VAT. Absent before migration 0030
+     * or the first sync after it, so "what's our rate on Friday?" gets "I
+     * don't have rates" rather than an invented number.
+     */
+    currency?: string | null;
+    note?: string;
+    nights?: {
+      date: string;
+      roomsSold: number;
+      averageRate: number | null;
+      sellingFrom: number | null;
+      pickedUpYesterday: number | null;
+    }[];
   };
   /**
    * Full per-day occupancy across the 14-day horizon. The dashboard computes
@@ -188,6 +204,10 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
   const tz = hotel?.timezone || "UTC";
   const rooms = hotel?.rooms_count ?? 0;
   const today = localDate(tz, new Date());
+
+  // The rate cache needs only the date, so it reads alongside the
+  // reservation chain below rather than after it.
+  const rateRead = loadRateOutlook(admin, hotelId, today).catch(() => null);
   const todayStart = zonedMidnightUtc(tz, today);
   const todayEnd = zonedMidnightUtc(tz, addDays(today, 1));
   const horizonEnd = zonedMidnightUtc(tz, addDays(today, OCCUPANCY_ALERT_HORIZON));
@@ -323,6 +343,23 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
 
   const todayOccupied = occupiedOn(stays, today);
 
+  const rateOutlook = await rateRead;
+  const rateNights =
+    rateOutlook && (rateOutlook.hasRevenue || rateOutlook.hasSellingPrice)
+      ? {
+          currency: rateOutlook.currency,
+          note:
+            "Per night: averageRate is the average room rate of the rooms already sold; sellingFrom is the lowest public price still on sale (an open public rate, in a room type with a room left); both exclude VAT. pickedUpYesterday is rooms booked yesterday for that night, net of cancellations. null means unknown.",
+          nights: rateOutlook.nights.map((night) => ({
+            date: night.date,
+            roomsSold: night.roomsSold,
+            averageRate: night.adr,
+            sellingFrom: night.sellFrom,
+            pickedUpYesterday: night.pickupYesterday,
+          })),
+        }
+      : {};
+
   return {
     hotel: { name: hotel?.name ?? "the hotel", timezone: tz, rooms, date: today },
     today: {
@@ -334,7 +371,7 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
     thisWeek: { reservations: weekReservations, occupancyByDay },
     guests: { vipArrivals, specialRequests, missingArrivalTimes },
     emails: await emailCounts,
-    rates: { currentRates: {}, occupancyAlerts },
+    rates: { occupancyAlerts, ...rateNights },
     occupancyOutlook,
   };
 }

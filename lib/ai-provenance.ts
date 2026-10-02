@@ -80,12 +80,15 @@ export const PROMPT_VERSIONS: Record<AiFeature, string> = {
   emailClassify: "email-classify@2026-10-01",
   emailDraft: "email-draft@2026-10-01",
   chaser: "chaser@2026-10-01",
-  briefing: "briefing@2026-10-01",
+  // 2026-10-02: the brief reads the rate cache (B17) — average rate,
+  // selling price and pickup per night, excl. VAT — in its rate_alert.
+  briefing: "briefing@2026-10-02",
   // b: the system prompt split into instructions · cached hotel data · live
   // inbox counts (prompt caching, performance audit §4.8). Same wording.
   // c: messages sent as text blocks, the last one a cache breakpoint, so the
   // conversation so far is cached too (S3). Same wording.
-  chat: "chat@2026-10-01c",
+  // 2026-10-02: the hotel data carries the rate cache (B17) under `rates`.
+  chat: "chat@2026-10-02",
   guestInference: "guest-inference@2026-10-01",
   reviewSummary: "review-summary@2026-10-01",
 };

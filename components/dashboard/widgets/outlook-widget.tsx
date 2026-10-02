@@ -4,6 +4,7 @@ import { WidgetSection } from "@/components/dashboard/widgets/widget-section";
 import type { Locale } from "@/lib/i18n/config";
 import { t } from "@/lib/i18n/format";
 import type { OccupancyDay } from "@/lib/occupancy";
+import type { HomeRates } from "@/lib/rate-outlook";
 import { LOW_OCCUPANCY_PCT } from "@/lib/todo-rules";
 
 /**
@@ -24,12 +25,15 @@ export function OutlookWidget({
   outlook,
   today,
   syncedAt,
+  rates,
 }: {
   dict: Dictionary;
   locale: Locale;
   outlook: OccupancyDay[];
   today: string;
   syncedAt: string | null;
+  /** The rate cache (B17) — the strip's average-rate row. */
+  rates: HomeRates | null;
 }) {
   return (
     <WidgetSection
@@ -46,6 +50,7 @@ export function OutlookWidget({
         outlook={outlook}
         today={today}
         softBelowPct={LOW_OCCUPANCY_PCT}
+        rates={rates}
       />
     </WidgetSection>
   );
