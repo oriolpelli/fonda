@@ -913,6 +913,96 @@ export type Database = {
           },
         ];
       };
+      /** B17 rate cache (migration 0030): one row per hotel per night. */
+      rate_nights: {
+        Row: {
+          hotel_id: string;
+          night: string;
+          rooms_sold: number;
+          priced_rooms: number | null;
+          revenue_net: number | null;
+          revenue_gross: number | null;
+          sell_from_net: number | null;
+          sell_from_gross: number | null;
+          sell_from_checked_at: string | null;
+          currency: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          hotel_id: string;
+          night: string;
+          rooms_sold?: number;
+          priced_rooms?: number | null;
+          revenue_net?: number | null;
+          revenue_gross?: number | null;
+          sell_from_net?: number | null;
+          sell_from_gross?: number | null;
+          sell_from_checked_at?: string | null;
+          currency?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          hotel_id?: string;
+          night?: string;
+          rooms_sold?: number;
+          priced_rooms?: number | null;
+          revenue_net?: number | null;
+          revenue_gross?: number | null;
+          sell_from_net?: number | null;
+          sell_from_gross?: number | null;
+          sell_from_checked_at?: string | null;
+          currency?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "rate_nights_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      /** B17 pickup (migration 0030): the cache at the start of each local day. */
+      rate_snapshots: {
+        Row: {
+          hotel_id: string;
+          as_of: string;
+          night: string;
+          rooms_sold: number;
+          priced_rooms: number | null;
+          revenue_net: number | null;
+          taken_at: string;
+        };
+        Insert: {
+          hotel_id: string;
+          as_of: string;
+          night: string;
+          rooms_sold: number;
+          priced_rooms?: number | null;
+          revenue_net?: number | null;
+          taken_at?: string;
+        };
+        Update: {
+          hotel_id?: string;
+          as_of?: string;
+          night?: string;
+          rooms_sold?: number;
+          priced_rooms?: number | null;
+          revenue_net?: number | null;
+          taken_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "rate_snapshots_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<never, never>;
     Functions: {

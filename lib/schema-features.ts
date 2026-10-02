@@ -22,6 +22,8 @@ const RECHECK_ABSENT_MS = 10 * 60 * 1000;
 const PROBES = {
   /** 0029 — content_hash, gmail_thread_id, inference_failed_at. */
   "0029": { table: "reservations", column: "content_hash" },
+  /** 0030 — the rate cache: rate_nights and rate_snapshots (B17). */
+  "0030": { table: "rate_nights", column: "night" },
 } as const;
 
 type Migration = keyof typeof PROBES;
@@ -29,8 +31,14 @@ type Migration = keyof typeof PROBES;
 const known = new Map<Migration, { present: boolean; at: number }>();
 const inFlight = new Map<Migration, Promise<boolean>>();
 
-/** Postgres "undefined_column", as PostgREST passes it through. */
-const UNDEFINED_COLUMN = "42703";
+/**
+ * The answers that mean "not there yet": Postgres's undefined_column and
+ * undefined_table, as PostgREST passes them through, and PostgREST's own
+ * "not in the schema cache" for a column (PGRST204) or a table (PGRST205).
+ * A migration that adds a table (0030) is probed by a column of that table,
+ * so the table's absence has to read as absence too, not as a network error.
+ */
+const ABSENT = new Set(["42703", "42P01", "PGRST204", "PGRST205"]);
 
 export function migrationApplied(migration: Migration): Promise<boolean> {
   const cached = known.get(migration);
@@ -51,7 +59,7 @@ export function migrationApplied(migration: Migration): Promise<boolean> {
       known.set(migration, { present: true, at: Date.now() });
       return true;
     }
-    if (error.code === UNDEFINED_COLUMN) {
+    if (ABSENT.has(error.code)) {
       known.set(migration, { present: false, at: Date.now() });
     }
     return false;
