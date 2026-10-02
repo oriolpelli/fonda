@@ -1189,7 +1189,7 @@ export function EmailInbox({
                           ? dict.ai.sentEdited
                           : dict.ai.sentAsDrafted}
                       </p>
-                      <AiReportButton itemType="reply" itemId={selected.id} />
+                      <AiReportButton key={selected.id} itemType="reply" itemId={selected.id} />
                     </div>
                   ) : null}
                 </div>
@@ -1258,7 +1258,7 @@ export function EmailInbox({
                       </p>
                       {/* A8: the AI incident channel, as quiet as the line
                           it sits beside. */}
-                      <AiReportButton itemType="reply" itemId={selected.id} />
+                      <AiReportButton key={selected.id} itemType="reply" itemId={selected.id} />
                     </div>
                   ) : null}
                   {failureOf(selected) ? (

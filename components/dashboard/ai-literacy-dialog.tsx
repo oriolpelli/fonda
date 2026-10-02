@@ -15,10 +15,11 @@ const FOCUSABLE = 'button:not([disabled]), [tabindex="0"]';
  * A6, Art. 4). Shown once to each person after they sign in (the gate in the
  * dashboard layout), and from Settings → AI at Fondas whenever they like.
  *
- * Finishing records "completed"; "Skip for now", Esc or the scrim records
- * "skipped", so the cards aren't pushed on anyone twice — and a skip is not
- * counted as the Art. 4 record. Either way the browser remembers (a cookie the
- * layout reads instead of the database next time).
+ * Finishing records "completed". On the first-run cards, "Skip for now", Esc
+ * or the scrim records "skipped", so they aren't pushed on anyone twice — and
+ * a skip is never counted as the Art. 4 record. Opened again from Settings,
+ * closing early records nothing. The browser remembers only what the table
+ * recorded (a cookie the layout reads instead of the database next time).
  *
  * Same overlay contract as the bulk-send dialog: scrim, role="dialog",
  * aria-modal, focus moved in and trapped, focus returned on close. An
@@ -49,17 +50,24 @@ export function AiLiteracyDialog({
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   function finish(status: "completed" | "skipped") {
-    try {
-      document.cookie = `${AI_LITERACY_COOKIE}=${cookieValue}; path=/; max-age=31536000; samesite=lax`;
-    } catch {
-      // A blocked cookie only means the layout asks the database next time.
-    }
     setOpen(false);
     setStep(0);
-    startTransition(async () => {
-      await recordAiLiteracy(status);
-    });
     triggerRef.current?.focus();
+    // Opened from Settings, closing early is just closing: only finishing is
+    // worth a row there. The first-run cards record a skip, so they aren't
+    // pushed on anyone twice.
+    if (status === "skipped" && trigger) return;
+    startTransition(async () => {
+      const { ok } = await recordAiLiteracy(status);
+      // The browser remembers only what the table recorded: if the write
+      // failed, the next page asks the database again and offers the cards.
+      if (!ok) return;
+      try {
+        document.cookie = `${AI_LITERACY_COOKIE}=${cookieValue}; path=/; max-age=31536000; samesite=lax`;
+      } catch {
+        // A blocked cookie only means the layout asks the database next time.
+      }
+    });
   }
 
   const finishRef = useRef(finish);
@@ -75,7 +83,10 @@ export function AiLiteracyDialog({
     if (!open) return;
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
+        // Captured and stopped here, so an Esc meant for these cards doesn't
+        // also close whatever sits underneath (the Ask panel, the palette).
         event.preventDefault();
+        event.stopPropagation();
         finishRef.current("skipped");
         return;
       }
@@ -97,8 +108,8 @@ export function AiLiteracyDialog({
         first.focus();
       }
     }
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => document.removeEventListener("keydown", onKeyDown, true);
   }, [open]);
 
   const card = cards[step];
@@ -114,9 +125,9 @@ export function AiLiteracyDialog({
             setStep(0);
             setOpen(true);
           }}
-          disabled={pending}
+          aria-busy={pending || undefined}
         >
-          {pending ? copy.saving : trigger}
+          {trigger}
         </Button>
       ) : null}
 

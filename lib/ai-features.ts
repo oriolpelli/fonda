@@ -49,10 +49,12 @@ export interface AiFeatureCard {
  * "Claude Haiku 4.5". An id that doesn't follow the pattern is shown as is.
  */
 export function modelName(id: string): string {
-  const m = /^claude-([a-z]+)-(\d+)-(\d+)(?:-\d{8})?$/.exec(id);
+  // A minor version is one or two digits; eight digits are a date snapshot
+  // ("claude-sonnet-4-20250514" is Sonnet 4, not 4.20250514).
+  const m = /^claude-([a-z]+)-(\d+)(?:-(\d{1,2}))?(?:-\d{8})?$/.exec(id);
   if (!m) return id;
   const family = m[1].charAt(0).toUpperCase() + m[1].slice(1);
-  return `Claude ${family} ${m[2]}.${m[3]}`;
+  return `Claude ${family} ${m[2]}${m[3] ? `.${m[3]}` : ""}`;
 }
 
 export function aiFeatureCards(): AiFeatureCard[] {

@@ -914,7 +914,7 @@
       "open": "Obrir les cinc targetes",
       "print": "Versió per imprimir",
       "recordTitle": "Qui les ha llegides",
-      "recordBody": "El Reglament europeu d'IA demana al teu hotel que ajudi qui fa servir la IA a entendre-la (art. 4). Aquest és el teu registre: qui va completar quina versió i quan. Només la finalització; no es registra res més.",
+      "recordBody": "El Reglament europeu d'IA demana al teu hotel que ajudi qui fa servir la IA a entendre-la (art. 4). Aquest és el teu registre: qui va completar quina versió i quan, i qui la va ometre. Sense puntuacions, sense temps, sense classificacions.",
       "recordPerson": "Persona",
       "recordVersion": "Versió",
       "recordStatus": "Estat",
@@ -934,7 +934,7 @@
       "copied": "Copiat",
       "copyLabel": "Copia el paràgraf en {language}",
       "language": "Català",
-      "text": "Com fem servir la IA amb els seus missatges. Quan ens escriu, el nostre equip pot fer servir Fondas, una eina assistida per IA, per redactar la resposta; una persona del nostre equip aprova cada resposta abans d'enviar-la. També anotem preferències a partir dels seus missatges i reserves —com el motiu del viatge o una ocasió especial— per preparar la seva estada, i les conservem durant 24 mesos després de la seva última estada. Fondas i el seu proveïdor d'IA, Anthropic, tracten aquesta informació en nom nostre i seguint les nostres instruccions; no s'utilitza per entrenar models d'IA."
+      "text": "Com fem servir la IA amb els seus missatges. Quan ens escriu, o quan li escrivim per preguntar-li l'hora d'arribada, el nostre equip pot fer servir Fondas, una eina assistida per IA, per redactar el missatge; una persona del nostre equip aprova cada missatge abans d'enviar-lo. També anotem preferències a partir dels seus missatges i reserves —com el motiu del viatge o una ocasió especial— per preparar la seva estada, i les conservem durant 24 mesos després de la seva última estada. Fondas i el seu proveïdor d'IA, Anthropic, tracten les dades de la seva reserva i els seus missatges en nom nostre i seguint les nostres instruccions; no s'utilitzen per entrenar models d'IA."
     }
   },
   "apaleoStatus": {
@@ -1153,7 +1153,7 @@
       },
       "chat": {
         "name": "Pregunta",
-        "reads": "La teva pregunta i una foto de l'hotel: les reserves dels propers 14 dies amb el cognom dels hostes reduït a la inicial, l'estat de la bústia, l'ocupació i les tarifes, i la configuració de la casa.",
+        "reads": "La teva pregunta tal com l'escrius, i una foto de l'hotel: les reserves dels propers 14 dies amb el cognom dels hostes reduït a la inicial, l'estat de la bústia, l'ocupació i les tarifes, i la configuració de la casa.",
         "writes": "Una resposta, i un esborrany de correu si el demanes.",
         "sees": "La persona que pregunta. Les converses de cadascú són seves.",
         "checks": "Des de Pregunta no surt res de Fondas. Un esborrany que comenci va a Comunicacions i espera Envia com qualsevol altre.",
@@ -1329,11 +1329,10 @@
       "back": "Enrere",
       "next": "Següent",
       "done": "Fet",
-      "saving": "Desant…",
       "cards": [
         {
           "title": "Què fa Fondas amb la IA",
-          "body": "Fondas fa servir IA per classificar el correu dels teus hostes, redactar respostes i peticions d'hora d'arribada, escriure el Resum matinal, respondre a Pregunta i anotar les preferències dels hostes que repeteixen. Tot el que escriu va marcat com a Fondas AI, perquè sempre sàpigues què ve d'una persona i què no."
+          "body": "Fondas fa servir IA per classificar el correu dels teus hostes, redactar respostes i peticions d'hora d'arribada, escriure el Resum matinal, respondre a Pregunta i anotar les preferències dels hostes que repeteixen. Cada esborrany, resum i resposta que escriu va marcat com a Fondas AI, perquè sempre sàpigues què ve d'una persona i què no."
         },
         {
           "title": "On es pot equivocar",
@@ -1390,8 +1389,8 @@
     "generated": "Esborranys escrits",
     "sentAsDrafted": "Enviats tal qual",
     "edited": "Editats abans d'enviar",
-    "bulkOne": "A més, {count} resposta enviada en bloc, comptada a part.",
-    "bulkOther": "A més, {count} respostes enviades en bloc, comptades a part.",
+    "bulkOne": "A més, {count} enviat en bloc, comptat a part.",
+    "bulkOther": "A més, {count} enviats en bloc, comptats a part.",
     "listTitle": "El que ha escrit Fondas AI",
     "columns": {
       "date": "Data",
@@ -1409,6 +1408,7 @@
       "asDrafted": "Enviat tal qual",
       "edited": "Editat i enviat",
       "bulk": "Enviat en bloc",
+      "sent": "Enviat",
       "notSent": "No enviat",
       "written": "Escrit"
     },

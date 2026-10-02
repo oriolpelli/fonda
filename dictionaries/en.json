@@ -914,7 +914,7 @@
       "open": "Open the five cards",
       "print": "Printable version",
       "recordTitle": "Who has read them",
-      "recordBody": "The EU AI Act asks your hotel to help the people who use AI understand it (Art. 4). This is your record of it: who completed which version, and when. Completion only — nothing else is tracked.",
+      "recordBody": "The EU AI Act asks your hotel to help the people who use AI understand it (Art. 4). This is your record of it: who completed which version, and when, and who skipped it. No scores, no time spent, no ranking.",
       "recordPerson": "Person",
       "recordVersion": "Version",
       "recordStatus": "Status",
@@ -934,7 +934,7 @@
       "copied": "Copied",
       "copyLabel": "Copy the {language} paragraph",
       "language": "English",
-      "text": "How we use AI with your messages. When you email us, our team may use Fondas, an AI-assisted tool, to draft the reply; a member of our team approves every reply before it is sent. We also note preferences from your messages and bookings — such as the purpose of your trip or a special occasion — to prepare your stay, and keep them for 24 months after your last stay. Fondas and its AI provider, Anthropic, process this information on our behalf and on our instructions; it is not used to train AI models."
+      "text": "How we use AI with your messages. When you email us, or when we write to ask your arrival time, our team may use Fondas, an AI-assisted tool, to draft the message; a member of our team approves every message before it is sent. We also note preferences from your messages and bookings — such as the purpose of your trip or a special occasion — to prepare your stay, and keep them for 24 months after your last stay. Fondas and its AI provider, Anthropic, process your booking details and messages on our behalf and on our instructions; they are not used to train AI models."
     }
   },
   "apaleoStatus": {
@@ -1153,7 +1153,7 @@
       },
       "chat": {
         "name": "Ask",
-        "reads": "Your question and a snapshot of the hotel: bookings for the next 14 days with guest surnames cut to an initial, inbox counts, occupancy and rates, and your house settings.",
+        "reads": "Your question as you type it, and a snapshot of the hotel: bookings for the next 14 days with guest surnames cut to an initial, inbox counts, occupancy and rates, and your house settings.",
         "writes": "An answer, and an email draft if you ask for one.",
         "sees": "The person who asked. Each person's conversations are their own.",
         "checks": "Nothing leaves Fondas from Ask. A draft it starts goes to Communications and waits for Send like any other.",
@@ -1329,11 +1329,10 @@
       "back": "Back",
       "next": "Next",
       "done": "Done",
-      "saving": "Saving…",
       "cards": [
         {
           "title": "What Fondas does with AI",
-          "body": "Fondas uses AI to sort your guest email, draft replies and arrival-time requests, write the Morning Brief, answer questions in Ask, and note returning guests' preferences. Everything it writes is labelled Fondas AI, so you always know what came from a person and what didn't."
+          "body": "Fondas uses AI to sort your guest email, draft replies and arrival-time requests, write the Morning Brief, answer questions in Ask, and note returning guests' preferences. Every draft, brief and answer it writes is labelled Fondas AI, so you always know what came from a person and what didn't."
         },
         {
           "title": "Where it can be wrong",
@@ -1390,8 +1389,8 @@
     "generated": "Drafts written",
     "sentAsDrafted": "Sent as drafted",
     "edited": "Edited before sending",
-    "bulkOne": "Plus {count} reply sent in bulk, counted separately.",
-    "bulkOther": "Plus {count} replies sent in bulk, counted separately.",
+    "bulkOne": "Plus {count} sent in bulk, counted separately.",
+    "bulkOther": "Plus {count} sent in bulk, counted separately.",
     "listTitle": "What Fondas AI wrote",
     "columns": {
       "date": "Date",
@@ -1409,6 +1408,7 @@
       "asDrafted": "Sent as drafted",
       "edited": "Edited, then sent",
       "bulk": "Sent in bulk",
+      "sent": "Sent",
       "notSent": "Not sent",
       "written": "Written"
     },

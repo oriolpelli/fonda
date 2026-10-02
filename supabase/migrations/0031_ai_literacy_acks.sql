@@ -21,7 +21,10 @@
 --
 -- RLS: a person inserts and reads their own rows; the hotel's owner and
 -- managers read every row of their hotel (the record, and its CSV). No
--- updates and no deletes from clients — a record you can edit isn't one.
+-- updates and no deletes from clients — a record you can edit isn't one —
+-- and the timestamps are set by a trigger, not by whoever inserts.
+-- A person's rows go when their user does (on delete cascade): the record is
+-- of the team as it is, and a leaver's training is not kept about them.
 -- Additive; the app runs without it (the cards simply aren't shown).
 -- ============================================================================
 
@@ -61,5 +64,24 @@ create policy "ai_literacy_acks: read own or as manager"
       or (select public.current_user_role()) in ('owner', 'manager')
     )
   );
+
+-- The record's times are the database's, never the client's: a person can
+-- only say THAT they finished, not WHEN (no backdating the evidence).
+create or replace function public.ai_literacy_acks_stamp()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  new.created_at := now();
+  new.completed_at := case when new.status = 'completed' then now() else null end;
+  return new;
+end;
+$$;
+
+drop trigger if exists ai_literacy_acks_stamp on public.ai_literacy_acks;
+create trigger ai_literacy_acks_stamp
+  before insert on public.ai_literacy_acks
+  for each row execute function public.ai_literacy_acks_stamp();
 
 notify pgrst, 'reload schema';

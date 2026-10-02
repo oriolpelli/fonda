@@ -16,8 +16,9 @@ import { t } from "@/lib/i18n/format";
  * (`settings.guestNotice.text`), and the copy button copies that same string:
  * what is copied is exactly what is shown.
  *
- * EVERY CLAIM IS THE CODE'S. "A member of our team approves every reply"
- * — sendReply and the recorded bulk confirmation (A4). "24 months after your
+ * EVERY CLAIM IS THE CODE'S. "A member of our team approves every message"
+ * — sendReply, the chaser send and the recorded bulk confirmation (A4); the
+ * arrival-time request is named because it reaches guests who never wrote. "24 months after your
  * last stay" — the retention cron (app/api/cron/retention). "Not used to train
  * AI models" — Anthropic's commercial terms, as /trust says. Change any of
  * those and this text changes with it, in all three files.

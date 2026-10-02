@@ -914,7 +914,7 @@
       "open": "Abrir las cinco tarjetas",
       "print": "Versión para imprimir",
       "recordTitle": "Quién las ha leído",
-      "recordBody": "El Reglamento Europeo de IA pide a tu hotel que ayude a quienes usan la IA a entenderla (art. 4). Este es tu registro: quién completó qué versión y cuándo. Solo la finalización; no se registra nada más.",
+      "recordBody": "El Reglamento Europeo de IA pide a tu hotel que ayude a quienes usan la IA a entenderla (art. 4). Este es tu registro: quién completó qué versión y cuándo, y quién la omitió. Sin puntuaciones, sin tiempos, sin clasificaciones.",
       "recordPerson": "Persona",
       "recordVersion": "Versión",
       "recordStatus": "Estado",
@@ -934,7 +934,7 @@
       "copied": "Copiado",
       "copyLabel": "Copiar el párrafo en {language}",
       "language": "Español",
-      "text": "Cómo usamos la IA con sus mensajes. Cuando nos escribe, nuestro equipo puede usar Fondas, una herramienta asistida por IA, para redactar la respuesta; una persona de nuestro equipo aprueba cada respuesta antes de enviarla. También anotamos preferencias a partir de sus mensajes y reservas —como el motivo del viaje o una ocasión especial— para preparar su estancia, y las conservamos durante 24 meses después de su última estancia. Fondas y su proveedor de IA, Anthropic, tratan esta información por cuenta nuestra y siguiendo nuestras instrucciones; no se utiliza para entrenar modelos de IA."
+      "text": "Cómo usamos la IA con sus mensajes. Cuando nos escribe, o cuando le escribimos para preguntarle su hora de llegada, nuestro equipo puede usar Fondas, una herramienta asistida por IA, para redactar el mensaje; una persona de nuestro equipo aprueba cada mensaje antes de enviarlo. También anotamos preferencias a partir de sus mensajes y reservas —como el motivo del viaje o una ocasión especial— para preparar su estancia, y las conservamos durante 24 meses después de su última estancia. Fondas y su proveedor de IA, Anthropic, tratan los datos de su reserva y sus mensajes por cuenta nuestra y siguiendo nuestras instrucciones; no se utilizan para entrenar modelos de IA."
     }
   },
   "apaleoStatus": {
@@ -1153,7 +1153,7 @@
       },
       "chat": {
         "name": "Pregunta",
-        "reads": "Tu pregunta y una foto del hotel: las reservas de los próximos 14 días con el apellido de los huéspedes reducido a la inicial, el estado del buzón, la ocupación y las tarifas, y los ajustes de la casa.",
+        "reads": "Tu pregunta tal como la escribes, y una foto del hotel: las reservas de los próximos 14 días con el apellido de los huéspedes reducido a la inicial, el estado del buzón, la ocupación y las tarifas, y los ajustes de la casa.",
         "writes": "Una respuesta, y un borrador de correo si lo pides.",
         "sees": "La persona que pregunta. Las conversaciones de cada uno son suyas.",
         "checks": "Desde Pregunta no sale nada de Fondas. Un borrador que empiece va a Comunicaciones y espera a Enviar como cualquier otro.",
@@ -1329,11 +1329,10 @@
       "back": "Atrás",
       "next": "Siguiente",
       "done": "Hecho",
-      "saving": "Guardando…",
       "cards": [
         {
           "title": "Qué hace Fondas con la IA",
-          "body": "Fondas usa IA para clasificar el correo de tus huéspedes, redactar respuestas y peticiones de hora de llegada, escribir el Resumen matutino, responder en Pregunta y anotar las preferencias de los huéspedes que repiten. Todo lo que escribe va marcado como Fondas AI, para que siempre sepas qué viene de una persona y qué no."
+          "body": "Fondas usa IA para clasificar el correo de tus huéspedes, redactar respuestas y peticiones de hora de llegada, escribir el Resumen matutino, responder en Pregunta y anotar las preferencias de los huéspedes que repiten. Cada borrador, resumen y respuesta que escribe va marcado como Fondas AI, para que siempre sepas qué viene de una persona y qué no."
         },
         {
           "title": "Dónde puede equivocarse",
@@ -1390,8 +1389,8 @@
     "generated": "Borradores escritos",
     "sentAsDrafted": "Enviados tal cual",
     "edited": "Editados antes de enviar",
-    "bulkOne": "Además, {count} respuesta enviada en bloque, contada aparte.",
-    "bulkOther": "Además, {count} respuestas enviadas en bloque, contadas aparte.",
+    "bulkOne": "Además, {count} enviado en bloque, contado aparte.",
+    "bulkOther": "Además, {count} enviados en bloque, contados aparte.",
     "listTitle": "Lo que ha escrito Fondas AI",
     "columns": {
       "date": "Fecha",
@@ -1409,6 +1408,7 @@
       "asDrafted": "Enviado tal cual",
       "edited": "Editado y enviado",
       "bulk": "Enviado en bloque",
+      "sent": "Enviado",
       "notSent": "No enviado",
       "written": "Escrito"
     },

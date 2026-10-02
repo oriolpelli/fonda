@@ -44,13 +44,12 @@ export default async function AiSettingsPage({
 }: {
   params: Promise<{ lang: string }>;
 }) {
-  const { locale, dict } = await loadDictionary((await params).lang);
-  const copy = dict.settings.aiPage;
-
-  const [profile, supabase] = await Promise.all([
+  const [{ locale, dict }, profile, supabase] = await Promise.all([
+    params.then((p) => loadDictionary(p.lang)),
     getSessionProfile(),
     createClient(),
   ]);
+  const copy = dict.settings.aiPage;
   const canSeeRecord = profile?.role === "owner" || profile?.role === "manager";
 
   const [people, acks] = canSeeRecord

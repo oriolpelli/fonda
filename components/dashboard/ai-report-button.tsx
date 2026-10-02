@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 
 import { reportAiProblem } from "@/app/[lang]/dashboard/oversight/ai/actions";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
@@ -70,7 +71,10 @@ export function AiReportButton({
     if (!open) return;
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
+        // Captured and stopped, so closing this form doesn't also close the
+        // Ask panel or the inbox pane it was opened from.
         event.preventDefault();
+        event.stopPropagation();
         closeRef.current();
         return;
       }
@@ -90,8 +94,8 @@ export function AiReportButton({
         first.focus();
       }
     }
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => document.removeEventListener("keydown", onKeyDown, true);
   }, [open]);
 
   function submit() {
@@ -120,7 +124,10 @@ export function AiReportButton({
         {result === "sent" ? copy.sent : copy.open}
       </button>
 
-      {open ? (
+      {/* Portalled to <body>: the button can sit inside the docked Ask panel or
+          a scrolling pane, and a transformed or clipped ancestor would trap a
+          fixed overlay inside it. */}
+      {open && typeof document !== "undefined" ? createPortal(
         <>
           <div
             aria-hidden="true"
@@ -187,7 +194,8 @@ export function AiReportButton({
               </Button>
             </div>
           </div>
-        </>
+        </>,
+        document.body
       ) : null}
     </>
   );

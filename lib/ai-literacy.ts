@@ -76,13 +76,15 @@ function csvCell(value: string): string {
 
 /**
  * The hotel's Art. 4 evidence as CSV: every completion and skip, oldest
- * first, plus a "not yet" line for anyone with no row. Completion data only.
+ * first, then a "not yet" line for everyone who hasn't completed the current
+ * version. Completion data only.
  */
 export function literacyCsv(
   people: { id: string; email: string }[],
   acks: LiteracyAck[],
   headers: { person: string; version: string; status: string; date: string },
-  labels: Record<LiteracyStatus | "not-yet", string>
+  labels: Record<LiteracyStatus | "not-yet", string>,
+  version: string = AI_LITERACY_VERSION
 ): string {
   const emailOf = new Map(people.map((p) => [p.id, p.email]));
   const lines = [
@@ -101,10 +103,17 @@ export function literacyCsv(
         .join(",")
     );
   }
-  const anyRow = new Set(acks.map((a) => a.user_id));
+  // Anyone who hasn't completed the CURRENT version is outstanding, even if
+  // they completed an earlier one: after a version bump the record must not
+  // read as done.
+  const completedNow = new Set(
+    acks
+      .filter((a) => a.version === version && a.status === "completed")
+      .map((a) => a.user_id)
+  );
   for (const person of people) {
-    if (!anyRow.has(person.id)) {
-      lines.push([person.email, "", labels["not-yet"], ""].map(csvCell).join(","));
+    if (!completedNow.has(person.id)) {
+      lines.push([person.email, version, labels["not-yet"], ""].map(csvCell).join(","));
     }
   }
   return lines.join("\r\n") + "\r\n";

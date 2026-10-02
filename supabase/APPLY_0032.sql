@@ -45,4 +45,21 @@ create policy "ai_feedback: read own hotel"
   on public.ai_feedback for select to authenticated
   using (hotel_id = (select public.current_hotel_id()));
 
+-- The report's time is the database's, not the reporter's.
+create or replace function public.ai_feedback_stamp()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  new.created_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists ai_feedback_stamp on public.ai_feedback;
+create trigger ai_feedback_stamp
+  before insert on public.ai_feedback
+  for each row execute function public.ai_feedback_stamp();
+
 notify pgrst, 'reload schema';

@@ -16,11 +16,17 @@ import type { Database } from "@/types/database";
  * Annex III point 4 (ROADMAP §5 #10, AI_ACT_PROMPTS.md §R "Team activity").
  * If a future change wants "who", it needs that rule changed first.
  *
- * The top numbers are draft_edit_events' (the acceptance rollup), so they are
- * the same figures the PMF metric steers by: sent as drafted = unedited
- * single sends; edited = minor + major edits; bulk sends counted apart, since
- * they had no editor. "Drafts written" counts the drafts themselves (replies
- * and arrival-time requests with provenance, migration 0025).
+ * The top numbers are about the drafts Fondas wrote in the period (replies and
+ * arrival-time requests carrying provenance, migration 0025) and what became
+ * of each: sent as drafted, edited before sending, or sent in bulk (counted
+ * apart, since a bulk send has no editor). All three share one base, so they
+ * can never add up to more than "drafts written".
+ *
+ * Why not draft_edit_events, the PMF rollup: it also records replies a GM
+ * typed from scratch, as "major" edits (lib/draft-edit.ts measures a missing
+ * draft that way), and it can't tell those apart from a heavily edited draft.
+ * On this page that would count work Fondas never did as AI drafts "edited".
+ * For drafted replies the two agree: an unedited send is "none" in both.
  *
  * Reads as the signed-in user (RLS), all at once, and only the columns shown —
  * never a draft, a body or an address. Guests appear as first name + initial
@@ -33,7 +39,8 @@ export const ACTIVITY_PAGE_SIZE = 25;
 const SOURCE_CAP = 1000;
 
 export type ActivityType = "reply" | "chaser" | "brief";
-export type ActivityOutcome = "asDrafted" | "edited" | "bulk" | "notSent" | "written";
+/** `sent`: sent, but whether it was edited wasn't recorded. */
+export type ActivityOutcome = "asDrafted" | "edited" | "bulk" | "sent" | "notSent" | "written";
 
 export interface ActivityItem {
   id: string;
@@ -76,6 +83,7 @@ function outcomeOf(row: DraftRow): ActivityOutcome {
   const sent = row.status === "sent" || row.status === "replied";
   if (!sent) return "notSent";
   if (row.sent_via === "bulk") return "bulk";
+  if (row.draft_edited === null) return "sent";
   return row.draft_edited ? "edited" : "asDrafted";
 }
 
@@ -86,12 +94,8 @@ export async function loadAiActivity(
   now: Date = new Date()
 ): Promise<AiActivity | null> {
   const from = new Date(now.getTime() - ACTIVITY_DAYS * 24 * 60 * 60 * 1000).toISOString();
-  const to = now.toISOString();
 
-  const [summary, replies, chasers, briefs] = await Promise.all([
-    db
-      .rpc("draft_acceptance_summary", { p_hotel_id: hotelId, p_from: from, p_to: to })
-      .single(),
+  const [replies, chasers, briefs] = await Promise.all([
     db
       .from("emails")
       .select("id, draft_generated_at, draft_model, status, sent_via, draft_edited, customer_mews_id")
@@ -114,15 +118,15 @@ export async function loadAiActivity(
       .order("generated_at", { ascending: false })
       .limit(SOURCE_CAP),
   ]);
-  if (summary.error || replies.error || chasers.error || briefs.error) return null;
+  if (replies.error || chasers.error || briefs.error) return null;
 
-  const s = summary.data;
-  const bulk = Number(s.bulk_count);
+  const drafts = [...(replies.data ?? []), ...(chasers.data ?? [])];
+  const outcomes = drafts.map(outcomeOf);
   const totals: ActivityTotals = {
-    generated: (replies.data ?? []).length + (chasers.data ?? []).length,
-    sentAsDrafted: Math.max(Number(s.none_count) - bulk, 0),
-    edited: Number(s.minor_count) + Number(s.major_count),
-    bulk,
+    generated: drafts.length,
+    sentAsDrafted: outcomes.filter((o) => o === "asDrafted").length,
+    edited: outcomes.filter((o) => o === "edited").length,
+    bulk: outcomes.filter((o) => o === "bulk").length,
   };
 
   type Keyed = ActivityItem & { customerId?: string | null; reservationRef?: string | null };

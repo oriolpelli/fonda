@@ -13,6 +13,8 @@
 -- Check it took, in the SQL editor:
 --   select count(*) from pg_policies where tablename = 'ai_literacy_acks';
 --   -- expect 2
+--   select count(*) from pg_trigger where tgname = 'ai_literacy_acks_stamp';
+--   -- expect 1
 --
 -- The authoritative text is supabase/migrations/0031_ai_literacy_acks.sql.
 -- ============================================================================
@@ -53,5 +55,24 @@ create policy "ai_literacy_acks: read own or as manager"
       or (select public.current_user_role()) in ('owner', 'manager')
     )
   );
+
+-- The record's times are the database's, never the client's: a person can
+-- only say THAT they finished, not WHEN (no backdating the evidence).
+create or replace function public.ai_literacy_acks_stamp()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  new.created_at := now();
+  new.completed_at := case when new.status = 'completed' then now() else null end;
+  return new;
+end;
+$$;
+
+drop trigger if exists ai_literacy_acks_stamp on public.ai_literacy_acks;
+create trigger ai_literacy_acks_stamp
+  before insert on public.ai_literacy_acks
+  for each row execute function public.ai_literacy_acks_stamp();
 
 notify pgrst, 'reload schema';
