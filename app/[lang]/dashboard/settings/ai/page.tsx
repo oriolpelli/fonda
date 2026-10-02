@@ -4,6 +4,7 @@ import Link from "next/link";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { AiLiteracyDialog } from "@/components/dashboard/ai-literacy-dialog";
 import { literacyCookieValue } from "@/components/dashboard/ai-literacy-gate";
+import { GuestNoticeKit } from "@/components/dashboard/guest-notice-kit";
 import { SettingsGroupHeader } from "@/components/dashboard/settings-nav";
 import { getSessionProfile } from "@/lib/auth";
 import {
@@ -26,13 +27,14 @@ export async function generateMetadata({
 }
 
 /**
- * Settings → AI at Fondas (AI_ACT_PROMPTS.md A6).
+ * Settings → AI at Fondas (AI_ACT_PROMPTS.md A6, A7).
  *
  *   Working with Fondas AI   the five cards again, and a printable page
  *   Who has read them        owner/manager only: completion and date per
  *                            person, and the CSV — the hotel's Art. 4
  *                            evidence. Completion only: no scores, no time
  *                            spent, no ranking (ROADMAP §5 #10)
+ *   Wording for your guests  the privacy-notice paragraph, en/es/ca (A7)
  *
  * Reads run together, through RLS: the team (users: read own hotel) and the
  * record (ai_literacy_acks: own rows, or every row for an owner/manager).
@@ -168,6 +170,8 @@ export default async function AiSettingsPage({
           )}
         </section>
       ) : null}
+
+      <GuestNoticeKit dict={dict} />
     </div>
   );
 }

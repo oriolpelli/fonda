@@ -925,6 +925,16 @@
       "download": "Descargar el registro (CSV)",
       "recordUnavailable": "El registro aún no está disponible.",
       "guideFooter": "Fondas · Trabajar con Fondas AI · versión {version}"
+    },
+    "guestNotice": {
+      "title": "Texto para tu aviso de privacidad",
+      "body": "Es tu hotel quien explica a los huéspedes cómo se usan sus datos (arts. 13 y 14 del RGPD). Aquí tienes un párrafo sobre Fondas para añadir a tu aviso de privacidad, en tres idiomas.",
+      "template": "Es una plantilla, no asesoramiento legal: que la revise la persona responsable de tu aviso de privacidad antes de publicarla.",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "copyLabel": "Copiar el párrafo en {language}",
+      "language": "Español",
+      "text": "Cómo usamos la IA con sus mensajes. Cuando nos escribe, nuestro equipo puede usar Fondas, una herramienta asistida por IA, para redactar la respuesta; una persona de nuestro equipo aprueba cada respuesta antes de enviarla. También anotamos preferencias a partir de sus mensajes y reservas —como el motivo del viaje o una ocasión especial— para preparar su estancia, y las conservamos durante 24 meses después de su última estancia. Fondas y su proveedor de IA, Anthropic, tratan esta información por cuenta nuestra y siguiendo nuestras instrucciones; no se utiliza para entrenar modelos de IA."
     }
   },
   "apaleoStatus": {

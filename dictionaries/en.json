@@ -925,6 +925,16 @@
       "download": "Download record (CSV)",
       "recordUnavailable": "The record isn't available yet.",
       "guideFooter": "Fondas · Working with Fondas AI · version {version}"
+    },
+    "guestNotice": {
+      "title": "Wording for your privacy notice",
+      "body": "Your hotel is the one that tells guests how their data is used (GDPR Art. 13–14). Here is a paragraph about Fondas to add to your privacy notice, in three languages.",
+      "template": "A template, not legal advice: have whoever owns your privacy notice review it before you publish it.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyLabel": "Copy the {language} paragraph",
+      "language": "English",
+      "text": "How we use AI with your messages. When you email us, our team may use Fondas, an AI-assisted tool, to draft the reply; a member of our team approves every reply before it is sent. We also note preferences from your messages and bookings — such as the purpose of your trip or a special occasion — to prepare your stay, and keep them for 24 months after your last stay. Fondas and its AI provider, Anthropic, process this information on our behalf and on our instructions; it is not used to train AI models."
     }
   },
   "apaleoStatus": {
