@@ -913,6 +913,48 @@ export type Database = {
           },
         ];
       };
+      /** AI problem reports (migration 0032). Insert-only from clients. */
+      ai_feedback: {
+        Row: {
+          id: string;
+          hotel_id: string;
+          user_id: string | null;
+          item_type: "reply" | "chaser" | "brief" | "ask";
+          item_id: string;
+          reason: "wrong_fact" | "wrong_tone" | "should_not_draft" | "other";
+          note: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          hotel_id: string;
+          user_id?: string | null;
+          item_type: "reply" | "chaser" | "brief" | "ask";
+          item_id: string;
+          reason: "wrong_fact" | "wrong_tone" | "should_not_draft" | "other";
+          note?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          hotel_id?: string;
+          user_id?: string | null;
+          item_type?: "reply" | "chaser" | "brief" | "ask";
+          item_id?: string;
+          reason?: "wrong_fact" | "wrong_tone" | "should_not_draft" | "other";
+          note?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "ai_feedback_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       /** AI literacy record, Art. 4 (migration 0031). Insert-only from clients. */
       ai_literacy_acks: {
         Row: {

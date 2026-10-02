@@ -186,6 +186,11 @@ export default async function DashboardLayout({
           href: localizedHref(locale, "/dashboard/guests"),
           sectionKey: "operation",
         },
+        // "AI activity" — AI management, un-parked in W10 (AI_ACT_PROMPTS.md
+        // A8). Under Operation because what it shows is the operation's own
+        // mail and briefs (APP_UX_PROPOSAL.md §11, decision 12). Live, so the
+        // roadmap row gives it no "Coming soon".
+        soon("ai-management", { sectionKey: "operation" }),
         // Shared with Commercial, and Operation owns the active state — see
         // `NavItem.canonicalSectionKey`. Both copies say so.
         soon("reputation", {

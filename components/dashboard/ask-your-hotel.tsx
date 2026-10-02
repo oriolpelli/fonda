@@ -106,6 +106,7 @@ export function AskYourHotel({ userEmail }: { userEmail: string }) {
                 userEmail={userEmail}
                 nested
                 onNavigate={close}
+                threadId={threadId}
               />
             </div>
           ) : (

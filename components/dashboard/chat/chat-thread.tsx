@@ -9,6 +9,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import { AiReportButton } from "@/components/dashboard/ai-report-button";
 import type { ChatMessage } from "@/components/dashboard/chat/use-hotel-chat";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { LocaleLink } from "@/components/i18n/locale-link";
@@ -157,6 +158,7 @@ function AssistantTurn({
   dict,
   nested,
   onNavigate,
+  threadId,
 }: {
   message: ChatMessage;
   working: boolean;
@@ -164,6 +166,8 @@ function AssistantTurn({
   dict: ClientDictionary;
   nested: boolean;
   onNavigate?: () => void;
+  /** The conversation, for "Report a problem" (A8); null before it exists. */
+  threadId?: string | null;
 }) {
   // A turn that never got an answer: our own quiet sentence, without the
   // source chips or the "Done" tick, which would claim work that didn't happen.
@@ -223,9 +227,14 @@ function AssistantTurn({
           under half a sentence; text-3 is AA on the canvas and on both wells
           a thread can sit in. */}
       {message.content && !working && !message.failed ? (
-        <p className="mt-2 font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
-          {dict.ai.askLine}
-        </p>
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <p className="font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
+            {dict.ai.askLine}
+          </p>
+          {/* A8: reports the conversation (Ask's turns carry no id on the
+              client), so the record points at the thread this answer is in. */}
+          {threadId ? <AiReportButton itemType="ask" itemId={threadId} /> : null}
+        </div>
       ) : null}
       {message.draftId ? (
         <DraftResultCard
@@ -247,6 +256,7 @@ export function ChatThread({
   nested = false,
   onNavigate,
   className,
+  threadId,
 }: {
   messages: ChatMessage[];
   streaming: boolean;
@@ -258,6 +268,8 @@ export function ChatThread({
   /** Fired when a result-card link navigates away (lets the panel close). */
   onNavigate?: () => void;
   className?: string;
+  /** The conversation's id, once it has one — for "Report a problem". */
+  threadId?: string | null;
 }) {
   const { dict, locale } = useDictionary();
   const endRef = useRef<HTMLDivElement>(null);
@@ -288,6 +300,7 @@ export function ChatThread({
             dict={dict}
             nested={nested}
             onNavigate={onNavigate}
+            threadId={threadId}
           />
         )
       )}

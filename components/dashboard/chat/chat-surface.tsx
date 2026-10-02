@@ -49,7 +49,7 @@ export function ChatSurface({
     () => withUnansweredNotes(initialMessages, dict.askYourHotel.noAnswerSaved),
     [initialMessages, dict]
   );
-  const { messages, streaming, send, reset } = useHotelChat({
+  const { messages, streaming, send, reset, threadId: activeThreadId } = useHotelChat({
     threadId,
     messages: seeded,
   });
@@ -116,6 +116,7 @@ export function ChatSurface({
         streaming={streaming}
         userEmail={userEmail}
         className="pb-6"
+        threadId={activeThreadId}
       />
       {/* Docked: `mt-auto` holds it at the foot of the column on a short
           conversation, sticky keeps it in reach on a long one, and the band of

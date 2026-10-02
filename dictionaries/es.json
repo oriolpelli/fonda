@@ -369,7 +369,7 @@
     "procurement": "Compras y suministros",
     "financeReporting": "Informes y auditoría",
     "chargeback": "Chargeback",
-    "aiManagement": "Gestión de la IA",
+    "aiManagement": "Actividad de la IA",
     "teamActivity": "Actividad del equipo",
     "waitingOne": "{count} mensaje pendiente",
     "waitingOther": "{count} mensajes pendientes",
@@ -1353,6 +1353,24 @@
           "body": "Dínoslo. Usa «Informar de un problema» bajo cualquier borrador o respuesta de Pregunta, o en Actividad de la IA. Di qué falló: un dato, el tono, un borrador que no debía hacer. Los informes nos llegan sin los datos de tus huéspedes, y los leemos todos."
         }
       ]
+    },
+    "report": {
+      "open": "Informar de un problema",
+      "title": "Informar de un problema con este texto de la IA",
+      "reasonLabel": "¿Qué falló?",
+      "reasons": {
+        "wrong_fact": "Un dato equivocado",
+        "wrong_tone": "El tono no era el adecuado",
+        "should_not_draft": "No debería haberlo redactado",
+        "other": "Otra cosa"
+      },
+      "noteLabel": "¿Algo que añadir? (opcional)",
+      "noteHint": "Describe el problema; no pegues el mensaje ni los datos del huésped.",
+      "send": "Enviar informe",
+      "sending": "Enviando…",
+      "cancel": "Cancelar",
+      "sent": "Informado — gracias",
+      "failed": "No se ha podido enviar el informe. Vuelve a intentarlo en un momento."
     }
   },
   "bulkSend": {
@@ -1366,5 +1384,42 @@
     "send": "Enviar {count}",
     "review": "Revisar uno a uno",
     "partial": "Se han enviado {sent} de {count}. El resto sigue en la cola: ábrelos uno a uno."
+  },
+  "aiActivity": {
+    "title": "Actividad de la IA",
+    "desc": "Lo que Fondas AI ha escrito para {hotel} en los últimos 30 días, y qué pasó con ello.",
+    "generated": "Borradores escritos",
+    "sentAsDrafted": "Enviados tal cual",
+    "edited": "Editados antes de enviar",
+    "bulkOne": "Además, {count} respuesta enviada en bloque, contada aparte.",
+    "bulkOther": "Además, {count} respuestas enviadas en bloque, contadas aparte.",
+    "listTitle": "Lo que ha escrito Fondas AI",
+    "columns": {
+      "date": "Fecha",
+      "type": "Tipo",
+      "guest": "Huésped",
+      "outcome": "Qué pasó",
+      "model": "Modelo"
+    },
+    "types": {
+      "reply": "Respuesta",
+      "chaser": "Petición de hora de llegada",
+      "brief": "Resumen matutino"
+    },
+    "outcomes": {
+      "asDrafted": "Enviado tal cual",
+      "edited": "Editado y enviado",
+      "bulk": "Enviado en bloque",
+      "notSent": "No enviado",
+      "written": "Escrito"
+    },
+    "open": "Abrir",
+    "empty": "Fondas AI no ha escrito nada en los últimos 30 días.",
+    "newer": "← Más recientes",
+    "older": "Anteriores →",
+    "page": "Página {n} de {total}",
+    "unavailable": "La actividad de la IA no está disponible ahora mismo.",
+    "hotelOnly": "Las cifras son de todo el hotel. Fondas nunca mide aquí el trabajo de una persona.",
+    "notRecorded": "Sin registrar"
   }
 }

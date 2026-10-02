@@ -369,7 +369,7 @@
     "procurement": "Procurement / Supply",
     "financeReporting": "Reporting / Audit",
     "chargeback": "Chargeback",
-    "aiManagement": "AI Management",
+    "aiManagement": "AI activity",
     "teamActivity": "Team Activity",
     "waitingOne": "{count} message waiting",
     "waitingOther": "{count} messages waiting",
@@ -1353,6 +1353,24 @@
           "body": "Tell us. Use “Report a problem” under any draft or Ask answer, or in AI activity. Say what was wrong — a fact, the tone, a reply it shouldn't have drafted. Reports reach us without your guests' details, and we read every one."
         }
       ]
+    },
+    "report": {
+      "open": "Report a problem",
+      "title": "Report a problem with this AI output",
+      "reasonLabel": "What was wrong?",
+      "reasons": {
+        "wrong_fact": "A wrong fact",
+        "wrong_tone": "The wrong tone",
+        "should_not_draft": "It shouldn't have drafted this",
+        "other": "Something else"
+      },
+      "noteLabel": "Anything to add? (optional)",
+      "noteHint": "Describe the problem — please don't paste the guest's message or details.",
+      "send": "Send report",
+      "sending": "Sending…",
+      "cancel": "Cancel",
+      "sent": "Reported — thank you",
+      "failed": "The report couldn't be sent. Try again in a moment."
     }
   },
   "bulkSend": {
@@ -1366,5 +1384,42 @@
     "send": "Send {count}",
     "review": "Review one by one",
     "partial": "Sent {sent} of {count}. The rest are still in the queue — open them one by one."
+  },
+  "aiActivity": {
+    "title": "AI activity",
+    "desc": "What Fondas AI wrote for {hotel} in the last 30 days, and what happened to it.",
+    "generated": "Drafts written",
+    "sentAsDrafted": "Sent as drafted",
+    "edited": "Edited before sending",
+    "bulkOne": "Plus {count} reply sent in bulk, counted separately.",
+    "bulkOther": "Plus {count} replies sent in bulk, counted separately.",
+    "listTitle": "What Fondas AI wrote",
+    "columns": {
+      "date": "Date",
+      "type": "Type",
+      "guest": "Guest",
+      "outcome": "What happened",
+      "model": "Model"
+    },
+    "types": {
+      "reply": "Reply",
+      "chaser": "Arrival-time request",
+      "brief": "Morning Brief"
+    },
+    "outcomes": {
+      "asDrafted": "Sent as drafted",
+      "edited": "Edited, then sent",
+      "bulk": "Sent in bulk",
+      "notSent": "Not sent",
+      "written": "Written"
+    },
+    "open": "Open",
+    "empty": "Fondas AI hasn't written anything in the last 30 days.",
+    "newer": "← Newer",
+    "older": "Older →",
+    "page": "Page {n} of {total}",
+    "unavailable": "AI activity isn't available right now.",
+    "hotelOnly": "Counts are for the whole hotel. Fondas never measures one person's work here.",
+    "notRecorded": "Not recorded"
   }
 }

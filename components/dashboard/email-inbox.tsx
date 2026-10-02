@@ -26,6 +26,7 @@ import {
   firstNameOf,
   type BulkSendItem,
 } from "@/components/dashboard/bulk-send-dialog";
+import { AiReportButton } from "@/components/dashboard/ai-report-button";
 import { ContextPaneSkeleton } from "@/components/dashboard/context-pane-skeleton";
 import { EmptyState, type EmptyStateIcon } from "@/components/dashboard/empty-state";
 import { GuestAvatar } from "@/components/dashboard/guest-avatar";
@@ -1182,11 +1183,14 @@ export function EmailInbox({
                       sent. Null — no draft, or sent before 0025 — shows
                       nothing rather than a guess. */}
                   {selected.draft_edited !== null ? (
-                    <p className="font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
-                      {selected.draft_edited
-                        ? dict.ai.sentEdited
-                        : dict.ai.sentAsDrafted}
-                    </p>
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                      <p className="font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
+                        {selected.draft_edited
+                          ? dict.ai.sentEdited
+                          : dict.ai.sentAsDrafted}
+                      </p>
+                      <AiReportButton itemType="reply" itemId={selected.id} />
+                    </div>
                   ) : null}
                 </div>
               ) : (
@@ -1248,9 +1252,14 @@ export function EmailInbox({
                       marker lives on the sent state above (P-8, resolved by
                       migration 0025). */}
                   {selected.draft_reply ? (
-                    <p className="font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
-                      {dict.ai.draftLine}
-                    </p>
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                      <p className="font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
+                        {dict.ai.draftLine}
+                      </p>
+                      {/* A8: the AI incident channel, as quiet as the line
+                          it sits beside. */}
+                      <AiReportButton itemType="reply" itemId={selected.id} />
+                    </div>
                   ) : null}
                   {failureOf(selected) ? (
                     <p

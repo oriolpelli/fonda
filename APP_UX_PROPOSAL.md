@@ -560,6 +560,8 @@ Each phase is independently shippable and independently reviewable. Phases 1–3
 
 | 11 | Ask's conversation list: placement, cap, deletion | **Decided 1 Oct** (Oriol) — see below |
 
+| 12 | Where "AI activity" sits when AI management returns | **Decided 2 Oct** (W10 build) — see below |
+
 ### 6 · The guest-data position
 
 **Decided:**
@@ -666,6 +668,23 @@ with a gap between it and the sidebar.
    and nothing was saved) is restored with a quiet "No answer was saved for
    this question." instead of looking like the answer went missing. Such
    turns are never sent back to the model as context.
+
+### 12 · "AI activity" in the nav *(2 October)*
+
+AI management was parked with the other seven (decision 1) and returns in W10
+as **AI activity** (`AI_ACT_PROMPTS.md` A8, `/dashboard/oversight/ai`). §2 has
+no Oversight pillar any more, and AI activity is one page, so it doesn't earn
+one.
+
+**Decided:** a row under **Operation**, after Guests. What it lists is the
+operation's own output: the replies, the arrival-time requests and the briefs
+Fondas wrote, and what happened to each. It is not under Settings, which is
+configuration rather than a record, and it is not a fifth top-level row, since
+the nav stays at five sections. If Team activity or Reporting & audit return
+later and an Oversight group makes sense, AI activity moves into it.
+
+Per hotel only. It never names staff and never counts per person
+(`ROADMAP.md` §5 #10).
 
 ### 8 · P-6 · The rail becomes a labelled sidebar *(19 September)*
 

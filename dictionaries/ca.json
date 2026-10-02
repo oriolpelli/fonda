@@ -369,7 +369,7 @@
     "procurement": "Compres i subministraments",
     "financeReporting": "Informes i auditoria",
     "chargeback": "Chargeback",
-    "aiManagement": "Gestió de la IA",
+    "aiManagement": "Activitat de la IA",
     "teamActivity": "Activitat de l'equip",
     "waitingOne": "{count} missatge pendent",
     "waitingOther": "{count} missatges pendents",
@@ -1353,6 +1353,24 @@
           "body": "Digues-nos-ho. Fes servir «Informa d'un problema» sota qualsevol esborrany o resposta de Pregunta, o a Activitat de la IA. Digues què ha fallat: una dada, el to, un esborrany que no havia de fer. Els informes ens arriben sense les dades dels teus hostes, i els llegim tots."
         }
       ]
+    },
+    "report": {
+      "open": "Informa d'un problema",
+      "title": "Informa d'un problema amb aquest text de la IA",
+      "reasonLabel": "Què ha fallat?",
+      "reasons": {
+        "wrong_fact": "Una dada equivocada",
+        "wrong_tone": "El to no era l'adequat",
+        "should_not_draft": "No l'hauria d'haver redactat",
+        "other": "Una altra cosa"
+      },
+      "noteLabel": "Alguna cosa a afegir? (opcional)",
+      "noteHint": "Descriu el problema; no enganxis el missatge ni les dades de l'hoste.",
+      "send": "Envia l'informe",
+      "sending": "S'està enviant…",
+      "cancel": "Cancel·la",
+      "sent": "Informat — gràcies",
+      "failed": "No s'ha pogut enviar l'informe. Torna-ho a provar d'aquí a un moment."
     }
   },
   "bulkSend": {
@@ -1366,5 +1384,42 @@
     "send": "Envia {count}",
     "review": "Revisa'ls un a un",
     "partial": "S'han enviat {sent} de {count}. La resta continua a la cua: obre'ls un a un."
+  },
+  "aiActivity": {
+    "title": "Activitat de la IA",
+    "desc": "El que Fondas AI ha escrit per a {hotel} en els últims 30 dies, i què n'ha passat.",
+    "generated": "Esborranys escrits",
+    "sentAsDrafted": "Enviats tal qual",
+    "edited": "Editats abans d'enviar",
+    "bulkOne": "A més, {count} resposta enviada en bloc, comptada a part.",
+    "bulkOther": "A més, {count} respostes enviades en bloc, comptades a part.",
+    "listTitle": "El que ha escrit Fondas AI",
+    "columns": {
+      "date": "Data",
+      "type": "Tipus",
+      "guest": "Hoste",
+      "outcome": "Què ha passat",
+      "model": "Model"
+    },
+    "types": {
+      "reply": "Resposta",
+      "chaser": "Petició d'hora d'arribada",
+      "brief": "Resum matinal"
+    },
+    "outcomes": {
+      "asDrafted": "Enviat tal qual",
+      "edited": "Editat i enviat",
+      "bulk": "Enviat en bloc",
+      "notSent": "No enviat",
+      "written": "Escrit"
+    },
+    "open": "Obre",
+    "empty": "Fondas AI no ha escrit res en els últims 30 dies.",
+    "newer": "← Més recents",
+    "older": "Anteriors →",
+    "page": "Pàgina {n} de {total}",
+    "unavailable": "L'activitat de la IA no està disponible ara mateix.",
+    "hotelOnly": "Les xifres són de tot l'hotel. Fondas no mesura mai aquí la feina d'una persona.",
+    "notRecorded": "Sense registrar"
   }
 }

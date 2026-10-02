@@ -64,9 +64,9 @@ export interface RoadmapFeature {
 /**
  * Not every row below has a page.
  *
- * The eight parked sections — housekeeping, fnb, staff, procurement,
- * finance-reporting, chargeback, ai-management, team-activity — lost their
- * stub pages and their nav rows (APP_UX_PROPOSAL.md §2.4, deletion 0); their
+ * The parked sections — housekeeping, fnb, staff, procurement,
+ * finance-reporting, chargeback, team-activity (and ai-management until it
+ * returned as "AI activity" in W10) — lost their stub pages and their nav rows (APP_UX_PROPOSAL.md §2.4, deletion 0); their
  * routes are redirects to Home now. The rows stay because the customize
  * panel's locked tiles (§3.4, landing in W4) render their label and blurb:
  * that panel is where the roadmap gets sold from here on. The canonical list
@@ -198,9 +198,11 @@ export const ROADMAP = [
     blurb: (dict: RoadmapDict) => dict.roadmap.blurb.chargeback,
   },
   {
+    // Un-parked in W10 (AI_ACT_PROMPTS.md A8) as "AI activity": a real page
+    // and a nav row under Operation (APP_UX_PROPOSAL.md §11, decision 12).
     key: "ai-management",
     route: "/dashboard/oversight/ai",
-    status: "coming-soon",
+    status: "live",
     label: (dict: RoadmapDict) => dict.sidebar.aiManagement,
     blurb: (dict: RoadmapDict) => dict.roadmap.blurb.aiManagement,
   },

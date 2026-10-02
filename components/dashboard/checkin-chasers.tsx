@@ -14,6 +14,7 @@ import {
   firstNameOf,
   type BulkSendItem,
 } from "@/components/dashboard/bulk-send-dialog";
+import { AiReportButton } from "@/components/dashboard/ai-report-button";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { useDictionary } from "@/components/i18n/dictionary-provider";
 import { Button } from "@/components/ui/button";
@@ -89,9 +90,12 @@ function ChaserItem({
         {/* The same one quiet line as a draft reply (AI_ACT_PROMPTS.md A3):
             names the AI, asks for the check. Mono, text-3, no chip. */}
         {chaser.draftContent ? (
-          <p className="mt-2 font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
-            {dict.ai.chaserLine}
-          </p>
+          <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <p className="font-mono text-[11px] tracking-[0.04em] text-[var(--fonda-text-3)]">
+              {dict.ai.chaserLine}
+            </p>
+            <AiReportButton itemType="chaser" itemId={chaser.id} />
+          </div>
         ) : null}
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2">
