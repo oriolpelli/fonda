@@ -4,6 +4,7 @@ import Link from "next/link";
 import { COMPANY } from "@/app/[lang]/(legal)/company";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import type { Dictionary } from "@/app/[lang]/dictionaries";
+import { aiFeatureCards } from "@/lib/ai-features";
 import { t } from "@/lib/i18n/format";
 import { localizedHref } from "@/lib/i18n/navigation";
 import { absoluteUrl, languageAlternates, openGraphFor } from "@/lib/seo";
@@ -91,13 +92,16 @@ function Bullets({ items }: { items: string[] }) {
 
 function Section({
   heading,
+  id,
   children,
 }: {
   heading: string;
+  /** A deep-link target — /privacy links to `#ai`. */
+  id?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-t border-border pt-10">
+    <section id={id} className="scroll-mt-24 border-t border-border pt-10">
       <h2 className="text-[22px] font-semibold tracking-[-0.015em] text-foreground">
         {heading}
       </h2>
@@ -167,6 +171,76 @@ export default async function TrustPage({
           ]}
         />
         <Body>{copy.storesNote}</Body>
+      </Section>
+
+      {/* "How Fondas uses AI" (AI_ACT_PROMPTS.md A5). One card per feature,
+          generated from lib/ai-features.ts, whose model comes from AI_MODELS:
+          change a model in code and its card changes here. The words are in
+          `trustPage.aiFeatures`; every claim in them is checked against the
+          code the way the rest of this page is (sendReply for "a person
+          sends", the retention cron for 24 months, lib/chat-threads.ts for
+          ten conversations, lib/ai-disclosure.ts for the headers).
+          NEVER "certified" or "compliant", in any language — ROADMAP §5 #3.
+          The "reviewed by" line exists only once COMPANY.aiAssessment is set,
+          which happens only after the lawyer has signed off (§L). */}
+      <Section heading={copy.aiTitle} id="ai">
+        <Body>{t(copy.aiIntro1, brand)}</Body>
+        <Body>{t(copy.aiIntro2, brand)}</Body>
+        {COMPANY.aiAssessment ? (
+          <p className="mt-4 font-mono text-[12px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
+            {t(copy.aiReviewed, COMPANY.aiAssessment)}
+          </p>
+        ) : null}
+        <div className="mt-8 flex flex-col gap-4">
+          {aiFeatureCards().map((card) => {
+            const feature = copy.aiFeatures[card.key];
+            const rows: [string, string][] = [
+              [copy.aiLabels.reads, feature.reads],
+              [copy.aiLabels.writes, feature.writes],
+              [copy.aiLabels.sees, feature.sees],
+              [copy.aiLabels.checks, feature.checks],
+              [copy.aiLabels.limits, feature.limits],
+              [copy.aiLabels.kept, feature.kept],
+              [copy.aiLabels.act, feature.act],
+            ];
+            return (
+              // A well on the page (FONDA_SANA_REDESIGN.md §0.1): fill and
+              // radius do the separating, no border, no shadow, no icon.
+              <section
+                key={card.key}
+                aria-labelledby={`ai-${card.key}`}
+                className="rounded-[16px] bg-card p-6 md:p-7"
+              >
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <h3
+                    id={`ai-${card.key}`}
+                    className="text-[17px] font-semibold tracking-[-0.01em] text-foreground"
+                  >
+                    {feature.name}
+                  </h3>
+                  <span className="text-[14px] text-muted-foreground">
+                    {t(copy.aiModelBy, { model: card.modelName })}{" "}
+                    <code className="font-mono text-[12px] text-[var(--fonda-text-3)]">
+                      {card.model}
+                    </code>
+                  </span>
+                </div>
+                <dl className="mt-5 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)]">
+                  {rows.map(([label, value]) => (
+                    <div key={label} className="contents">
+                      <dt className="pt-[3px] font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
+                        {label}
+                      </dt>
+                      <dd className="text-[15px] leading-[1.6] text-muted-foreground">
+                        {value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            );
+          })}
+        </div>
       </Section>
 
       <Section heading={copy.whereTitle}>

@@ -1060,7 +1060,7 @@
     "eyebrow": "Seguretat",
     "heading": "Com tractem les teves dades",
     "lead": "{brand} llegeix les reserves del teu PMS i el correu del teu hotel. Aquesta pàgina explica exactament què llegim, què guardem, on està allotjat i què passa el dia que marxes. Escrit perquè s'entengui sense advocat; la política de privadesa completa és al final.",
-    "updated": "Actualitzat el 18 de setembre de 2026",
+    "updated": "Actualitzat el 2 d'octubre de 2026",
     "readsTitle": "Què llegim",
     "readsBody": "Només el que cal per escriure el teu resum del matí, els teus esborranys i les respostes sobre el teu hotel.",
     "readsB1": "Del teu PMS: reserves, arribades i sortides, ocupació, tarifes i les fitxes d'hoste associades. A través de les APIs oficials de MEWS i Apaleo, i només de lectura.",
@@ -1074,6 +1074,93 @@
     "storesB4": "Fitxes d'hoste — el que hem deduït d'un hoste que repeteix i qualsevol nota que hagi escrit el teu equip. Es conserven 24 mesos després de la seva darrera estada i després s'eliminen.",
     "storesB5": "Transcripcions del xat, amb els cognoms dels hostes reduïts a una inicial abans de desar-les. A la pantalla veus el nom complet; la còpia desada, no.",
     "storesNote": "Cada hotel viu en el seu propi espai, aïllat a la base de dades amb seguretat a nivell de fila: un allotjament no pot veure les dades d'un altre, ni per error.",
+    "aiTitle": "Com fa servir Fondas la IA",
+    "aiIntro1": "Segons el Reglament europeu d'IA, {brand} és el proveïdor d'un sistema d'IA de risc limitat, i cada hotel que l'utilitza n'és un responsable del desplegament.",
+    "aiIntro2": "Les normes d'alt risc del Reglament no s'apliquen a res del que fa {brand}. El que sí que s'aplica —marcar el que escriu la IA i dir quan hi estàs tractant— es detalla per a cada funció a continuació.",
+    "aiReviewed": "La nostra avaluació la va revisar {firm} el {date}.",
+    "aiModelBy": "{model}, d'Anthropic",
+    "aiLabels": {
+      "model": "Model",
+      "reads": "Llegeix",
+      "writes": "Escriu",
+      "sees": "Qui ho veu",
+      "checks": "Abans que surti res",
+      "limits": "On es pot equivocar",
+      "kept": "Es conserva",
+      "act": "Segons el Reglament d'IA"
+    },
+    "aiFeatures": {
+      "emailDraft": {
+        "name": "Esborranys de resposta",
+        "reads": "El correu de l'hoste i el seu fil, la reserva a què correspon i la fitxa de l'hoste, i les dades i el to de la casa que defineixes a Configuració.",
+        "writes": "Una resposta en l'idioma de l'hoste, esperant a Comunicacions. Les queixes no es redacten: esperen una persona.",
+        "sees": "El teu equip, a Comunicacions. L'hoste només veu el que el teu equip envia.",
+        "checks": "Una persona del teu equip. No s'envia res fins que algú prem Envia, o confirma un enviament en bloc d'esborranys que ha revisat.",
+        "limits": "Una data, un preu o una política que no se li ha donat. Comprova les dades abans d'enviar.",
+        "kept": "Amb el correu, mentre el teu hotel faci servir Fondas.",
+        "act": "Art. 50(2): cada resposta enviada a partir d'un esborrany porta a les capçaleres una marca d'IA llegible per màquina. El teu equip veu a cada esborrany que l'ha escrit Fondas AI."
+      },
+      "chaser": {
+        "name": "Petició d'hora d'arribada",
+        "reads": "Reserves confirmades que arriben en els propers set dies sense hora d'arribada: el nom de l'hoste, el seu correu i el seu idioma.",
+        "writes": "Un correu breu que pregunta a l'hoste a quina hora preveu arribar.",
+        "sees": "El teu equip, a Arribades i sortides.",
+        "checks": "L'envia una persona del teu equip. No surt res sol.",
+        "limits": "Només coneix la reserva: no sap si l'hoste ja t'ho va dir per telèfon.",
+        "kept": "Mentre el teu hotel faci servir Fondas.",
+        "act": "Art. 50(2): es marca com una resposta quan s'envia, i el teu equip veu que l'ha redactat Fondas AI."
+      },
+      "briefing": {
+        "name": "Resum matinal",
+        "reads": "Les arribades i sortides d'avui amb el cognom dels hostes reduït a la inicial, VIP i peticions, el remitent i l'assumpte del correu d'hostes de la nit, l'ocupació i les tarifes de les properes 14 nits, i la configuració de la casa.",
+        "writes": "El resum del dia, enviat per correu a qui triïs a l'hora que fixis, i desat a la pàgina del Resum matinal.",
+        "sees": "Tu i els destinataris que hi afegeixis. Cap hoste no el rep.",
+        "checks": "Només va al teu equip. Llegeix-lo com un resum, no com el registre: el registre és el teu PMS.",
+        "limits": "Està tan al dia com l'última sincronització amb el teu PMS, i pot interpretar malament una nota o una petició.",
+        "kept": "Mentre el teu hotel faci servir Fondas.",
+        "act": "Art. 50(2): el correu porta una marca d'IA llegible per màquina, i la pàgina indica que l'ha escrit Fondas AI."
+      },
+      "chat": {
+        "name": "Pregunta",
+        "reads": "La teva pregunta i una foto de l'hotel: les reserves dels propers 14 dies amb el cognom dels hostes reduït a la inicial, l'estat de la bústia, l'ocupació i les tarifes, i la configuració de la casa.",
+        "writes": "Una resposta, i un esborrany de correu si el demanes.",
+        "sees": "La persona que pregunta. Les converses de cadascú són seves.",
+        "checks": "Des de Pregunta no surt res de Fondas. Un esborrany que comenci va a Comunicacions i espera Envia com qualsevol altre.",
+        "limits": "Pot interpretar malament les dades o passar per alt el que no hi és. Diu quan no ho sap; comprova les xifres clau.",
+        "kept": "Les teves deu converses més recents, amb el cognom dels hostes reduït a la inicial. Les anteriors s'esborren, i pots esborrar-ne qualsevol.",
+        "act": "Art. 50(1): se t'indica que parles amb una IA, a cada resposta."
+      },
+      "guestInference": {
+        "name": "Preferències de l'hoste",
+        "reads": "Els correus i les reserves d'un hoste que repeteix al teu hotel.",
+        "writes": "El motiu del viatge, l'ocasió i les preferències a la fitxa de l'hoste, cadascun marcat com a deduït.",
+        "sees": "El teu equip, a la fitxa de l'hoste.",
+        "checks": "El teu equip. El que fixa una persona mana i no se sobreescriu mai, i les notes només les escriuen persones.",
+        "limits": "Dedueix a partir del que va escriure l'hoste, i una deducció pot fallar. Corregeix-la i queda corregida.",
+        "kept": "24 mesos després de l'última estada de l'hoste; després s'esborra.",
+        "act": "Marcat com a deduït per Fondas AI allà on apareix. No s'utilitza mai per puntuar ni classificar un hoste."
+      },
+      "emailClassify": {
+        "name": "Classificació del correu",
+        "reads": "Cada correu que arriba a la bústia que vas connectar.",
+        "writes": "Una categoria, l'idioma i qualsevol referència de reserva que trobi, perquè cada missatge vagi al seu lloc.",
+        "sees": "El teu equip, a Comunicacions.",
+        "checks": "No envia res. Tots els missatges continuen a la teva bústia, es classifiquin com es classifiquin.",
+        "limits": "Pot posar un missatge a la categoria equivocada, o no veure una referència de reserva escrita d'una manera poc habitual.",
+        "kept": "Amb el correu, mentre el teu hotel faci servir Fondas.",
+        "act": "Sense obligació de transparència pròpia: classifica el correu i no escriu a ningú."
+      },
+      "reviewSummary": {
+        "name": "Resum de ressenyes",
+        "reads": "Les ressenyes que enganxes a Configuració › Informació de l'hotel.",
+        "writes": "Dues o tres frases sobre el que elogien els hostes, que els esborranys i el resum poden fer servir.",
+        "sees": "El teu equip, a Configuració.",
+        "checks": "El veus a Configuració i el pots substituir.",
+        "limits": "Només coneix les ressenyes que enganxes.",
+        "kept": "A la configuració de l'hotel, fins que el substitueixis.",
+        "act": "Sense obligació de transparència pròpia: es queda dins de Fondas. Es registra amb el model i la versió que el van escriure."
+      }
+    },
     "whereTitle": "On està allotjat",
     "whereBody": "A la Unió Europea. La base de dades on viuen les teves reserves, els teus hostes i els teus correus està allotjada en servidors europeus i xifrada en repòs.",
     "whereBody2": "Per escriure els resums i els esborranys enviem les dades necessàries al nostre proveïdor d'IA, Anthropic, a través de la seva API comercial: sota aquests termes no s'utilitzen per entrenar els seus models. És l'únic tractament que surt de l'Espai Econòmic Europeu, i s'empara en les Clàusules Contractuals Tipus de la Comissió Europea. La llista completa de proveïdors és a la política de privadesa.",

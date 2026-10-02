@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
+import { localizedHref } from "@/lib/i18n/navigation";
 import { absoluteUrl, languageAlternates } from "@/lib/seo";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
 import { COMPANY, LEGAL_LAST_UPDATED } from "@/app/[lang]/(legal)/company";
@@ -35,6 +37,8 @@ type Section = {
   id?: string;
   paragraphs: string[];
   bullets?: string[];
+  /** A link under the paragraphs, to a page on this site (locale-prefixed). */
+  link?: { label: string; path: string };
 };
 
 const SECTIONS: Section[] = [
@@ -83,7 +87,12 @@ const SECTIONS: Section[] = [
     heading: "AI processing",
     paragraphs: [
       "To generate briefings, classify emails, draft replies, and answer questions, we send the relevant hotel data to our AI sub-processor, Anthropic, via its API. This data is processed to produce output for the hotel and, under Anthropic's commercial API terms, is not used to train its models. We do not sell personal data, and we do not use guest personal data to train any models of our own.",
+      "Each feature that uses AI — which model, what it reads and writes, who reviews it and how long its output is kept — is described on our trust page.",
     ],
+    // A5: the feature-by-feature account lives on /trust, generated from
+    // the code (lib/ai-features.ts), so this paragraph points there rather
+    // than keeping a second copy that could drift.
+    link: { label: "How Fondas uses AI →", path: "/trust#ai" },
   },
   {
     heading: "Sub-processors",
@@ -176,7 +185,7 @@ export default async function PrivacyPage({
 }: {
   params: Promise<{ lang: string }>;
 }) {
-  const { dict } = await loadDictionary((await params).lang);
+  const { locale, dict } = await loadDictionary((await params).lang);
 
   return (
     <article className="flex flex-col gap-6">
@@ -204,6 +213,16 @@ export default async function PrivacyPage({
               {p}
             </p>
           ))}
+          {s.link ? (
+            <p>
+              <Link
+                href={localizedHref(locale, s.link.path)}
+                className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors duration-[180ms] hover:decoration-foreground"
+              >
+                {s.link.label}
+              </Link>
+            </p>
+          ) : null}
           {s.bullets ? (
             <ul className="flex flex-col gap-1.5 pl-1">
               {s.bullets.map((b, i) => (

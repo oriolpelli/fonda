@@ -1060,7 +1060,7 @@
     "eyebrow": "Seguridad",
     "heading": "Cómo tratamos tus datos",
     "lead": "{brand} lee las reservas de tu PMS y el correo de tu hotel. Esta página cuenta exactamente qué leemos, qué guardamos, dónde está alojado y qué pasa el día que te vas. Escrito para que se entienda sin abogado; la política de privacidad completa está al final.",
-    "updated": "Actualizado el 18 de septiembre de 2026",
+    "updated": "Actualizado el 2 de octubre de 2026",
     "readsTitle": "Qué leemos",
     "readsBody": "Solo lo que hace falta para escribir tu resumen de la mañana, tus borradores y las respuestas sobre tu hotel.",
     "readsB1": "De tu PMS: reservas, llegadas y salidas, ocupación, tarifas y las fichas de huésped asociadas. A través de las APIs oficiales de MEWS y Apaleo, y solo de lectura.",
@@ -1074,6 +1074,93 @@
     "storesB4": "Fichas de huésped — lo que hemos deducido de un huésped que repite y cualquier nota que haya escrito tu equipo. Se conservan 24 meses después de su última estancia y luego se eliminan.",
     "storesB5": "Transcripciones del chat, con los apellidos de los huéspedes reducidos a una inicial antes de guardarlas. En pantalla ves el nombre completo; la copia guardada, no.",
     "storesNote": "Cada hotel vive en su propio espacio, aislado en la base de datos con seguridad a nivel de fila: un alojamiento no puede ver los datos de otro, ni por error.",
+    "aiTitle": "Cómo usa Fondas la IA",
+    "aiIntro1": "Según el Reglamento Europeo de IA, {brand} es el proveedor de un sistema de IA de riesgo limitado, y cada hotel que lo usa es un responsable del despliegue.",
+    "aiIntro2": "Las normas de alto riesgo del Reglamento no se aplican a nada de lo que hace {brand}. Lo que sí se aplica —marcar lo que escribe la IA y decir cuándo estás tratando con ella— se detalla para cada función a continuación.",
+    "aiReviewed": "Nuestra evaluación fue revisada por {firm} el {date}.",
+    "aiModelBy": "{model}, de Anthropic",
+    "aiLabels": {
+      "model": "Modelo",
+      "reads": "Lee",
+      "writes": "Escribe",
+      "sees": "Quién lo ve",
+      "checks": "Antes de que salga nada",
+      "limits": "Dónde puede equivocarse",
+      "kept": "Se conserva",
+      "act": "Según el Reglamento de IA"
+    },
+    "aiFeatures": {
+      "emailDraft": {
+        "name": "Borradores de respuesta",
+        "reads": "El correo del huésped y su hilo, la reserva a la que corresponde y la ficha del huésped, y los datos y el tono de la casa que defines en Ajustes.",
+        "writes": "Una respuesta en el idioma del huésped, esperando en Comunicaciones. Las quejas no se redactan: esperan a una persona.",
+        "sees": "Tu equipo, en Comunicaciones. El huésped solo ve lo que tu equipo envía.",
+        "checks": "Una persona de tu equipo. No se envía nada hasta que alguien pulsa Enviar, o confirma un envío en bloque de borradores que ha revisado.",
+        "limits": "Una fecha, un precio o una política que no se le ha dado. Comprueba los datos antes de enviar.",
+        "kept": "Con el correo, mientras tu hotel use Fondas.",
+        "act": "Art. 50(2): cada respuesta enviada a partir de un borrador lleva en sus cabeceras una marca de IA legible por máquina. Tu equipo ve en cada borrador que lo ha escrito Fondas AI."
+      },
+      "chaser": {
+        "name": "Petición de hora de llegada",
+        "reads": "Reservas confirmadas que llegan en los próximos siete días sin hora de llegada: el nombre del huésped, su correo y su idioma.",
+        "writes": "Un correo breve que pregunta al huésped a qué hora prevé llegar.",
+        "sees": "Tu equipo, en Llegadas y salidas.",
+        "checks": "Lo envía una persona de tu equipo. No sale nada solo.",
+        "limits": "Solo conoce la reserva: no sabe si el huésped ya te lo dijo por teléfono.",
+        "kept": "Mientras tu hotel use Fondas.",
+        "act": "Art. 50(2): se marca como una respuesta cuando se envía, y tu equipo ve que lo ha redactado Fondas AI."
+      },
+      "briefing": {
+        "name": "Resumen matutino",
+        "reads": "Las llegadas y salidas de hoy con el apellido de los huéspedes reducido a la inicial, VIP y peticiones, el remitente y el asunto del correo de huéspedes de la noche, la ocupación y las tarifas de las próximas 14 noches, y los ajustes de la casa.",
+        "writes": "El resumen del día, enviado por correo a quien elijas a la hora que fijes, y guardado en la página del Resumen matutino.",
+        "sees": "Tú y los destinatarios que añadas. Ningún huésped lo recibe.",
+        "checks": "Solo va a tu equipo. Léelo como un resumen, no como el registro: el registro es tu PMS.",
+        "limits": "Está tan al día como la última sincronización con tu PMS, y puede malinterpretar una nota o una petición.",
+        "kept": "Mientras tu hotel use Fondas.",
+        "act": "Art. 50(2): el correo lleva una marca de IA legible por máquina, y la página indica que lo ha escrito Fondas AI."
+      },
+      "chat": {
+        "name": "Pregunta",
+        "reads": "Tu pregunta y una foto del hotel: las reservas de los próximos 14 días con el apellido de los huéspedes reducido a la inicial, el estado del buzón, la ocupación y las tarifas, y los ajustes de la casa.",
+        "writes": "Una respuesta, y un borrador de correo si lo pides.",
+        "sees": "La persona que pregunta. Las conversaciones de cada uno son suyas.",
+        "checks": "Desde Pregunta no sale nada de Fondas. Un borrador que empiece va a Comunicaciones y espera a Enviar como cualquier otro.",
+        "limits": "Puede malinterpretar los datos o pasar por alto lo que no está en ellos. Dice cuándo no lo sabe; comprueba las cifras clave.",
+        "kept": "Tus diez conversaciones más recientes, con el apellido de los huéspedes reducido a la inicial. Las anteriores se borran, y puedes borrar cualquiera.",
+        "act": "Art. 50(1): se te indica que hablas con una IA, en cada respuesta."
+      },
+      "guestInference": {
+        "name": "Preferencias del huésped",
+        "reads": "Los correos y las reservas de un huésped que repite en tu hotel.",
+        "writes": "El motivo del viaje, la ocasión y las preferencias en la ficha del huésped, cada uno marcado como deducido.",
+        "sees": "Tu equipo, en la ficha del huésped.",
+        "checks": "Tu equipo. Lo que fija una persona manda y nunca se sobrescribe, y las notas solo las escriben personas.",
+        "limits": "Deduce a partir de lo que escribió el huésped, y una deducción puede fallar. Corrígela y se queda corregida.",
+        "kept": "24 meses después de la última estancia del huésped; después se borra.",
+        "act": "Marcado como deducido por Fondas AI allí donde aparece. Nunca se usa para puntuar ni clasificar a un huésped."
+      },
+      "emailClassify": {
+        "name": "Clasificación del correo",
+        "reads": "Cada correo que llega al buzón que conectaste.",
+        "writes": "Una categoría, el idioma y cualquier referencia de reserva que encuentre, para que cada mensaje vaya a su sitio.",
+        "sees": "Tu equipo, en Comunicaciones.",
+        "checks": "No envía nada. Todos los mensajes siguen en tu buzón, se clasifiquen como se clasifiquen.",
+        "limits": "Puede poner un mensaje en la categoría equivocada, o no ver una referencia de reserva escrita de forma poco habitual.",
+        "kept": "Con el correo, mientras tu hotel use Fondas.",
+        "act": "Sin obligación de transparencia propia: clasifica el correo y no escribe a nadie."
+      },
+      "reviewSummary": {
+        "name": "Resumen de reseñas",
+        "reads": "Las reseñas que pegas en Ajustes › Información del hotel.",
+        "writes": "Dos o tres frases sobre lo que elogian los huéspedes, que los borradores y el resumen pueden usar.",
+        "sees": "Tu equipo, en Ajustes.",
+        "checks": "Lo ves en Ajustes y puedes sustituirlo.",
+        "limits": "Solo conoce las reseñas que pegas.",
+        "kept": "En los ajustes del hotel, hasta que lo sustituyas.",
+        "act": "Sin obligación de transparencia propia: se queda dentro de Fondas. Se registra con el modelo y la versión que lo escribieron."
+      }
+    },
     "whereTitle": "Dónde está alojado",
     "whereBody": "En la Unión Europea. La base de datos donde viven tus reservas, tus huéspedes y tus correos está alojada en servidores europeos y cifrada en reposo.",
     "whereBody2": "Para escribir los resúmenes y los borradores enviamos los datos necesarios a nuestro proveedor de IA, Anthropic, a través de su API comercial: bajo esos términos no se usan para entrenar sus modelos. Es el único tratamiento que sale del Espacio Económico Europeo, y se ampara en las Cláusulas Contractuales Tipo de la Comisión Europea. La lista completa de proveedores está en la política de privacidad.",

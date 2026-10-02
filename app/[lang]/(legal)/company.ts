@@ -84,6 +84,19 @@ export const COMPANY = {
    * above is about the marketing site.
    */
   price: `€${PRICE_MONTHLY_EUR} per month per hotel property`,
+  /**
+   * Where "Report a problem with an AI output" goes (AI_ACT_PROMPTS.md A8) —
+   * the AI incident channel. Reports carry no guest data (lib/ai-feedback.ts).
+   * Oriol's call, 2 Oct: a dedicated address. The alias must exist at the
+   * mail provider, or reports are only in the database.
+   */
+  aiContact: "ai@fondas.app",
+  /**
+   * The lawyer's review of the AI Act classification (AI_ACT_PROMPTS.md §L).
+   * NULL UNTIL IT HAS HAPPENED: /trust renders "Our assessment was reviewed
+   * by … on …" only when this is set, and nothing else may claim it.
+   */
+  aiAssessment: null as { firm: string; date: string } | null,
 } as const;
 
 // Effective/last-updated date shown on the documents. Update when you revise them.

@@ -1060,7 +1060,7 @@
     "eyebrow": "Security",
     "heading": "How we handle your data",
     "lead": "{brand} reads the bookings in your PMS and the mail in your hotel's inbox. This page says exactly what we read, what we store, where it is hosted and what happens the day you leave. Written to be read without a lawyer; the full privacy policy is linked at the end.",
-    "updated": "Updated 18 September 2026",
+    "updated": "Updated 2 October 2026",
     "readsTitle": "What we read",
     "readsBody": "Only what it takes to write your morning brief, your drafts and the answers about your hotel.",
     "readsB1": "From your PMS: bookings, arrivals and departures, occupancy, rates and the guest profiles attached to them. Through the official MEWS and Apaleo APIs, read-only.",
@@ -1074,6 +1074,93 @@
     "storesB4": "Guest profiles — what we've worked out about a returning guest, and any note your team has written. Kept for 24 months after their last stay, then deleted.",
     "storesB5": "Chat transcripts, with guest surnames shortened to an initial before they're stored. The answer on your screen shows the full name; the stored copy doesn't.",
     "storesNote": "Each hotel lives in its own space, isolated in the database by row-level security: one property cannot see another's data, not even by accident.",
+    "aiTitle": "How Fondas uses AI",
+    "aiIntro1": "Under the EU AI Act, {brand} is the provider of a limited-risk AI system, and each hotel that uses it is a deployer.",
+    "aiIntro2": "The Act's high-risk rules don't apply to anything {brand} does. What does apply — marking what the AI writes, and saying when you are dealing with it — is set out for every feature below.",
+    "aiReviewed": "Our assessment was reviewed by {firm} on {date}.",
+    "aiModelBy": "{model}, by Anthropic",
+    "aiLabels": {
+      "model": "Model",
+      "reads": "Reads",
+      "writes": "Writes",
+      "sees": "Who sees it",
+      "checks": "Before anything leaves",
+      "limits": "Where it can be wrong",
+      "kept": "Kept",
+      "act": "Under the AI Act"
+    },
+    "aiFeatures": {
+      "emailDraft": {
+        "name": "Reply drafts",
+        "reads": "The guest's email and its thread, the booking it matches and the guest's profile, and the house details and tone you set in Settings.",
+        "writes": "A reply in the guest's language, waiting in Communications. Complaints are not drafted: they wait for a person.",
+        "sees": "Your team, in Communications. A guest only ever sees what your team sends.",
+        "checks": "A person on your team. Nothing is sent until someone presses Send, or confirms a bulk send of drafts they have reviewed.",
+        "limits": "A date, a price or a policy it wasn't given. Check the facts before you send.",
+        "kept": "With the email, while your hotel uses Fondas.",
+        "act": "Art. 50(2): every reply sent from a draft carries a machine-readable AI mark in its headers. Your team sees on every draft that Fondas AI wrote it."
+      },
+      "chaser": {
+        "name": "Arrival-time requests",
+        "reads": "Confirmed bookings arriving in the next seven days without an arrival time: the guest's first name, email and language.",
+        "writes": "A short email asking the guest when they expect to arrive.",
+        "sees": "Your team, under Arrivals & departures.",
+        "checks": "A person on your team sends it. Nothing goes out on its own.",
+        "limits": "It knows only the booking — not that the guest already told you on the phone.",
+        "kept": "While your hotel uses Fondas.",
+        "act": "Art. 50(2): marked like a reply when it is sent, and labelled as drafted by Fondas AI for your team."
+      },
+      "briefing": {
+        "name": "Morning Brief",
+        "reads": "Today's arrivals and departures with guest surnames cut to an initial, VIPs and requests, the sender and subject of overnight guest email, occupancy and rates for the next 14 nights, and your house settings.",
+        "writes": "The day's brief, emailed to the people you choose at the hour you set, and kept on the Morning Brief page.",
+        "sees": "You and the recipients you add. No guest ever receives it.",
+        "checks": "It goes only to your team. Read it as a summary, not as the record: your PMS is the record.",
+        "limits": "It is as fresh as the last sync with your PMS, and it can misread a note or a request.",
+        "kept": "While your hotel uses Fondas.",
+        "act": "Art. 50(2): the email carries a machine-readable AI mark, and the page says Fondas AI wrote it."
+      },
+      "chat": {
+        "name": "Ask",
+        "reads": "Your question and a snapshot of the hotel: bookings for the next 14 days with guest surnames cut to an initial, inbox counts, occupancy and rates, and your house settings.",
+        "writes": "An answer, and an email draft if you ask for one.",
+        "sees": "The person who asked. Each person's conversations are their own.",
+        "checks": "Nothing leaves Fondas from Ask. A draft it starts goes to Communications and waits for Send like any other.",
+        "limits": "It can misread the data or miss what isn't in it. It says when it doesn't know; double-check key figures.",
+        "kept": "Your ten most recent conversations, with guest surnames cut to an initial. Older ones are deleted, and you can delete any of them.",
+        "act": "Art. 50(1): you are told you are talking to an AI, on every answer."
+      },
+      "guestInference": {
+        "name": "Guest preferences",
+        "reads": "A returning guest's emails and bookings with your hotel.",
+        "writes": "Trip purpose, occasion and preferences on the guest's record, each marked as inferred.",
+        "sees": "Your team, on the guest's record.",
+        "checks": "Your team. Anything a person sets wins and is never overwritten, and notes are only ever written by people.",
+        "limits": "It infers from what the guest wrote, and an inference can be wrong. Correct it and it stays corrected.",
+        "kept": "24 months after the guest's last stay, then deleted.",
+        "act": "Labelled as inferred by Fondas AI wherever it appears. Never used to score or rank a guest."
+      },
+      "emailClassify": {
+        "name": "Sorting guest email",
+        "reads": "Each email that arrives in the mailbox you connected.",
+        "writes": "A category, the language and any booking reference it finds, so each message lands in the right place.",
+        "sees": "Your team, in Communications.",
+        "checks": "It sends nothing. Every message stays in your inbox, whatever it was sorted as.",
+        "limits": "It can file a message under the wrong category, or miss a booking reference written in an unusual way.",
+        "kept": "With the email, while your hotel uses Fondas.",
+        "act": "No disclosure duty of its own: it sorts mail and writes to no one."
+      },
+      "reviewSummary": {
+        "name": "Review summary",
+        "reads": "The reviews you paste into Settings › Hotel information.",
+        "writes": "Two or three sentences on what guests praise, which drafts and the brief can draw on.",
+        "sees": "Your team, in Settings.",
+        "checks": "You see it in Settings, and you can replace it.",
+        "limits": "It knows only the reviews you paste.",
+        "kept": "In your hotel's settings, until you replace it.",
+        "act": "No disclosure duty of its own: it stays inside Fondas. Recorded with the model and version that wrote it."
+      }
+    },
     "whereTitle": "Where it is hosted",
     "whereBody": "In the European Union. The database holding your bookings, your guests and your emails sits on European servers and is encrypted at rest.",
     "whereBody2": "To write the briefs and the drafts we send the data needed to our AI provider, Anthropic, through its commercial API: under those terms it is not used to train its models. That is the only processing that leaves the European Economic Area, and it relies on the European Commission's Standard Contractual Clauses. The full list of providers is in the privacy policy.",
