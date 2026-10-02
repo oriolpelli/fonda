@@ -42,7 +42,7 @@ export async function loadRateOutlook(
       .lte("night", last),
     db
       .from("rate_snapshots")
-      .select("as_of, night, rooms_sold, priced_rooms, revenue_net")
+      .select("as_of, night, rooms_sold, priced_rooms, revenue_net, taken_at")
       .eq("hotel_id", hotelId)
       .in("as_of", [today, addDays(today, -1), addDays(today, -7)])
       .gte("night", today)

@@ -2,7 +2,7 @@ import "server-only";
 
 import { getApaleoClientForHotel } from "@/lib/apaleo";
 import { getMewsClientForHotel } from "@/lib/mews";
-import type { NightCharge, NightPrice } from "@/lib/rate-math";
+import type { NightCharge, NightPriceResult } from "@/lib/rate-math";
 import { getSheetClientForHotel } from "@/lib/sheet";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -46,6 +46,13 @@ export type PmsType = "mews" | "apaleo" | "sheet";
 export interface PmsRateWindow {
   nights: string[];
   timezone: string;
+  /**
+   * The PMS service the hotel's rooms are sold under, when the sync can tell
+   * (the one most of its stays belong to). MEWS hotels also run parking or
+   * meeting rooms as "bookable" services; without this, a €15 parking rate
+   * could pass for the lowest room price. Ignored by Apaleo.
+   */
+  serviceIds?: string[];
 }
 
 /** The capabilities every PMS client exposes, with identical output types. */
@@ -69,11 +76,13 @@ export interface PmsClient {
     window: PmsRateWindow
   ): Promise<NightCharge[]>;
   /**
-   * The lowest public price on sale each night of the window: a public rate,
-   * open that night, in a room type with a room left. A night with nothing on
-   * sale is simply absent. Optional, like the above.
+   * The lowest public price on sale each night of the window, for a guest
+   * booking now to arrive that night: a public rate, open, in a room type
+   * with a room left. `price: null` = nothing on sale; a night left out = the
+   * PMS couldn't say (lib/rate-math.ts NightPriceResult). Optional, like the
+   * above.
    */
-  getSellingPrices?(window: PmsRateWindow): Promise<NightPrice[]>;
+  getSellingPrices?(window: PmsRateWindow): Promise<NightPriceResult[]>;
 }
 
 /**

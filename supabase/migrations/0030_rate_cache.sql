@@ -17,9 +17,14 @@
 --      revenue_net/gross the room charges of those priced rooms, excl./incl.
 --                        VAT. ADR = revenue_net / priced_rooms
 --      sell_from_net/... the lowest public price the hotel is selling that
---                        night at: an active public rate, open that night, in a
---                        room type with a room left. NULL = none open, or the
---                        source can't say. Checked about hourly, not every run
+--                        night at, for a stay arriving that night and booked
+--                        now: an active public rate, open, in a room type with
+--                        a room left. NULL with a checked_at = nothing on sale
+--      sell_from_checked_at  when that night's price was last established
+--      sell_from_attempted_at when the hotel's prices were last asked for,
+--                        whatever the answer — the hourly back-off. A night
+--                        the PMS couldn't answer keeps its previous price and
+--                        checked_at; readers ignore a price older than 6 h
 --      currency          ISO-4217, as the PMS reports it
 --    Past nights are left as last written: the row stops changing once the
 --    night leaves the window, which makes it that night's final figure.
@@ -45,6 +50,7 @@ create table if not exists public.rate_nights (
   sell_from_net        numeric(12, 2),
   sell_from_gross      numeric(12, 2),
   sell_from_checked_at timestamptz,
+  sell_from_attempted_at timestamptz,
   currency             text,
   updated_at           timestamptz not null default now(),
   primary key (hotel_id, night)

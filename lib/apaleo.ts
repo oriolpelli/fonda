@@ -23,6 +23,7 @@ import {
   type ApaleoOfferLite,
   type ApaleoReservationSlicesLite,
   type NightPrice,
+  type NightPriceResult,
 } from "@/lib/rate-math";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -60,6 +61,8 @@ const MAX_ERROR_BODY_CHARS = 500;
 const OFFER_ADULTS = "2";
 const OFFER_CHANNEL = "Direct";
 const OFFER_CONCURRENCY = 3;
+/** Stay lengths tried per night: one, then three if one returns nothing. */
+const OFFER_LENGTHS = [1, 3];
 
 const DEFAULTS = {
   maxRetries: 4,
@@ -553,10 +556,18 @@ export function createApaleoClient(credentials: ApaleoCredentials): PmsClient {
 
     /**
      * The lowest public price on sale each night (B17), from Apaleo's offers:
-     * what a guest could book for one night, with availability and the
-     * hotel's restrictions already applied. Needs the `offers.read` scope —
-     * a connection made before B17 doesn't have it, and Apaleo answers 403
-     * until the hotel reconnects.
+     * what a guest booking now could book to arrive that night, with
+     * availability and the hotel's restrictions already applied. One night
+     * first; if Apaleo offers nothing, three (a minimum stay doesn't take a
+     * night off sale — MEWS is judged the same way). Priced on the first
+     * night's slice.
+     *
+     * Needs the `offers.read` scope, which connections don't ask for by
+     * default (app/connect/apaleo/route.ts): without it Apaleo answers 403,
+     * and the answer is "can't tell" ([]) — logged, not reported to Sentry
+     * every hour. A night Apaleo rejects (422) is "can't tell" too. And if no
+     * night has a single offer, the Direct channel most likely sells nothing
+     * here, so that is "can't tell" as well rather than "nothing on sale".
      */
     async getSellingPrices(window) {
       const { nights } = window;
@@ -565,43 +576,68 @@ export function createApaleoClient(credentials: ApaleoCredentials): PmsClient {
       );
       if (nights.length === 0 || properties.length === 0) return [];
 
+      type Outcome =
+        | { night: string; kind: "open"; price: NightPrice }
+        | { night: string; kind: "none" | "empty" | "unknown" };
+      let refused = false;
       const jobs = properties.flatMap((propertyId) =>
         nights.map((night) => ({ propertyId, night }))
       );
-      const results = await mapLimited(jobs, OFFER_CONCURRENCY, async (job) => {
-        try {
-          const body = await apaleoFetch<{ offers?: ApaleoOfferLite[] }>(
-            "/booking/v1/offers",
-            {
-              propertyId: job.propertyId,
-              arrival: job.night,
-              departure: addDays(job.night, 1),
-              adults: OFFER_ADULTS,
-              channelCode: OFFER_CHANNEL,
+      const outcomes = await mapLimited(
+        jobs,
+        OFFER_CONCURRENCY,
+        async (job): Promise<Outcome> => {
+          if (refused) return { night: job.night, kind: "unknown" };
+          try {
+            for (const length of OFFER_LENGTHS) {
+              const body = await apaleoFetch<{ offers?: ApaleoOfferLite[] }>(
+                "/booking/v1/offers",
+                {
+                  propertyId: job.propertyId,
+                  arrival: job.night,
+                  departure: addDays(job.night, length),
+                  adults: OFFER_ADULTS,
+                  channelCode: OFFER_CHANNEL,
+                }
+              );
+              const offers = body.offers ?? [];
+              const price = apaleoCheapestOffer(job.night, offers);
+              if (price) return { night: job.night, kind: "open", price };
+              if (offers.length > 0) return { night: job.night, kind: "none" };
             }
-          );
-          return apaleoCheapestOffer(job.night, body.offers ?? []);
-        } catch (err) {
-          if (err instanceof ApaleoApiError && err.status === 403) {
-            throw new ApaleoApiError(
-              "Apaleo refused offers (403): the connection predates the offers.read scope. Reconnect Apaleo in Settings to show selling prices.",
-              { status: 403, endpoint: "/booking/v1/offers", cause: err }
-            );
+            return { night: job.night, kind: "empty" };
+          } catch (err) {
+            if (err instanceof ApaleoApiError && err.status === 403) {
+              refused = true;
+              return { night: job.night, kind: "unknown" };
+            }
+            if (err instanceof ApaleoApiError && err.status === 422) {
+              return { night: job.night, kind: "unknown" };
+            }
+            throw err;
           }
-          // One night failing (e.g. a 422 for a night outside the
-          // property's selling window) leaves that night blank, not all.
-          if (err instanceof ApaleoApiError && err.status === 422) return null;
-          throw err;
         }
-      });
+      );
 
-      const best = new Map<string, NightPrice>();
-      for (const price of results) {
-        if (!price) continue;
-        const current = best.get(price.night);
-        if (!current || price.net < current.net) best.set(price.night, price);
+      if (refused) {
+        console.log(
+          "[sync] rates: Apaleo refused offers (403) — the connection lacks offers.read; selling prices skipped"
+        );
+        return [];
       }
-      return nights.flatMap((n) => (best.has(n) ? [best.get(n)!] : []));
+      if (outcomes.every((o) => o.kind === "empty" || o.kind === "unknown")) {
+        return [];
+      }
+
+      return nights.flatMap((night): NightPriceResult[] => {
+        const mine = outcomes.filter((o) => o.night === night);
+        if (mine.some((o) => o.kind === "unknown")) return [];
+        let best: NightPrice | null = null;
+        for (const o of mine) {
+          if (o.kind === "open" && (!best || o.price.net < best.net)) best = o.price;
+        }
+        return [{ night, price: best }];
+      });
     },
 
     async getSpaces(): Promise<MewsSpacesResult> {

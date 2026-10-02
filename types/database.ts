@@ -925,6 +925,7 @@ export type Database = {
           sell_from_net: number | null;
           sell_from_gross: number | null;
           sell_from_checked_at: string | null;
+          sell_from_attempted_at: string | null;
           currency: string | null;
           updated_at: string;
         };
@@ -938,6 +939,7 @@ export type Database = {
           sell_from_net?: number | null;
           sell_from_gross?: number | null;
           sell_from_checked_at?: string | null;
+          sell_from_attempted_at?: string | null;
           currency?: string | null;
           updated_at?: string;
         };
@@ -951,6 +953,7 @@ export type Database = {
           sell_from_net?: number | null;
           sell_from_gross?: number | null;
           sell_from_checked_at?: string | null;
+          sell_from_attempted_at?: string | null;
           currency?: string | null;
           updated_at?: string;
         };

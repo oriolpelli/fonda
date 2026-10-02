@@ -73,6 +73,7 @@ export interface HotelContext {
       roomsSold: number;
       averageRate: number | null;
       sellingFrom: number | null;
+      nothingOnSale: boolean;
       pickedUpYesterday: number | null;
     }[];
   };
@@ -349,12 +350,13 @@ export async function buildHotelContext(hotelId: string): Promise<HotelContext> 
       ? {
           currency: rateOutlook.currency,
           note:
-            "Per night: averageRate is the average room rate of the rooms already sold; sellingFrom is the lowest public price still on sale (an open public rate, in a room type with a room left); both exclude VAT. pickedUpYesterday is rooms booked yesterday for that night, net of cancellations. null means unknown.",
+            "Per night: averageRate is the average room rate of the rooms already sold; sellingFrom is the lowest public price a guest booking today could get (an open public rate, in a room type with a room left); both exclude VAT. nothingOnSale is true when nothing is left to sell that night. pickedUpYesterday is rooms booked yesterday for that night, net of cancellations. null means unknown.",
           nights: rateOutlook.nights.map((night) => ({
             date: night.date,
             roomsSold: night.roomsSold,
             averageRate: night.adr,
             sellingFrom: night.sellFrom,
+            nothingOnSale: night.nothingOnSale,
             pickedUpYesterday: night.pickupYesterday,
           })),
         }

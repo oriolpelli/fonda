@@ -46,6 +46,17 @@ export interface NightPrice {
   currency: string | null;
 }
 
+/**
+ * One night's selling-price check. `price: null` means the PMS answered and
+ * nothing is on sale that night (sold out, or every public rate closed). A
+ * night the PMS couldn't answer for is left out of the result altogether —
+ * "we couldn't tell" is never stored as "nothing on sale".
+ */
+export interface NightPriceResult {
+  night: string;
+  price: NightPrice | null;
+}
+
 /** A stay reduced to what the rate cache needs: whose, and which nights. */
 export interface RateStay extends StayDates {
   id: string;
@@ -69,6 +80,8 @@ export interface SnapshotNight {
   rooms_sold: number;
   priced_rooms: number | null;
   revenue_net: number | null;
+  /** When the snapshot was taken; pickup checks the gap between two. */
+  taken_at?: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -332,7 +345,14 @@ export interface MewsRestrictionLite {
     /** `["Saturday", "Sunday"]` — or, from older versions, `{ Saturday: true }`. */
     Days?: string[] | Record<string, boolean> | null;
   } | null;
-  Exceptions?: Record<string, unknown> | null;
+  Exceptions?: {
+    MinAdvance?: string | null;
+    MaxAdvance?: string | null;
+    MinLength?: string | null;
+    MaxLength?: string | null;
+    MinPrice?: { Value?: number | null } | null;
+    MaxPrice?: { Value?: number | null } | null;
+  } | null;
 }
 
 function appliesOnDay(
@@ -345,31 +365,53 @@ function appliesOnDay(
   return listed.length === 0 || days[weekday] === true;
 }
 
+const DURATION =
+  /^P(?:(\d+(?:\.\d+)?)Y)?(?:(\d+(?:\.\d+)?)M)?(?:(\d+(?:\.\d+)?)W)?(?:(\d+(?:\.\d+)?)D)?(?:T(?:(\d+(?:\.\d+)?)H)?(?:(\d+(?:\.\d+)?)M)?(?:(\d+(?:\.\d+)?)S)?)?$/;
+
 /**
- * Whether a restriction closes `rate` in `categoryId` on the night starting at
- * `nightStartUtc`.
+ * An ISO 8601 duration ("P0M21DT0H0M0S") in milliseconds, or null if it
+ * doesn't parse. Months count as 30 days and years as 365 — MEWS uses these
+ * for advance windows, where a day either way doesn't change the answer.
+ */
+export function durationMs(value: string | null | undefined): number | null {
+  if (!value) return null;
+  const m = DURATION.exec(value.trim());
+  if (!m) return null;
+  const [y, mo, w, d, h, mi, sec] = m.slice(1).map((x) => (x ? Number(x) : 0));
+  const days = y * 365 + mo * 30 + w * 7 + d;
+  return ((days * 24 + h) * 60 + mi) * 60_000 + sec * 1000;
+}
+
+/**
+ * Whether a restriction closes `rate` in `categoryId` for a guest who books
+ * NOW to arrive on the night starting at `nightStartUtc` — the definition of
+ * "on sale" the selling price uses for both PMSs.
  *
- * Only a `Stay` restriction with NO exceptions closes a night outright. One
- * with exceptions (a minimum stay, a price floor, an advance window) still
- * lets some stays through, so the night is still on sale and its price is
- * still the price. `Start`/`End` restrictions (closed to arrival/departure)
- * don't take a night off sale either. The interval is read as running from
- * the first time unit's start to the last time unit's start, inclusive — how
- * MEWS describes its intervals.
+ * `Stay` restrictions (can't stay) and `Start` restrictions (can't arrive)
+ * both matter for that guest; `End` doesn't, since they can leave another
+ * day. A restriction's exceptions are the bookings it lets through (MEWS:
+ * "rules that prevent the restriction from applying"), so with exceptions it
+ * still closes the night unless this booking meets them:
+ *   - MinAdvance / MaxAdvance: tested against the time from now to arrival.
+ *     An early-booker rate (MinAdvance 21 days) is closed for the next
+ *     fortnight, which is exactly what a guest booking today sees.
+ *   - MinLength / MaxLength: the guest can choose how long to stay, so a
+ *     minimum stay doesn't take the night off sale (Apaleo is asked the same
+ *     way: lib/apaleo.ts tries a longer stay when one night returns nothing).
+ *   - MinPrice / MaxPrice: tested against the candidate price, gross.
+ * The interval runs from the first time unit's start to the last time unit's
+ * start, inclusive — how MEWS describes its intervals.
  */
 export function restrictionCloses(
   restriction: MewsRestrictionLite,
   rate: MewsRateLite,
   categoryId: string,
   nightStartUtc: Date,
-  weekday: string
+  weekday: string,
+  booking: { now: Date; priceGross: number }
 ): boolean {
   const c = restriction.Conditions;
-  if (!c || c.Type !== "Stay") return false;
-  const exceptions = restriction.Exceptions ?? {};
-  if (Object.values(exceptions).some((v) => v !== null && v !== undefined)) {
-    return false;
-  }
+  if (!c || (c.Type !== "Stay" && c.Type !== "Start")) return false;
   if (c.ExactRateId && c.ExactRateId !== rate.Id) return false;
   if (
     c.BaseRateId &&
@@ -383,7 +425,29 @@ export function restrictionCloses(
   const t = nightStartUtc.getTime();
   if (c.StartUtc && t < new Date(c.StartUtc).getTime()) return false;
   if (c.EndUtc && t > new Date(c.EndUtc).getTime()) return false;
-  return appliesOnDay(c.Days, weekday);
+  if (!appliesOnDay(c.Days, weekday)) return false;
+
+  // The conditions match. Does this booking meet every exception?
+  const e = restriction.Exceptions;
+  if (!e) return true;
+  const advance = t - booking.now.getTime();
+  const minAdvance = durationMs(e.MinAdvance);
+  const maxAdvance = durationMs(e.MaxAdvance);
+  const minPrice = e.MinPrice?.Value;
+  const maxPrice = e.MaxPrice?.Value;
+  const hasException =
+    minAdvance !== null ||
+    maxAdvance !== null ||
+    finite(minPrice) ||
+    finite(maxPrice) ||
+    durationMs(e.MinLength) !== null ||
+    durationMs(e.MaxLength) !== null;
+  if (!hasException) return true;
+  if (minAdvance !== null && advance < minAdvance) return true;
+  if (maxAdvance !== null && advance > maxAdvance) return true;
+  if (finite(minPrice) && booking.priceGross < minPrice) return true;
+  if (finite(maxPrice) && booking.priceGross > maxPrice) return true;
+  return false;
 }
 
 /** One rate's prices, as rates/getPricing returns them. */
@@ -414,15 +478,17 @@ export const MEWS_AVAILABILITY_METRICS = [
   "UsableResources",
   "Occupied",
   "OtherServiceReservationCount",
+  "HouseUse",
   "PublicAvailabilityAdjustment",
 ] as const;
 
 /**
  * Rooms left to sell per category per night: usable rooms (active, not out of
  * order) minus those occupied by reservations and blocks, minus those taken by
- * another service, plus the manual availability adjustment (negative when the
- * hotel holds rooms back). A night whose numbers are missing is left out —
- * unknown is not "available".
+ * another service or kept for house use, plus the manual availability
+ * adjustment (negative when the hotel holds rooms back) — the arithmetic of
+ * MEWS's own availability report. A night whose numbers are missing is left
+ * out: unknown is not "available".
  */
 export function mewsRoomsLeft(
   availability: MewsAvailabilityLite[],
@@ -439,11 +505,13 @@ export function mewsRoomsLeft(
         const occupied = m.Occupied?.[i];
         if (!finite(usable) || !finite(occupied)) return;
         const other = m.OtherServiceReservationCount?.[i];
+        const houseUse = m.HouseUse?.[i];
         const adjustment = m.PublicAvailabilityAdjustment?.[i];
         const left =
           usable -
           occupied -
-          (finite(other) ? other : 0) +
+          (finite(other) ? other : 0) -
+          (finite(houseUse) ? houseUse : 0) +
           (finite(adjustment) ? adjustment : 0);
         const night = localDateOf(tz, start);
         if (night) byNight.set(night, left);
@@ -455,11 +523,16 @@ export function mewsRoomsLeft(
 }
 
 /**
- * The lowest public price on sale each night, from MEWS: across every public
- * rate and every room type, the cheapest price whose room type still has a
- * room left that night and whose rate isn't closed for it. A night with no
- * such price is left out — "nothing open" is reported as nothing, never as a
- * price nobody can book.
+ * The lowest public price on sale each night, from MEWS, for a guest booking
+ * now to arrive that night: across every public rate and every room type, the
+ * cheapest price whose room type still has a room left and whose rate no
+ * restriction closes.
+ *
+ * Each night ends up one of three ways. A price: on sale. `price: null`: the
+ * PMS priced that night and every candidate was sold out or closed — nothing
+ * on sale. Left out: no candidate could be judged (no prices, or the
+ * availability numbers were missing) — unknown, which the sync stores as
+ * "keep what we had", never as "nothing on sale".
  */
 export function mewsCheapestByNight(input: {
   tz: string;
@@ -468,12 +541,15 @@ export function mewsCheapestByNight(input: {
   pricing: MewsPricingLite[];
   restrictions: MewsRestrictionLite[];
   availability: MewsAvailabilityLite[];
-}): NightPrice[] {
-  const { tz, nights } = input;
+  now: Date;
+}): NightPriceResult[] {
+  const { tz, nights, now } = input;
   const wanted = new Set(nights);
   const rateById = new Map(input.rates.map((r) => [r.Id, r]));
   const roomsLeft = mewsRoomsLeft(input.availability, tz);
   const best = new Map<string, NightPrice>();
+  const judged = new Set<string>(); // nights with at least one decided candidate
+  const unsure = new Set<string>(); // nights with a candidate we couldn't judge
 
   for (const p of input.pricing) {
     const rate = rateById.get(p.rateId);
@@ -488,12 +564,20 @@ export function mewsCheapestByNight(input: {
         const gross = price?.GrossValue;
         if (!finite(net) || !finite(gross) || net <= 0) return;
         const left = roomsLeft.get(cat.CategoryId)?.get(night);
-        if (!finite(left) || left <= 0) return;
+        if (!finite(left)) {
+          unsure.add(night);
+          return;
+        }
+        judged.add(night);
+        if (left <= 0) return;
         const startDate = new Date(start);
         const weekday = weekdayOf(night);
         if (
           input.restrictions.some((r) =>
-            restrictionCloses(r, rate, cat.CategoryId, startDate, weekday)
+            restrictionCloses(r, rate, cat.CategoryId, startDate, weekday, {
+              now,
+              priceGross: gross,
+            })
           )
         ) {
           return;
@@ -510,7 +594,14 @@ export function mewsCheapestByNight(input: {
       });
     }
   }
-  return nights.flatMap((n) => (best.has(n) ? [best.get(n)!] : []));
+  return nights.flatMap((night): NightPriceResult[] => {
+    const price = best.get(night);
+    if (price) return [{ night, price }];
+    // Nothing on sale only when every candidate was judged; one we couldn't
+    // judge might have been the open one.
+    if (judged.has(night) && !unsure.has(night)) return [{ night, price: null }];
+    return [];
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -626,6 +717,148 @@ export function pickupBetween(
 }
 
 // ---------------------------------------------------------------------------
+// What a sync run writes (lib/rate-sync.ts) — pure, so it can be checked
+// ---------------------------------------------------------------------------
+
+/** A stored rate_nights row, as the sync reads it back. */
+export interface StoredNightFull {
+  night: string;
+  rooms_sold: number;
+  priced_rooms: number | null;
+  revenue_net: number | null;
+  revenue_gross: number | null;
+  sell_from_net: number | null;
+  sell_from_gross: number | null;
+  sell_from_checked_at: string | null;
+  sell_from_attempted_at: string | null;
+  currency: string | null;
+}
+
+/** One rate_nights upsert row. Optional keys are the ones a run may skip. */
+export interface RateNightWrite {
+  hotel_id: string;
+  night: string;
+  rooms_sold: number;
+  updated_at: string;
+  priced_rooms?: number | null;
+  revenue_net?: number | null;
+  revenue_gross?: number | null;
+  sell_from_net?: number | null;
+  sell_from_gross?: number | null;
+  sell_from_checked_at?: string | null;
+  sell_from_attempted_at?: string | null;
+  currency?: string | null;
+}
+
+/** Postgres numeric comes back as a number from PostgREST; normalise anyway. */
+function num(value: unknown): number | null {
+  if (value === null || value === undefined) return null;
+  const v = Number(value);
+  return Number.isFinite(v) ? v : null;
+}
+
+/**
+ * The rows a sync run upserts into rate_nights — only the nights whose
+ * numbers changed.
+ *
+ *   charges  NightCharge[] → revenue written; null → the source has none
+ *            (written as null, "no rates"); undefined → the call failed
+ *            (revenue columns left as they are)
+ *   prices   NightPriceResult[] → answered: a night in it gets its price (or
+ *            "nothing on sale"); a night missing from it keeps its stored
+ *            price and check time. null → the source has no selling prices
+ *            (price columns never touched). undefined → not asked this run,
+ *            or the call failed
+ *   attempted  prices were asked for this run (whatever came back): the
+ *            attempt time moves on every row — the hourly back-off
+ *
+ * Every row carries the same columns: PostgREST's bulk upsert nulls a column
+ * one row leaves out, which would silently erase stored numbers.
+ */
+export function planRateWrites(input: {
+  hotelId: string;
+  aggregated: RateNight[];
+  stored: Map<string, StoredNightFull>;
+  charges: NightCharge[] | null | undefined;
+  prices: NightPriceResult[] | null | undefined;
+  attempted: boolean;
+  at: string;
+}): RateNightWrite[] {
+  const { hotelId, stored, charges, prices, attempted, at } = input;
+  const answered = new Map(
+    (Array.isArray(prices) ? prices : []).map((p) => [p.night, p.price])
+  );
+  const writes: RateNightWrite[] = [];
+  for (const night of input.aggregated) {
+    const before = stored.get(night.night);
+    const row: RateNightWrite = {
+      hotel_id: hotelId,
+      night: night.night,
+      rooms_sold: night.roomsSold,
+      updated_at: at,
+    };
+    let changed = !before || before.rooms_sold !== night.roomsSold;
+
+    if (charges !== undefined) {
+      row.priced_rooms = night.pricedRooms;
+      row.revenue_net = night.revenueNet;
+      row.revenue_gross = night.revenueGross;
+      changed ||=
+        num(before?.priced_rooms) !== night.pricedRooms ||
+        num(before?.revenue_net) !== night.revenueNet ||
+        num(before?.revenue_gross) !== night.revenueGross;
+    }
+    let priceCurrency: string | null = null;
+    if (attempted) {
+      row.sell_from_attempted_at = at;
+      changed = true;
+      if (Array.isArray(prices)) {
+        if (answered.has(night.night)) {
+          const price = answered.get(night.night) ?? null;
+          row.sell_from_net = price?.net ?? null;
+          row.sell_from_gross = price?.gross ?? null;
+          row.sell_from_checked_at = at;
+          priceCurrency = price?.currency ?? null;
+        } else {
+          row.sell_from_net = num(before?.sell_from_net);
+          row.sell_from_gross = num(before?.sell_from_gross);
+          row.sell_from_checked_at = before?.sell_from_checked_at ?? null;
+        }
+      }
+    }
+    if (charges !== undefined || Array.isArray(prices)) {
+      // The revenue's currency, else the price's, else what was stored.
+      row.currency = night.currency ?? priceCurrency ?? before?.currency ?? null;
+    }
+    if (changed) writes.push(row);
+  }
+  return writes;
+}
+
+/** The day's snapshot rows: this run's numbers, or the stored ones where revenue failed. */
+export function planSnapshot(input: {
+  hotelId: string;
+  asOf: string;
+  aggregated: RateNight[];
+  stored: Map<string, StoredNightFull>;
+  revenueKnown: boolean;
+  at: string;
+}): (Omit<SnapshotNight, "taken_at"> & { hotel_id: string; taken_at: string })[] {
+  return input.aggregated.map((n) => {
+    const before = input.stored.get(n.night);
+    return {
+      hotel_id: input.hotelId,
+      as_of: input.asOf,
+      night: n.night,
+      rooms_sold: n.roomsSold,
+      priced_rooms: input.revenueKnown ? n.pricedRooms : num(before?.priced_rooms),
+      revenue_net: input.revenueKnown ? n.revenueNet : num(before?.revenue_net),
+      taken_at: input.at,
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
 // The outlook the readers present (brief, Ask, Home)
 // ---------------------------------------------------------------------------
 
@@ -645,8 +878,10 @@ export interface RateOutlookNight {
   roomsSold: number;
   /** Average rate of the rooms already sold, excl. VAT. Null: none priced. */
   adr: number | null;
-  /** Lowest public price on sale, excl. VAT. Null: nothing open, or unknown. */
+  /** Lowest public price on sale, excl. VAT. Null: none, or unknown. */
   sellFrom: number | null;
+  /** The PMS answered for this night recently and nothing was on sale. */
+  nothingOnSale: boolean;
   /** Rooms booked yesterday for this night, net of cancellations. */
   pickupYesterday: number | null;
   /** The same over the last seven days. */
@@ -657,15 +892,32 @@ export interface RateOutlook {
   currency: string | null;
   /** The source reports room charges (not the Sheet import). */
   hasRevenue: boolean;
-  /** The selling price has been checked at least once. */
+  /** At least one night has a selling-price answer fresh enough to show. */
   hasSellingPrice: boolean;
   /**
-   * Rooms booked yesterday across every night both snapshots cover, net of
-   * cancellations. Null until there are two days of snapshots.
+   * Room nights booked yesterday for the nights both day snapshots cover
+   * (tonight and the next 12), net of cancellations. Null until there are two
+   * snapshots a day apart.
    */
   pickupYesterdayTotal: number | null;
   nights: RateOutlookNight[];
 }
+
+/**
+ * A selling price older than this isn't shown. The sync re-checks hourly; a
+ * price that hasn't been confirmed for six hours (the PMS keeps failing, or
+ * stopped answering for that night) is no longer a fact about tonight.
+ */
+export const PRICE_FRESH_MS = 6 * 60 * 60 * 1000;
+
+/**
+ * Pickup compares two snapshots taken a day (or a week) apart. The sync takes
+ * one at the first run after local midnight, but after a deploy, an outage or
+ * a late first sync the gap can be off; a pair further apart than this from
+ * the nominal gap isn't reported, rather than reported as "yesterday".
+ */
+const SNAPSHOT_SLACK_MS = 4 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function n(value: unknown): number | null {
   if (value === null || value === undefined) return null;
@@ -683,8 +935,10 @@ export function buildRateOutlook(input: {
   today: string;
   rows: StoredRateNight[];
   snapshots: SnapshotNight[];
+  now?: Date;
 }): RateOutlook | null {
   const { today } = input;
+  const now = (input.now ?? new Date()).getTime();
   if (input.rows.length === 0) return null;
 
   const nights = nightsFrom(today, RATE_HORIZON_NIGHTS);
@@ -693,29 +947,52 @@ export function buildRateOutlook(input: {
     input.snapshots
       .filter((s) => s.as_of.slice(0, 10) === asOf)
       .map((s) => ({ ...s, night: s.night.slice(0, 10), rooms_sold: Number(s.rooms_sold) }));
-  const todaySnap = snaps(today);
-  const yesterday = pickupBetween(todaySnap, snaps(addDays(today, -1)));
-  const week = pickupBetween(todaySnap, snaps(addDays(today, -7)));
+  const takenAt = (rows: SnapshotNight[]) => {
+    const t = rows.find((r) => r.taken_at)?.taken_at;
+    return t ? new Date(t).getTime() : null;
+  };
+  // Pickup between today's snapshot and one `days` earlier — but only when
+  // they were taken about that far apart (or the times aren't known).
+  const pickup = (days: number) => {
+    const later = snaps(today);
+    const earlier = snaps(addDays(today, -days));
+    const a = takenAt(later);
+    const b = takenAt(earlier);
+    if (a !== null && b !== null && Math.abs(a - b - days * DAY_MS) > SNAPSHOT_SLACK_MS) {
+      return new Map<string, number>();
+    }
+    return pickupBetween(later, earlier);
+  };
+  const yesterday = pickup(1);
+  const week = pickup(7);
 
   const currencyCounts = new Map<string, number>();
   for (const r of input.rows) {
     if (r.currency) currencyCounts.set(r.currency, (currencyCounts.get(r.currency) ?? 0) + 1);
   }
+  const fresh = (r: StoredRateNight | undefined) =>
+    Boolean(
+      r?.sell_from_checked_at &&
+        now - new Date(r.sell_from_checked_at).getTime() <= PRICE_FRESH_MS
+    );
 
   return {
     currency:
       [...currencyCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null,
     hasRevenue: input.rows.some((r) => r.priced_rooms !== null),
-    hasSellingPrice: input.rows.some((r) => r.sell_from_checked_at !== null),
+    hasSellingPrice: nights.some((d) => fresh(byNight.get(d))),
     pickupYesterdayTotal:
       yesterday.size > 0 ? [...yesterday.values()].reduce((a, b) => a + b, 0) : null,
     nights: nights.map((date) => {
       const row = byNight.get(date);
+      const priceKnown = fresh(row);
+      const sellFrom = priceKnown ? n(row?.sell_from_net) : null;
       return {
         date,
         roomsSold: n(row?.rooms_sold) ?? 0,
         adr: adrOf(n(row?.revenue_net), n(row?.priced_rooms)),
-        sellFrom: n(row?.sell_from_net),
+        sellFrom,
+        nothingOnSale: priceKnown && sellFrom === null,
         pickupYesterday: yesterday.get(date) ?? null,
         pickupWeek: week.get(date) ?? null,
       };

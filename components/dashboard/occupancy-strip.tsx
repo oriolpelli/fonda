@@ -101,12 +101,14 @@ export function OccupancyStrip({
   const hasAnyRate = Boolean(
     rateOutlook?.hasRevenue || rateOutlook?.hasSellingPrice
   );
-  if (rateOutlook?.hasSellingPrice) {
+  // Tonight's price only when the PMS answered for tonight recently; a night
+  // it couldn't answer for says nothing rather than "nothing on sale".
+  if (tonight?.sellFrom != null) {
     facts.push(
-      tonight?.sellFrom != null
-        ? t(dict.home.ratesSellingFrom, { price: money.format(tonight.sellFrom) })
-        : dict.home.ratesNothingOnSale
+      t(dict.home.ratesSellingFrom, { price: money.format(tonight.sellFrom) })
     );
+  } else if (tonight?.nothingOnSale) {
+    facts.push(dict.home.ratesNothingOnSale);
   }
   const pickup = rateOutlook?.pickupYesterdayTotal ?? null;
   if (pickup !== null) {

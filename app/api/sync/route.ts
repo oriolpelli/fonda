@@ -16,6 +16,13 @@ export const maxDuration = 300;
 // so this window can be wide.
 const DEFAULT_WINDOW_DAYS = 14;
 
+// "Today" here is UTC; the rate cache (B17) counts the next 14 HOTEL-LOCAL
+// nights, which end up to a day later — Madrid between local and UTC
+// midnight, any hotel west of UTC for most of its day. One more day forward
+// covers every timezone, so every run can keep the rate cache, and the day's
+// snapshot is taken at the first run after local midnight (lib/rate-sync.ts).
+const FORWARD_EXTRA_DAYS = 1;
+
 function startOfTodayUtc(): Date {
   const now = new Date();
   return new Date(
@@ -28,7 +35,8 @@ function addDays(date: Date, days: number): Date {
 }
 
 /**
- * Resolves the sync window from query params, defaulting to today ± 14 days.
+ * Resolves the sync window from query params, defaulting to today − 14 days
+ * to today + 15 (see FORWARD_EXTRA_DAYS).
  * `?from=ISO` / `?to=ISO` override either bound.
  */
 function resolveWindow(searchParams: URLSearchParams): {
@@ -44,7 +52,9 @@ function resolveWindow(searchParams: URLSearchParams): {
     throw new Error(`Invalid 'from' date: ${fromParam}`);
   }
 
-  const end = toParam ? new Date(toParam) : addDays(today, DEFAULT_WINDOW_DAYS);
+  const end = toParam
+    ? new Date(toParam)
+    : addDays(today, DEFAULT_WINDOW_DAYS + FORWARD_EXTRA_DAYS);
   if (Number.isNaN(end.getTime())) {
     throw new Error(`Invalid 'to' date: ${toParam}`);
   }

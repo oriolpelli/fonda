@@ -36,6 +36,7 @@ create table if not exists public.rate_nights (
   sell_from_net        numeric(12, 2),
   sell_from_gross      numeric(12, 2),
   sell_from_checked_at timestamptz,
+  sell_from_attempted_at timestamptz,
   currency             text,
   updated_at           timestamptz not null default now(),
   primary key (hotel_id, night)

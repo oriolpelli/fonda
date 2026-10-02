@@ -9,12 +9,14 @@ import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-// offers.read (B17): the selling price is read from Apaleo's offers — what a
-// guest could book tonight, with availability and restrictions applied. The
-// Apaleo app registration must allow it too; connections made before B17
-// lack it until the hotel reconnects (lib/apaleo.ts getSellingPrices).
+// B17's selling price reads Apaleo's offers, which needs `offers.read`. It is
+// deliberately NOT in the default: asking for a scope the Apaleo app
+// registration doesn't allow fails the authorize step and would break every
+// new connection. To turn selling prices on for Apaleo, allow offers.read on
+// the app in Apaleo's developer portal, set APALEO_SCOPES to these four plus
+// offers.read, and reconnect (docs/audits/2026-10-02-B17-rate-cache.md).
 const DEFAULT_SCOPES =
-  "offline_access reservations.read rateplans.read setup.read offers.read";
+  "offline_access reservations.read rateplans.read setup.read";
 
 export function apaleoRedirectUri(request: Request): string {
   return (

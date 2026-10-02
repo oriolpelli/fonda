@@ -11,8 +11,10 @@ import {
   readVip,
   withSlimRaw,
 } from "@/lib/pms-fields";
+import { occupancyOutlook } from "@/lib/occupancy";
 import { pseudoName } from "@/lib/pseudonymise";
 import { loadRateOutlook } from "@/lib/rate-outlook";
+import { localDateOf } from "@/lib/stay-phase";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Json } from "@/types/database";
 
@@ -284,20 +286,25 @@ export async function generateBriefing(
     .gte("created_at", since)
     .in("status", ["pending", "needs_attention"]);
 
-  // Occupancy per day across the horizon.
-  const occupancy: { date: string; occupancyPct: number }[] = [];
-  for (let i = 0; i < OCCUPANCY_HORIZON_DAYS; i++) {
-    const dayStr = addDays(todayStr, i);
-    const dayStart = zonedMidnightUtc(tz, dayStr).toISOString();
-    const dayEnd = zonedMidnightUtc(tz, addDays(dayStr, 1)).toISOString();
-    const occupied = active.filter(
-      (r) => r.start_utc! < dayEnd && r.end_utc! > dayStart
-    ).length;
-    occupancy.push({
-      date: dayStr,
-      occupancyPct: hotel.rooms_count > 0 ? occupied / hotel.rooms_count : 0,
-    });
-  }
+  // Occupancy per night across the horizon, by the shared rule in
+  // lib/occupancy.ts (a stay sells its arrival night up to, not including, its
+  // departure day) — the rule Home's strip and the rate cache use. This loop
+  // used to count any stay overlapping the calendar day, departure day
+  // included, so the brief read a night or so fuller than the strip; with
+  // average rates now beside it (B17) the two have to agree.
+  const occupancy: { date: string; occupancyPct: number }[] = occupancyOutlook(
+    active.map((r) => ({
+      arrival: localDateOf(tz, r.start_utc),
+      departure: localDateOf(tz, r.end_utc),
+    })),
+    hotel.rooms_count,
+    todayStr,
+    OCCUPANCY_HORIZON_DAYS
+  ).map((night) => ({
+    date: night.date,
+    occupancyPct:
+      hotel.rooms_count > 0 ? night.occupied / hotel.rooms_count : 0,
+  }));
   const lowOccupancyDays = occupancy
     .filter((o) => o.occupancyPct < LOW_OCCUPANCY_THRESHOLD)
     .map((o) => ({ date: o.date, occupancyPct: Math.round(o.occupancyPct * 100) }));
@@ -323,6 +330,7 @@ export async function generateBriefing(
             occupancyPct: Math.round((occupancyByDate.get(night.date) ?? 0) * 100),
             averageRate: night.adr,
             sellingFrom: night.sellFrom,
+            nothingOnSale: night.nothingOnSale,
             pickedUpYesterday: night.pickupYesterday,
             pickedUpLast7Days: night.pickupWeek,
           })),
@@ -362,7 +370,7 @@ export async function generateBriefing(
     buildHotelProfileSummary(settings),
     rates
       ? [
-          `The "rates" data gives, for each of the next 14 nights, the average rate of the rooms already sold (averageRate) and the lowest public price the hotel is still selling at (sellingFrom), both in ${rates.currency ?? "the hotel's currency"} excluding VAT, plus the rooms booked yesterday for that night net of cancellations (pickedUpYesterday) and over the last 7 days (pickedUpLast7Days). A null is unknown: leave it out.`,
+          `The "rates" data gives, for each of the next 14 nights, the average rate of the rooms already sold (averageRate) and the lowest public price a guest booking today could get (sellingFrom), both in ${rates.currency ?? "the hotel's currency"} excluding VAT; nothingOnSale is true when the hotel has nothing left to sell that night; plus the rooms booked yesterday for that night net of cancellations (pickedUpYesterday) and over the last 7 days (pickedUpLast7Days). A null is unknown: leave it out.`,
           "In the rate_alert section, give a short revenue signal alongside occupancy: name the soft nights with their average rate and selling price, and any notable pickup. State facts only. Never recommend a specific price, discount or rate change, and never compare with last year or any period the data does not cover. Say once that the rates exclude VAT.",
         ].join(" ")
       : "",

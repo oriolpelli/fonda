@@ -252,17 +252,19 @@ export async function syncCustomers(
   return customers.length;
 }
 
-/**
- * Pulls all reservations colliding with [startDate, endDate] into Supabase,
- * then pulls the guest profiles those reservations reference. Returns the
- * number of rows synced for each.
- */
-export async function syncReservations(
+/** What one pull fetched, for the rate step that runs after it's logged. */
+interface PullResult {
+  result: SyncResult;
+  pms: NonNullable<Awaited<ReturnType<typeof getPmsClientForHotel>>>;
+  reservations: MewsReservation[];
+}
+
+async function pullReservations(
   hotelId: string,
   startDate: string | Date,
   endDate: string | Date,
   options?: GetReservationsOptions
-): Promise<SyncResult> {
+): Promise<PullResult> {
   const pms = await getPmsClientForHotel(hotelId);
   if (!pms) {
     throw new Error(`Hotel ${hotelId} is not connected to a PMS.`);
@@ -303,29 +305,56 @@ export async function syncReservations(
     `[sync] reservations ${reservationWrites.written} written, ${reservationWrites.unchanged} unchanged; customers ${customerWrites.written} written, ${customerWrites.unchanged} unchanged`
   );
 
-  // The rate cache (B17), from the reservations this run just fetched. Only a
-  // full fetch of every stay touching the window can count rooms, so a run
-  // filtered by state or by another time rule is left out. Never fails the
-  // sync: reservations are stored by now, and a rates error is reported and
-  // the run still succeeds.
+  return {
+    result: { reservations: reservations.length, customers },
+    pms,
+    reservations,
+  };
+}
+
+/**
+ * Pulls all reservations colliding with [startDate, endDate] into Supabase,
+ * then pulls the guest profiles those reservations reference. Returns the
+ * number of rows synced for each.
+ */
+export async function syncReservations(
+  hotelId: string,
+  startDate: string | Date,
+  endDate: string | Date,
+  options?: GetReservationsOptions
+): Promise<SyncResult> {
+  return (await pullReservations(hotelId, startDate, endDate, options)).result;
+}
+
+/**
+ * The rate cache (B17), from the reservations a pull just fetched. Runs after
+ * the pull is stored AND logged, so a slow or failing PMS rate call can never
+ * cost a hotel its "synced at" or its sync log. Only a full fetch of every
+ * stay touching the window can count rooms, so a pull filtered by state or by
+ * another time rule is left out. Never throws.
+ */
+async function syncRatesAfter(
+  hotelId: string,
+  pull: PullResult,
+  startDate: string | Date,
+  endDate: string | Date,
+  options?: GetReservationsOptions
+): Promise<void> {
   const fullFetch =
     !options?.states &&
     (!options?.timeFilter || options.timeFilter === "Colliding");
-  if (fullFetch) {
-    try {
-      await syncRates({
-        hotelId,
-        pms,
-        reservations,
-        windowStart: new Date(startDate),
-        windowEnd: new Date(endDate),
-      });
-    } catch (err) {
-      Sentry.captureException(err, { tags: { hotelId, stage: "rates" } });
-    }
+  if (!fullFetch) return;
+  try {
+    await syncRates({
+      hotelId,
+      pms: pull.pms,
+      reservations: pull.reservations,
+      windowStart: new Date(startDate),
+      windowEnd: new Date(endDate),
+    });
+  } catch (err) {
+    Sentry.captureException(err, { tags: { hotelId, stage: "rates" } });
   }
-
-  return { reservations: reservations.length, customers };
 }
 
 /**
@@ -342,8 +371,10 @@ export async function syncHotel(
   const admin = createAdminClient();
   const startedAt = new Date().toISOString();
 
+  let pull: PullResult;
   try {
-    const result = await syncReservations(hotelId, startDate, endDate, options);
+    pull = await pullReservations(hotelId, startDate, endDate, options);
+    const result = pull.result;
     const finishedAt = new Date().toISOString();
 
     await admin.from("sync_logs").insert({
@@ -358,8 +389,6 @@ export async function syncHotel(
       .from("hotels")
       .update({ last_synced_at: finishedAt })
       .eq("id", hotelId);
-
-    return result;
   } catch (err) {
     Sentry.captureException(err, {
       tags: { hotelId, stage: "sync" },
@@ -373,6 +402,10 @@ export async function syncHotel(
     });
     throw err;
   }
+
+  // Logged and stamped; now the rate cache, which can't undo either.
+  await syncRatesAfter(hotelId, pull, startDate, endDate, options);
+  return pull.result;
 }
 
 export interface HotelSyncOutcome {

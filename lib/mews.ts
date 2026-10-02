@@ -15,7 +15,7 @@ import {
   type MewsRateLite,
   type MewsRestrictionLite,
   type NightCharge,
-  type NightPrice,
+  type NightPriceResult,
 } from "@/lib/rate-math";
 import { addDays } from "@/lib/occupancy";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -230,7 +230,7 @@ export interface MewsClient {
     reservationIds: string[],
     window: PmsRateWindow
   ): Promise<NightCharge[]>;
-  getSellingPrices(window: PmsRateWindow): Promise<NightPrice[]>;
+  getSellingPrices(window: PmsRateWindow): Promise<NightPriceResult[]>;
 }
 
 // ---------------------------------------------------------------------------
@@ -450,7 +450,10 @@ interface MewsService {
   IsActive?: boolean;
   /** Older payloads: "Reservable" for accommodation. */
   Type?: string | null;
-  Data?: { Discriminator?: string | null } | null;
+  Data?: {
+    Discriminator?: string | null;
+    Value?: { TimeUnitPeriod?: string | null } | null;
+  } | null;
 }
 interface ServicesResponse extends Paginated {
   Services?: MewsService[];
@@ -463,10 +466,17 @@ interface RestrictionsResponse extends Paginated {
 }
 type PricingResponse = Omit<MewsPricingLite, "rateId">;
 
-function isBookableService(service: MewsService): boolean {
+/**
+ * A service sold by the night. Parking and meeting rooms are "Bookable" too,
+ * and hourly or monthly services can't be priced on midnight-aligned nights,
+ * so the time unit has to be Day when MEWS says what it is.
+ */
+function isNightlyService(service: MewsService): boolean {
   if (service.IsActive === false) return false;
   const kind = service.Data?.Discriminator ?? service.Type;
-  return kind === "Bookable" || kind === "Reservable";
+  if (kind !== "Bookable" && kind !== "Reservable") return false;
+  const unit = service.Data?.Value?.TimeUnitPeriod;
+  return !unit || unit === "Day";
 }
 
 
@@ -629,15 +639,27 @@ export function createMewsClient(
 
     /**
      * The lowest public price on sale each night (B17): every public rate of
-     * every accommodation service, priced per room type, minus the room types
-     * with no room left and the nights a restriction closes. Five kinds of
-     * call — services, rates, one pricing call per public rate, restrictions,
-     * availability — which is why the sync runs this about hourly, not every
-     * 15 minutes.
+     * the hotel's room service, priced per room type, minus the room types
+     * with no room left and the rates a restriction closes for a guest
+     * booking now. Five kinds of call — services, rates, one pricing call per
+     * public rate, restrictions, availability — which is why the sync runs
+     * this about hourly, and with one retry and a 10 s timeout per call
+     * rather than the sync's four and 30 s: a slow answer here is worth less
+     * than the reservations sync it would hold up.
+     *
+     * Which service: the one the sync says most stays belong to. Without that
+     * hint (no stays in the fortnight), the hotel's only nightly bookable
+     * service — and if it has several, the answer is "can't tell" ([]).
      */
     async getSellingPrices(window) {
+      const quick: Required<MewsRetryOptions> = {
+        ...cfg,
+        maxRetries: 1,
+        timeoutMs: 10_000,
+      };
       const { nights, timezone } = window;
       if (nights.length === 0) return [];
+      const now = new Date();
       const first = zonedMidnightUtc(timezone, nights[0]).toISOString();
       const last = zonedMidnightUtc(
         timezone,
@@ -648,25 +670,29 @@ export function createMewsClient(
         addDays(nights[nights.length - 1], 1)
       ).toISOString();
 
-      const servicePages = await getAllPages<ServicesResponse>(
-        "services/getAll",
-        {},
-        credentials,
-        "Services",
-        cfg
-      );
-      const serviceIds = servicePages
-        .flatMap((p) => p.Services ?? [])
-        .filter(isBookableService)
-        .map((s) => s.Id);
-      if (serviceIds.length === 0) return [];
+      let serviceIds = window.serviceIds?.filter(Boolean) ?? [];
+      if (serviceIds.length === 0) {
+        const servicePages = await getAllPages<ServicesResponse>(
+          "services/getAll",
+          {},
+          credentials,
+          "Services",
+          quick
+        );
+        const nightly = servicePages
+          .flatMap((p) => p.Services ?? [])
+          .filter(isNightlyService)
+          .map((s) => s.Id);
+        if (nightly.length !== 1) return [];
+        serviceIds = nightly;
+      }
 
       const ratePages = await getAllPages<SellingRatesResponse>(
         "rates/getAll",
         { ServiceIds: serviceIds },
         credentials,
         "Rates",
-        cfg
+        quick
       );
       const rates = ratePages
         .flatMap((p) => p.Rates ?? [])
@@ -686,7 +712,7 @@ export function createMewsClient(
               LastTimeUnitStartUtc: last,
             },
             credentials,
-            cfg
+            quick
           )),
         })),
         getAllPages<RestrictionsResponse>(
@@ -697,7 +723,7 @@ export function createMewsClient(
           },
           credentials,
           "Restrictions",
-          cfg
+          quick
         ),
         Promise.all(
           serviceIds.map((serviceId) =>
@@ -710,7 +736,7 @@ export function createMewsClient(
                 Metrics: [...MEWS_AVAILABILITY_METRICS],
               },
               credentials,
-              cfg
+              quick
             )
           )
         ),
@@ -723,6 +749,7 @@ export function createMewsClient(
         pricing,
         restrictions: restrictionPages.flatMap((p) => p.Restrictions ?? []),
         availability,
+        now,
       });
     },
   };
