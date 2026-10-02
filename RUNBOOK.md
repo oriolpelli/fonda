@@ -253,8 +253,13 @@ Fine to be imperfect at launch: UI polish, mobile layout, AI edge cases.
   Populate it from the PMS (or from guest replies) to target only unknown ETAs.
 - **Room types show the PMS category ID**, not a friendly name (we don't cache
   the spaces/categories list).
-- **`rates.currentRates` is empty** in briefings/chat — rate plans aren't cached;
-  occupancy is the only rate signal.
+- **Rates (B17).** The sync keeps a rate cache (`rate_nights`, migration 0030):
+  per night, the average rate of rooms sold and the lowest public price on
+  sale, excl. VAT, plus a daily snapshot for pickup. Each run logs one line,
+  counts only: `[sync] rates N nights written; revenue …; prices …; snapshot …`.
+  `prices failed` means the PMS check failed (Sentry tag `rates.prices`); it
+  is retried hourly. Apaleo selling prices need the `offers.read` scope
+  (`docs/audits/2026-10-02-B17-rate-cache.md` §7). The Sheet import has none.
 - **Chat "draft an email"** creates an inbox draft with no recipient — handy as a
   link, but it can't be *sent* until a recipient is added.
 - **Stripe billing is not built** (you skipped it) — there's no payment/gating yet.

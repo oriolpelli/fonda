@@ -2,7 +2,7 @@
 
 **Status:** Authority. This is the only roadmap.
 **Owner:** Oriol
-**Rewritten:** 2026-09-18 · **Reordered:** 2026-10-01 — speed first (§1 Step 3, §2)
+**Rewritten:** 2026-09-18 · **Reordered:** 2026-10-01 — speed first (§1 Step 3, §2) · **Updated:** 2026-10-02 — speed shipped; B17 built, W10 next
 **Cadence:** one release a week
 
 > **The rule this document exists to enforce.** Before today, ten documents
@@ -148,7 +148,7 @@ permissions spec that exists) into a short section of this file before archiving
 it. Add the retirement header `gtm/POSITIONING_V3.md` §6 asked for to
 `FONDA_MARKETING_VOICE.md`.
 
-### Step 3 — The release train — speed first ◀ **building here**
+### Step 3 — The release train — speed done, B17 → W10 ◀ **building here**
 
 §2 below. W2–W6 and the whole follow-on list shipped 18–19 Sep; W9 (AI
 transparency) and the Ask history changes reached `main` on 1 Oct.
@@ -165,6 +165,13 @@ Revenue Management**, with W10's 1 Dec date still binding (§2). No new surface
 starts until S1 and S2 are done, and from now on every one that ships keeps
 the speed rules in §5 #11. §2's "How to run a release week" states the loop.
 
+**2 Oct: the speed pack is on `main`** — S1, S2 and S3 merged (`b9f7dd6`,
+pushed), migration 0029 applied (confirmed by Oriol). What's left of speed is
+checking, not building: S2 §4 and S3 §4's clicks on production, and the
+day-after numbers in S3 §1.5 (Vercel p75 for Home, `/api/sync` duration, and
+`layout.session` / `layout.hotel` — the Cache Components trigger). **B17 is
+built** on `b17/rate-cache` (§2); **W10 follows it.**
+
 ### Step 3a — The pilot sprint, 23 Sep – 6 Oct ◀ **selling, in parallel**
 
 **Selling outranks building until 6 October.** Zero pilots is the actual
@@ -175,7 +182,7 @@ demo blockers in `gtm/PILOT_SPRINT.md` §4 (migrations 0023/0024, demo seed
 data, the demo run-through) and to fixes a demo or a live pilot needs. The
 release train resumes after the sprint review on 6 Oct.
 
-**Two recorded exceptions (1 Oct, Oriol's calls):**
+**Recorded exceptions (Oriol's calls):**
 
 1. W9 (AI transparency) was built early on `w9/ai-transparency`, one commit per
    prompt, and reached `main` after migration 0025 was applied.
@@ -183,6 +190,9 @@ release train resumes after the sprint review on 6 Oct.
    the sprint on `perf/…` branches, previewed, then merged. This changes what
    gets *built*, not whether outreach happens: the sprint's selling days in
    `gtm/PILOT_SPRINT.md` still run, and a faster demo is in their service.
+3. **(2 Oct) B17, then W10, are built during the sprint too** — Oriol's call
+   once speed was merged. Same terms as above: built on their own branches,
+   previewed, merged; the sprint's selling days still run.
 
 ### Running alongside all of it, from today
 
@@ -217,8 +227,9 @@ One release a week. Each row is a week's work and ships on its own.
 | **W8** | **Reputation** | The first real Commercial surface. Reviews fetched, themed, score movement | §6 · **prompts 13–14**, after decision P-4 |
 | **W9** ✅ *(1 Oct, on `main`)* | **AI transparency (EU AI Act, P0)** | Model IDs in one place + provenance on every output (migration 0025, also closes the two `emails` rows in §3.2); machine-readable AI headers on every sent reply, chaser and brief; quiet "Fondas AI" labels; recorded bulk-send confirmation. **Hard deadline 2 Dec 2026** — met | `AI_ACT_PROMPTS.md` **A1–A4** |
 | **S1** 🟢 *merged to `main` 1 Oct (`94e9c77`), 0028 applied* | **Speed, pass A — nothing visible, everything faster** | Opt-in loader timings; read 5 keys of the PMS payload instead of all of it, no email bodies outside the inbox; one hotel read per request and parallel loads on every live page; two indexes (migration 0028); visited pages kept 30 s; Sentry loaded when idle; Customize loaded on open; one render per inbox action | `docs/audits/2026-10-01-performance.md` §6 **M1, P1–P4** |
-| **S2** 🟡 *built 1 Oct on `perf/pass-b` (on `main` after S1), no migration — preview, merge* | **Speed, pass B — feels instant** | Home, Brief, Communications and the sidebar badges stream in; the inbox sends full text only for open work; optimistic Send/Dismiss/Flag with a cached Gmail token (stored thread id skipped — needs a migration, nothing gained behind an optimistic row); guest inference off the critical path with a 10-minute back-off; Ask caches the hotel context across turns | same, **P5–P8** |
-| **S3** 🟡 *built 1 Oct on `perf/pass-c` (contains S2); migration 0029 — apply, preview, merge* | **Speed, pass C — the database stops fighting the dashboard** | Sync writes only changed rows (it was 97% of production DB time); lighter Communications page (1.7 MB → 0.55 MB) with full text on hover; guest panes on demand; only the needed dictionary in the browser (login 87 → 33 KB); pending hairline + prefetched ⌘K results; Ask caches the conversation; stored Gmail thread; durable AI back-off; 10 RLS policies per-query | `docs/audits/2026-10-01-S3-speed-pass-c.md` (P9, §4.12, owner checks; P10 spike: later) |
+| **S2** ✅ *merged to `main` 2 Oct (via `perf/pass-c`, `b9f7dd6`), no migration* | **Speed, pass B — feels instant** | Home, Brief, Communications and the sidebar badges stream in; the inbox sends full text only for open work; optimistic Send/Dismiss/Flag with a cached Gmail token (stored thread id skipped — needs a migration, nothing gained behind an optimistic row); guest inference off the critical path with a 10-minute back-off; Ask caches the hotel context across turns | same, **P5–P8** |
+| **S3** ✅ *merged to `main` 2 Oct (`b9f7dd6`); 0029 applied (confirmed by Oriol, 2 Oct)* | **Speed, pass C — the database stops fighting the dashboard** | Sync writes only changed rows (it was 97% of production DB time); lighter Communications page (1.7 MB → 0.55 MB) with full text on hover; guest panes on demand; only the needed dictionary in the browser (login 87 → 33 KB); pending hairline + prefetched ⌘K results; Ask caches the conversation; stored Gmail thread; durable AI back-off; 10 RLS policies per-query | `docs/audits/2026-10-01-S3-speed-pass-c.md` (P9, §4.12, owner checks; P10 spike: later) |
+| **B17** 🟡 *built 2 Oct on `b17/rate-cache`; migration 0030 — apply, preview (real-PMS check), merge* | **The rate cache** | Per night, next 14: the average rate of rooms already sold and the lowest public price still on sale (both excl. VAT), and yesterday's pickup from a daily snapshot. In the brief's rate paragraph (facts, no price advice), in Ask (with a "Rates" chip), and under each night on Home's strip. MEWS and Apaleo; the Sheet import says it has no rates. Closes the empty `rates.currentRates` (§3.2) | `docs/audits/2026-10-02-B17-rate-cache.md` |
 | **W10** | **AI trust pack (P1)** | "How Fondas uses AI" on `/trust`; AI-literacy onboarding + record (Art. 4); guest-notice wording; AI activity log + problem reports — un-parks *AI management*. **Before the first invoices, ~1 Dec** | `AI_ACT_PROMPTS.md` **A5–A8** |
 
 **Then, in order — ✅ all shipped 19 Sep:** the guest context pane (15) → chat
@@ -252,9 +263,9 @@ production build, and checked end to end against a local Supabase stand-in
 with 30 ms per call. Measured against S1 there: Home first paint 836 → 352 ms,
 a guest record 2.3 s → 0.65 s with inference due, Needs attention 1.4 s →
 0.09 s, and Ask's second question reads the hotel from the prompt cache. No
-migration. To ship: run the clicks in
-`docs/audits/2026-10-01-S2-speed-pass-b.md` §4 on the preview, then merge. Its §6
-has four small decisions, none blocking.
+migration. **Merged 2 Oct** with S3; its §4 clicks are now a production
+check. Three of its §6 decisions were answered by S3 (stored thread id,
+durable back-off, a lighter page); auto-advance after Send stays a UX call.
 
 **S3 status (1 Oct):** the rest of the speed pack, built on `perf/pass-c`
 (which contains S2). The owner checks were run in the dashboards (read-only)
@@ -266,12 +277,24 @@ day. S3 makes the sync write only what changed (migration 0029). It also
 lightens Communications from 1.7 MB to 0.55 MB, sends the browser only the
 dictionary it reads, acknowledges every click, and caches Ask's whole
 conversation. Independently reviewed; the one high finding (a stale cached
-draft) is fixed and tested. To ship: apply `APPLY_0029.sql`, push
-`perf/pass-c`, run S2 §4 and S3 §4 on the preview, merge. The P10 spike says
-Cache Components *later* (report in `docs/audits/`).
+draft) is fixed and tested. **Merged 2 Oct (`b9f7dd6`) and 0029 applied.**
+Still to do: S2 §4 and S3 §4 on production, and S3 §1.5's next-morning
+numbers. The P10 spike says Cache Components *later* (report in
+`docs/audits/`).
 
-**Next, in order:** **S1 → S2 → S3** (speed — Oriol's call, 1 Oct, §1 Step 3) → rate
-cache (B17) → W10 AI trust pack → Revenue Management. Speed goes first because
+**B17 status (2 Oct):** built on `b17/rate-cache` from `main` at `b9f7dd6` —
+four commits plus one of fixes from an independent review (two high: a Sheet
+hotel shown "nothing on sale", and early-booker rates quoted as open; both
+fixed and pinned by fixtures). Gated by lint, tsc, a production build and 59
+fixture checks (`npm run check:rates`). Neither PMS was reachable from the
+build session, so the payload shapes follow the docs; the record's §4 item 4
+is the check against the MEWS demo before any demo leans on rates. Oriol's
+calls: both numbers, net of VAT, pickup from a nightly snapshot. To ship:
+apply `APPLY_0030.sql`, push, Sync now, run the record's §4, merge. Apaleo
+selling prices need an owner step (`offers.read`, record §7).
+
+**Next, in order:** ~~S1 → S2 → S3~~ (speed, shipped 2 Oct) → **rate cache (B17,
+built 2 Oct)** → **W10 AI trust pack** → Revenue Management. Speed goes first because
 every surface after it inherits whatever the read path costs, and because a
 pilot judges the product on the mornings it is slow. If W10 and B17 compete for
 a week, W10 wins before 1 Dec. The speed pack is done apart from adopting Cache
@@ -344,7 +367,8 @@ All from `RUNBOOK.md` §14 unless noted. These are real and a pilot will hit the
 | 🔴 | **`arrival_time` is never populated by sync** | *every* upcoming confirmed guest is chase-eligible |
 | 🔴 | **Chat "draft an email" produces a draft with no recipient** | it cannot be sent |
 | 🟠 | **Room types show the PMS category ID, not a name** | categories/spaces aren't cached |
-| 🟠 | **`rates.currentRates` is empty** in briefings and chat | no rate-plan cache — this is B17, and it blocks Revenue Management |
+| 🟡 | ~~**`rates.currentRates` is empty** in briefings and chat~~ | **closed by B17** once 0030 is applied and `b17/rate-cache` merged: per-night average rate, selling price and pickup in the brief, Ask and Home |
+| 🟡 | **MEWS occupancy counts every service's reservations** | `reservations/getAll` isn't filtered by service, so a MEWS hotel that sells parking or a meeting room as a reservable service would see them counted as rooms (strip, brief, rate cache alike). Check on the first MEWS pilot; found during B17 (record §9) |
 | 🟠 | **Brief email subject and section headings are hardcoded English** | a Spanish pilot gets Spanish body text under English headings. Drive off `briefing_language`. **This had exactly one mention in the whole corpus and was the item closest to being lost** |
 | 🟡 | **`supabase/schema.sql` is missing migration 0011** | a rebuilt or staging DB would silently lack the 18-column hotel profile |
 | 🟠 | **Nothing in the product is ever deleted.** There is no retention policy, no pruning job and no `delete` outside cascades, anywhere | see below |
@@ -386,6 +410,7 @@ Nothing here is optional once money changes hands.
 |---|---|
 | 🔴 | `lib/seo.ts` preview-URL resolution — see §1 step 3. The env var is set; the code change is not made |
 | 🟡 | **Real product screenshots in the feature bento** — check-in and chat have no showcase band. Dependency: a nicely-seeded demo hotel |
+| 🟡 | **The sample brief claims a last-year comparison** ("last summer that Thursday closed at 90%", `app/[lang]/sample-brief/content.ts`, all three locales) that the product can't make — B17 has no history before a hotel connects. Swap for an average-rate / pickup line the brief really writes. Found during B17 |
 | 🟡 | **Real Morning-Brief screenshot** replacing the hand-built mockup; optional 2-min demo video |
 | 🟡 | Reduced-motion visual check on the parallax hero |
 | 🟡 | Hero final QA — one line on desktop, villa ~70vw, navy legible over the pool |
@@ -437,6 +462,8 @@ Held deliberately. Each has a trigger, not a date.
 | **Founder-tune `lib/todo-rules.ts` thresholds** | is 38% occupancy next week really a to-do? Your call, from hospitality experience |
 | **RLS initplan rewrite** — every policy calls `current_hotel_id()` / `auth.uid()` per row; wrap them as `(select …)` (Supabase's "auth_rls_initplan" advice) | the Performance Advisor flagging `reservations` or `emails`. **Advisor run 1 Oct (S3):** it flagged only `users`, `dashboard_layouts`, `chat_threads` and `chat_logs`, and those ten policies are rewritten in 0029. The big tables aren't flagged, so not fired |
 | **Cache Components** (Next 16's prerendered shell + streamed data). Spiked 1 Oct: builds with ~24 files touched; only the frame gets faster; kept-alive routes bring a chat bug (report: `docs/audits/2026-10-01-P10-cache-components-spike.md`) | `layout.session` + `layout.hotel` on production above ~50 ms after S3, or a click-to-skeleton time that still feels slow |
+| **Rates for the Sheet import** — a price column could feed the average rate (B17), but exports don't say whether amounts include VAT | a Sheet pilot asks for rates; decide the VAT basis (or a per-hotel VAT setting) then |
+| **Same night last year / pace vs last year** in the brief and Revenue Management | 365 days of `rate_snapshots` (kept 400 days from B17) |
 | **Reservations accumulate** — sync upserts today ±14 days and nothing prunes old stays | with S1's `(hotel_id, end_utc)` index it no longer slows reads, and since S3 the sync no longer rewrites unchanged rows; decide a retention window with the log pruning in §3.2 |
 | **Sentry read token (`SENTRY_AUTH_TOKEN`)** | would let Claude Code query issues directly |
 | **Quarterly competitive review** | first one **1 October** — the only dated commitment carried over |
@@ -481,8 +508,10 @@ so they don't vanish with them.
 
 1. **No fake social proof.** Quotes only from a named hotel that agreed **in
    writing**. No `Review` or `AggregateRating` JSON-LD until the quotes are real.
-2. **No invented data.** The occupancy strip's ADR row stays a placeholder until
-   there is a rate cache. Inventing an ADR is the fastest way to lose a GM.
+2. **No invented data.** The strip's average-rate row comes only from the rate
+   cache (B17) — the PMS's own room charges — and shows a dash, never a zero,
+   where no room is paid; a selling price the PMS couldn't confirm in 6 hours
+   isn't shown. Inventing an ADR is the fastest way to lose a GM.
 3. **No unearned trust badges.** `/trust` states out loud that there is no
    ISO 27001 and no SOC 2. No seal, badge or "compliant with" line until a
    certificate exists. **EU AI Act:** no certificate exists for a system in our

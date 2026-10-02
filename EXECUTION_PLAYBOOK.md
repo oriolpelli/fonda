@@ -528,7 +528,7 @@ The August tracks are specced in `ROADMAP.md` v2 (Aug-1…Aug-5 + commercial tra
 |---|---|---|
 | B15 | Aug-1 Pre-arrival upsell drafts (uses B6 fields) | ☐ |
 | B16 | Aug-2 Draft-diff tracking → acceptance-rate metric (extends B12's edit-distance buckets) | ☐ |
-| B17 | Aug-3 Rate cache + revenue signal in brief (spec Phase H, promoted) | ☐ |
+| B17 | Aug-3 Rate cache + revenue signal in brief (spec Phase H, promoted) | ✅ built 2 Oct without a written prompt — the decisions and the build are in `docs/audits/2026-10-02-B17-rate-cache.md` |
 | B18 | Aug-4 Repeat-guest personalization (`customers.preferred_language`, stay count) | ☐ |
 | B19 | Aug-5 Graduated autonomy (design first; gate on B16 data) | ☐ |
 | B20 | Stripe billing + trial gating (LAUNCH_PLAN 2.1) | ☐ |
