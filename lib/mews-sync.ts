@@ -10,6 +10,7 @@ import type {
   GetReservationsOptions,
 } from "@/lib/mews";
 import { getPmsClientForHotel } from "@/lib/pms";
+import { syncRates } from "@/lib/rate-sync";
 import { migrationApplied } from "@/lib/schema-features";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchAllPages, fetchInChunks } from "@/lib/supabase/paged";
@@ -301,6 +302,28 @@ export async function syncReservations(
   console.log(
     `[sync] reservations ${reservationWrites.written} written, ${reservationWrites.unchanged} unchanged; customers ${customerWrites.written} written, ${customerWrites.unchanged} unchanged`
   );
+
+  // The rate cache (B17), from the reservations this run just fetched. Only a
+  // full fetch of every stay touching the window can count rooms, so a run
+  // filtered by state or by another time rule is left out. Never fails the
+  // sync: reservations are stored by now, and a rates error is reported and
+  // the run still succeeds.
+  const fullFetch =
+    !options?.states &&
+    (!options?.timeFilter || options.timeFilter === "Colliding");
+  if (fullFetch) {
+    try {
+      await syncRates({
+        hotelId,
+        pms,
+        reservations,
+        windowStart: new Date(startDate),
+        windowEnd: new Date(endDate),
+      });
+    } catch (err) {
+      Sentry.captureException(err, { tags: { hotelId, stage: "rates" } });
+    }
+  }
 
   return { reservations: reservations.length, customers };
 }

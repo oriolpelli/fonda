@@ -12,6 +12,17 @@ export const maxDuration = 60;
 /** Kept in step with migration 0024's header and with /trust. */
 const RETENTION_MONTHS = 24;
 
+/**
+ * Rate snapshots (migration 0030) are kept 400 days: long enough that a
+ * same-night-last-year comparison becomes possible, and no longer. They hold
+ * no guest data — counts and money per night — so this is housekeeping, not
+ * a privacy promise.
+ */
+const RATE_SNAPSHOT_DAYS = 400;
+
+/** PostgREST's answers for a table that isn't there (0030 not applied yet). */
+const MISSING_TABLE = new Set(["42P01", "PGRST205"]);
+
 function safeEqual(a: string, b: string): boolean {
   const ab = Buffer.from(a);
   const bb = Buffer.from(b);
@@ -60,13 +71,28 @@ export async function GET() {
     if (error) throw new Error(error.message);
 
     const deleted = (data ?? []).length;
+
+    const snapshotCutoff = new Date(
+      Date.now() - RATE_SNAPSHOT_DAYS * 24 * 60 * 60 * 1000
+    )
+      .toISOString()
+      .slice(0, 10);
+    const snapshots = await admin
+      .from("rate_snapshots")
+      .delete({ count: "exact" })
+      .lt("as_of", snapshotCutoff);
+    if (snapshots.error && !MISSING_TABLE.has(snapshots.error.code)) {
+      throw new Error(snapshots.error.message);
+    }
+    const snapshotsDeleted = snapshots.count ?? 0;
+
     await admin.from("cron_logs").insert({
       job: "retention",
       status: "ok",
-      message: `deleted=${deleted} cutoff=${cutoff.toISOString().slice(0, 10)}`,
+      message: `deleted=${deleted} cutoff=${cutoff.toISOString().slice(0, 10)} rate_snapshots=${snapshotsDeleted}`,
     });
 
-    return NextResponse.json({ deleted });
+    return NextResponse.json({ deleted, rateSnapshotsDeleted: snapshotsDeleted });
   } catch (err) {
     const message = (err as Error).message;
     Sentry.captureException(new Error(message), {
