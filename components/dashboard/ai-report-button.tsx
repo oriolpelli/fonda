@@ -86,7 +86,17 @@ export function AiReportButton({
       const last = focusables[focusables.length - 1];
       const current = document.activeElement;
       const inside = panel.contains(current) && current !== panel;
-      if (event.shiftKey && (current === first || !inside)) {
+      // A radio group is one tab stop, and once a reason is picked the checked
+      // radio is that stop — so Shift+Tab from any radio in the first group
+      // has to wrap too, or focus leaves for the page behind the scrim.
+      const atStart =
+        current === first ||
+        (first instanceof HTMLInputElement &&
+          first.type === "radio" &&
+          current instanceof HTMLInputElement &&
+          current.type === "radio" &&
+          current.name === first.name);
+      if (event.shiftKey && (atStart || !inside)) {
         event.preventDefault();
         last.focus();
       } else if (!event.shiftKey && (current === last || !inside)) {

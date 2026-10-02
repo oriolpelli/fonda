@@ -158,7 +158,8 @@ export async function loadAiActivity(
       outcome: "written" as const,
       model: b.model ? modelName(b.model) : null,
       guest: null,
-      path: "/dashboard/brief",
+      // That day's brief, not today's: the history page reads it by id.
+      path: `/dashboard/brief/history/${b.id}`,
     })),
   ].sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
 
