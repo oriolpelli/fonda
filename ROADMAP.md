@@ -2,7 +2,7 @@
 
 **Status:** Authority. This is the only roadmap.
 **Owner:** Oriol
-**Rewritten:** 2026-09-18 · **Reordered:** 2026-10-01 — speed first (§1 Step 3, §2) · **Updated:** 2026-10-02 — speed shipped; B17 built, W10 next
+**Rewritten:** 2026-09-18 · **Reordered:** 2026-10-01 — speed first (§1 Step 3, §2) · **Updated:** 2026-10-02 — speed shipped; B17 and W10 built
 **Cadence:** one release a week
 
 > **The rule this document exists to enforce.** Before today, ten documents
@@ -148,7 +148,7 @@ permissions spec that exists) into a short section of this file before archiving
 it. Add the retirement header `gtm/POSITIONING_V3.md` §6 asked for to
 `FONDA_MARKETING_VOICE.md`.
 
-### Step 3 — The release train — speed done, B17 → W10 ◀ **building here**
+### Step 3 — The release train — speed done; B17 and W10 built, to ship ◀ **here**
 
 §2 below. W2–W6 and the whole follow-on list shipped 18–19 Sep; W9 (AI
 transparency) and the Ask history changes reached `main` on 1 Oct.
@@ -170,7 +170,8 @@ pushed), migration 0029 applied (confirmed by Oriol). What's left of speed is
 checking, not building: S2 §4 and S3 §4's clicks on production, and the
 day-after numbers in S3 §1.5 (Vercel p75 for Home, `/api/sync` duration, and
 `layout.session` / `layout.hotel` — the Cache Components trigger). **B17 is
-built** on `b17/rate-cache` (§2); **W10 follows it.**
+built** on `b17/rate-cache` and **W10 is built** on `w10/ai-trust-pack`, stacked
+on it (§2) — both waiting on their migrations, a preview and a merge.
 
 ### Step 3a — The pilot sprint, 23 Sep – 6 Oct ◀ **selling, in parallel**
 
@@ -230,7 +231,7 @@ One release a week. Each row is a week's work and ships on its own.
 | **S2** ✅ *merged to `main` 2 Oct (via `perf/pass-c`, `b9f7dd6`), no migration* | **Speed, pass B — feels instant** | Home, Brief, Communications and the sidebar badges stream in; the inbox sends full text only for open work; optimistic Send/Dismiss/Flag with a cached Gmail token (stored thread id skipped — needs a migration, nothing gained behind an optimistic row); guest inference off the critical path with a 10-minute back-off; Ask caches the hotel context across turns | same, **P5–P8** |
 | **S3** ✅ *merged to `main` 2 Oct (`b9f7dd6`); 0029 applied (confirmed by Oriol, 2 Oct)* | **Speed, pass C — the database stops fighting the dashboard** | Sync writes only changed rows (it was 97% of production DB time); lighter Communications page (1.7 MB → 0.55 MB) with full text on hover; guest panes on demand; only the needed dictionary in the browser (login 87 → 33 KB); pending hairline + prefetched ⌘K results; Ask caches the conversation; stored Gmail thread; durable AI back-off; 10 RLS policies per-query | `docs/audits/2026-10-01-S3-speed-pass-c.md` (P9, §4.12, owner checks; P10 spike: later) |
 | **B17** 🟡 *built 2 Oct on `b17/rate-cache`; migration 0030 — apply, preview (real-PMS check), merge* | **The rate cache** | Per night, next 14: the average rate of rooms already sold and the lowest public price still on sale (both excl. VAT), and yesterday's pickup from a daily snapshot. In the brief's rate paragraph (facts, no price advice), in Ask (with a "Rates" chip), and under each night on Home's strip. MEWS and Apaleo; the Sheet import says it has no rates. Closes the empty `rates.currentRates` (§3.2) | `docs/audits/2026-10-02-B17-rate-cache.md` |
-| **W10** | **AI trust pack (P1)** | "How Fondas uses AI" on `/trust`; AI-literacy onboarding + record (Art. 4); guest-notice wording; AI activity log + problem reports — un-parks *AI management*. **Before the first invoices, ~1 Dec** | `AI_ACT_PROMPTS.md` **A5–A8** |
+| **W10** 🟡 *built 2 Oct on `w10/ai-trust-pack` (contains B17); migrations 0031–0032 — apply, preview, merge* | **AI trust pack (P1)** | "How Fondas uses AI" on `/trust`; AI-literacy onboarding + record (Art. 4); guest-notice wording; AI activity log + problem reports — un-parks *AI management*. **Before the first invoices, ~1 Dec** | `AI_ACT_PROMPTS.md` **A5–A8** · `docs/audits/2026-10-02-W10-ai-trust-pack.md` |
 
 **Then, in order — ✅ all shipped 19 Sep:** the guest context pane (15) → chat
 threads (16, migration 0023) → the Sana chat pass (D3) → Guests v1 (17,
@@ -293,8 +294,19 @@ calls: both numbers, net of VAT, pickup from a nightly snapshot. To ship:
 apply `APPLY_0030.sql`, push, Sync now, run the record's §4, merge. Apaleo
 selling prices need an owner step (`offers.read`, record §7).
 
-**Next, in order:** ~~S1 → S2 → S3~~ (speed, shipped 2 Oct) → **rate cache (B17,
-built 2 Oct)** → **W10 AI trust pack** → Revenue Management. Speed goes first because
+**W10 status (2 Oct):** A5–A8 built on `w10/ai-trust-pack`, stacked on
+`b17/rate-cache` (merging it merges B17), one commit per prompt plus one of
+fixes from an independent review (one-base activity numbers, a record whose
+timestamps the database sets, no lost or phantom acknowledgements). Gated by
+lint, tsc, the client-dictionary check, the analytics PII audit and a
+production build. **AI management is un-parked** as "AI activity" under
+Operation (§6). To ship: apply `APPLY_0031.sql` and `APPLY_0032.sql`, create
+the `ai@fondas.app` alias, push, run the record's §4, run `APP_UX_PROMPTS.md`
+§V for W10, merge. Still Oriol's (`AI_ACT_PROMPTS.md` §L): the lawyer's review
+(then set `COMPANY.aiAssessment`) and a native es/ca read of A3, A6 and A7.
+
+**Next, in order:** ~~S1 → S2 → S3~~ (speed, shipped 2 Oct) → **rate cache (B17)
+and W10 AI trust pack, both built 2 Oct — ship them** → Revenue Management. Speed goes first because
 every surface after it inherits whatever the read path costs, and because a
 pilot judges the product on the mornings it is slow. If W10 and B17 compete for
 a week, W10 wins before 1 Dec. The speed pack is done apart from adopting Cache
@@ -554,18 +566,19 @@ so they don't vanish with them.
 ## 6. The parked sections
 
 Removed from the navigation on 18 September (`APP_UX_PROPOSAL.md` §2.4). Not
-cancelled — waiting, and now tracked here rather than as eight empty pages.
+cancelled — waiting, and now tracked here rather than as empty pages.
 
 Housekeeping & maintenance · F&B · Staff · Procurement · Reporting & audit ·
-Chargeback · AI management · Team activity
+Chargeback · Team activity · ~~AI management~~ (returned 2 Oct as **AI
+activity**, under Operation — W10, `APP_UX_PROPOSAL.md` §11 decision 12)
 
 Their rows stay in `lib/roadmap.ts` and their copy stays in
 `COMINGSOON_CONTENT.md`. Both now feed the **locked tiles in the Home customize
 panel**, which is where the roadmap is sold from here on — and clicks on those
 tiles are the signal for which one to build. Log them via `lib/analytics.ts`.
 
-Each returns to the rail the week it ships. **AI management** returns in W10
-(`AI_ACT_PROMPTS.md` A8, as "AI activity"). **Team activity** may only return
+Each returns to the rail the week it ships. **AI management** came back in
+W10 (`AI_ACT_PROMPTS.md` A8, as "AI activity", under Operation). **Team activity** may only return
 under `AI_ACT_PROMPTS.md` §R's rule — per hotel or role, never per person.
 **Finance** is the most likely to
 come back as its own pillar rather than a row under Operation; decide when

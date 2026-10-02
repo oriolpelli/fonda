@@ -6,9 +6,10 @@ at a time, each in a **fresh Claude Code session** inside the repo. Each prompt
 ends with a gate (`npm run lint` + `npx tsc --noEmit`, and `npm run build` at
 every week gate).
 
-**Owner:** Oriol · **Written:** 2026-10-01 · **Status:** W9 (A1–A4) built on
-branch `w9/ai-transparency`, 1 Oct — awaiting migration 0025 and the manual
-tests; see `docs/audits/2026-10-01-W9-ai-transparency.md`. W10 not started.
+**Owner:** Oriol · **Written:** 2026-10-01 · **Status:** W9 (A1–A4) on `main`
+since 1 Oct (`docs/audits/2026-10-01-W9-ai-transparency.md`). **W10 (A5–A8)
+built 2 Oct** on `w10/ai-trust-pack` (on top of B17), migrations 0031–0032 —
+apply, preview, merge; see `docs/audits/2026-10-02-W10-ai-trust-pack.md`.
 **Sequencing:** `ROADMAP.md` §2 says *when* (W9, then W10). This pack only says
 *how to ask for it*. The audit behind it — what applies, why, and the sources —
 is the "Fondas — EU AI Act Readiness Audit" doc (1 Oct 2026).
