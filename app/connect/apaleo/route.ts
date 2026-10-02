@@ -9,8 +9,12 @@ import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
+// offers.read (B17): the selling price is read from Apaleo's offers — what a
+// guest could book tonight, with availability and restrictions applied. The
+// Apaleo app registration must allow it too; connections made before B17
+// lack it until the hotel reconnects (lib/apaleo.ts getSellingPrices).
 const DEFAULT_SCOPES =
-  "offline_access reservations.read rateplans.read setup.read";
+  "offline_access reservations.read rateplans.read setup.read offers.read";
 
 export function apaleoRedirectUri(request: Request): string {
   return (

@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "check:client-dict": "node scripts/check-client-dictionary.mjs",
+    "check:rates": "tsx scripts/check-rate-math.ts",
     "reliability-check": "tsx --conditions=react-server scripts/reliability-check.ts",
     "verify-migrations": "tsx scripts/verify-migrations.ts",
     "verify-ai-mark": "tsx --conditions=react-server scripts/verify-ai-mark.ts",

@@ -2,6 +2,7 @@ import "server-only";
 
 import { getApaleoClientForHotel } from "@/lib/apaleo";
 import { getMewsClientForHotel } from "@/lib/mews";
+import type { NightCharge, NightPrice } from "@/lib/rate-math";
 import { getSheetClientForHotel } from "@/lib/sheet";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -38,6 +39,15 @@ import type {
 
 export type PmsType = "mews" | "apaleo" | "sheet";
 
+/**
+ * The nights a rate call is about (B17): consecutive hotel-local dates, and
+ * the hotel's timezone to place a PMS's UTC time units on them.
+ */
+export interface PmsRateWindow {
+  nights: string[];
+  timezone: string;
+}
+
 /** The capabilities every PMS client exposes, with identical output types. */
 export interface PmsClient {
   getReservations(
@@ -48,6 +58,22 @@ export interface PmsClient {
   getCustomers(customerIds: string[]): Promise<MewsCustomer[]>;
   getRates(options?: GetRatesOptions): Promise<MewsRate[]>;
   getSpaces(): Promise<MewsSpacesResult>;
+  /**
+   * Room charges per reservation per night, for the given reservations over
+   * the window (lib/rate-math.ts). Optional: a source without charges (the
+   * Sheet import) doesn't implement it, and the rate cache records "no
+   * charges" rather than zero.
+   */
+  getNightCharges?(
+    reservationIds: string[],
+    window: PmsRateWindow
+  ): Promise<NightCharge[]>;
+  /**
+   * The lowest public price on sale each night of the window: a public rate,
+   * open that night, in a room type with a room left. A night with nothing on
+   * sale is simply absent. Optional, like the above.
+   */
+  getSellingPrices?(window: PmsRateWindow): Promise<NightPrice[]>;
 }
 
 /**

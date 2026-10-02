@@ -13,7 +13,17 @@ import type {
   MewsSpaceCategoryAssignment,
   MewsSpacesResult,
 } from "@/lib/mews";
+import { addDays } from "@/lib/occupancy";
 import type { PmsClient } from "@/lib/pms";
+import {
+  apaleoCheapestOffer,
+  apaleoNightCharges,
+  mapLimited,
+  zonedMidnightUtc,
+  type ApaleoOfferLite,
+  type ApaleoReservationSlicesLite,
+  type NightPrice,
+} from "@/lib/rate-math";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
@@ -41,6 +51,15 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /** Apaleo error bodies are short; cap what we quote so a stray HTML page can't
  *  flood a log line or a Sentry event. */
 const MAX_ERROR_BODY_CHARS = 500;
+/**
+ * The selling price asks for a one-night stay for two adults on the Direct
+ * channel: the hotel's own public price, the one a guest at the desk or on the
+ * phone is quoted. Fourteen offer calls per property per check, at most three
+ * at a time, about hourly.
+ */
+const OFFER_ADULTS = "2";
+const OFFER_CHANNEL = "Direct";
+const OFFER_CONCURRENCY = 3;
 
 const DEFAULTS = {
   maxRetries: 4,
@@ -495,6 +514,94 @@ export function createApaleoClient(credentials: ApaleoCredentials): PmsClient {
         )
       );
       return pages.flat().map(mapRate);
+    },
+
+    /**
+     * Room charges per night (B17), from the reservations' time slices: the
+     * same `Stay` listing as getReservations, with `expand=timeSlices`, over
+     * the rate window only, kept to the reservations asked about.
+     */
+    async getNightCharges(reservationIds, window) {
+      const { nights, timezone } = window;
+      if (nights.length === 0 || reservationIds.length === 0) return [];
+      const wantedIds = new Set(reservationIds);
+      const wantedNights = new Set(nights);
+      const from = zonedMidnightUtc(timezone, nights[0]);
+      const to = zonedMidnightUtc(timezone, addDays(nights[nights.length - 1], 1));
+
+      const rows: ApaleoReservationSlicesLite[] = [];
+      for (const propertyId of await reservationScopes()) {
+        rows.push(
+          ...(await getAll<ApaleoReservationSlicesLite>(
+            "/booking/v1/reservations",
+            "reservations",
+            {
+              ...(propertyId ? { propertyIds: [propertyId] } : {}),
+              dateFilter: "Stay",
+              from: toApaleoDateTime(from),
+              to: toApaleoDateTime(to),
+              expand: ["timeSlices"],
+            }
+          ))
+        );
+      }
+      return apaleoNightCharges(
+        rows.filter((r) => wantedIds.has(r.id)),
+        timezone
+      ).filter((c) => wantedNights.has(c.night));
+    },
+
+    /**
+     * The lowest public price on sale each night (B17), from Apaleo's offers:
+     * what a guest could book for one night, with availability and the
+     * hotel's restrictions already applied. Needs the `offers.read` scope —
+     * a connection made before B17 doesn't have it, and Apaleo answers 403
+     * until the hotel reconnects.
+     */
+    async getSellingPrices(window) {
+      const { nights } = window;
+      const properties = (await reservationScopes()).filter(
+        (id): id is string => Boolean(id)
+      );
+      if (nights.length === 0 || properties.length === 0) return [];
+
+      const jobs = properties.flatMap((propertyId) =>
+        nights.map((night) => ({ propertyId, night }))
+      );
+      const results = await mapLimited(jobs, OFFER_CONCURRENCY, async (job) => {
+        try {
+          const body = await apaleoFetch<{ offers?: ApaleoOfferLite[] }>(
+            "/booking/v1/offers",
+            {
+              propertyId: job.propertyId,
+              arrival: job.night,
+              departure: addDays(job.night, 1),
+              adults: OFFER_ADULTS,
+              channelCode: OFFER_CHANNEL,
+            }
+          );
+          return apaleoCheapestOffer(job.night, body.offers ?? []);
+        } catch (err) {
+          if (err instanceof ApaleoApiError && err.status === 403) {
+            throw new ApaleoApiError(
+              "Apaleo refused offers (403): the connection predates the offers.read scope. Reconnect Apaleo in Settings to show selling prices.",
+              { status: 403, endpoint: "/booking/v1/offers", cause: err }
+            );
+          }
+          // One night failing (e.g. a 422 for a night outside the
+          // property's selling window) leaves that night blank, not all.
+          if (err instanceof ApaleoApiError && err.status === 422) return null;
+          throw err;
+        }
+      });
+
+      const best = new Map<string, NightPrice>();
+      for (const price of results) {
+        if (!price) continue;
+        const current = best.get(price.night);
+        if (!current || price.net < current.net) best.set(price.night, price);
+      }
+      return nights.flatMap((n) => (best.has(n) ? [best.get(n)!] : []));
     },
 
     async getSpaces(): Promise<MewsSpacesResult> {

@@ -1,6 +1,23 @@
 import "server-only";
 
 import { decryptSecret, encryptSecret } from "@/lib/encryption";
+import type { PmsRateWindow } from "@/lib/pms";
+import {
+  MEWS_AVAILABILITY_METRICS,
+  isPublicSellableRate,
+  mapLimited,
+  mewsCheapestByNight,
+  mewsNightCharges,
+  zonedMidnightUtc,
+  type MewsAvailabilityLite,
+  type MewsOrderItemLite,
+  type MewsPricingLite,
+  type MewsRateLite,
+  type MewsRestrictionLite,
+  type NightCharge,
+  type NightPrice,
+} from "@/lib/rate-math";
+import { addDays } from "@/lib/occupancy";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
@@ -32,6 +49,13 @@ const MAX_PAGES = 1000; // safety cap against pathological cursor loops
 // MEWS caps the reservations/getAll interval at ~100 hours. Slice wider ranges
 // into chunks safely under that and merge the results.
 const MAX_RESERVATION_INTERVAL_MS = 96 * 60 * 60 * 1000; // 96 hours
+// orderItems/getAll takes at most 1000 ServiceOrderIds per request.
+const MAX_ORDER_ITEM_IDS = 1000;
+// The selling price prices every public rate once per check (about hourly).
+// A hotel has a handful; the cap keeps a misconfigured one from turning the
+// check into hundreds of calls. Base rates are priced first.
+const MAX_PRICED_RATES = 30;
+const PRICING_CONCURRENCY = 3;
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -202,6 +226,11 @@ export interface MewsClient {
   getRates(options?: GetRatesOptions): Promise<MewsRate[]>;
   getSpaces(): Promise<MewsSpacesResult>;
   getConfiguration(): Promise<MewsConfiguration>;
+  getNightCharges(
+    reservationIds: string[],
+    window: PmsRateWindow
+  ): Promise<NightCharge[]>;
+  getSellingPrices(window: PmsRateWindow): Promise<NightPrice[]>;
 }
 
 // ---------------------------------------------------------------------------
@@ -412,6 +441,34 @@ interface SpacesResponse extends Paginated {
   SpaceCategories?: MewsSpaceCategory[];
   SpaceCategoryAssignments?: MewsSpaceCategoryAssignment[];
 }
+interface OrderItemsResponse extends Paginated {
+  OrderItems?: MewsOrderItemLite[];
+}
+/** Partial — a service. Only the accommodation ("bookable") ones matter here. */
+interface MewsService {
+  Id: string;
+  IsActive?: boolean;
+  /** Older payloads: "Reservable" for accommodation. */
+  Type?: string | null;
+  Data?: { Discriminator?: string | null } | null;
+}
+interface ServicesResponse extends Paginated {
+  Services?: MewsService[];
+}
+interface SellingRatesResponse extends Paginated {
+  Rates?: (MewsRateLite & { IsBaseRate?: boolean | null })[];
+}
+interface RestrictionsResponse extends Paginated {
+  Restrictions?: MewsRestrictionLite[];
+}
+type PricingResponse = Omit<MewsPricingLite, "rateId">;
+
+function isBookableService(service: MewsService): boolean {
+  if (service.IsActive === false) return false;
+  const kind = service.Data?.Discriminator ?? service.Type;
+  return kind === "Bookable" || kind === "Reservable";
+}
+
 
 function parseDate(value: string | Date): Date {
   const date = value instanceof Date ? value : new Date(value);
@@ -543,6 +600,130 @@ export function createMewsClient(
         credentials,
         cfg
       );
+    },
+
+    /**
+     * Room charges for these reservations (B17). MEWS keeps a reservation's
+     * charges as order items whose ServiceOrderId is the reservation id, one
+     * `SpaceOrder` per night; lib/rate-math.ts picks those out and places
+     * each on its night.
+     */
+    async getNightCharges(reservationIds, window) {
+      const ids = [...new Set(reservationIds.filter(Boolean))];
+      const items: MewsOrderItemLite[] = [];
+      for (let i = 0; i < ids.length; i += MAX_ORDER_ITEM_IDS) {
+        const pages = await getAllPages<OrderItemsResponse>(
+          "orderItems/getAll",
+          { ServiceOrderIds: ids.slice(i, i + MAX_ORDER_ITEM_IDS) },
+          credentials,
+          "OrderItems",
+          cfg
+        );
+        items.push(...pages.flatMap((p) => p.OrderItems ?? []));
+      }
+      const wanted = new Set(window.nights);
+      return mewsNightCharges(items, window.timezone).filter((c) =>
+        wanted.has(c.night)
+      );
+    },
+
+    /**
+     * The lowest public price on sale each night (B17): every public rate of
+     * every accommodation service, priced per room type, minus the room types
+     * with no room left and the nights a restriction closes. Five kinds of
+     * call — services, rates, one pricing call per public rate, restrictions,
+     * availability — which is why the sync runs this about hourly, not every
+     * 15 minutes.
+     */
+    async getSellingPrices(window) {
+      const { nights, timezone } = window;
+      if (nights.length === 0) return [];
+      const first = zonedMidnightUtc(timezone, nights[0]).toISOString();
+      const last = zonedMidnightUtc(
+        timezone,
+        nights[nights.length - 1]
+      ).toISOString();
+      const end = zonedMidnightUtc(
+        timezone,
+        addDays(nights[nights.length - 1], 1)
+      ).toISOString();
+
+      const servicePages = await getAllPages<ServicesResponse>(
+        "services/getAll",
+        {},
+        credentials,
+        "Services",
+        cfg
+      );
+      const serviceIds = servicePages
+        .flatMap((p) => p.Services ?? [])
+        .filter(isBookableService)
+        .map((s) => s.Id);
+      if (serviceIds.length === 0) return [];
+
+      const ratePages = await getAllPages<SellingRatesResponse>(
+        "rates/getAll",
+        { ServiceIds: serviceIds },
+        credentials,
+        "Rates",
+        cfg
+      );
+      const rates = ratePages
+        .flatMap((p) => p.Rates ?? [])
+        .filter(isPublicSellableRate)
+        .sort((a, b) => Number(Boolean(b.IsBaseRate)) - Number(Boolean(a.IsBaseRate)))
+        .slice(0, MAX_PRICED_RATES);
+      if (rates.length === 0) return [];
+
+      const [pricing, restrictionPages, availability] = await Promise.all([
+        mapLimited(rates, PRICING_CONCURRENCY, async (rate) => ({
+          rateId: rate.Id,
+          ...(await mewsRequest<PricingResponse>(
+            "rates/getPricing",
+            {
+              RateId: rate.Id,
+              FirstTimeUnitStartUtc: first,
+              LastTimeUnitStartUtc: last,
+            },
+            credentials,
+            cfg
+          )),
+        })),
+        getAllPages<RestrictionsResponse>(
+          "restrictions/getAll",
+          {
+            ServiceIds: serviceIds,
+            CollidingUtc: { StartUtc: first, EndUtc: end },
+          },
+          credentials,
+          "Restrictions",
+          cfg
+        ),
+        Promise.all(
+          serviceIds.map((serviceId) =>
+            mewsRequest<MewsAvailabilityLite>(
+              "services/getAvailability/2024-01-22",
+              {
+                ServiceId: serviceId,
+                FirstTimeUnitStartUtc: first,
+                LastTimeUnitStartUtc: last,
+                Metrics: [...MEWS_AVAILABILITY_METRICS],
+              },
+              credentials,
+              cfg
+            )
+          )
+        ),
+      ]);
+
+      return mewsCheapestByNight({
+        tz: timezone,
+        nights,
+        rates,
+        pricing,
+        restrictions: restrictionPages.flatMap((p) => p.Restrictions ?? []),
+        availability,
+      });
     },
   };
 }
