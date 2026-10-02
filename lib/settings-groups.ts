@@ -13,7 +13,7 @@ import { localizedHref } from "@/lib/i18n/navigation";
  * a `settings.groups.<key>` block in all three dictionaries, an icon in
  * `app/[lang]/dashboard/settings/page.tsx`, and a page at that segment.
  */
-export const SETTINGS_GROUPS = ["connections", "hotel", "account"] as const;
+export const SETTINGS_GROUPS = ["connections", "hotel", "account", "ai"] as const;
 
 export type SettingsGroupKey = (typeof SETTINGS_GROUPS)[number];
 

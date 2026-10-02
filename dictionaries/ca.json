@@ -787,6 +787,10 @@
       "account": {
         "label": "Compte",
         "desc": "El teu idioma i el nom amb què se signen els resums."
+      },
+      "ai": {
+        "label": "La IA a Fondas",
+        "desc": "Com treballa el teu equip amb Fondas AI, qui ha llegit la guia i el text per als teus hostes."
       }
     },
     "notConnected": "Sense connexió",
@@ -903,7 +907,25 @@
     "reviewSummaryLabel": "Resum de ressenyes",
     "reviewSummaryEmpty": "Encara no hi ha resum — enganxa algunes ressenyes i resumeix.",
     "summarize": "Resumeix",
-    "summarizing": "Resumint…"
+    "summarizing": "Resumint…",
+    "aiPage": {
+      "literacyTitle": "Treballar amb Fondas AI",
+      "literacyBody": "Cinc targetes breus sobre què fa Fondas AI, on es pot equivocar i què revisar abans d'enviar. Tot el teu equip les veu una vegada en iniciar la sessió. Obre-les de nou aquí sempre que vulguis.",
+      "open": "Obrir les cinc targetes",
+      "print": "Versió per imprimir",
+      "recordTitle": "Qui les ha llegides",
+      "recordBody": "El Reglament europeu d'IA demana al teu hotel que ajudi qui fa servir la IA a entendre-la (art. 4). Aquest és el teu registre: qui va completar quina versió i quan. Només la finalització; no es registra res més.",
+      "recordPerson": "Persona",
+      "recordVersion": "Versió",
+      "recordStatus": "Estat",
+      "recordDate": "Data",
+      "statusCompleted": "Completat",
+      "statusSkipped": "Omès — sense completar",
+      "statusNotYet": "Encara no",
+      "download": "Baixar el registre (CSV)",
+      "recordUnavailable": "El registre encara no està disponible.",
+      "guideFooter": "Fondas · Treballar amb Fondas AI · versió {version}"
+    }
   },
   "apaleoStatus": {
     "connected": "Apaleo connectat.",
@@ -1290,7 +1312,38 @@
     "sentEdited": "Redactat per Fondas AI · editat abans d'enviar-lo",
     "askLine": "Fondas AI · la IA pot cometre errors — revisa les xifres clau",
     "briefLine": "Escrit per Fondas AI a partir del teu PMS i del teu correu. Comprova qualsevol dada abans d'actuar.",
-    "inferredMark": "Fondas AI"
+    "inferredMark": "Fondas AI",
+    "literacy": {
+      "title": "Treballar amb Fondas AI",
+      "stepOf": "{n} de {total}",
+      "skip": "Ara no",
+      "back": "Enrere",
+      "next": "Següent",
+      "done": "Fet",
+      "saving": "Desant…",
+      "cards": [
+        {
+          "title": "Què fa Fondas amb la IA",
+          "body": "Fondas fa servir IA per classificar el correu dels teus hostes, redactar respostes i peticions d'hora d'arribada, escriure el Resum matinal, respondre a Pregunta i anotar les preferències dels hostes que repeteixen. Tot el que escriu va marcat com a Fondas AI, perquè sempre sàpigues què ve d'una persona i què no."
+        },
+        {
+          "title": "On es pot equivocar",
+          "body": "La IA escriu amb facilitat fins i tot quan s'equivoca. On més falla és en dates, preus, tipus d'habitació i polítiques, sobretot si no se li han donat. També pot interpretar malament el to d'un hoste. Tracta cada esborrany com un primer esborrany."
+        },
+        {
+          "title": "Què revisar abans d'enviar",
+          "body": "Llegeix l'esborrany com el llegirà l'hoste. Comprova noms, dates, xifres i tot el que es promet: un late checkout, un reemborsament, una habitació. Si cita una política, assegura't que és la teva. Canvia el que estigui malament: quan l'envies, la resposta és teva."
+        },
+        {
+          "title": "El que Fondas no fa mai pel seu compte",
+          "body": "Fondas no envia mai res a un hoste per si sol. Una resposta, una petició d'hora d'arribada, un enviament en bloc: tot necessita que algú del teu equip premi el botó. No canvia mai el teu PMS, i no puntua ni classifica mai el teu equip."
+        },
+        {
+          "title": "Quan s'equivoca",
+          "body": "Digues-nos-ho. Fes servir «Informa d'un problema» sota qualsevol esborrany o resposta de Pregunta, o a Activitat de la IA. Digues què ha fallat: una dada, el to, un esborrany que no havia de fer. Els informes ens arriben sense les dades dels teus hostes, i els llegim tots."
+        }
+      ]
+    }
   },
   "bulkSend": {
     "titleRepliesOne": "Vols enviar {count} resposta tal com està redactada?",

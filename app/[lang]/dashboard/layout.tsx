@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 import { logout } from "@/app/[lang]/(auth)/actions";
 import { loadDictionary } from "@/app/[lang]/dictionaries";
+import { AiLiteracyGate } from "@/components/dashboard/ai-literacy-gate";
 import { AskYourHotel } from "@/components/dashboard/ask-your-hotel";
 import { deriveConnectionState } from "@/components/dashboard/connection-status";
 import { SetupBanner } from "@/components/dashboard/setup-banner";
@@ -241,6 +243,10 @@ export default async function DashboardLayout({
       dict={pickNamespaces(dict, DASHBOARD_CLIENT_NAMESPACES)}
     >
       <div className="flex min-h-screen">
+        {/* Printing a dashboard page prints the page, not the chrome — the
+            AI guide (settings/ai/guide) relies on it, and every other page
+            gains it for free. */}
+        <div className="contents print:hidden">
         <Sidebar
           navItems={navItems}
           settingsItem={settingsItem}
@@ -265,6 +271,7 @@ export default async function DashboardLayout({
           openLabel={dict.nav.openMenu}
           closeLabel={dict.nav.closeMenu}
         />
+        </div>
         {/* pt-14 clears the fixed mobile top bar; pl-60 the desktop sidebar,
             which replaced the 64px icon rail in P-6.
 
@@ -273,7 +280,7 @@ export default async function DashboardLayout({
             the dashboard's 14-night strip — and pushed the entire page sideways
             on a phone. Zeroing the minimum lets the column match the viewport
             and leaves each scroll container to handle its own overflow. */}
-        <div className="flex min-w-0 flex-1 flex-col pt-14 md:pl-60 md:pt-0">
+        <div className="flex min-w-0 flex-1 flex-col pt-14 md:pl-60 md:pt-0 print:p-0">
           {/* Column, not a plain block, so the docked "Ask your hotel" bar below
               can take the remaining height with `mt-auto` and sit at the foot of
               the column on short pages as well as long ones. */}
@@ -281,11 +288,11 @@ export default async function DashboardLayout({
               loading skeleton) takes the whole column instead: no centring, no
               padding, so its conversation list sits flush against the sidebar
               (APP_UX_PROPOSAL.md §11 #11). Every other page is unchanged. */}
-          <main className="mx-auto flex w-full max-w-[1120px] flex-1 flex-col px-5 pb-6 pt-6 md:px-8 md:pb-8 md:pt-10 lg:has-[[data-chat-surface]]:mx-0 lg:has-[[data-chat-surface]]:max-w-none lg:has-[[data-chat-surface]]:px-0 lg:has-[[data-chat-surface]]:pb-0 lg:has-[[data-chat-surface]]:pt-0">
+          <main className="mx-auto flex w-full max-w-[1120px] flex-1 flex-col px-5 pb-6 pt-6 md:px-8 md:pb-8 md:pt-10 print:max-w-none print:p-0 lg:has-[[data-chat-surface]]:mx-0 lg:has-[[data-chat-surface]]:max-w-none lg:has-[[data-chat-surface]]:px-0 lg:has-[[data-chat-surface]]:pb-0 lg:has-[[data-chat-surface]]:pt-0">
             {/* No PMS means every page below is empty for a reason the page
                 itself can't explain. Say so once, at the top, wherever they are. */}
             {!hotel?.pms_connected ? (
-              <div className="mb-8">
+              <div className="mb-8 print:hidden">
                 <SetupBanner
                   href={localizedHref(locale, "/onboarding/connect")}
                   title={dict.setup.bannerTitle}
@@ -298,7 +305,16 @@ export default async function DashboardLayout({
             {/* "Ask your hotel", docked at the foot of the content column — the
                 floating circular FAB is gone (FONDA_SANA_REDESIGN.md §8.5). It
                 hides itself on /dashboard/chat, which is the full surface. */}
-            <AskYourHotel userEmail={user.email ?? ""} />
+            <div className="contents print:hidden">
+              <AskYourHotel userEmail={user.email ?? ""} />
+            </div>
+            {/* "Working with Fondas AI" (AI_ACT_PROMPTS.md A6): once per
+                person, after sign-in. Its own boundary with no fallback, so
+                it never holds the page; usually a cookie answers it without
+                a database read (components/dashboard/ai-literacy-gate.tsx). */}
+            <Suspense fallback={null}>
+              <AiLiteracyGate userId={user.id} />
+            </Suspense>
           </main>
         </div>
       </div>

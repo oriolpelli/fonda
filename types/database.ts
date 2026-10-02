@@ -913,6 +913,52 @@ export type Database = {
           },
         ];
       };
+      /** AI literacy record, Art. 4 (migration 0031). Insert-only from clients. */
+      ai_literacy_acks: {
+        Row: {
+          id: string;
+          hotel_id: string;
+          user_id: string;
+          version: string;
+          status: "completed" | "skipped";
+          completed_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          hotel_id: string;
+          user_id: string;
+          version: string;
+          status: "completed" | "skipped";
+          completed_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          hotel_id?: string;
+          user_id?: string;
+          version?: string;
+          status?: "completed" | "skipped";
+          completed_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "ai_literacy_acks_hotel_id_fkey";
+            columns: ["hotel_id"];
+            isOneToOne: false;
+            referencedRelation: "hotels";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "ai_literacy_acks_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       /** B17 rate cache (migration 0030): one row per hotel per night. */
       rate_nights: {
         Row: {

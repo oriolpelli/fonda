@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
+  BookOpenCheck,
   Building2,
   ChevronRight,
   Plug,
@@ -23,6 +24,7 @@ const GROUP_ICONS: Record<SettingsGroupKey, LucideIcon> = {
   connections: Plug,
   hotel: Building2,
   account: UserRound,
+  ai: BookOpenCheck,
 };
 
 export async function generateMetadata({
@@ -35,9 +37,9 @@ export async function generateMetadata({
 }
 
 /**
- * Settings is a menu of three groups, not one long page — opening it shows what
+ * Settings is a menu of four groups, not one long page — opening it shows what
  * the categories are and nothing else. The forms live one click in, under
- * settings/{connections,hotel,account}.
+ * settings/{connections,hotel,account,ai}.
  */
 export default async function SettingsPage({
   params,

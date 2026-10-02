@@ -787,6 +787,10 @@
       "account": {
         "label": "Account",
         "desc": "Your language and the name briefings are signed with."
+      },
+      "ai": {
+        "label": "AI at Fondas",
+        "desc": "How your team works with Fondas AI, who has read the guide, and wording for your guests."
       }
     },
     "notConnected": "Not connected",
@@ -903,7 +907,25 @@
     "reviewSummaryLabel": "Review summary",
     "reviewSummaryEmpty": "No summary yet — paste some reviews and summarize.",
     "summarize": "Summarize",
-    "summarizing": "Summarizing…"
+    "summarizing": "Summarizing…",
+    "aiPage": {
+      "literacyTitle": "Working with Fondas AI",
+      "literacyBody": "Five short cards on what Fondas AI does, where it can be wrong and what to check before sending. Everyone on your team sees them once after signing in. Open them again here whenever you like.",
+      "open": "Open the five cards",
+      "print": "Printable version",
+      "recordTitle": "Who has read them",
+      "recordBody": "The EU AI Act asks your hotel to help the people who use AI understand it (Art. 4). This is your record of it: who completed which version, and when. Completion only — nothing else is tracked.",
+      "recordPerson": "Person",
+      "recordVersion": "Version",
+      "recordStatus": "Status",
+      "recordDate": "Date",
+      "statusCompleted": "Completed",
+      "statusSkipped": "Skipped — not completed",
+      "statusNotYet": "Not yet",
+      "download": "Download record (CSV)",
+      "recordUnavailable": "The record isn't available yet.",
+      "guideFooter": "Fondas · Working with Fondas AI · version {version}"
+    }
   },
   "apaleoStatus": {
     "connected": "Apaleo connected.",
@@ -1290,7 +1312,38 @@
     "sentEdited": "Drafted by Fondas AI · edited before sending",
     "askLine": "Fondas AI · AI can make mistakes — double-check key figures",
     "briefLine": "Written by Fondas AI from your PMS and inbox. Check anything you act on.",
-    "inferredMark": "Fondas AI"
+    "inferredMark": "Fondas AI",
+    "literacy": {
+      "title": "Working with Fondas AI",
+      "stepOf": "{n} of {total}",
+      "skip": "Skip for now",
+      "back": "Back",
+      "next": "Next",
+      "done": "Done",
+      "saving": "Saving…",
+      "cards": [
+        {
+          "title": "What Fondas does with AI",
+          "body": "Fondas uses AI to sort your guest email, draft replies and arrival-time requests, write the Morning Brief, answer questions in Ask, and note returning guests' preferences. Everything it writes is labelled Fondas AI, so you always know what came from a person and what didn't."
+        },
+        {
+          "title": "Where it can be wrong",
+          "body": "AI writes fluently even when it is wrong. It slips most on dates, prices, room types and policies — above all anything it wasn't told. It can also misread a guest's tone. Treat every draft as a first draft."
+        },
+        {
+          "title": "What to check before you send",
+          "body": "Read the draft as the guest will. Check names, dates, numbers and anything promised: a late checkout, a refund, a room. If it states a policy, make sure it is yours. Change what is wrong — once you send it, the reply is yours."
+        },
+        {
+          "title": "What Fondas never does on its own",
+          "body": "Fondas never sends anything to a guest by itself. A reply, an arrival-time request, a bulk send: each needs someone on your team to press the button. It never changes your PMS, and it never scores or ranks your team."
+        },
+        {
+          "title": "When it gets something wrong",
+          "body": "Tell us. Use “Report a problem” under any draft or Ask answer, or in AI activity. Say what was wrong — a fact, the tone, a reply it shouldn't have drafted. Reports reach us without your guests' details, and we read every one."
+        }
+      ]
+    }
   },
   "bulkSend": {
     "titleRepliesOne": "Send {count} reply exactly as drafted?",

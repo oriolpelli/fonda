@@ -787,6 +787,10 @@
       "account": {
         "label": "Cuenta",
         "desc": "Tu idioma y el nombre con el que se firman los resúmenes."
+      },
+      "ai": {
+        "label": "La IA en Fondas",
+        "desc": "Cómo trabaja tu equipo con Fondas AI, quién ha leído la guía y el texto para tus huéspedes."
       }
     },
     "notConnected": "Sin conexión",
@@ -903,7 +907,25 @@
     "reviewSummaryLabel": "Resumen de reseñas",
     "reviewSummaryEmpty": "Aún no hay resumen — pega algunas reseñas y resume.",
     "summarize": "Resumir",
-    "summarizing": "Resumiendo…"
+    "summarizing": "Resumiendo…",
+    "aiPage": {
+      "literacyTitle": "Trabajar con Fondas AI",
+      "literacyBody": "Cinco tarjetas breves sobre qué hace Fondas AI, dónde puede equivocarse y qué revisar antes de enviar. Todo tu equipo las ve una vez al iniciar sesión. Ábrelas de nuevo aquí cuando quieras.",
+      "open": "Abrir las cinco tarjetas",
+      "print": "Versión para imprimir",
+      "recordTitle": "Quién las ha leído",
+      "recordBody": "El Reglamento Europeo de IA pide a tu hotel que ayude a quienes usan la IA a entenderla (art. 4). Este es tu registro: quién completó qué versión y cuándo. Solo la finalización; no se registra nada más.",
+      "recordPerson": "Persona",
+      "recordVersion": "Versión",
+      "recordStatus": "Estado",
+      "recordDate": "Fecha",
+      "statusCompleted": "Completado",
+      "statusSkipped": "Omitido — sin completar",
+      "statusNotYet": "Todavía no",
+      "download": "Descargar el registro (CSV)",
+      "recordUnavailable": "El registro aún no está disponible.",
+      "guideFooter": "Fondas · Trabajar con Fondas AI · versión {version}"
+    }
   },
   "apaleoStatus": {
     "connected": "Apaleo conectado.",
@@ -1290,7 +1312,38 @@
     "sentEdited": "Redactado por Fondas AI · editado antes de enviarlo",
     "askLine": "Fondas AI · la IA puede cometer errores — revisa las cifras clave",
     "briefLine": "Escrito por Fondas AI a partir de tu PMS y tu correo. Comprueba cualquier dato antes de actuar.",
-    "inferredMark": "Fondas AI"
+    "inferredMark": "Fondas AI",
+    "literacy": {
+      "title": "Trabajar con Fondas AI",
+      "stepOf": "{n} de {total}",
+      "skip": "Ahora no",
+      "back": "Atrás",
+      "next": "Siguiente",
+      "done": "Hecho",
+      "saving": "Guardando…",
+      "cards": [
+        {
+          "title": "Qué hace Fondas con la IA",
+          "body": "Fondas usa IA para clasificar el correo de tus huéspedes, redactar respuestas y peticiones de hora de llegada, escribir el Resumen matutino, responder en Pregunta y anotar las preferencias de los huéspedes que repiten. Todo lo que escribe va marcado como Fondas AI, para que siempre sepas qué viene de una persona y qué no."
+        },
+        {
+          "title": "Dónde puede equivocarse",
+          "body": "La IA escribe con soltura incluso cuando se equivoca. Donde más falla es en fechas, precios, tipos de habitación y políticas, sobre todo si no se le han dado. También puede malinterpretar el tono de un huésped. Trata cada borrador como un primer borrador."
+        },
+        {
+          "title": "Qué revisar antes de enviar",
+          "body": "Lee el borrador como lo leerá el huésped. Comprueba nombres, fechas, cifras y todo lo que se promete: un late checkout, un reembolso, una habitación. Si cita una política, asegúrate de que es la tuya. Cambia lo que esté mal: cuando lo envías, la respuesta es tuya."
+        },
+        {
+          "title": "Lo que Fondas nunca hace por su cuenta",
+          "body": "Fondas nunca envía nada a un huésped por sí solo. Una respuesta, una petición de hora de llegada, un envío en bloque: todo necesita que alguien de tu equipo pulse el botón. Nunca cambia tu PMS, y nunca puntúa ni clasifica a tu equipo."
+        },
+        {
+          "title": "Cuando se equivoca",
+          "body": "Dínoslo. Usa «Informar de un problema» bajo cualquier borrador o respuesta de Pregunta, o en Actividad de la IA. Di qué falló: un dato, el tono, un borrador que no debía hacer. Los informes nos llegan sin los datos de tus huéspedes, y los leemos todos."
+        }
+      ]
+    }
   },
   "bulkSend": {
     "titleRepliesOne": "¿Enviar {count} respuesta tal como está redactada?",
