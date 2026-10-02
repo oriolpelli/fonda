@@ -1112,7 +1112,6 @@
     "aiReviewed": "Our assessment was reviewed by {firm} on {date}.",
     "aiModelBy": "{model}, by Anthropic",
     "aiLabels": {
-      "model": "Model",
       "reads": "Reads",
       "writes": "Writes",
       "sees": "Who sees it",

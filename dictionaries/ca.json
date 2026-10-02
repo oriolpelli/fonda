@@ -1112,7 +1112,6 @@
     "aiReviewed": "La nostra avaluació la va revisar {firm} el {date}.",
     "aiModelBy": "{model}, d'Anthropic",
     "aiLabels": {
-      "model": "Model",
       "reads": "Llegeix",
       "writes": "Escriu",
       "sees": "Qui ho veu",
