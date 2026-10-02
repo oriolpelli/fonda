@@ -306,8 +306,9 @@ lint, tsc, the client-dictionary check, the analytics PII audit and a
 production build. **AI management is un-parked** as "AI activity" under
 Operation (§6). **Merged 2 Oct (`796d0c5`, pushed) without a preview; 0031
 and 0032 applied and the `ai@fondas.app` alias created** (confirmed by Oriol).
-Still to do, on production: the record's §4 clicks and `APP_UX_PROMPTS.md` §V
-for W10. Still Oriol's (`AI_ACT_PROMPTS.md` §L): the lawyer's review
+§V ran 2 Oct after the merge: no high finding, two mediums fixed (`7a9f2f2`),
+the lows listed in the record's §7. Still to do, on production: the record's §4
+clicks. Still Oriol's (`AI_ACT_PROMPTS.md` §L): the lawyer's review
 (then set `COMPANY.aiAssessment`) and a native es/ca read of A3, A6 and A7.
 
 **Next, in order:** ~~S1 → S2 → S3~~ (speed, shipped 2 Oct) → ~~rate cache (B17)

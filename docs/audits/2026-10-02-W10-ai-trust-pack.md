@@ -103,9 +103,40 @@ A separate agent read the whole diff against `AI_ACT_PROMPTS.md`. No high-severi
 
 ## 6. Not done here
 
-- **`APP_UX_PROMPTS.md` §V** (the week's verification prompt) is meant for a fresh session. Run it with `Scope: W10 (AI_ACT_PROMPTS.md A5–A8)` before merging.
+- ~~**`APP_UX_PROMPTS.md` §V**~~ — ran 2 Oct, after the merge. Results in §7.
 - **§L, Oriol's:**
   - The lawyer review of the classification memo. When it's signed off, set `COMPANY.aiAssessment = { firm, date }` and the "reviewed by" line appears.
   - A native es/ca read of A6 and A7 (and of A3's labels, still owed from W9).
 - **§P, the compliance pack PDF**, can now be assembled from what is live: `/trust#ai`, A4, A6, A7, A8.
 - **A brief's own "Report a problem"** is on AI activity, not on the Morning Brief page. The prompt asked for drafts and Ask answers.
+
+## 7. §V verification (2 Oct, after the merge)
+
+Run on `main` at `796d0c5`: a fresh read-only review of A5–A8 against `AI_ACT_PROMPTS.md`, plus the checks below. No high finding.
+
+- **Lint and tsc:** clean. **Build:** Vercel's production build of `796d0c5` succeeded (12:54 UTC). A local build couldn't fetch Google Fonts from the session's network, so Vercel's is the one that counts. `check:rates` 59/59, `analytics-pii-audit` pass, `check:client-dict` pass.
+- **Production, no login needed:** `/trust#ai` has seven cards, each with a model name and id, in en, es and ca. No "reviewed by" line, no "certified" or "compliant". At 375 px there's no sideways scroll and the model id wraps. `/en/privacy` links to `/en/trust#ai`.
+- **Done when (A5–A8):** met in code, except what needs a signed-in browser (the printable guide fitting one A4 page, the week gate's real numbers) and the native es/ca read (§L).
+- **Keyboard, PII, design, i18n, speed:** literacy cards and report form trap focus and take Esc without closing what's underneath. The report email carries ids and codes only. AI activity shows guests as first name + initial and no staff. No service-role use; RLS on both new tables. No design-rule violations. All 154 new keys in en/es/ca.
+- **Still Oriol's:** the signed-in clicks in §4.
+
+**Fixed (`7a9f2f2`):**
+
+| # | Finding | Severity | Resolution |
+|---|---|---|---|
+| 1 | AI activity: "Open" on a brief went to today's brief, so every older brief opened the wrong one | Medium | Opens `/dashboard/brief/history/<id>` |
+| 2 | Report form: once a reason was checked, that radio became the group's tab stop and Shift+Tab from it left the dialog | Medium | Any radio in the first group wraps to the last control |
+
+**Left — low, each a small follow-up:**
+
+- `ai_feedback`'s read policy lets any member of the hotel read every report's `user_id` and note through the API, including a note about a colleague's own Ask conversation. The page never shows them. Tighten to own-or-manager, like `ai_literacy_acks` (needs a migration).
+- No rate limit on problem reports, so a loop could flood ai@fondas.app (`oversight/ai/actions.ts`).
+- First-run literacy cards: closing drops focus to `<body>`, and the cards take focus when they stream in (`ai-literacy-dialog.tsx`).
+- Report form: Send is disabled while sending, so after a failed send focus is nowhere until the next Tab (`ai-report-button.tsx`).
+- ⌘K opens the palette underneath either overlay (`command-palette.tsx`).
+- The copy button's `aria-label` hides "Copied" from screen readers (`copy-button.tsx`).
+- `print:text-black` in the printable guide is a raw colour, not a token (`settings/ai/guide/page.tsx`).
+- The five `aiActivity.columns.*` keys are unused, so the activity list has no column headers.
+- "Open" on an arrival-time request goes to Arrivals, where older requests may not be listed (`lib/ai-activity.ts`).
+- AI activity reads reservations, then customers, one after the other: one extra round trip. The CSV route reads in three waves.
+- **Pre-existing, not W10:** `app/connect/apaleo/route.ts` and `app/connect/gmail/route.ts` export helpers (`apaleoRedirectUri`, `gmailRedirectUri`) from a route file. Turbopack builds accept it; a webpack build's route type check rejects it. Move them to `lib/` the next time OAuth is touched.
