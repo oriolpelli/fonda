@@ -20,6 +20,27 @@ export interface SampleBrief {
   content: BriefingContent;
   /** The "what Fondas did overnight" closing note, rendered after the article. */
   overnight: string;
+  /**
+   * The same morning, cut into the cards the page leads with on a phone. The
+   * prose above stays the full brief (it is what prints, and it sits behind
+   * "Read the full brief"); these are its highlights, so every fact here must
+   * also be in the prose — never a new one.
+   */
+  cards: SampleBriefCards;
+}
+
+export interface SampleBriefCards {
+  /** Two sentences at most — the brief before the brief. */
+  tldr: string;
+  arrivals: { name: string; detail: string; note: string; status: string }[];
+  /** Guests whose arrival time is still open; chased overnight. */
+  unconfirmed: string[];
+  /** The other three drafts, as short topic labels. */
+  otherDrafts: string[];
+  /** One line under the occupancy chart, about the soft night. */
+  occupancyNote: string;
+  /** What Fondas did overnight, as a timeline. */
+  overnightSteps: { time: string; text: string }[];
 }
 
 export function getSampleBrief(locale: Locale): SampleBrief {
@@ -46,6 +67,24 @@ Los otros tres — una consulta de parking, una petición de late check-out y un
         rate_alert: `Esta noche estamos al ${h.occupancyPct}% y el fin de semana está prácticamente completo. El punto flojo es el ${soft.toLowerCase()}: ${h.softNightRooms} de ${h.rooms} habitaciones, poco habitual para finales de junio — el año pasado ese jueves cerró al 90%. Vale la pena revisar la tarifa, o pensar una oferta entre semana, antes del fin de semana.`,
       },
       overnight: `Durante la noche, Fondas ha cruzado cuatro correos con sus reservas y ha redactado las respuestas, ha reclamado tres horas de llegada sin confirmar, ha vigilado la ocupación de los próximos 14 días y ha escrito este resumen. Tu mañana empieza aquí.`,
+      cards: {
+        tldr: `Jueves con movimiento y el hotel casi lleno. Solo dos cosas piden tu atención: un correo con la respuesta ya redactada y tres horas de llegada por confirmar.`,
+        arrivals: [
+          { name: g.bofill, detail: "Hab. 204 · Junior Suite · 3.ª estancia", note: "La última vez pidió el lado tranquilo del patio.", status: "204 bloqueada para ella" },
+          { name: `Grupo ${g.ashworth}`, detail: "2 × Doble Deluxe · media tarde", note: "Preguntan si pueden dejar las maletas antes del check-in.", status: "Pregunta abierta" },
+          { name: g.lund, detail: "Aterriza a las 23:40 · llega hacia las 00:30", note: "La recepción de noche está avisada.", status: "Llave preparada" },
+        ],
+        unconfirmed: [g.ortega, g.lund, `Grupo ${g.ashworth}`],
+        otherDrafts: ["Parking", "Late check-out", "Confirmación de reserva"],
+        occupancyNote: `El ${soft.toLowerCase()} está flojo: ${h.softNightRooms} de ${h.rooms}. El año pasado cerró al 90%. Vale la pena revisar la tarifa antes del fin de semana.`,
+        overnightSteps: [
+          { time: "23:15", text: `Cruzó el correo de ${g.vidal} con su reserva y redactó la respuesta.` },
+          { time: "23:50", text: "Redactó otros tres borradores: parking, late check-out y una confirmación." },
+          { time: "01:00", text: "Reclamó tres horas de llegada sin confirmar." },
+          { time: "05:45", text: "Revisó la ocupación de los próximos 14 días." },
+          { time: "06:30", text: "Escribió este resumen." },
+        ],
+      },
     };
   }
 
@@ -67,6 +106,24 @@ Els altres tres — una consulta de pàrquing, una petició de late check-out i 
         rate_alert: `Aquesta nit estem al ${h.occupancyPct}% i el cap de setmana està pràcticament complet. El punt fluix és el ${soft.toLowerCase()}: ${h.softNightRooms} de ${h.rooms} habitacions, poc habitual per a finals de juny — l'any passat aquell dijous va tancar al 90%. Val la pena revisar la tarifa, o pensar una oferta entre setmana, abans del cap de setmana.`,
       },
       overnight: `Durant la nit, Fondas ha creuat quatre correus amb les seves reserves i ha redactat les respostes, ha reclamat tres hores d'arribada sense confirmar, ha vigilat l'ocupació dels propers 14 dies i ha escrit aquest resum. El teu matí comença aquí.`,
+      cards: {
+        tldr: `Dijous amb moviment i l'hotel gairebé ple. Només dues coses demanen la teva atenció: un correu amb la resposta ja redactada i tres hores d'arribada per confirmar.`,
+        arrivals: [
+          { name: g.bofill, detail: "Hab. 204 · Junior Suite · 3a estada", note: "L'última vegada va demanar el costat tranquil del pati.", status: "204 bloquejada per a ella" },
+          { name: `Grup ${g.ashworth}`, detail: "2 × Doble Deluxe · mitja tarda", note: "Pregunten si poden deixar les maletes abans del check-in.", status: "Pregunta oberta" },
+          { name: g.lund, detail: "Aterra a les 23:40 · arriba cap a les 00:30", note: "La recepció de nit està avisada.", status: "Clau a punt" },
+        ],
+        unconfirmed: [g.ortega, g.lund, `Grup ${g.ashworth}`],
+        otherDrafts: ["Pàrquing", "Late check-out", "Confirmació de reserva"],
+        occupancyNote: `El ${soft.toLowerCase()} està fluix: ${h.softNightRooms} de ${h.rooms}. L'any passat va tancar al 90%. Val la pena revisar la tarifa abans del cap de setmana.`,
+        overnightSteps: [
+          { time: "23:15", text: `Va creuar el correu de ${g.vidal} amb la seva reserva i en va redactar la resposta.` },
+          { time: "23:50", text: "Va redactar tres esborranys més: pàrquing, late check-out i una confirmació." },
+          { time: "01:00", text: "Va reclamar tres hores d'arribada sense confirmar." },
+          { time: "05:45", text: "Va revisar l'ocupació dels propers 14 dies." },
+          { time: "06:30", text: "Va escriure aquest resum." },
+        ],
+      },
     };
   }
 
@@ -87,5 +144,23 @@ The other three — a parking question, a late check-out request, and a booking 
       rate_alert: `Tonight sits at ${h.occupancyPct}% and the weekend is essentially full. The soft spot is ${soft}: ${h.softNightRooms} of ${h.rooms} rooms, unusual for late June — last summer that Thursday closed at 90%. Worth a look at the midweek rate, or an offer, before the weekend.`,
     },
     overnight: `Overnight, Fondas matched four emails to their reservations and drafted the replies, chased three unconfirmed arrival times, watched the next 14 days of occupancy, and wrote this brief. Your morning starts here.`,
+    cards: {
+      tldr: `A busy Thursday and a nearly full house. Only two things need you: one email with its reply already drafted, and three arrival times still to confirm.`,
+      arrivals: [
+        { name: g.bofill, detail: "Room 204 · Junior Suite · 3rd stay", note: "Last time she asked for the quiet side of the courtyard.", status: "204 blocked for her" },
+        { name: `${g.ashworth} party`, detail: "2 × Deluxe Double · mid-afternoon", note: "Asking to leave luggage before check-in.", status: "Open question" },
+        { name: g.lund, detail: "Lands 23:40 · at the hotel around 00:30", note: "The night desk is briefed.", status: "Key ready" },
+      ],
+      unconfirmed: [g.ortega, g.lund, `${g.ashworth} party`],
+      otherDrafts: ["Parking", "Late check-out", "Booking confirmation"],
+      occupancyNote: `${soft} is soft: ${h.softNightRooms} of ${h.rooms}. Last year it closed at 90%. Worth a look at the rate before the weekend.`,
+      overnightSteps: [
+        { time: "23:15", text: `Matched ${g.vidal}'s email to her booking and drafted the reply.` },
+        { time: "23:50", text: "Drafted three more: parking, late check-out and a confirmation." },
+        { time: "01:00", text: "Chased three unconfirmed arrival times." },
+        { time: "05:45", text: "Checked occupancy for the next 14 days." },
+        { time: "06:30", text: "Wrote this brief." },
+      ],
+    },
   };
 }

@@ -38,6 +38,14 @@ export const SAMPLE_HOTEL = {
   softNightRooms: 22,
 
   /**
+   * Rooms sold for the 14 nights starting at `nightISO` — the sample brief's
+   * occupancy chart. Index 0 must equal `occupiedTonight` and index 7 (the
+   * 25th) must equal `softNightRooms`; the weekend nights are near-full, which
+   * is what the brief's prose says.
+   */
+  occupancyNext14: [40, 43, 44, 30, 27, 29, 33, 22, 41, 44, 31, 28, 30, 34],
+
+  /**
    * The guests named across the homepage bands and the long brief. Band 4's
    * reservation pane shows Vidal; the Aguirre-Miralles vacate the Garden Suite
    * the same morning, which is why Vidal can be booked into it from the 23rd.
