@@ -28,7 +28,7 @@
   },
   "meta": {
     "title": "Fondas — The AI that runs your hotel's back of house",
-    "description": "Fondas connects to your PMS and your hotel inbox and leaves the day ready: the brief written before you open, guest replies drafted for your review, arrival times already confirmed. On top of the PMS you already run, with nothing to migrate."
+    "description": "Fondas is the AI that works with everything your hotel already uses: the brief before you open, guest replies drafted for review, arrival times chased and answers to any question about the hotel. More personal stays and more time for guests. Nothing to migrate."
   },
   "common": {
     "signOut": "Sign out",
@@ -58,7 +58,7 @@
     "badge": "Superintelligence for hotels",
     "headlineLine1": "The AI that runs the back of house,",
     "headlineLine2": "so you can run the front.",
-    "subhead": "{brand} connects to your PMS and your hotel inbox, and runs the four parts of the day: the morning brief, check-ins, guest communications, and any question about your hotel. Nothing goes out without your yes.",
+    "subhead": "{brand} works with everything your hotel already uses, leaves the day ready and answers any question, so every guest gets a more personal stay, and your team has more time to give it.",
     "ctaPrimary": "Get early access",
     "ctaSecondary": "See a real brief →"
   },
@@ -125,8 +125,8 @@
     "row6rest": " {softDate}: {softRooms} of {rooms} — soft for late June. Worth a look at the midweek rate before the weekend fills."
   },
   "stats": {
-    "headline": "Your first 90 minutes, back.",
-    "lead": "Fondas gives you back the two heaviest parts of the day — guest email and the morning catch-up. Drafts and briefs are generated with AI that already knows your hotel; sending is always your call.",
+    "headline": "The paperwork hours, back to your guests.",
+    "lead": "Fondas takes the two heaviest parts of the day: guest email and getting up to speed. The drafts and the brief come from AI that already knows your hotel; sending is always your call.",
     "inboxTop": "Guest email, drafted overnight",
     "inboxValue": "90s",
     "inboxLabel": "to review a reply and send it",
@@ -195,7 +195,7 @@
   "cta": {
     "eyebrow": "Ready when you are",
     "headline": "See it running on your own hotel's data.",
-    "subhead": "Twenty minutes, your hotel, nothing to migrate. Free for the first three hotels.",
+    "subhead": "Twenty minutes, your hotel, nothing to migrate. A free 60-day pilot, no strings attached.",
     "button": "Get started →"
   },
   "footer": {
@@ -203,7 +203,7 @@
     "privacy": "Privacy",
     "terms": "Terms",
     "sampleBrief": "See a sample brief",
-    "valueProp": "The AI that runs your hotel's back of house.",
+    "valueProp": "More time with guests. Less behind screens.",
     "productTitle": "Product",
     "companyTitle": "Company",
     "resourcesTitle": "Resources",
@@ -1016,7 +1016,7 @@
   },
   "howItWorks": {
     "eyebrow": "How it works",
-    "headline": "Live in an afternoon. Working by morning.",
+    "headline": "Set up in half an hour. Working by the next morning.",
     "lead": "No migration and no new system to learn. Connect what you already use, and Fondas gets to work overnight.",
     "step1Title": "Connect",
     "step1Desc": "Link your PMS and hotel inbox. A few minutes, once — Fondas reads your reservations and learns your hotel.",
@@ -1071,13 +1071,12 @@
     "headline": "Questions, answered.",
     "setupGroup": "Setup",
     "securityGroup": "Security & data",
-    "billingGroup": "Billing",
     "q1": "Which systems do you support?",
-    "a1": "MEWS and Apaleo today, plus Gmail for the inbox — each connected in a few minutes. More integrations are on the way; tell us what you run.",
+    "a1": "MEWS and Apaleo today, plus Gmail for the inbox — each connects in a few minutes. Using something else? We connect it during onboarding.",
     "q2": "Do I have to switch systems?",
     "a2": "No. Fondas sits on top of the tools you already use. Nothing to migrate and nothing for your team to relearn.",
     "q3": "How long does setup take?",
-    "a3": "About an afternoon. Connect your PMS and inbox, and your first brief can arrive the very next morning.",
+    "a3": "About thirty minutes, and we do it with you. Connect your PMS and your inbox, and your first brief arrives the next morning.",
     "q4": "Does Fondas ever email guests without me?",
     "a4": "Never automatically. Every reply is drafted for your review — sending is always your decision.",
     "q5": "Where does our guest data live?",
@@ -1240,16 +1239,16 @@
   },
   "comingSoon": {
     "eyebrow": "On the way",
-    "headline": "What lands during the pilot.",
-    "lead": "Written in the future on purpose: it doesn't do these today. Four things in build, landing while your pilot runs.",
+    "headline": "What's coming.",
+    "lead": "Written in the future tense on purpose: it doesn't do this today. We ship something new every week, and founding hotels choose the order.",
     "i1Title": "Analytics and revenue",
     "i1Desc": "The revenue dashboard and hotel analytics. First will come a line in the brief when a night is running soft: a signal, not a pricing engine.",
     "i2Title": "Pre-arrival extras",
     "i2Desc": "Pre-arrival drafts will include your own paid extras with prices: late checkout, breakfast, parking.",
     "i3Title": "The brief on WhatsApp",
     "i3Desc": "Where you'll actually read it at 6:45.",
-    "i4Title": "Outlook",
-    "i4Desc": "For the hotels that aren't on Gmail."
+    "i4Title": "The stay plan",
+    "i4Desc": "A printed sheet for each guest, made for them: their names, their trip, your neighbourhood and what's on in the city those days."
   },
   "guestContext": {
     "stay": "Stay",

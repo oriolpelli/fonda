@@ -28,7 +28,7 @@
   },
   "meta": {
     "title": "Fondas — La IA que porta l'operativa del teu hotel",
-    "description": "Fondas es connecta al teu PMS i al correu de l'hotel i et deixa el dia preparat: el resum escrit abans que obris, les respostes als teus hostes redactades perquè les revisis i les hores d'arribada ja confirmades. Sobre el PMS que ja fas servir, sense migrar res."
+    "description": "Fondas és la IA que treballa amb tot el que ja fa servir el teu hotel: el resum abans d'obrir, les respostes als hostes redactades per revisar, les hores d'arribada demanades i resposta a qualsevol pregunta sobre l'hotel. Estades més personals i més temps per als hostes. Sense migrar res."
   },
   "common": {
     "signOut": "Tancar la sessió",
@@ -58,7 +58,7 @@
     "badge": "Superintel·ligència per a hotels",
     "headlineLine1": "La IA que porta l'operativa,",
     "headlineLine2": "i tu, els hostes.",
-    "subhead": "{brand} es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Res no surt sense el teu vistiplau.",
+    "subhead": "{brand} treballa amb tot el que ja fa servir el teu hotel, et deixa el dia preparat i respon qualsevol pregunta, perquè cada hoste tingui una estada més personal i el teu equip, més temps per donar-li.",
     "ctaPrimary": "Demanar accés",
     "ctaSecondary": "Veure un resum real →"
   },
@@ -125,8 +125,8 @@
     "row6rest": " {softDate}: {softRooms} de {rooms} — fluix per a finals de juny. Val la pena mirar la tarifa entre setmana abans que s'ompli el cap de setmana."
   },
   "stats": {
-    "headline": "Els teus primers 90 minuts, de tornada.",
-    "lead": "Fondas et torna les dues parts més feixugues del dia: el correu d'hostes i la posada al dia del matí. Els esborranys i el resum es generen amb IA que ja coneix el teu hotel; enviar, sempre ho decideixes tu.",
+    "headline": "Les hores de paperassa, de tornada als hostes.",
+    "lead": "Fondas es queda les dues parts més feixugues del dia: el correu dels hostes i posar-se al dia. Els esborranys i el resum surten d'una IA que ja coneix el teu hotel; enviar, sempre ho decideixes tu.",
     "inboxTop": "El correu d'hostes, amb esborrany a punt",
     "inboxValue": "90s",
     "inboxLabel": "per revisar una resposta i enviar-la",
@@ -195,7 +195,7 @@
   "cta": {
     "eyebrow": "Quan vulguis",
     "headline": "Mira-ho funcionant amb les teves pròpies dades.",
-    "subhead": "Vint minuts, el teu hotel, sense migrar res. Gratis per als tres primers hotels.",
+    "subhead": "Vint minuts, el teu hotel, sense migrar res. 60 dies de pilot gratuït i sense compromís.",
     "button": "Comença →"
   },
   "footer": {
@@ -203,7 +203,7 @@
     "privacy": "Privadesa",
     "terms": "Termes",
     "sampleBrief": "Veure un resum d'exemple",
-    "valueProp": "La IA que porta l'operativa del teu hotel.",
+    "valueProp": "Més temps amb els hostes. Menys davant de la pantalla.",
     "productTitle": "Producte",
     "companyTitle": "Empresa",
     "resourcesTitle": "Recursos",
@@ -1016,7 +1016,7 @@
   },
   "howItWorks": {
     "eyebrow": "Com funciona",
-    "headline": "En marxa en una tarda. Funcionant al matí.",
+    "headline": "En marxa en mitja hora. Funcionant l'endemà al matí.",
     "lead": "Sense migracions ni cap sistema nou per aprendre. Connecta el que ja fas servir i Fondas es posa a treballar durant la nit.",
     "step1Title": "Connecta",
     "step1Desc": "Vincula el teu PMS i la bústia de l'hotel. Uns minuts, un sol cop — Fondas llegeix les teves reserves i aprèn com és el teu hotel.",
@@ -1071,13 +1071,12 @@
     "headline": "Preguntes, resoltes.",
     "setupGroup": "Configuració",
     "securityGroup": "Seguretat i dades",
-    "billingGroup": "Facturació",
     "q1": "Quins sistemes admeteu?",
-    "a1": "MEWS i Apaleo avui, a més de Gmail per a la bústia — cadascun es connecta en uns minuts. Vénen més integracions; digues-nos què fas servir.",
+    "a1": "MEWS i Apaleo avui, a més de Gmail per a la bústia — cadascun es connecta en uns minuts. En fas servir un altre? El connectem durant l'alta.",
     "q2": "He de canviar de sistema?",
     "a2": "No. Fondas es recolza sobre les eines que ja fas servir. Res a migrar i res que el teu equip hagi de reaprendre.",
     "q3": "Quant triga la configuració?",
-    "a3": "Una tarda, més o menys. Connecta el teu PMS i la teva bústia, i el teu primer resum pot arribar l'endemà al matí.",
+    "a3": "Uns trenta minuts, i ho fem amb tu. Connecta el teu PMS i la teva bústia, i el primer resum arriba l'endemà al matí.",
     "q4": "Fondas escriu als hostes sense mi?",
     "a4": "Mai de manera automàtica. Cada resposta es redacta perquè la revisis — enviar-la és sempre la teva decisió.",
     "q5": "On es guarden les dades dels nostres hostes?",
@@ -1240,16 +1239,16 @@
   },
   "comingSoon": {
     "eyebrow": "Ja en camí",
-    "headline": "El que arriba durant el pilot.",
-    "lead": "Escrit en futur a propòsit: avui no ho fa. Quatre coses en construcció, que arriben mentre duri el teu pilot.",
+    "headline": "El que ve.",
+    "lead": "Escrit en futur expressament: avui no ho fa. Cada setmana traiem alguna cosa nova, i els hotels fundadors decideixen l'ordre.",
     "i1Title": "Analítica i revenue",
     "i1Desc": "El quadre de comandament d'ingressos i l'analítica de l'hotel. Primer arribarà un senyal al resum quan una nit vagi fluixa: un senyal, no un motor de preus.",
     "i2Title": "Extres abans de l'arribada",
     "i2Desc": "Els esborranys previs a l'arribada inclouran els teus propis extres amb preu: late checkout, esmorzar, pàrquing.",
     "i3Title": "El resum per WhatsApp",
     "i3Desc": "On de debò el llegiràs a les 6:45.",
-    "i4Title": "Outlook",
-    "i4Desc": "Per als hotels que no són a Gmail."
+    "i4Title": "El pla d'estada",
+    "i4Desc": "Un full imprès per a cada hoste, fet a mida: els seus noms, el seu viatge, el vostre barri i el que passa a la ciutat aquells dies."
   },
   "guestContext": {
     "stay": "Estada",

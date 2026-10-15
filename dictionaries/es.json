@@ -28,7 +28,7 @@
   },
   "meta": {
     "title": "Fondas — La IA que lleva la operativa de tu hotel",
-    "description": "Fondas se conecta a tu PMS y al correo del hotel y te deja el día preparado: el resumen escrito antes de que abras, las respuestas a tus huéspedes redactadas para que las revises y las horas de llegada ya confirmadas. Sobre el PMS que ya usas, sin migrar nada."
+    "description": "Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el resumen antes de abrir, las respuestas a tus huéspedes redactadas para revisar, las horas de llegada pedidas y respuesta a cualquier pregunta sobre el hotel. Estancias más personales y más tiempo para los huéspedes. Sin migrar nada."
   },
   "common": {
     "signOut": "Cerrar sesión",
@@ -58,7 +58,7 @@
     "badge": "Superinteligencia para hoteles",
     "headlineLine1": "La IA que lleva la operativa,",
     "headlineLine2": "y tú, a los huéspedes.",
-    "subhead": "{brand} se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Nada sale sin tu visto bueno.",
+    "subhead": "{brand} trabaja con todo lo que ya usa tu hotel, te deja el día preparado y responde a cualquier pregunta, para que cada huésped tenga una estancia más personal y tu equipo, más tiempo para dársela.",
     "ctaPrimary": "Pedir acceso",
     "ctaSecondary": "Ver un resumen real →"
   },
@@ -125,8 +125,8 @@
     "row6rest": " {softDate}: {softRooms} de {rooms} — flojo para finales de junio. Vale la pena mirar la tarifa entre semana antes de que se llene el fin de semana."
   },
   "stats": {
-    "headline": "Tus primeros 90 minutos, de vuelta.",
-    "lead": "Fondas te devuelve las dos partes más pesadas del día: el correo de huéspedes y la puesta al día de la mañana. Los borradores y el resumen se generan con IA que ya conoce tu hotel; enviar, siempre lo decides tú.",
+    "headline": "Las horas del papeleo, de vuelta al huésped.",
+    "lead": "Fondas se queda con las dos partes más pesadas del día: el correo de huéspedes y ponerse al día. Los borradores y el resumen salen de una IA que ya conoce tu hotel; enviar, siempre lo decides tú.",
     "inboxTop": "El correo de huéspedes, con borrador listo",
     "inboxValue": "90s",
     "inboxLabel": "para revisar una respuesta y enviarla",
@@ -195,7 +195,7 @@
   "cta": {
     "eyebrow": "Cuando quieras",
     "headline": "Míralo funcionando con tus propios datos.",
-    "subhead": "Veinte minutos, tu hotel, sin migrar nada. Gratis para los tres primeros hoteles.",
+    "subhead": "Veinte minutos, tu hotel, sin migrar nada. 60 días de piloto gratuito y sin compromiso.",
     "button": "Empezar →"
   },
   "footer": {
@@ -203,7 +203,7 @@
     "privacy": "Privacidad",
     "terms": "Términos",
     "sampleBrief": "Ver un resumen de ejemplo",
-    "valueProp": "La IA que lleva la operativa de tu hotel.",
+    "valueProp": "Más tiempo con los huéspedes. Menos delante de la pantalla.",
     "productTitle": "Producto",
     "companyTitle": "Empresa",
     "resourcesTitle": "Recursos",
@@ -1016,7 +1016,7 @@
   },
   "howItWorks": {
     "eyebrow": "Cómo funciona",
-    "headline": "En marcha en una tarde. Funcionando por la mañana.",
+    "headline": "En marcha en media hora. Funcionando a la mañana siguiente.",
     "lead": "Sin migraciones ni un sistema nuevo que aprender. Conecta lo que ya usas y Fondas se pone a trabajar durante la noche.",
     "step1Title": "Conecta",
     "step1Desc": "Vincula tu PMS y el buzón del hotel. Unos minutos, una sola vez — Fondas lee tus reservas y aprende cómo es tu hotel.",
@@ -1071,13 +1071,12 @@
     "headline": "Preguntas, resueltas.",
     "setupGroup": "Configuración",
     "securityGroup": "Seguridad y datos",
-    "billingGroup": "Facturación",
     "q1": "¿Qué sistemas admitís?",
-    "a1": "MEWS y Apaleo hoy, además de Gmail para el buzón — cada uno se conecta en unos minutos. Vienen más integraciones; dinos qué usas.",
+    "a1": "MEWS y Apaleo hoy, además de Gmail para el buzón — cada uno se conecta en unos minutos. ¿Usas otro? Lo conectamos durante el alta.",
     "q2": "¿Tengo que cambiar de sistema?",
     "a2": "No. Fondas se apoya sobre las herramientas que ya usas. Nada que migrar y nada que tu equipo deba reaprender.",
     "q3": "¿Cuánto tarda la configuración?",
-    "a3": "Una tarde, más o menos. Conecta tu PMS y tu buzón, y tu primer resumen puede llegar a la mañana siguiente.",
+    "a3": "Unos treinta minutos, y lo hacemos contigo. Conecta tu PMS y tu buzón, y tu primer resumen llega a la mañana siguiente.",
     "q4": "¿Fondas escribe a los huéspedes sin mí?",
     "a4": "Nunca de forma automática. Cada respuesta se redacta para que la revises — enviarla es siempre tu decisión.",
     "q5": "¿Dónde se guardan los datos de nuestros huéspedes?",
@@ -1240,16 +1239,16 @@
   },
   "comingSoon": {
     "eyebrow": "Ya en camino",
-    "headline": "Lo que llega durante el piloto.",
-    "lead": "Escrito en futuro a propósito: hoy no lo hace. Cuatro cosas en construcción, que llegan mientras dure tu piloto.",
+    "headline": "Lo que viene.",
+    "lead": "Escrito en futuro a propósito: hoy no lo hace. Sacamos algo nuevo cada semana, y los hoteles fundadores deciden el orden.",
     "i1Title": "Analítica y revenue",
     "i1Desc": "El cuadro de mando de ingresos y la analítica del hotel. Primero llegará una señal en el resumen cuando una noche vaya floja: una señal, no un motor de precios.",
     "i2Title": "Extras antes de la llegada",
     "i2Desc": "Los borradores previos a la llegada incluirán tus propios extras con precio: late checkout, desayuno, parking.",
     "i3Title": "El resumen por WhatsApp",
     "i3Desc": "Donde de verdad lo vas a leer a las 6:45.",
-    "i4Title": "Outlook",
-    "i4Desc": "Para los hoteles que no están en Gmail."
+    "i4Title": "El plan de estancia",
+    "i4Desc": "Una hoja impresa para cada huésped, a su medida: sus nombres, su viaje, vuestro barrio y lo que pasa en la ciudad esos días."
   },
   "guestContext": {
     "stay": "Estancia",

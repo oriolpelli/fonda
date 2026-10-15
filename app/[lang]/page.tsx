@@ -414,14 +414,8 @@ export default async function Home({
       items: [
         [dict.faq.q4, dict.faq.a4],
         [dict.faq.q5, dict.faq.a5],
+        [dict.faq.q6, dict.faq.a6],
       ] as [string, string][],
-    },
-    {
-      label: dict.faq.billingGroup,
-      items: [[dict.faq.q6, dict.faq.a6]] as [
-        string,
-        string,
-      ][],
     },
   ];
 
