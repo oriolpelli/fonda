@@ -105,9 +105,9 @@ So: **narrow who we email, wide who the page talks to.** Concretely, on the site
 
 **Mechanism subline** — the sentence that makes the hero honest. It names the four surfaces that actually exist.
 
-- **ES:** Fondas se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Nada sale sin tu visto bueno.
-- **CA:** Fondas es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Res no surt sense el teu vistiplau.
-- **EN:** Fondas connects to your PMS and your hotel inbox, and runs the four parts of the day: the morning brief, check-ins, guest communications, and any question about your hotel. Nothing goes out without your yes.
+- **ES:** Fondas se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Habla con la voz de tu casa y trabaja a vuestro ritmo, no al revés.
+- **CA:** Fondas es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Parla amb la veu de casa teva i treballa al vostre ritme, no a l'inrevés.
+- **EN:** Fondas connects to your PMS and your hotel inbox, and runs the four parts of the day: the morning brief, check-ins, guest communications, and any question about your hotel. It speaks in your hotel's voice and works at your pace, not the other way round.
 
 **The four parts are the four live surfaces, verified against the code on 17 Sep.** `lib/roadmap.ts` states it outright — *"The four surfaces that were live from day one (dashboard, brief, check-ins, communications)"* — and marks `chat` as `live`. **Analytics is not one of them**: `app/[lang]/dashboard/analytics/page.tsx` renders `<ComingSoon />` and `lib/roadmap.ts` has it `coming-soon`, superseded by a Revenue dashboard that is also a stub. Analytics belongs in the "Ya en camino" band (`SITE_REDESIGN_V3.md` §3.5), not the hero.
 
@@ -168,7 +168,7 @@ Mechanical: apply by key, invent nothing, keep tokens (`{year}`, `{brand}`, `{pr
 | `hero.badge` | Dos pasos por delante, cada mañana | Dos passos per davant, cada matí | Two steps ahead, every morning |
 | `hero.headlineLine1` | La IA que lleva la operativa, | La IA que porta l'operativa, | The AI that runs the back of house, |
 | `hero.headlineLine2` | y tú, a los huéspedes. | i tu, els hostes. | so you can run the front. |
-| `hero.subhead` | {brand} se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Nada sale sin tu visto bueno. | {brand} es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Res no surt sense el teu vistiplau. | {brand} connects to your PMS and your hotel inbox, and runs the four parts of the day: the morning brief, check-ins, guest communications, and any question about your hotel. Nothing goes out without your yes. |
+| `hero.subhead` | {brand} se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Habla con la voz de tu casa y trabaja a vuestro ritmo, no al revés. | {brand} es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Parla amb la veu de casa teva i treballa al vostre ritme, no a l'inrevés. | {brand} connects to your PMS and your hotel inbox, and runs the four parts of the day: the morning brief, check-ins, guest communications, and any question about your hotel. It speaks in your hotel's voice and works at your pace, not the other way round. |
 | `hero.ctaPrimary` | Pedir acceso | Demanar accés | Get early access |
 | `hero.ctaSecondary` | Ver un resumen real → | Veure un resum real → | See a real brief → |
 
@@ -283,7 +283,7 @@ _Carried over 23 Sep from `FONDA_MARKETING_VOICE.md` §2 — the one section of 
 
 - Lead with outcomes a director feels: a calm morning, guests answered, arrivals known.
 - Name the real jobs: the brief, the guest inbox, arrivals, the day's questions.
-- Keep the human on the judgment calls: *drafted for you*, *your call*, *nothing goes out without your yes*.
+- Keep the human on the judgment calls: *drafted for you*, *your call*, *at your pace, not the other way round*. Never *nothing goes out without your yes*: it reads as a brake (decided 15 Oct, `PROPUESTA_DE_VALOR.md` §5).
 - Let a headline be a plain statement. Tension is fine; cleverness is a tax.
 
 **Don't**

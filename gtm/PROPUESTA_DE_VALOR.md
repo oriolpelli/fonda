@@ -71,7 +71,7 @@ El equipo es el protagonista y el huésped, el motivo.
 | Pieza | Qué dice | En la demo |
 |---|---|---|
 | **Trabaja con todo lo que ya usáis** | PMS, correo y lo demás, en un sitio | Inicio y las conexiones de Ajustes |
-| **Deja el trabajo preparado** | Resumen hecho, borradores, llegadas pedidas; la persona decide | El resumen del día, Llegadas, Comunicaciones (antes de la llegada y durante la estancia), el visto bueno |
+| **Deja el trabajo preparado** | Resumen hecho, borradores, llegadas pedidas; la persona decide | El resumen del día, Llegadas, Comunicaciones (antes de la llegada y durante la estancia), el borrador que el equipo revisa y envía |
 | **Responde a cualquier pregunta** | Sobre el hotel, con los datos de verdad, y sobre la operativa: incidencias, quejas, casos que no sabes resolver | Pregunta: *«¿qué huéspedes que repiten llegan esta semana?»*, *«un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?»*. Que el director haga su propia pregunta. **Prueba antes de cada demo las preguntas de operativa que vayas a enseñar** |
 | **Estancias más personales** | Respuestas que saben quién escribe; el huésped que repite, con su ficha | La reserva localizada al lado del borrador, la ficha del huésped. **Mañana:** el plan de estancia |
 | **Más tiempo para dársela** | El tiempo que se gana vuelve al huésped | Las horas a la semana que ya no van al correo (Ruta 1) y la frase del director cuando lo cuenta |
@@ -84,7 +84,7 @@ El equipo es el protagonista y el huésped, el motivo.
 - *«¿Funciona con [Outlook, Opera, Cloudbeds…]?»* → *«Lo conectamos durante el alta.»*
 - *«¿Esto cambia mi PMS?»* → *«No, trabaja con él y junta lo que hoy está repartido.»*
 - *«¿Cuánto cuesta?»* → *«Los primeros sesenta días, nada. Después depende del hotel, sobre todo del tamaño, y lo hablamos al final del piloto, cuando sepas si te sirve.»* **Nunca se da una cifra:** el precio no se menciona en ningún documento ni conversación de venta (decidido el 15 oct).
-- *«¿Y si la IA se equivoca?»* → *«Nada sale sin vuestro visto bueno, y queda registrado.»* (Ruta 4)
+- *«¿Y si la IA se equivoca?»* → *«Trabaja a vuestro ritmo: vosotros decidís qué se envía, y todo queda registrado.»* (Ruta 4)
 - *«¿Qué significa nativo en IA?»* → *«Que está hecho con IA desde el primer día, no es una IA añadida a un programa de siempre.»*
 - *«¿Y esto en qué se diferencia de ChatGPT?»* → *«ChatGPT no sabe nada de tu hotel. Fondas ve tus reservas y tu correo, y te contesta con tus datos.»*
 
@@ -147,11 +147,11 @@ Las cuatro son igual de importantes. **Lo que cambia es quién tienes delante.**
 
 ### Ruta 4 — IA bajo control: «Tu equipo ya usa IA. Que sea la del hotel»
 
-> Fondas mete la IA dentro del hotel, con reglas: nada sale sin visto bueno, todo queda registrado y el equipo está formado, como pide la ley europea.
+> Fondas mete la IA dentro del hotel, con reglas: trabaja a vuestro ritmo, todo queda registrado y el equipo está formado, como pide la ley europea.
 
 - **Para quién:** propietario/a, director/a general y, en un grupo, DPO e IT. En cualquier conversación, también es **el argumento de cierre**.
 - **Abre con:** P5 (IA en la sombra y la ley).
-- **Lo que la demuestra:** Supervisión › IA (el registro de lo que hace la IA), Ajustes › IA (la formación de cinco minutos con registro por hotel), la página `/trust` y el botón de visto bueno.
+- **Lo que la demuestra:** Supervisión › IA (el registro de lo que hace la IA), Ajustes › IA (la formación de cinco minutos con registro por hotel), la página `/trust` y el borrador que el equipo revisa y envía.
 - **Puente a la Ruta 2:** *«Y es la misma herramienta con la que llevas el día. No es una capa de cumplimiento aparte.»*
 - **Cuidado:** a un hotel pequeño le vende miedo y no tiene prisa. Necesita contenido educativo antes (G1, G2). Nunca digas *«multa»*, *«certificado»* ni *«la ley prohíbe»* (§3, P5).
 
@@ -169,7 +169,7 @@ Las cuatro son igual de importantes. **Lo que cambia es quién tienes delante.**
 
 | Tienes delante a… | Abre con | Sigue con | Cierra con |
 |---|---|---|---|
-| Recepcionista o jefe/a de recepción | **1** Tiempo | **2** Definición | **4** *«Nada sale sin tu visto bueno»* |
+| Recepcionista o jefe/a de recepción | **1** Tiempo | **2** Definición | **4** *«Trabaja a vuestro ritmo, no al revés»* |
 | Director/a de operaciones o de hotel | **2** Definición | **1** Tiempo | **3** Equipo |
 | Propietario/a o director/a general | **2** Definición | **3** Equipo + margen (P1) | **4** IA bajo control |
 | Grupo o cadena (operaciones) | **5** Categoría | **2** Definición | **3** Estándar entre hoteles, y luego **4** |
@@ -192,7 +192,7 @@ Las cuatro son igual de importantes. **Lo que cambia es quién tienes delante.**
 | **P2** | El buzón: lo mismo veinte veces, en cinco idiomas, y tarde | **Sí** | Media (sin dato español) | 1 | Comunicaciones | Envío automático con línea de IA (B19) |
 | **P3** | El día empieza a ciegas: todo está repartido | **Sí** | Experiencia propia y de pilotos | **2** | Resumen, Llegadas, Inicio, Pregunta | Resumen por WhatsApp |
 | **P4** | El conocimiento se va con cada persona que se va | Medio | Media | 3 | Ficha del huésped, tono aprendido, Pregunta | Recomendaciones propias del hotel |
-| **P5** | El equipo ya usa IA, por su cuenta y sin control | **No** (latente) | Alta (ley), media (datos EE. UU.) | 4 | Visto bueno, registro de IA, formación, `/trust` | — |
+| **P5** | El equipo ya usa IA, por su cuenta y sin control | **No** (latente) | Alta (ley), media (datos EE. UU.) | 4 | Revisión del equipo, registro de IA, formación, `/trust` | — |
 | **P6** | El huésped pide más personalización, y la tiene que dar el mismo equipo | Medio | Media (encuestas EE. UU.) | 3, 5 | Ficha del huésped | Plan de estancia, «Alrededor del hotel» |
 
 ### P1 — El equipo no da para más, y no hay a quién contratar
@@ -212,7 +212,7 @@ Las cuatro son igual de importantes. **Lo que cambia es quién tienes delante.**
 
 **Cómo lo dice el equipo:** *«Cada mañana tengo 30 correos y la mitad son la misma pregunta.»*
 
-**Qué hace Fondas hoy.** Comunicaciones: borradores con el tono del hotel y los datos de la reserva, y nada sale sin visto bueno. **La métrica que lo demuestra** es la aceptación de borradores (>60%).
+**Qué hace Fondas hoy.** Comunicaciones: borradores con el tono del hotel y los datos de la reserva, listos para revisar y enviar. **La métrica que lo demuestra** es la aceptación de borradores (>60%).
 
 ### P3 — El día empieza a ciegas: todo está repartido
 
@@ -251,7 +251,7 @@ Las cuatro son igual de importantes. **Lo que cambia es quién tienes delante.**
 - Director/a: *«No tengo ni idea de qué meten en ChatGPT en recepción.»*
 - DPO: *«¿Dónde está el registro?»*
 
-**Qué hace Fondas hoy.** El mismo trabajo, pero dentro de una herramienta con contrato, sin que el proveedor entrene con los datos, con visto bueno humano, el registro de lo que hace la IA (Supervisión › IA), la formación de cinco minutos con registro por hotel (Ajustes › IA) y `/trust` para el DPO. **Ningún «ChatGPT en recepción» tiene esto.** La frase que se puede usar está en `AI_ACT_PROMPTS.md` §P.
+**Qué hace Fondas hoy.** El mismo trabajo, pero dentro de una herramienta con contrato, sin que el proveedor entrene con los datos, con el equipo decidiendo qué se envía, el registro de lo que hace la IA (Supervisión › IA), la formación de cinco minutos con registro por hotel (Ajustes › IA) y `/trust` para el DPO. **Ningún «ChatGPT en recepción» tiene esto.** La frase que se puede usar está en `AI_ACT_PROMPTS.md` §P.
 
 ### P6 — El huésped pide más personalización, y la tiene que dar el mismo equipo
 
@@ -292,6 +292,7 @@ Los añadidos: **P2** (el buzón), **P3** (el día empieza a ciegas, que es el p
 
 | Sí | No |
 |---|---|
+| Habla con la voz de tu casa; trabaja a vuestro ritmo, no al revés; el día empieza resuelto, no por resolver | *«Nada sale sin tu visto bueno»*: suena a freno, como si a la IA hubiera que vigilarla (decidido el 15 oct) |
 | Todo tu hotel en un solo sitio | Un PMS nuevo, o *«cambia tu PMS»* |
 | Devuelve horas a tu equipo | Ahorra personal o sustituye a tu recepcionista |
 | El día ya preparado; la persona decide | Funciona solo, en piloto automático |

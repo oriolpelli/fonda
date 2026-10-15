@@ -1,0 +1,15 @@
+{
+  "id": "L1-05",
+  "formato": "carrusel",
+  "autor": "Oriol Pellicer · Fondas",
+  "slides": [
+    { "tipo": "portada", "fondo": "cool", "eyebrow": "Ley de IA · Hoteles", "titulo": "La ley de IA ya afecta a tu hotel", "subtitulo": "Si alguien del equipo usa IA para contestar correos. Aunque sea ChatGPT." },
+    { "tipo": "texto", "eyebrow": "Qué pide", "titulo": "Que tu equipo sepa usar la IA que ya usa", "cuerpo": "El artículo 4 del Reglamento europeo de IA pide a las empresas que usan IA **tomar medidas** para que su equipo sepa usarla. Da igual la herramienta." },
+    { "tipo": "dato", "eyebrow": "Desde cuándo", "cifra": "2025", "color": "ink", "texto": "Se aplica desde el 2 de febrero de 2025.", "cuerpo": "Y desde el 2 de agosto de 2026, las autoridades nacionales pueden comprobarlo.", "fuente": "Reglamento (UE) 2024/1689, art. 4 · FPF y Dastra, 2026" },
+    { "tipo": "comparar", "eyebrow": "Sin miedo", "titulo": "Lo que pide, y lo que no", "no": { "titulo": "No pide", "items": ["Un título", "Un curso largo", "Una certificación"] }, "si": { "titulo": "Sí pide", "items": ["Medidas razonables", "Pensadas para tu equipo", "Poder demostrarlas"] } },
+    { "tipo": "lista", "eyebrow": "Esta semana", "titulo": "Tres pasos", "items": [ { "t": "Haz la lista", "sub": "Quién usa IA, para qué y con qué cuenta." }, { "t": "Una formación corta", "sub": "Qué puede inventarse la IA, qué datos no se meten y quién revisa." }, { "t": "Guárdalo", "sub": "Fecha, quién estaba y qué se explicó." } ] },
+    { "tipo": "texto", "eyebrow": "Ojo con los datos", "titulo": "Nada de huéspedes en una cuenta personal", "cuerpo": "Nombres, teléfonos o datos de pago no van a una IA con cuenta personal. Si usáis IA para redactar, que sea una herramienta del hotel, con contrato." },
+    { "tipo": "lista", "eyebrow": "Tu prueba", "titulo": "Qué guardar", "items": ["La fecha de la formación", "Quién asistió", "Qué se explicó", "Qué herramientas usa el equipo"] },
+    { "tipo": "cierre", "titulo": "¿Lo has hablado ya con tu equipo?", "cuerpo": "Guárdalo y pásaselo a quien lleve recepción.", "cta": "Esto no es asesoramiento legal" }
+  ]
+}

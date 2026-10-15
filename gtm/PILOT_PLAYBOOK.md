@@ -242,7 +242,7 @@ If they're not in:
 >
 > Esta mañana he pasado por el [Hotel] y te he dejado en recepción un sobre con un resumen de ejemplo.
 >
-> En dos líneas: Fondas se conecta a vuestro PMS y al correo del hotel y lleva la operativa del día — el resumen escrito antes de que abras; cada correo de huésped, antes de llegar y durante la estancia, cruzado con su reserva y redactado con la voz del hotel; las horas de llegada pedidas; la ficha de cada huésped con lo que pidió la última vez. Nada sale sin tu visto bueno. Y cada semana hace más.
+> En dos líneas: Fondas se conecta a vuestro PMS y al correo del hotel y lleva la operativa del día — el resumen escrito antes de que abras; cada correo de huésped, antes de llegar y durante la estancia, cruzado con su reserva y redactado con la voz del hotel; las horas de llegada pedidas; la ficha de cada huésped con lo que pidió la última vez. Trabaja a vuestro ritmo, no al revés. Y cada semana hace más.
 >
 > Estoy eligiendo tres hoteles fundadores en Barcelona —sesenta días gratis, con todo lo que sacamos en ese tiempo— y me gustaría que el [Hotel] fuera uno. ¿Te lo enseño veinte minutos, el jueves a las 12 o el viernes a las 11? Me acerco yo.
 >
@@ -258,7 +258,7 @@ If they're not in:
 >
 > Aquest matí he passat per l'[Hotel] i t'he deixat a recepció un sobre amb un resum d'exemple.
 >
-> En dues línies: Fondas es connecta al vostre PMS i al correu de l'hotel i porta l'operativa del dia — el resum escrit abans que obris; cada correu d'hoste, abans d'arribar i durant l'estada, creuat amb la seva reserva i redactat amb la veu de l'hotel; les hores d'arribada demanades; la fitxa de cada hoste amb el que va demanar l'última vegada. Res no surt sense el teu vistiplau. I cada setmana en fa més.
+> En dues línies: Fondas es connecta al vostre PMS i al correu de l'hotel i porta l'operativa del dia — el resum escrit abans que obris; cada correu d'hoste, abans d'arribar i durant l'estada, creuat amb la seva reserva i redactat amb la veu de l'hotel; les hores d'arribada demanades; la fitxa de cada hoste amb el que va demanar l'última vegada. Treballa al vostre ritme, no a l'inrevés. I cada setmana en fa més.
 >
 > Estic triant tres hotels fundadors a Barcelona —seixanta dies gratis, amb tot el que traiem en aquest temps— i m'agradaria que l'[Hotel] en fos un. T'ho ensenyo vint minuts, dijous a les 12 o divendres a les 11? M'hi acosto jo.
 >
@@ -288,7 +288,7 @@ If they're not in:
 >
 > Soy Oriol, de Barcelona. Estoy eligiendo tres hoteles fundadores para Fondas y me gustaría que uno fuera el vuestro.
 >
-> Funciona así: conectas tu PMS y tu Gmail, y Fondas lleva la operativa del día — el resumen escrito antes de que abras, los correos de huéspedes redactados con la voz del hotel para que solo los revises, las horas de llegada pedidas y la ficha de cada huésped. Nada se envía sin tu visto bueno y no cambia nada de lo que ya usáis. Y cada semana hace más: los hoteles fundadores lo tienen todo y deciden qué viene después.
+> Funciona así: conectas tu PMS y tu Gmail, y Fondas lleva la operativa del día — el resumen escrito antes de que abras, los correos de huéspedes redactados con la voz del hotel para que solo los revises, las horas de llegada pedidas y la ficha de cada huésped. Trabaja a vuestro ritmo, no al revés, y no cambia nada de lo que ya usáis. Y cada semana hace más: los hoteles fundadores lo tienen todo y deciden qué viene después.
 >
 > ¿Te mando el resumen de mañana de un hotel de 45 habitaciones de Barcelona, para que veas exactamente de qué hablo? Si te encaja, te lo enseño en 20 minutos — o me acerco, que lo tengo a mano.
 >
@@ -303,7 +303,7 @@ If they're not in:
 >
 > Sóc l'Oriol, de Barcelona. Estic triant tres hotels fundadors per a Fondas i m'agradaria que un fos el vostre.
 >
-> Funciona així: connectes el teu PMS i el teu Gmail, i Fondas porta l'operativa del dia — el resum escrit abans que obris, els correus dels hostes redactats amb la veu de l'hotel perquè només els revisis, les hores d'arribada demanades i la fitxa de cada hoste. Res no s'envia sense el teu vistiplau i no canvia res del que ja feu servir. I cada setmana en fa més: els hotels fundadors ho tenen tot i decideixen què ve després.
+> Funciona així: connectes el teu PMS i el teu Gmail, i Fondas porta l'operativa del dia — el resum escrit abans que obris, els correus dels hostes redactats amb la veu de l'hotel perquè només els revisis, les hores d'arribada demanades i la fitxa de cada hoste. Treballa al vostre ritme, no a l'inrevés, i no canvia res del que ja feu servir. I cada setmana en fa més: els hotels fundadors ho tenen tot i decideixen què ve després.
 >
 > Vols que t'enviï el resum de demà d'un hotel de 45 habitacions de Barcelona, perquè vegis exactament de què parlo? Si et quadra, te l'ensenyo en 20 minuts — o m'hi acosto.
 >
@@ -318,7 +318,7 @@ If they're not in:
 >
 > I'm Oriol, based in Barcelona. I'm choosing three founding hotels for Fondas and I'd like yours to be one of them.
 >
-> It works like this: connect your PMS and your Gmail, and Fondas runs the day's back-of-house — the brief written before you open, guest emails drafted in the hotel's voice for you to review, arrival times chased, and a record of every guest. Nothing sends without your yes, and nothing you already use changes. And it does more every week: founding hotels get all of it, and help decide what comes next.
+> It works like this: connect your PMS and your Gmail, and Fondas runs the day's back-of-house — the brief written before you open, guest emails drafted in the hotel's voice for you to review, arrival times chased, and a record of every guest. It works at your pace, not the other way round, and nothing you already use changes. And it does more every week: founding hotels get all of it, and help decide what comes next.
 >
 > Can I send you tomorrow morning's brief for a 45-room Barcelona hotel, so you can see exactly what I mean? If it lands, I'll show you the rest in 20 minutes.
 >
@@ -371,7 +371,7 @@ When the intro lands, reply within the hour, thank the friend (move them to BCC)
 >
 > Gracias por el rato de hoy. Me quedo con lo que me dijiste: «[sus palabras sobre dónde se os va el día]».
 >
-> Hotel fundador, en corto: 60 días gratis, con todo lo que saquemos en ese tiempo; la configuración la hacemos juntos en 30 minutos; nada sale sin tu visto bueno y no se toca nada del PMS. El día 30 lo revisamos juntos y decides si seguimos. Si no, lo dejamos, sin más. Te adjunto la hoja del piloto, una página, con qué datos se usan y cómo se borran.
+> Hotel fundador, en corto: 60 días gratis, con todo lo que saquemos en ese tiempo; la configuración la hacemos juntos en 30 minutos; trabaja a vuestro ritmo y no se toca nada del PMS. El día 30 lo revisamos juntos y decides si seguimos. Si no, lo dejamos, sin más. Te adjunto la hoja del piloto, una página, con qué datos se usan y cómo se borran.
 >
 > Para la configuración necesito un acceso al PMS y la cuenta de Gmail del hotel. ¿[Día A] a las [hora] o [día B] a las [hora]?
 >
@@ -397,6 +397,14 @@ When the intro lands, reply within the hour, thank the friend (move them to BCC)
 Cold:
 
 > Hola [Nombre], soy Oriol, de Fondas. Fondas lleva la operativa del día de un hotel: el resumen, los correos de huéspedes, las llegadas, ya hechos. El [Hotel] es justo el tipo de hotel con el que quiero empezar. ¿Conectamos?
+
+**After they engage with a post** (they react or comment on one of Oriol's posts and aren't connected yet — `LINKEDIN_PLAYBOOK.md` §5):
+
+> Hola [Nombre], gracias por comentar lo de [tema del post]. Soy Oriol, de Fondas (Barcelona); escribo sobre la operativa de los hoteles. Me encantaría conectar.
+
+If they accept and engage again, the first message offers something useful, not a demo:
+
+> Gracias por conectar, [Nombre]. Como te interesó lo de [tema], te paso [los resultados completos del estudio / el resumen de ejemplo de un hotel de 45 habitaciones]. Si algún día te apetece ver cómo sería con el [Hotel], son 20 minutos.
 
 **After they accept:** send E3's body as a message, shortened to its last paragraph and one line of what Fondas does. Don't paste a whole email into LinkedIn.
 

@@ -70,3 +70,11 @@ Claude outputs/
 
 # macOS text clippings dragged into the tree by accident.
 *.textClipping
+
+# Private go-to-market notes — advisor calls, personal plans, vendor pricing.
+# This repo is public; nothing in here is ever committed.
+gtm/private/
+
+# LinkedIn photo library — real photos of people and hotels stay off the public repo (brand/linkedin/fotos/README.md).
+brand/linkedin/fotos/*
+!brand/linkedin/fotos/README.md

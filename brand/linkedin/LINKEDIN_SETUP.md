@@ -20,7 +20,7 @@ Fondas es la IA que lleva la operativa de tu hotel.
 
 Se conecta al PMS que ya usas y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, escrito antes de que abra recepción; las comunicaciones con el huésped, con cada correo cruzado con su reserva y la respuesta redactada con la voz del hotel; los check-ins, pidiendo las horas de llegada que faltan; y cualquier pregunta sobre tu hotel, en lenguaje normal.
 
-Nada sale sin tu visto bueno. No modifica nada en tu PMS y no sustituye a nadie de recepción: le quita el trabajo administrativo para que esté con el huésped.
+Habla con la voz de tu casa y trabaja a vuestro ritmo, no al revés. No modifica nada en tu PMS y no sustituye a nadie de recepción: le quita el trabajo administrativo para que esté con el huésped.
 
 Funciona hoy con MEWS y Apaleo, y con cualquier otro PMS mediante una exportación diaria. Datos cifrados y alojados en la UE. Hecho en Barcelona.
 
@@ -32,7 +32,7 @@ Fondas is the AI that runs your hotel's back of house.
 
 It connects to the PMS you already run and to the hotel inbox, and runs the four parts of the day: the morning brief, written before reception opens; guest communications, with every email matched to its reservation and the reply drafted in the hotel's voice; check-ins, chasing the arrival times that are missing; and any question about your hotel, in plain language.
 
-Nothing goes out without your yes. It changes nothing in your PMS and replaces nobody at reception — it takes the admin off them so they can be with the guest.
+It speaks in your hotel's voice and works at your pace, not the other way round. It changes nothing in your PMS and replaces nobody at reception — it takes the admin off them so they can be with the guest.
 
 Works today with MEWS and Apaleo, and with any other PMS through a daily export. Data encrypted and hosted in the EU. Made in Barcelona.
 

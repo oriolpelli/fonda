@@ -16,7 +16,7 @@ _Owner: Oriol · 17 September 2026 · Status: **final** — ready to execute_
 
 > **DOS PASOS POR DELANTE, CADA MAÑANA.**
 > **La IA que lleva la operativa, y tú, a los huéspedes.**
-> Fondas se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Nada sale sin tu visto bueno.
+> Fondas se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Habla con la voz de tu casa y trabaja a vuestro ritmo, no al revés.
 
 ---
 
@@ -121,7 +121,7 @@ Currently `showcase` at 557. Moves directly under the trust bar and shows a **co
 
 Currently `emailShowcase` at 529. `EmailDraftPreviewWindow` should show three things at once, the way Otel's compose panel does: **the guest's email · the matched reservation · the draft**. If the component renders only the draft today, adding the matched-reservation column is the highest-value component work in this spec — it is the visual proof of the moat (`gtm/GTM_STRATEGY.md` §2.2: the inbox is what no PMS copilot can see).
 
-One `SquareMarker` line underneath: *"Nada se envía sin tu visto bueno."*
+One `SquareMarker` line underneath: *"Con la voz de tu casa. A vuestro ritmo, no al revés."*
 
 ### Band 5 — Mientras el hotel duerme (NEW — absorbs `howItWorks`)
 
@@ -209,7 +209,7 @@ The decided copy from `gtm/POSITIONING_V3.md` §3, inlined here so this document
 | `hero.badge` | Dos pasos por delante, cada mañana | Dos passos per davant, cada matí | Two steps ahead, every morning |
 | `hero.headlineLine1` | La IA que lleva la operativa, | La IA que porta l'operativa, | The AI that runs the back of house, |
 | `hero.headlineLine2` | y tú, a los huéspedes. | i tu, els hostes. | so you can run the front. |
-| `hero.subhead` | {brand} se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Nada sale sin tu visto bueno. | {brand} es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Res no surt sense el teu vistiplau. | {brand} connects to your PMS and your hotel inbox, and runs the four parts of the day: the morning brief, check-ins, guest communications, and any question about your hotel. Nothing goes out without your yes. |
+| `hero.subhead` | {brand} se conecta a tu PMS y al correo del hotel, y lleva las cuatro partes del día: el resumen de la mañana, los check-ins, las comunicaciones con el huésped y cualquier pregunta sobre tu hotel. Habla con la voz de tu casa y trabaja a vuestro ritmo, no al revés. | {brand} es connecta al teu PMS i al correu de l'hotel, i porta les quatre parts del dia: el resum del matí, els check-ins, les comunicacions amb l'hoste i qualsevol pregunta sobre el teu hotel. Parla amb la veu de casa teva i treballa al vostre ritme, no a l'inrevés. | {brand} connects to your PMS and your hotel inbox, and runs the four parts of the day: the morning brief, check-ins, guest communications, and any question about your hotel. It speaks in your hotel's voice and works at your pace, not the other way round. |
 | `hero.ctaPrimary` | Pedir acceso | Demanar accés | Get early access |
 | `hero.ctaSecondary` | Ver un resumen real → | Veure un resum real → | See a real brief → |
 | `meta.title` | Fondas — La IA que lleva la operativa de tu hotel | Fondas — La IA que porta l'operativa del teu hotel | Fondas — The AI that runs your hotel's back of house |
@@ -371,7 +371,7 @@ Every row maps to a real scheduled job in `vercel.json`: `/api/sync` (\*/15), `/
 | `trust.connectLine` | MEWS, Apaleo y Gmail, conectados hoy. ¿Usas otra cosa? La conectamos durante el alta. | MEWS, Apaleo i Gmail, connectats avui. En fas servir un altre? El connectem durant l'alta. | MEWS, Apaleo and Gmail, connected today. Using something else? We build the connection during onboarding. |
 | `showcase.gateLine` | Este es el resumen de un hotel de 45 habitaciones. | Aquest és el resum d'un hotel de 45 habitacions. | This is the brief for a 45-room hotel. |
 | `showcase.gateCta` | ¿Quieres el de mañana para el tuyo? → | Vols el de demà per al teu? → | Want tomorrow's for yours? → |
-| `emailShowcase.approvalLine` | Nada se envía sin tu visto bueno. | Res no s'envia sense el teu vistiplau. | Nothing sends without your yes. |
+| `emailShowcase.approvalLine` | Con la voz de tu casa. A vuestro ritmo, no al revés. | Amb la veu de casa teva. Al vostre ritme, no a l'inrevés. | In your hotel's voice. At your pace, not the other way round. |
 | `pricing.groupLine` | ¿Varios hoteles? El precio por alojamiento baja a partir del segundo. Escríbenos. | Diversos hotels? El preu per allotjament baixa a partir del segon. Escriu-nos. | More than one property? The per-property price drops from the second. Talk to us. |
 
 ### 3.8 Namespaces deleted

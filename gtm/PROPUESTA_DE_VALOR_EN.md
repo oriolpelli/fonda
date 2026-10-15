@@ -80,7 +80,7 @@ The team is the protagonist; the guest is the reason.
 | Piece | What it says | In the demo |
 |---|---|---|
 | **Works with everything you already use** | PMS, email and the rest, in one place | Home and the connections in Settings |
-| **Leaves the work ready** | Brief done, drafts, arrival times requested; the person decides | The daily brief, Arrivals, Communications (before arrival and during the stay), the approval |
+| **Leaves the work ready** | Brief done, drafts, arrival times requested; the person decides | The daily brief, Arrivals, Communications (before arrival and during the stay), the draft the team reviews and sends |
 | **Answers any question** | About the hotel, with the real data, and about operations: incidents, complaints, cases you're not sure how to solve | Ask: *"which returning guests arrive this week?"*, *"a guest wants a refund on a non-refundable rate, how do I reply?"*. Let the director ask their own question. **Test the operations questions you'll show before every demo** |
 | **More personal stays** | Replies that know who is writing; returning guests with their record | The matched reservation next to the draft, the guest record. **Later:** the stay plan |
 | **More time to give it** | The time saved goes back to the guest | The hours a week that no longer go on email (Route 1) and the director's own words when they tell you |
@@ -93,7 +93,7 @@ The team is the protagonist; the guest is the reason.
 - *"Does it work with [Outlook, Opera, Cloudbeds…]?"* → *"We connect it during onboarding."*
 - *"Does this change my PMS?"* → *"No, it works with it and brings together what's scattered today."*
 - *"How much does it cost?"* → *"The first sixty days, nothing. After that it depends on the hotel, above all its size, and we talk about it at the end of the pilot, once you know it's useful."* **Never give a figure:** price is not mentioned in any document or sales conversation (decided 15 Oct).
-- *"What if the AI gets it wrong?"* → *"Nothing goes out without your approval, and it's all logged."* (Route 4)
+- *"What if the AI gets it wrong?"* → *"It works at your pace: you decide what goes out, and it's all logged."* (Route 4)
 - *"What does AI-native mean?"* → *"It's been built with AI from day one; it isn't AI added on top of a legacy program."*
 - *"How is this different from ChatGPT?"* → *"ChatGPT knows nothing about your hotel. Fondas sees your bookings and your email, and answers with your data."*
 
@@ -156,11 +156,11 @@ All four are equally important. **What changes is who's in front of you.** Each 
 
 ### Route 4 — AI under control: "Your team already uses AI. Make it the hotel's"
 
-> Fondas brings AI inside the hotel, with rules: nothing goes out without approval, everything is logged and the team is trained, as European law requires.
+> Fondas brings AI inside the hotel, with rules: it works at your pace, everything is logged and the team is trained, as European law requires.
 
 - **For whom:** owner, general manager and, in a group, DPO and IT. In any conversation, it's also **the closing argument**.
 - **Opens with:** P5 (shadow AI and the law).
-- **What proves it:** Oversight › AI (the log of what the AI does), Settings › AI (the five-minute training with a record per hotel), the `/trust` page and the approval button.
+- **What proves it:** Oversight › AI (the log of what the AI does), Settings › AI (the five-minute training with a record per hotel), the `/trust` page and the draft the team reviews and sends.
 - **Bridge to Route 2:** *"And it's the same tool you run the day with. It isn't a separate compliance layer."*
 - **Careful:** to a small hotel it sells fear, and they're in no hurry. It needs educational content first (G1, G2). Never say *"fine"*, *"certificate"* or *"the law prohibits"* (§3, P5).
 
@@ -178,7 +178,7 @@ All four are equally important. **What changes is who's in front of you.** Each 
 
 | In front of you is… | Open with | Continue with | Close with |
 |---|---|---|---|
-| Receptionist or front office manager | **1** Time | **2** Definition | **4** *"Nothing goes out without your approval"* |
+| Receptionist or front office manager | **1** Time | **2** Definition | **4** *"At your pace, not the other way round"* |
 | Operations or hotel director | **2** Definition | **1** Time | **3** Team |
 | Owner or general manager | **2** Definition | **3** Team + margin (P1) | **4** AI under control |
 | Group or chain (operations) | **5** Category | **2** Definition | **3** Standard across hotels, then **4** |
@@ -201,7 +201,7 @@ All four are equally important. **What changes is who's in front of you.** Each 
 | **P2** | The inbox: the same thing twenty times, in five languages, and late | **Yes** | Medium (no Spanish data) | 1 | Communications | Automatic sending with an AI disclosure line (B19) |
 | **P3** | The day starts blind: everything is scattered | **Yes** | Our own and the pilots' experience | **2** | Brief, Arrivals, Home, Ask | Brief via WhatsApp |
 | **P4** | Knowledge leaves with every person who leaves | Medium | Medium | 3 | Guest profile, learned tone, Ask | The hotel's own recommendations |
-| **P5** | The team already uses AI, on their own and without control | **No** (latent) | High (law), medium (US data) | 4 | Approval, AI log, training, `/trust` | — |
+| **P5** | The team already uses AI, on their own and without control | **No** (latent) | High (law), medium (US data) | 4 | Team review, AI log, training, `/trust` | — |
 | **P6** | The guest wants more personalisation, and the same team has to deliver it | Medium | Medium (US surveys) | 3, 5 | Guest profile | Stay plan, "Around the hotel" |
 
 ### P1 — The team can't take any more, and there's no one to hire
@@ -221,7 +221,7 @@ All four are equally important. **What changes is who's in front of you.** Each 
 
 **How the team says it:** *"Every morning I have 30 emails and half of them are the same question."*
 
-**What Fondas does today.** Communications: drafts in the hotel's tone and with the booking details, and nothing goes out without approval. **The metric that proves it** is draft acceptance (>60%).
+**What Fondas does today.** Communications: drafts in the hotel's tone and with the booking details, ready to review and send. **The metric that proves it** is draft acceptance (>60%).
 
 ### P3 — The day starts blind: everything is scattered
 
@@ -260,7 +260,7 @@ All four are equally important. **What changes is who's in front of you.** Each 
 - Director: *"I have no idea what they're putting into ChatGPT at the front desk."*
 - DPO: *"Where's the log?"*
 
-**What Fondas does today.** The same work, but inside a tool with a contract, without the provider training on the data, with human approval, the log of what the AI does (Oversight › AI), the five-minute training with a record per hotel (Settings › AI) and `/trust` for the DPO. **No "ChatGPT at the front desk" has this.** The line you can use is in `AI_ACT_PROMPTS.md` §P.
+**What Fondas does today.** The same work, but inside a tool with a contract, without the provider training on the data, with the team deciding what goes out, the log of what the AI does (Oversight › AI), the five-minute training with a record per hotel (Settings › AI) and `/trust` for the DPO. **No "ChatGPT at the front desk" has this.** The line you can use is in `AI_ACT_PROMPTS.md` §P.
 
 ### P6 — The guest wants more personalisation, and the same team has to deliver it
 
@@ -301,6 +301,7 @@ The additions: **P2** (the inbox), **P3** (the day starts blind, which is the Ro
 
 | Yes | No |
 |---|---|
+| It speaks in your hotel's voice; it works at your pace, not the other way round; the day starts solved, not to be solved | *"Nothing goes out without your approval"*: it reads as a brake, as if the AI had to be watched (decided 15 Oct) |
 | Your whole hotel in one place | A new PMS, or *"change your PMS"* |
 | Gives hours back to your team | Saves on staff or replaces your receptionist |
 | The day already prepared; the person decides | Works on its own, on autopilot |

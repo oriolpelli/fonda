@@ -1,0 +1,8 @@
+{
+  "id": "cita-plantilla",
+  "formato": "imagen",
+  "autor": "Oriol Pellicer · Fondas",
+  "slides": [
+    { "tipo": "cita", "eyebrow": "Lo que oigo en recepción", "texto": "[Frase literal de una recepcionista, tal cual la dijo]", "autor": "Jefa de recepción, hotel de [N] habitaciones, Barcelona" }
+  ]
+}

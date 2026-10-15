@@ -1,0 +1,125 @@
+{
+  "id": "L1-01",
+  "formato": "carrusel",
+  "autor": "Oriol Pellicer · Fondas",
+  "slides": [
+    {
+      "tipo": "portada",
+      "fondo": "cool",
+      "eyebrow": "Presentamos Fondas",
+      "titulo": "Todo tu hotel en un solo sitio. Nativo en IA.",
+      "subtitulo": "Para hoteles. Hecho en Barcelona."
+    },
+    {
+      "tipo": "lista",
+      "eyebrow": "Cada mañana",
+      "titulo": "El día de tu hotel está en cinco sitios",
+      "items": [
+        {
+          "t": "El PMS",
+          "sub": "Quién llega y quién se va."
+        },
+        {
+          "t": "El correo",
+          "sub": "Lo que piden los huéspedes."
+        },
+        {
+          "t": "La extranet de la OTA",
+          "sub": "Lo que cambió anoche."
+        },
+        {
+          "t": "El WhatsApp del turno de noche",
+          "sub": "Lo que quedó pendiente."
+        },
+        {
+          "t": "Un papel en recepción",
+          "sub": "Lo que no se apuntó en otro sitio."
+        }
+      ]
+    },
+    {
+      "tipo": "texto",
+      "eyebrow": "Qué es Fondas",
+      "titulo": "La IA que trabaja con todo lo que ya usa tu hotel",
+      "cuerpo": "Para que cada huésped tenga una estancia **más personal** y tu equipo, **más tiempo** para dársela."
+    },
+    {
+      "tipo": "lista",
+      "eyebrow": "Cada día",
+      "titulo": "El día empieza resuelto, no por resolver",
+      "items": [
+        {
+          "t": "El resumen del día",
+          "sub": "Escrito antes de que abra recepción."
+        },
+        {
+          "t": "Las llegadas",
+          "sub": "Con las horas de llegada que faltan, ya pedidas."
+        },
+        {
+          "t": "Las respuestas a los huéspedes",
+          "sub": "Cada una sabiendo quién escribe y qué ha reservado."
+        }
+      ]
+    },
+    {
+      "tipo": "texto",
+      "eyebrow": "Pregunta",
+      "titulo": "Pregúntale como a un compañero",
+      "cuerpo": "«¿Qué huéspedes que repiten llegan esta semana?»\n\n«Un huésped pide que le devolvamos una tarifa no reembolsable. ¿Cómo le contesto?»",
+      "nota": "Te contesta con los datos de tu hotel, no con los de internet."
+    },
+    {
+      "tipo": "texto",
+      "eyebrow": "Tu casa",
+      "titulo": "Habla con la voz de tu casa",
+      "cuerpo": "Conoce tu hotel y trabaja a vuestro ritmo, **no al revés**.\n\nTu equipo decide qué se envía, y gana tiempo para el huésped."
+    },
+    {
+      "tipo": "comparar",
+      "eyebrow": "Con lo que ya usas",
+      "titulo": "No cambias nada de lo que funciona",
+      "no": {
+        "titulo": "No es",
+        "items": [
+          "Un PMS nuevo",
+          "Un chatbot para el huésped",
+          "Alguien menos en recepción"
+        ]
+      },
+      "si": {
+        "titulo": "Trabaja con",
+        "items": [
+          "MEWS, Apaleo o cualquier PMS, con una exportación diaria",
+          "Tu PMS, sin tocar nada",
+          "Tus datos, cifrados y en la UE"
+        ]
+      }
+    },
+    {
+      "tipo": "lista",
+      "eyebrow": "En camino",
+      "titulo": "Lo que viene",
+      "items": [
+        {
+          "t": "El plan de estancia",
+          "sub": "Para preparar cada estancia según quién llega."
+        },
+        {
+          "t": "Revenue",
+          "sub": "Tarifas y ocupación, junto al resto del día."
+        },
+        {
+          "t": "Housekeeping",
+          "sub": "Las habitaciones, al ritmo de las llegadas."
+        }
+      ]
+    },
+    {
+      "tipo": "cierre",
+      "titulo": "Buscamos los primeros hoteles piloto",
+      "cuerpo": "Más tiempo con los huéspedes. Menos delante de la pantalla.",
+      "cta": "fondas.app"
+    }
+  ]
+}

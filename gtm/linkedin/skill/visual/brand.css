@@ -1,0 +1,99 @@
+/* Fondas — LinkedIn visuals. Signal v4 «Sana, actually» (FONDA_SANA_REDESIGN.md §0.1, app/globals.css).
+   One typeface (Geist + Geist Mono) · white canvas · warm grey wells · no shadows ·
+   colour only in content (one gradient per slide, one accent inside data). */
+
+@font-face { font-family: "Geist"; src: url("assets/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Geist Mono"; src: url("assets/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; }
+
+:root {
+  --bg: #ffffff;          /* canvas */
+  --well: #f6f3ee;        /* well = what "card" means */
+  --well-2: #ece7dd;      /* well inside a well */
+  --border-2: #d4cec2;    /* dividers inside a well */
+  --text: #1c1a16;
+  --text-2: #56534b;
+  --text-3: #6c685e;
+  --accent: #1b3bb3;      /* data only, once per slide */
+  --accent-tint: #e9ecf7;
+  --grad-warm: linear-gradient(145deg,#f3a63a 0%,#ee9560 52%,#e0725c 100%);
+  --grad-cool: linear-gradient(150deg,#3fb4d0 0%,#2f72d4 58%,#243b98 100%);
+  --grad-sand: linear-gradient(150deg,#e9dcc4 0%,#d9c6a6 100%);
+  --grad-scrim: linear-gradient(180deg,rgb(0 0 0 / 0.38),rgb(0 0 0 / 0.30));
+  --r-well: 40px;         /* 20px in the app, ×2 for a 1080px slide read on a phone */
+  --r-inner: 20px;
+  --pad: 72px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); }
+body { font-family: "Geist", system-ui, sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; }
+
+.slide {
+  width: 1080px; height: 1350px; position: relative; overflow: hidden;
+  background: var(--bg); padding: var(--pad); display: flex; flex-direction: column;
+  break-after: page; page-break-after: always;
+}
+.slide:last-child { break-after: auto; page-break-after: auto; }
+
+/* ── type ─────────────────────────────────────────── */
+.eyebrow { font-family: "Geist Mono", monospace; font-size: 24px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); font-weight: 500; }
+.h-xl { font-size: 104px; line-height: 1.02; font-weight: 600; letter-spacing: -0.035em; text-wrap: balance; }
+.h-l  { font-size: 76px;  line-height: 1.06; font-weight: 600; letter-spacing: -0.03em;  text-wrap: balance; }
+.h-m  { font-size: 56px;  line-height: 1.1;  font-weight: 600; letter-spacing: -0.025em; text-wrap: balance; }
+.body { font-size: 40px; line-height: 1.38; color: var(--text-2); text-wrap: pretty; }
+.body strong { color: var(--text); font-weight: 600; }
+.small { font-size: 28px; line-height: 1.4; color: var(--text-3); }
+.mono { font-family: "Geist Mono", monospace; }
+
+/* ── surfaces ─────────────────────────────────────── */
+.well { background: var(--well); border-radius: var(--r-well); padding: 64px; }
+.well-2 { background: var(--well-2); border-radius: var(--r-inner); padding: 36px 40px; }
+.grad { border-radius: var(--r-well); padding: 72px; color: #fff; position: relative; overflow: hidden; }
+.grad.cool { background: var(--grad-scrim), var(--grad-cool); }
+.grad.warm { background: var(--grad-scrim), var(--grad-warm); }
+.grad.sand { background: var(--grad-sand); color: var(--text); }
+.grad .eyebrow { color: rgb(255 255 255 / .82); }
+.grad.sand .eyebrow { color: var(--text-2); }
+.grad .body { color: rgb(255 255 255 / .9); }
+.grad.sand .body { color: var(--text-2); }
+
+/* ── layout helpers ───────────────────────────────── */
+.fill { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.stack > * + * { margin-top: 36px; }
+.stack-s > * + * { margin-top: 20px; }
+.end { margin-top: auto; }
+.center-v { justify-content: center; }
+
+/* ── footer on every slide ────────────────────────── */
+.foot { display: flex; justify-content: space-between; align-items: center; margin-top: 48px; font-family: "Geist Mono", monospace; font-size: 22px; letter-spacing: .06em; color: var(--text-3); flex-shrink: 0; }
+.foot .who { text-transform: none; }
+
+/* ── slide types ──────────────────────────────────── */
+.cover .grad { flex: 1; display: flex; flex-direction: column; }
+.cover-num { font-size: 260px; line-height: .92; font-weight: 600; letter-spacing: -0.05em; margin-top: 64px; font-variant-numeric: tabular-nums; }
+.cover .swipe { font-family: "Geist Mono", monospace; font-size: 26px; letter-spacing: .1em; text-transform: uppercase; color: rgb(255 255 255 / .85); margin-top: auto; }
+.grad.sand .swipe, .cover .grad.sand .swipe { color: var(--text-2); }
+
+.stat .num { font-size: 300px; line-height: .9; font-weight: 600; letter-spacing: -0.05em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.stat .num.ink { color: var(--text); }
+.source { font-family: "Geist Mono", monospace; font-size: 22px; line-height: 1.45; color: var(--text-3); letter-spacing: .02em; }
+
+.list { list-style: none; counter-reset: n; }
+.list li { counter-increment: n; display: grid; grid-template-columns: 76px 1fr; gap: 24px; align-items: start; font-size: 44px; line-height: 1.3; color: var(--text); }
+.list li + li { margin-top: 28px; padding-top: 28px; border-top: 2px solid var(--border-2); }
+.list li::before { content: counter(n, decimal-leading-zero); font-family: "Geist Mono", monospace; font-size: 30px; color: var(--text-3); padding-top: 8px; }
+.list li span.sub { display: block; font-size: 32px; color: var(--text-2); margin-top: 8px; }
+
+.quote .q { font-size: 72px; line-height: 1.12; font-weight: 500; letter-spacing: -0.025em; text-wrap: balance; }
+.quote .q::before { content: "«"; } .quote .q::after { content: "»"; }
+
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.compare .col { border-radius: var(--r-well); padding: 48px 44px; }
+.compare .col.no { background: var(--well); }
+.compare .col.si { background: var(--accent-tint); }
+.compare .col h3 { font-size: 34px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 28px; }
+.compare .col li { list-style: none; font-size: 38px; line-height: 1.3; color: var(--text-2); }
+.compare .col li + li { margin-top: 22px; }
+
+.closing .wordmark { height: 40px; width: auto; display: block; align-self: flex-start; }
+.closing .cta { font-family: "Geist Mono", monospace; font-size: 28px; letter-spacing: .08em; text-transform: uppercase; color: var(--text); }
