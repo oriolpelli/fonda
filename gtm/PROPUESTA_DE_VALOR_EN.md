@@ -55,13 +55,13 @@ The team is the protagonist; the guest is the reason.
 
 **The definition, in 30 seconds** (in person, by phone, at the start of the demo):
 
-> Fondas is the AI that works with everything your hotel already uses. Every day it leaves the work ready: the brief, the arrivals and guest replies, already drafted.
+> Fondas is the AI that works with everything your hotel already uses: the PMS, email and the rest. Every day it leaves the team's work ready (the daily brief, arrivals and guest replies, each one knowing who is writing and what they've booked).
 >
-> And at any time you can ask it anything, from *"who's returning this week?"* to *"a guest is complaining about noise, how do I handle it?"*.
+> And at any time you can ask it anything, from *"which returning guests arrive this week?"* to *"a guest wants a refund on a non-refundable rate, how do I reply?"*.
 >
-> You just review and decide. More time for your guests, and more personal stays.
+> The team just reviews and decides. More time for guests, and more personal stays.
 >
-> ES: *Fondas es la IA que trabaja con todo lo que ya usa tu hotel. Cada día te deja el trabajo preparado: el resumen, las llegadas y las respuestas a los huéspedes, ya redactadas. Y a cualquier hora le preguntas lo que quieras, desde «¿quién repite esta semana?» hasta «un huésped se queja del ruido, ¿cómo lo llevo?». Tú solo revisas y decides. Más tiempo para tus huéspedes, y estancias más personales.*
+> ES: *Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja al equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado). Y a cualquier hora le puedes preguntar lo que quieras, desde «¿qué huéspedes que repiten llegan esta semana?» hasta «un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?». El equipo solo revisa y decide. Más tiempo para los huéspedes, y estancias más personales.*
 
 **The paragraph** (website, one-pager, email):
 
@@ -81,7 +81,7 @@ The team is the protagonist; the guest is the reason.
 |---|---|---|
 | **Works with everything you already use** | PMS, email and the rest, in one place | Home and the connections in Settings |
 | **Leaves the work ready** | Brief done, drafts, arrival times requested; the person decides | The daily brief, Arrivals, Communications (before arrival and during the stay), the approval |
-| **Answers any question** | About the hotel, with the real data, and about operations: incidents, complaints, cases you're not sure how to solve | Ask: *"who's returning this week?"*, *"how's Saturday looking?"*, *"a guest is complaining about noise, how do I handle it?"*. Let the director ask their own question. **Test the operations questions you'll show before every demo** |
+| **Answers any question** | About the hotel, with the real data, and about operations: incidents, complaints, cases you're not sure how to solve | Ask: *"which returning guests arrive this week?"*, *"a guest wants a refund on a non-refundable rate, how do I reply?"*. Let the director ask their own question. **Test the operations questions you'll show before every demo** |
 | **More personal stays** | Replies that know who is writing; returning guests with their record | The matched reservation next to the draft, the guest record. **Later:** the stay plan |
 | **More time to give it** | The time saved goes back to the guest | The hours a week that no longer go on email (Route 1) and the director's own words when they tell you |
 

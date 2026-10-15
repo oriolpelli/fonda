@@ -48,11 +48,11 @@ El equipo es el protagonista y el huésped, el motivo.
 
 **La definición, en 30 segundos** (en persona, por teléfono, al empezar la demo):
 
-> Fondas es la IA que trabaja con todo lo que ya usa tu hotel. Cada día te deja el trabajo preparado: el resumen, las llegadas y las respuestas a los huéspedes, ya redactadas.
+> Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja al equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado).
 >
-> Y a cualquier hora le preguntas lo que quieras, desde *«¿quién repite esta semana?»* hasta *«un huésped se queja del ruido, ¿cómo lo llevo?»*.
+> Y a cualquier hora le puedes preguntar lo que quieras, desde *«¿qué huéspedes que repiten llegan esta semana?»* hasta *«un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?»*.
 >
-> Tú solo revisas y decides. Más tiempo para tus huéspedes, y estancias más personales.
+> El equipo solo revisa y decide. Más tiempo para los huéspedes, y estancias más personales.
 
 **El párrafo** (web, one-pager, email):
 
@@ -72,7 +72,7 @@ El equipo es el protagonista y el huésped, el motivo.
 |---|---|---|
 | **Trabaja con todo lo que ya usáis** | PMS, correo y lo demás, en un sitio | Inicio y las conexiones de Ajustes |
 | **Deja el trabajo preparado** | Resumen hecho, borradores, llegadas pedidas; la persona decide | El resumen del día, Llegadas, Comunicaciones (antes de la llegada y durante la estancia), el visto bueno |
-| **Responde a cualquier pregunta** | Sobre el hotel, con los datos de verdad, y sobre la operativa: incidencias, quejas, casos que no sabes resolver | Pregunta: *«¿quién repite esta semana?»*, *«¿cómo va el sábado?»*, *«un huésped se queja del ruido, ¿cómo lo llevo?»*. Que el director haga su propia pregunta. **Prueba antes de cada demo las preguntas de operativa que vayas a enseñar** |
+| **Responde a cualquier pregunta** | Sobre el hotel, con los datos de verdad, y sobre la operativa: incidencias, quejas, casos que no sabes resolver | Pregunta: *«¿qué huéspedes que repiten llegan esta semana?»*, *«un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?»*. Que el director haga su propia pregunta. **Prueba antes de cada demo las preguntas de operativa que vayas a enseñar** |
 | **Estancias más personales** | Respuestas que saben quién escribe; el huésped que repite, con su ficha | La reserva localizada al lado del borrador, la ficha del huésped. **Mañana:** el plan de estancia |
 | **Más tiempo para dársela** | El tiempo que se gana vuelve al huésped | Las horas a la semana que ya no van al correo (Ruta 1) y la frase del director cuando lo cuenta |
 
