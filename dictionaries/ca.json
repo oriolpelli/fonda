@@ -208,7 +208,6 @@
     "companyTitle": "Empresa",
     "resourcesTitle": "Recursos",
     "legalTitle": "Legal",
-    "pricing": "Preus",
     "integrations": "Integracions",
     "contact": "Contacte",
     "cookies": "Galetes",
@@ -1084,18 +1083,7 @@
     "q5": "On es guarden les dades dels nostres hostes?",
     "a5": "A la nostra base de dades allotjada a la UE, en un espai aïllat propi. Fondas sí que emmagatzema les dades de reserves i hostes que llegeix del teu PMS i de la teva bústia: és la matèria primera dels resums, esborranys i respostes. Estan xifrades en repòs, protegides amb seguretat a nivell de fila perquè un allotjament mai vegi les d'un altre, es fan servir només per gestionar el teu hotel i s'eliminen quan et dones de baixa.",
     "q6": "Es fan servir les dades dels hostes per entrenar models d'IA?",
-    "a6": "No. La informació dels teus hostes es fa servir només per generar els resums, esborranys i respostes del teu hotel — mai per entrenar models compartits.",
-    "q7": "Quant costa Fondas?",
-    "a7": "Un preu únic per allotjament i mes — tot inclòs, sense tarifes per usuari. Fondas està en beta privada: incorporem uns quants hotels cada vegada. Escriu-nos i t'ajudem a començar."
-  },
-  "pricing": {
-    "eyebrow": "Preu",
-    "headline": "Un preu únic per allotjament.",
-    "price": "Un preu",
-    "priceUnit": "per allotjament i mes — tot inclòs",
-    "lead": "Sense tarifes per usuari, sense cobrament per correu, sense nivells sorpresa. Tot el que fa {brand} va inclòs, a un únic preu per allotjament. Escriu-nos i t'ho diem.",
-    "note": "Gratis per als tres primers hotels del pilot.",
-    "button": "Parla amb nosaltres"
+    "a6": "No. La informació dels teus hostes es fa servir només per generar els resums, esborranys i respostes del teu hotel — mai per entrenar models compartits."
   },
   "authAside": {
     "headline": "L'operativa de l'hotel, feta.",
@@ -1257,7 +1245,7 @@
     "i1Title": "Analítica i revenue",
     "i1Desc": "El quadre de comandament d'ingressos i l'analítica de l'hotel. Primer arribarà un senyal al resum quan una nit vagi fluixa: un senyal, no un motor de preus.",
     "i2Title": "Extres abans de l'arribada",
-    "i2Desc": "Els esborranys previs a l'arribada inclouran els teus propis extres amb preu: late checkout, esmorzar, pàrquing. Un late checkout a la setmana paga {brand}.",
+    "i2Desc": "Els esborranys previs a l'arribada inclouran els teus propis extres amb preu: late checkout, esmorzar, pàrquing.",
     "i3Title": "El resum per WhatsApp",
     "i3Desc": "On de debò el llegiràs a les 6:45.",
     "i4Title": "Outlook",

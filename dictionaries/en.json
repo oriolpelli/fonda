@@ -208,7 +208,6 @@
     "companyTitle": "Company",
     "resourcesTitle": "Resources",
     "legalTitle": "Legal",
-    "pricing": "Pricing",
     "integrations": "Integrations",
     "contact": "Contact",
     "cookies": "Cookies",
@@ -1084,18 +1083,7 @@
     "q5": "Where does our guest data live?",
     "a5": "In our EU-hosted database, in your own isolated space. Fondas does store the reservation and guest data it reads from your PMS and inbox — that is what the briefs, drafts and answers are built from. It is encrypted at rest, protected by row-level security so one property can never see another's, used only to run your hotel, and deleted when you leave.",
     "q6": "Is guest data used to train AI models?",
-    "a6": "No. Your guests' information is used only to run your hotel's briefs, drafts and answers — never to train shared models.",
-    "q7": "What does Fondas cost?",
-    "a7": "One flat price per property, per month — everything included, with no per-seat fees. Fondas is in private beta: we onboard a few hotels at a time. Get in touch and we'll get you set up."
-  },
-  "pricing": {
-    "eyebrow": "Pricing",
-    "headline": "One flat price per property.",
-    "price": "One price",
-    "priceUnit": "per property, per month — everything included",
-    "lead": "No per-user fees, no per-email charges, no surprise tiers. Everything {brand} does is included, at one price per property. Talk to us and we'll tell you.",
-    "note": "Free for the first three pilot hotels.",
-    "button": "Talk to us"
+    "a6": "No. Your guests' information is used only to run your hotel's briefs, drafts and answers — never to train shared models."
   },
   "authAside": {
     "headline": "The back of house, handled.",
@@ -1257,7 +1245,7 @@
     "i1Title": "Analytics and revenue",
     "i1Desc": "The revenue dashboard and hotel analytics. First will come a line in the brief when a night is running soft: a signal, not a pricing engine.",
     "i2Title": "Pre-arrival extras",
-    "i2Desc": "Pre-arrival drafts will include your own paid extras with prices: late checkout, breakfast, parking. One late checkout a week pays for {brand}.",
+    "i2Desc": "Pre-arrival drafts will include your own paid extras with prices: late checkout, breakfast, parking.",
     "i3Title": "The brief on WhatsApp",
     "i3Desc": "Where you'll actually read it at 6:45.",
     "i4Title": "Outlook",

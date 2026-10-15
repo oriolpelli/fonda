@@ -418,7 +418,7 @@ export default async function Home({
     },
     {
       label: dict.faq.billingGroup,
-      items: [[dict.faq.q6, dict.faq.a6], [dict.faq.q7, dict.faq.a7]] as [
+      items: [[dict.faq.q6, dict.faq.a6]] as [
         string,
         string,
       ][],
@@ -456,14 +456,8 @@ export default async function Home({
         inLanguage: locale,
         description: dict.meta.description,
         publisher: { "@id": `${SITE_URL}/#organization` },
-        // No `price`/`priceCurrency`: the page stopped stating a figure
-        // (§3.0b), and structured data must not claim one the page doesn't.
-        // The offer itself stays so the Product markup is still complete.
-        offers: {
-          "@type": "Offer",
-          description: dict.pricing.priceUnit,
-          url: absoluteUrl(locale, "/#pricing"),
-        },
+        // No `offers`: the site states no price at all (15 Oct 2026) — pricing
+        // depends on the hotel and is discussed in person, never on the page.
       },
       {
         "@type": "FAQPage",
@@ -1386,55 +1380,6 @@ export default async function Home({
               ))}
             </div>
           </div>
-        </section>
-
-        {/* Pricing — the flat per-property price, stated. The figure is navy
-            to match the same number in the ROI stat row above; both derive from
-            PRICE_MONTHLY_EUR in company.ts. The button goes to /contact, not
-            /signup — this band sells the price, it isn't the sign-up path. */}
-        <section
-          id="pricing"
-          className="scroll-mt-20 border-t border-border px-6 py-24 md:px-8"
-        >
-          <Reveal className="mx-auto max-w-[1120px]">
-            <div className="rounded-[28px] bg-card px-6 py-16 text-center md:px-16">
-              <Eyebrow>{dict.pricing.eyebrow}</Eyebrow>
-              <h2 className="mx-auto mt-5 max-w-[16ch] text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.04] tracking-[-0.03em] text-foreground">
-                {dict.pricing.headline}
-              </h2>
-              {/* Stacked, not the old baseline-aligned row: the big line is
-                  words now ("One price"), not a figure, so the unit reads as
-                  its continuation on the next line rather than a currency
-                  suffix sitting beside a number. */}
-              <p className="mt-7 flex flex-col items-center gap-y-2">
-                <span className="text-[clamp(2.5rem,5vw,3.5rem)] font-semibold leading-none tracking-[-0.04em] text-[var(--fonda-accent)]">
-                  {dict.pricing.price}
-                </span>
-                <span className="max-w-[32ch] text-[16px] leading-[1.5] text-muted-foreground">
-                  {dict.pricing.priceUnit}
-                </span>
-              </p>
-              <p className="mx-auto mt-6 max-w-[54ch] text-[17px] leading-[1.6] text-muted-foreground">
-                {t(dict.pricing.lead, { brand: COMPANY.brand })}
-              </p>
-              <div className="mt-9 flex justify-center">
-                <Button asChild variant="ink" size="lg">
-                  <Link href={localizedHref(locale, "/contact")}>
-                    {dict.pricing.button}
-                  </Link>
-                </Button>
-              </div>
-              {/* The address stays visible next to the button: /contact is a
-                  page, not a mail client, but plenty of people would rather
-                  just write than click through to be told where to write. */}
-              <p className="mt-4 text-[14px] text-muted-foreground">
-                {COMPANY.contactEmail}
-              </p>
-              <p className="mt-6 font-mono text-[12px] uppercase tracking-[0.1em] text-[var(--fonda-text-3)]">
-                {dict.pricing.note}
-              </p>
-            </div>
-          </Reveal>
         </section>
 
         {/* FAQ — grouped accordion (Mobbin: HubSpot/MasterClass) */}

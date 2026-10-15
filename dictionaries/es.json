@@ -208,7 +208,6 @@
     "companyTitle": "Empresa",
     "resourcesTitle": "Recursos",
     "legalTitle": "Legal",
-    "pricing": "Precios",
     "integrations": "Integraciones",
     "contact": "Contacto",
     "cookies": "Cookies",
@@ -1084,18 +1083,7 @@
     "q5": "¿Dónde se guardan los datos de nuestros huéspedes?",
     "a5": "En nuestra base de datos alojada en la UE, en un espacio aislado propio. Fondas sí almacena los datos de reservas y huéspedes que lee de tu PMS y de tu buzón: es la materia prima de los resúmenes, borradores y respuestas. Están cifrados en reposo, protegidos con seguridad a nivel de fila para que un alojamiento nunca vea los de otro, se usan solo para gestionar tu hotel y se eliminan cuando te das de baja.",
     "q6": "¿Se usan los datos de los huéspedes para entrenar modelos de IA?",
-    "a6": "No. La información de tus huéspedes se usa solo para generar los resúmenes, borradores y respuestas de tu hotel — nunca para entrenar modelos compartidos.",
-    "q7": "¿Cuánto cuesta Fondas?",
-    "a7": "Un precio único por alojamiento y mes — todo incluido, sin tarifas por usuario. Fondas está en beta privada: incorporamos unos pocos hoteles cada vez. Escríbenos y te ayudamos a empezar."
-  },
-  "pricing": {
-    "eyebrow": "Precio",
-    "headline": "Un precio único por alojamiento.",
-    "price": "Un precio",
-    "priceUnit": "por alojamiento y mes — todo incluido",
-    "lead": "Sin tarifas por usuario, sin cobro por correo, sin niveles sorpresa. Todo lo que hace {brand} va incluido, a un único precio por alojamiento. Escríbenos y te lo decimos.",
-    "note": "Gratis para los tres primeros hoteles del piloto.",
-    "button": "Habla con nosotros"
+    "a6": "No. La información de tus huéspedes se usa solo para generar los resúmenes, borradores y respuestas de tu hotel — nunca para entrenar modelos compartidos."
   },
   "authAside": {
     "headline": "La operativa del hotel, hecha.",
@@ -1257,7 +1245,7 @@
     "i1Title": "Analítica y revenue",
     "i1Desc": "El cuadro de mando de ingresos y la analítica del hotel. Primero llegará una señal en el resumen cuando una noche vaya floja: una señal, no un motor de precios.",
     "i2Title": "Extras antes de la llegada",
-    "i2Desc": "Los borradores previos a la llegada incluirán tus propios extras con precio: late checkout, desayuno, parking. Un late checkout a la semana paga {brand}.",
+    "i2Desc": "Los borradores previos a la llegada incluirán tus propios extras con precio: late checkout, desayuno, parking.",
     "i3Title": "El resumen por WhatsApp",
     "i3Desc": "Donde de verdad lo vas a leer a las 6:45.",
     "i4Title": "Outlook",

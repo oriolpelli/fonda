@@ -36,7 +36,6 @@ function footerColumns(locale: Locale, dict: Dictionary, isHome: boolean) {
       links: [
         { label: dict.nav.features, href: anchor("#features") },
         { label: dict.nav.howItWorks, href: anchor("#how") },
-        { label: dict.footer.pricing, href: anchor("#pricing") },
         { label: dict.footer.integrations, href: anchor("#works-with") },
       ],
     },
