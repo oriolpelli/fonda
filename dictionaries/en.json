@@ -118,7 +118,7 @@
     "row3strong": "{departures} departures, all before noon.",
     "row3rest": " The {aguirre} family leaves the Garden Suite after eight nights, so housekeeping has the full turnaround flagged before the 16:00 arrivals.",
     "row4strong": "Four guest emails overnight.",
-    "row4rest": " One needs you: {vidal}, arriving Tuesday, asks whether the roof terrace is reachable by lift. The reply is drafted and waiting for your yes.",
+    "row4rest": " One needs you: {vidal}, arriving Tuesday, asks whether the roof terrace is reachable by lift. The reply is drafted; it just needs sending.",
     "row5strong": "Occupancy tonight: {occupancy}%.",
     "row5rest": " {occupied} of {rooms} rooms, and the weekend is already full.",
     "row6strong": "One thing to decide.",
@@ -126,7 +126,7 @@
   },
   "stats": {
     "headline": "The paperwork hours, back to your guests.",
-    "lead": "Fondas takes the two heaviest parts of the day: guest email and getting up to speed. The drafts and the brief come from AI that already knows your hotel; sending is always your call.",
+    "lead": "Fondas takes the two heaviest parts of the day: guest email and getting up to speed. The drafts and the brief come from AI that already knows your hotel and works at your pace, not the other way round.",
     "inboxTop": "Guest email, drafted overnight",
     "inboxValue": "90s",
     "inboxLabel": "to review a reply and send it",
@@ -149,7 +149,7 @@
     "i2Title": "Check-ins",
     "i2Desc": "Arrival times chased and confirmed on their own, so housekeeping stays ahead.",
     "i3Title": "Communications",
-    "i3Desc": "Every guest email with the reply drafted and the booking beside it. Sending is your call.",
+    "i3Desc": "Every guest email with the reply drafted in your hotel's voice and the booking beside it.",
     "i4Title": "Ask anything",
     "i4Desc": "When a question comes up, you ask it like you'd ask a colleague: about your hotel — who's returning, how tonight looks — or how to handle an incident or a complaint."
   },
@@ -177,7 +177,7 @@
     "deskB1": "Every email with the reply drafted and the booking beside it.",
     "deskB2": "In your hotel's voice, not a robot's.",
     "deskB3": "Arrival times chased on their own.",
-    "deskB4": "Sending is always your call."
+    "deskB4": "At your pace, not the other way round."
   },
   "comparison": {
     "eyebrow": "The difference",
@@ -1022,7 +1022,7 @@
     "step1Desc": "Link your PMS and hotel inbox. A few minutes, once — Fondas reads your reservations and learns your hotel.",
     "step2Title": "Fondas drafts & chases",
     "step2Desc": "Overnight, guest emails get replies drafted in your voice and missing arrival times chase themselves.",
-    "step3Title": "You approve",
+    "step3Title": "The day, sorted",
     "step3Desc": "The morning brief lands before the desk opens. Skim it, send the drafts you like, get on with your day."
   },
   "nightShift": {
@@ -1063,8 +1063,8 @@
   "emailShowcase": {
     "eyebrow": "The inbox",
     "headline": "Guest email, drafted before you wake up.",
-    "lead": "Every message arrives classified and answered in your hotel's voice, matched to the reservation. You review, adjust, and send — nothing goes out without you.",
-    "approvalLine": "Nothing sends without your yes."
+    "lead": "Every message arrives classified and answered in your hotel's voice, matched to the reservation. You review, adjust, and send, at your pace.",
+    "approvalLine": "In your hotel's voice. At your pace, not the other way round."
   },
   "faq": {
     "eyebrow": "FAQ",
@@ -1078,7 +1078,7 @@
     "q3": "How long does setup take?",
     "a3": "About thirty minutes, and we do it with you. Connect your PMS and your inbox, and your first brief arrives the next morning.",
     "q4": "Does Fondas ever email guests without me?",
-    "a4": "Never automatically. Every reply is drafted for your review — sending is always your decision.",
+    "a4": "Not on its own today: every reply arrives drafted in your hotel's voice, and someone on your team sends it, at your pace.",
     "q5": "Where does our guest data live?",
     "a5": "In our EU-hosted database, in your own isolated space. Fondas does store the reservation and guest data it reads from your PMS and inbox — that is what the briefs, drafts and answers are built from. It is encrypted at rest, protected by row-level security so one property can never see another's, used only to run your hotel, and deleted when you leave.",
     "q6": "Is guest data used to train AI models?",

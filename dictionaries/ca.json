@@ -118,7 +118,7 @@
     "row3strong": "{departures} sortides, totes abans de migdia.",
     "row3rest": " La família {aguirre} deixa la Suite Jardí després de vuit nits, així que pisos ja té marcat el repàs a fons abans de les arribades de les 16:00.",
     "row4strong": "Quatre correus d'hostes durant la nit.",
-    "row4rest": " Un et necessita: l'{vidal}, que arriba dimarts, pregunta si es pot pujar a la terrassa amb ascensor. La resposta està redactada i espera el teu vistiplau.",
+    "row4rest": " Un et necessita: l'{vidal}, que arriba dimarts, pregunta si es pot pujar a la terrassa amb ascensor. La resposta ja està redactada; només cal enviar-la.",
     "row5strong": "Ocupació aquesta nit: {occupancy}%.",
     "row5rest": " {occupied} de {rooms} habitacions, i el cap de setmana ja està complet.",
     "row6strong": "Una cosa per decidir.",
@@ -126,7 +126,7 @@
   },
   "stats": {
     "headline": "Les hores de paperassa, de tornada als hostes.",
-    "lead": "Fondas es queda les dues parts més feixugues del dia: el correu dels hostes i posar-se al dia. Els esborranys i el resum surten d'una IA que ja coneix el teu hotel; enviar, sempre ho decideixes tu.",
+    "lead": "Fondas es queda les dues parts més feixugues del dia: el correu dels hostes i posar-se al dia. Els esborranys i el resum surten d'una IA que ja coneix el teu hotel i treballa al vostre ritme, no a l'inrevés.",
     "inboxTop": "El correu d'hostes, amb esborrany a punt",
     "inboxValue": "90s",
     "inboxLabel": "per revisar una resposta i enviar-la",
@@ -149,7 +149,7 @@
     "i2Title": "Check-ins",
     "i2Desc": "Les hores d'arribada demanades i confirmades soles, perquè pisos vagi per davant.",
     "i3Title": "Comunicacions",
-    "i3Desc": "Cada correu d'hoste amb la resposta redactada i la reserva al davant. Enviar, ho decideixes tu.",
+    "i3Desc": "Cada correu d'hoste amb la resposta redactada amb la veu de casa teva i la reserva al davant.",
     "i4Title": "Pregunta el que vulguis",
     "i4Desc": "Quan sorgeix un dubte, l'hi preguntes com a un company: sobre el teu hotel —qui repeteix, com pinta la nit— o sobre com portar una incidència o una queixa."
   },
@@ -177,7 +177,7 @@
     "deskB1": "Cada correu amb la resposta redactada i la reserva al davant.",
     "deskB2": "Amb la veu de l'hotel, no amb la d'un robot.",
     "deskB3": "Les hores d'arribada demanades soles.",
-    "deskB4": "Enviar, sempre ho decideixes tu."
+    "deskB4": "Al vostre ritme, no a l'inrevés."
   },
   "comparison": {
     "eyebrow": "La diferència",
@@ -1022,7 +1022,7 @@
     "step1Desc": "Vincula el teu PMS i la bústia de l'hotel. Uns minuts, un sol cop — Fondas llegeix les teves reserves i aprèn com és el teu hotel.",
     "step2Title": "Fondas redacta i reclama",
     "step2Desc": "Durant la nit, els correus d'hostes arriben amb respostes redactades amb la teva veu i les hores d'arribada que falten es reclamen soles.",
-    "step3Title": "Tu ho aproves",
+    "step3Title": "El dia, resolt",
     "step3Desc": "El resum matinal arriba abans d'obrir recepció. Fes-hi un cop d'ull, envia els esborranys que t'agradin i continua amb el teu dia."
   },
   "nightShift": {
@@ -1063,8 +1063,8 @@
   "emailShowcase": {
     "eyebrow": "La safata",
     "headline": "El correu d'hostes, redactat abans de despertar-te.",
-    "lead": "Cada missatge arriba classificat i respost amb la veu del teu hotel, vinculat a la reserva. Tu revises, ajustes i envies — res no surt sense tu.",
-    "approvalLine": "Res no s'envia sense el teu vistiplau."
+    "lead": "Cada missatge arriba classificat i respost amb la veu del teu hotel, vinculat a la reserva. Tu revises, ajustes i envies, al teu ritme.",
+    "approvalLine": "Amb la veu de casa teva. Al vostre ritme, no a l'inrevés."
   },
   "faq": {
     "eyebrow": "Preguntes",
@@ -1078,7 +1078,7 @@
     "q3": "Quant triga la configuració?",
     "a3": "Uns trenta minuts, i ho fem amb tu. Connecta el teu PMS i la teva bústia, i el primer resum arriba l'endemà al matí.",
     "q4": "Fondas escriu als hostes sense mi?",
-    "a4": "Mai de manera automàtica. Cada resposta es redacta perquè la revisis — enviar-la és sempre la teva decisió.",
+    "a4": "Avui no ho fa sol: cada resposta arriba redactada amb la veu de casa teva i l'envia algú del teu equip, al vostre ritme.",
     "q5": "On es guarden les dades dels nostres hostes?",
     "a5": "A la nostra base de dades allotjada a la UE, en un espai aïllat propi. Fondas sí que emmagatzema les dades de reserves i hostes que llegeix del teu PMS i de la teva bústia: és la matèria primera dels resums, esborranys i respostes. Estan xifrades en repòs, protegides amb seguretat a nivell de fila perquè un allotjament mai vegi les d'un altre, es fan servir només per gestionar el teu hotel i s'eliminen quan et dones de baixa.",
     "q6": "Es fan servir les dades dels hostes per entrenar models d'IA?",

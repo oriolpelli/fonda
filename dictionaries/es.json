@@ -118,7 +118,7 @@
     "row3strong": "{departures} salidas, todas antes de mediodía.",
     "row3rest": " La familia {aguirre} deja la Suite Jardín después de ocho noches, así que pisos ya tiene marcado el repaso a fondo antes de las llegadas de las 16:00.",
     "row4strong": "Cuatro correos de huéspedes durante la noche.",
-    "row4rest": " Uno te necesita: {vidal}, que llega el martes, pregunta si se puede subir a la terraza en ascensor. La respuesta está redactada y espera tu visto bueno.",
+    "row4rest": " Uno te necesita: {vidal}, que llega el martes, pregunta si se puede subir a la terraza en ascensor. La respuesta ya está redactada; solo falta enviarla.",
     "row5strong": "Ocupación esta noche: {occupancy}%.",
     "row5rest": " {occupied} de {rooms} habitaciones, y el fin de semana ya está completo.",
     "row6strong": "Una cosa que decidir.",
@@ -126,7 +126,7 @@
   },
   "stats": {
     "headline": "Las horas del papeleo, de vuelta al huésped.",
-    "lead": "Fondas se queda con las dos partes más pesadas del día: el correo de huéspedes y ponerse al día. Los borradores y el resumen salen de una IA que ya conoce tu hotel; enviar, siempre lo decides tú.",
+    "lead": "Fondas se queda con las dos partes más pesadas del día: el correo de huéspedes y ponerse al día. Los borradores y el resumen salen de una IA que ya conoce tu hotel y trabaja a vuestro ritmo, no al revés.",
     "inboxTop": "El correo de huéspedes, con borrador listo",
     "inboxValue": "90s",
     "inboxLabel": "para revisar una respuesta y enviarla",
@@ -149,7 +149,7 @@
     "i2Title": "Check-ins",
     "i2Desc": "Las horas de llegada pedidas y confirmadas solas, para que pisos vaya por delante.",
     "i3Title": "Comunicaciones",
-    "i3Desc": "Cada correo de huésped con la respuesta redactada y la reserva delante. Enviar, lo decides tú.",
+    "i3Desc": "Cada correo de huésped con la respuesta redactada con la voz de tu casa y la reserva delante.",
     "i4Title": "Pregunta lo que quieras",
     "i4Desc": "Cuando surge una duda, se la preguntas como a un compañero: sobre tu hotel —quién repite, cómo pinta la noche— o sobre cómo llevar una incidencia o una queja."
   },
@@ -177,7 +177,7 @@
     "deskB1": "Cada correo con la respuesta redactada y la reserva delante.",
     "deskB2": "Con la voz del hotel, no con la de un robot.",
     "deskB3": "Las horas de llegada pedidas solas.",
-    "deskB4": "Enviar, siempre lo decides tú."
+    "deskB4": "A vuestro ritmo, no al revés."
   },
   "comparison": {
     "eyebrow": "La diferencia",
@@ -1022,7 +1022,7 @@
     "step1Desc": "Vincula tu PMS y el buzón del hotel. Unos minutos, una sola vez — Fondas lee tus reservas y aprende cómo es tu hotel.",
     "step2Title": "Fondas redacta y reclama",
     "step2Desc": "Durante la noche, los correos de huéspedes llegan con respuestas redactadas con tu voz y las horas de llegada que faltan se reclaman solas.",
-    "step3Title": "Tú apruebas",
+    "step3Title": "El día, resuelto",
     "step3Desc": "El resumen matinal llega antes de abrir recepción. Échale un vistazo, envía los borradores que te gusten y sigue con tu día."
   },
   "nightShift": {
@@ -1063,8 +1063,8 @@
   "emailShowcase": {
     "eyebrow": "La bandeja",
     "headline": "El correo de huéspedes, redactado antes de despertarte.",
-    "lead": "Cada mensaje llega clasificado y respondido con la voz de tu hotel, vinculado a la reserva. Tú revisas, ajustas y envías — nada sale sin ti.",
-    "approvalLine": "Nada se envía sin tu visto bueno."
+    "lead": "Cada mensaje llega clasificado y respondido con la voz de tu hotel, vinculado a la reserva. Tú revisas, ajustas y envías, a tu ritmo.",
+    "approvalLine": "Con la voz de tu casa. A vuestro ritmo, no al revés."
   },
   "faq": {
     "eyebrow": "Preguntas",
@@ -1078,7 +1078,7 @@
     "q3": "¿Cuánto tarda la configuración?",
     "a3": "Unos treinta minutos, y lo hacemos contigo. Conecta tu PMS y tu buzón, y tu primer resumen llega a la mañana siguiente.",
     "q4": "¿Fondas escribe a los huéspedes sin mí?",
-    "a4": "Nunca de forma automática. Cada respuesta se redacta para que la revises — enviarla es siempre tu decisión.",
+    "a4": "Hoy no lo hace solo: cada respuesta llega redactada con la voz de tu casa y la envía alguien de tu equipo, a vuestro ritmo.",
     "q5": "¿Dónde se guardan los datos de nuestros huéspedes?",
     "a5": "En nuestra base de datos alojada en la UE, en un espacio aislado propio. Fondas sí almacena los datos de reservas y huéspedes que lee de tu PMS y de tu buzón: es la materia prima de los resúmenes, borradores y respuestas. Están cifrados en reposo, protegidos con seguridad a nivel de fila para que un alojamiento nunca vea los de otro, se usan solo para gestionar tu hotel y se eliminan cuando te das de baja.",
     "q6": "¿Se usan los datos de los huéspedes para entrenar modelos de IA?",
