@@ -55,13 +55,23 @@ The team is the protagonist; the guest is the reason.
 
 **The definition, in 30 seconds** (in person, by phone, at the start of the demo):
 
-> Fondas is the AI that works with everything your hotel already uses: the PMS, email and the rest. Every day it leaves the team's work ready (the daily brief, arrivals and guest replies, each one knowing who is writing and what they've booked), and it answers any question on the spot, about the hotel (*"who's returning this week?"*, *"how's Saturday looking?"*) or about running it (*"a guest is complaining about noise, how do I handle it?"*). The team just reviews and decides. The result: more personal stays and a team with more time for guests.
+> Fondas is the AI that works with everything your hotel already uses. Every day it leaves the work ready: the brief, the arrivals and guest replies, already drafted.
 >
-> ES: *Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja al equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado), y responde al momento a cualquier pregunta, tanto sobre el hotel («¿quién repite esta semana?», «¿cómo va el sábado?») como sobre la operativa («un huésped se queja del ruido, ¿cómo lo llevo?»). El equipo solo revisa y decide. El resultado: estancias más personales y un equipo con más tiempo para los huéspedes.*
+> And at any time you can ask it anything, from *"who's returning this week?"* to *"a guest is complaining about noise, how do I handle it?"*.
+>
+> You just review and decide. More time for your guests, and more personal stays.
+>
+> ES: *Fondas es la IA que trabaja con todo lo que ya usa tu hotel. Cada día te deja el trabajo preparado: el resumen, las llegadas y las respuestas a los huéspedes, ya redactadas. Y a cualquier hora le preguntas lo que quieras, desde «¿quién repite esta semana?» hasta «un huésped se queja del ruido, ¿cómo lo llevo?». Tú solo revisas y decides. Más tiempo para tus huéspedes, y estancias más personales.*
 
 **The paragraph** (website, one-pager, email):
 
-> For the teams who run a hotel, from front desk to management, Fondas is the AI where the day's operations are run. It works with everything the hotel already uses (the PMS, email and the rest) and prepares the work: the daily brief, arrivals and guest communications. And at any time you can ask it anything, in plain language: about the hotel, and it answers with the real data, or about running it, like how to handle an incident, a complaint or a case you're not sure how to solve. Every reply to a guest knows who is writing and what they've booked, and every returning guest arrives with their record, so every stay is more personal. The team spends less time behind screens and more with guests. It's AI-native: a PMS copilot is AI added to a legacy program and only sees its own part; Fondas has been built with AI from day one and sees the whole hotel. And unlike a ChatGPT open at the front desk, it knows your hotel, writes in its tone and sends nothing without approval.
+> Fondas is the AI that works with everything your hotel already uses: the PMS, email and the rest.
+>
+> Every day it leaves the work done: the brief, the arrivals and guest replies, each one knowing who is writing and what they've booked. And at any time you can ask it anything, about the hotel or about running it.
+>
+> Your team spends less time behind screens and more with guests. AI-native, it knows your hotel and sends nothing without your yes.
+
+**What no longer goes in the paragraph** (and where it lives): the comparison with the PMS copilot and with ChatGPT lives in the prepared answers and Route 5. The paragraph sells; the comparisons answer.
 
 **Why this is the main one.** It's the only one of the five routes that describes *what Fondas is*, and not just *what you get*. It works just as well for 30 rooms as for a group. It's the first screen of the demo. And it marks the difference from what the hotel uses today: the PMS copilot only sees the PMS, ChatGPT sees nothing of the hotel, and the notebook and the Excel sheet prepare nothing.
 

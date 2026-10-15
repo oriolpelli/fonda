@@ -48,11 +48,21 @@ El equipo es el protagonista y el huésped, el motivo.
 
 **La definición, en 30 segundos** (en persona, por teléfono, al empezar la demo):
 
-> Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja al equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado), y responde al momento a cualquier pregunta, tanto sobre el hotel (*«¿quién repite esta semana?»*, *«¿cómo va el sábado?»*) como sobre la operativa (*«un huésped se queja del ruido, ¿cómo lo llevo?»*). El equipo solo revisa y decide. El resultado: estancias más personales y un equipo con más tiempo para los huéspedes.
+> Fondas es la IA que trabaja con todo lo que ya usa tu hotel. Cada día te deja el trabajo preparado: el resumen, las llegadas y las respuestas a los huéspedes, ya redactadas.
+>
+> Y a cualquier hora le preguntas lo que quieras, desde *«¿quién repite esta semana?»* hasta *«un huésped se queja del ruido, ¿cómo lo llevo?»*.
+>
+> Tú solo revisas y decides. Más tiempo para tus huéspedes, y estancias más personales.
 
 **El párrafo** (web, one-pager, email):
 
-> Para los equipos que llevan un hotel, de recepción a dirección, Fondas es la IA donde se lleva la operativa del día. Trabaja con todo lo que ya usa el hotel (el PMS, el correo y el resto) y prepara el trabajo: el resumen del día, las llegadas y las comunicaciones con los huéspedes. Y a cualquier hora puedes preguntarle lo que quieras, en lenguaje normal: sobre el hotel, y te contesta con los datos de verdad, o sobre la operativa, como cómo llevar una incidencia, una queja o un caso que no sabes resolver. Cada respuesta a un huésped sabe quién escribe y qué ha reservado, y cada huésped que repite llega con su ficha, así que cada estancia es más personal. El equipo pasa menos tiempo delante de la pantalla y más con los huéspedes. Es nativo en IA: el copiloto de un PMS es una IA añadida a un programa de siempre y solo ve su parte; Fondas está hecho con IA desde el primer día y ve todo el hotel. Y a diferencia de un ChatGPT abierto en recepción, conoce tu hotel, escribe con su tono y no envía nada sin visto bueno.
+> Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto.
+>
+> Cada día te deja el trabajo hecho: el resumen, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado. Y a cualquier hora le preguntas lo que quieras, del hotel o de la operativa.
+>
+> Tu equipo pasa menos tiempo delante de la pantalla y más con los huéspedes. Nativo en IA, conoce tu hotel y no envía nada sin tu visto bueno.
+
+**Lo que ya no va en el párrafo** (y dónde está): la comparación con el copiloto del PMS y con ChatGPT vive en las respuestas preparadas y en la Ruta 5. El párrafo vende; las comparaciones responden.
 
 **Por qué esta es la principal.** Es la única de las cinco rutas que describe *qué es* Fondas, y no solo *qué consigues*. Sirve igual para 30 habitaciones que para un grupo. Es la primera pantalla de la demo. Y marca la diferencia con lo que el hotel usa hoy: el copiloto del PMS ve solo el PMS, ChatGPT no ve nada del hotel, y la libreta y el Excel no preparan nada.
 
