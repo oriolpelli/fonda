@@ -67,7 +67,7 @@ The team is the protagonist; the guest is the reason.
 
 > Fondas is the AI that works with everything your hotel already uses: the PMS, email and the rest.
 >
-> Every day it leaves the work done: the brief, the arrivals and guest replies, each one knowing who is writing and what they've booked. And at any time you can ask it anything, about the hotel or about running it.
+> Every day it leaves the work done: the brief, the arrivals and guest replies, each one knowing who is writing and what they've booked. And when a question comes up, you ask it like you'd ask a colleague, about the hotel or about running it.
 >
 > Your team spends less time behind screens and more with guests. AI-native, it knows your hotel and works at your pace, not the other way round.
 

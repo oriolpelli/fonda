@@ -151,7 +151,7 @@
     "i3Title": "Comunicacions",
     "i3Desc": "Cada correu d'hoste amb la resposta redactada i la reserva al davant. Enviar, ho decideixes tu.",
     "i4Title": "Pregunta el que vulguis",
-    "i4Desc": "Sobre el teu hotel —ocupació, arribades, com pinta la nit— o sobre com portar una incidència o una queixa. En llenguatge normal."
+    "i4Desc": "Quan sorgeix un dubte, l'hi preguntes com a un company: sobre el teu hotel —qui repeteix, com pinta la nit— o sobre com portar una incidència o una queixa."
   },
   "audience": {
     "eyebrow": "Per a qui és",
@@ -1050,7 +1050,7 @@
     "r7Time": "09:00",
     "r7Title": "Demana les hores d'arribada que falten",
     "r7Chip": "Pisos, per davant",
-    "kicker": "Tot això, sense una hora extra ni una persona més a la plantilla.",
+    "kicker": "El dia comença resolt, no per resoldre.",
     "note": "Una nit qualsevol, amb horaris d'exemple. {brand} no només treballa de nit: sincronitza el teu PMS cada quinze minuts i llegeix el correu cada cinc. El resum arriba a l'hora que tu triïs."
   },
   "showcase": {

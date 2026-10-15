@@ -58,7 +58,7 @@ El equipo es el protagonista y el huésped, el motivo.
 
 > Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto.
 >
-> Cada día te deja el trabajo hecho: el resumen, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado. Y a cualquier hora le preguntas lo que quieras, del hotel o de la operativa.
+> Cada día te deja el trabajo hecho: el resumen, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado. Y cuando surge una duda, se la preguntas como a un compañero, sea del hotel o de la operativa.
 >
 > Tu equipo pasa menos tiempo delante de la pantalla y más con los huéspedes. Nativo en IA, conoce tu hotel y trabaja a vuestro ritmo, no al revés.
 

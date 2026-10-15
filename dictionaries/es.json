@@ -151,7 +151,7 @@
     "i3Title": "Comunicaciones",
     "i3Desc": "Cada correo de huésped con la respuesta redactada y la reserva delante. Enviar, lo decides tú.",
     "i4Title": "Pregunta lo que quieras",
-    "i4Desc": "Sobre tu hotel —ocupación, llegadas, cómo pinta la noche— o sobre cómo llevar una incidencia o una queja. En lenguaje normal."
+    "i4Desc": "Cuando surge una duda, se la preguntas como a un compañero: sobre tu hotel —quién repite, cómo pinta la noche— o sobre cómo llevar una incidencia o una queja."
   },
   "audience": {
     "eyebrow": "Para quién es",
@@ -1050,7 +1050,7 @@
     "r7Time": "09:00",
     "r7Title": "Pide las horas de llegada que faltan",
     "r7Chip": "Pisos, por delante",
-    "kicker": "Todo esto, sin una hora extra ni una persona más en plantilla.",
+    "kicker": "El día empieza resuelto, no por resolver.",
     "note": "Una noche cualquiera, con horarios de ejemplo. {brand} no solo trabaja de noche: sincroniza tu PMS cada quince minutos y lee el correo cada cinco. El resumen llega a la hora que tú elijas."
   },
   "showcase": {

@@ -151,7 +151,7 @@
     "i3Title": "Communications",
     "i3Desc": "Every guest email with the reply drafted and the booking beside it. Sending is your call.",
     "i4Title": "Ask anything",
-    "i4Desc": "About your hotel — occupancy, arrivals, how tonight looks — or how to handle an incident or a complaint. In plain language."
+    "i4Desc": "When a question comes up, you ask it like you'd ask a colleague: about your hotel — who's returning, how tonight looks — or how to handle an incident or a complaint."
   },
   "audience": {
     "eyebrow": "Who it's for",
@@ -1050,7 +1050,7 @@
     "r7Time": "9 AM",
     "r7Title": "Chases the arrival times still missing",
     "r7Chip": "Housekeeping, ahead",
-    "kicker": "All of it, without an hour of overtime or one more person on payroll.",
+    "kicker": "The day starts sorted, not waiting to be sorted.",
     "note": "One ordinary night, with example times. {brand} doesn't only work at night: it syncs your PMS every fifteen minutes and reads the inbox every five. The brief arrives at the hour you choose."
   },
   "showcase": {
