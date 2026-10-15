@@ -2,7 +2,7 @@
 
 _Owner: Oriol · 15 oct 2026 · Sale del episodio del GTM Playbook con Kai (Enginy), del brainstorming de Oriol y de la llamada con Denis (`gtm/private/2026-10-02_call_denis_shatalin.md`)._
 
-**Estado.** **Decidido el 15 oct:** qué es Fondas (§1) y cómo se cuenta a cada persona (§2). La Ruta 2 es la definición, y las Rutas 1, 3, 4 y 5 son entradas igual de importantes según con quién hables. La frase y la definición se reescribieron el mismo día con la estructura de Axelrod: cómo funciona, qué gana el huésped y qué gana el equipo (§1.1). **Pendiente:** pasarlo a `PILOT_PLAYBOOK.md` y a `POSITIONING_V3.md`, que siguen siendo los que mandan en pitch y en web (§8).
+**Estado.** **Decidido el 15 oct:** qué es Fondas (§1) y cómo se cuenta a cada persona (§2). La Ruta 2 es la definición, y las Rutas 1, 3, 4 y 5 son entradas igual de importantes según con quién hables. La frase y la definición se cerraron el mismo día con la estructura de Axelrod (qué es, qué gana el huésped y qué gana el equipo) y opción D (§1.1). **Pendiente:** pasarlo a `PILOT_PLAYBOOK.md` y a `POSITIONING_V3.md`, que siguen siendo los que mandan en pitch y en web (§8).
 
 **Por qué existe este documento.** Kai lo resumió así: *«si no tienes claro el problema que resuelves, todo lo demás va a fallar»*. Y su ejemplo: *«En Factorial hacemos A, B, C»* no funciona, mientras que *«¿Sabías que hay una ley nueva que obliga a fichar?»* sí. Denis añadió que la mayoría de hoteles todavía no ve esto como un problema, así que una parte del trabajo es educar.
 
@@ -26,17 +26,17 @@ _Owner: Oriol · 15 oct 2026 · Sale del episodio del GTM Playbook con Kai (Engi
 
 ## 1. Qué es Fondas (Ruta 2, la definición)
 
-**Cuando alguien pregunte *«¿qué es Fondas?»*, sea quien sea, se contesta con esto.** Después se pasa a la ruta de su persona (§2). Las cuatro piezas dicen lo mismo en tres partes, de la más corta a la más larga:
+**Cuando alguien pregunte *«¿qué es Fondas?»*, sea quien sea, se contesta con esto.** Después se pasa a la ruta de su persona (§2). Las cuatro piezas dicen lo mismo en tres partes:
 
-1. **Cómo funciona:** lleva el trabajo del día entre los sistemas que ya usa el hotel.
+1. **Qué es:** la IA que trabaja con todo lo que ya usa el hotel.
 2. **Qué gana el huésped:** una estancia más personal.
-3. **Qué gana el equipo:** más tiempo con los huéspedes y menos delante de la pantalla.
+3. **Qué gana el equipo:** más tiempo para dársela.
 
 El equipo es el protagonista y el huésped, el motivo.
 
 **La frase** (bio, firma, primera frase de un email o de un walk-in, cierre de un post):
 
-> **Fondas, nativo en IA, lleva el trabajo del día entre los sistemas que ya usa tu hotel, para que cada estancia sea más personal y tu equipo pase más tiempo con los huéspedes y menos delante de la pantalla.**
+> **Fondas es la IA que trabaja con todo lo que ya usa tu hotel, para que cada huésped tenga una estancia más personal y tu equipo, más tiempo para dársela.**
 
 **El titular** (web, one-pager, primera diapositiva):
 
@@ -48,11 +48,11 @@ El equipo es el protagonista y el huésped, el motivo.
 
 **La definición, en 30 segundos** (en persona, por teléfono, al empezar la demo):
 
-> Fondas es el sistema nativo en IA que lleva el trabajo del día entre los sistemas que ya usa tu hotel. Cada día le dice al equipo qué toca y le deja el trabajo preparado: el resumen del día, las llegadas y las respuestas a los huéspedes, cada una con lo que el hotel sabe de quien escribe. El equipo revisa y decide. Cada estancia es más personal, y el equipo pasa más tiempo con los huéspedes y menos delante de la pantalla.
+> Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja al equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado), y responde al momento a cualquier pregunta, tanto sobre el hotel (*«¿quién repite esta semana?»*, *«¿cómo va el sábado?»*) como sobre la operativa (*«un huésped se queja del ruido, ¿cómo lo llevo?»*). El equipo solo revisa y decide. El resultado: estancias más personales y un equipo con más tiempo para los huéspedes.
 
 **El párrafo** (web, one-pager, email):
 
-> Para los equipos que llevan un hotel, de recepción a dirección, Fondas es el sistema donde se lleva la operativa del día. Trabaja entre los sistemas que ya usa el hotel (el PMS, el correo y el resto) y prepara el trabajo: el resumen del día, las llegadas, las comunicaciones con los huéspedes y cualquier pregunta sobre el hotel. Cada respuesta sabe quién escribe y qué ha reservado, y cada huésped que repite llega con su ficha, así que cada estancia es más personal. Y el equipo pasa menos tiempo delante de la pantalla y más con los huéspedes. Es nativo en IA: el copiloto de un PMS es una IA añadida a un programa de siempre y solo ve su parte; Fondas está hecho con IA desde el primer día y ve todo el hotel. Y a diferencia de un ChatGPT abierto en recepción, conoce tu hotel, escribe con su tono y no envía nada sin visto bueno.
+> Para los equipos que llevan un hotel, de recepción a dirección, Fondas es la IA donde se lleva la operativa del día. Trabaja con todo lo que ya usa el hotel (el PMS, el correo y el resto) y prepara el trabajo: el resumen del día, las llegadas y las comunicaciones con los huéspedes. Y a cualquier hora puedes preguntarle lo que quieras, en lenguaje normal: sobre el hotel, y te contesta con los datos de verdad, o sobre la operativa, como cómo llevar una incidencia, una queja o un caso que no sabes resolver. Cada respuesta a un huésped sabe quién escribe y qué ha reservado, y cada huésped que repite llega con su ficha, así que cada estancia es más personal. El equipo pasa menos tiempo delante de la pantalla y más con los huéspedes. Es nativo en IA: el copiloto de un PMS es una IA añadida a un programa de siempre y solo ve su parte; Fondas está hecho con IA desde el primer día y ve todo el hotel. Y a diferencia de un ChatGPT abierto en recepción, conoce tu hotel, escribe con su tono y no envía nada sin visto bueno.
 
 **Por qué esta es la principal.** Es la única de las cinco rutas que describe *qué es* Fondas, y no solo *qué consigues*. Sirve igual para 30 habitaciones que para un grupo. Es la primera pantalla de la demo. Y marca la diferencia con lo que el hotel usa hoy: el copiloto del PMS ve solo el PMS, ChatGPT no ve nada del hotel, y la libreta y el Excel no preparan nada.
 
@@ -60,11 +60,13 @@ El equipo es el protagonista y el huésped, el motivo.
 
 | Pieza | Qué dice | En la demo |
 |---|---|---|
-| **Lleva el trabajo entre los sistemas** | PMS, correo y lo demás, en un sitio | Inicio, Pregunta (*«¿quién repite esta semana?»*) |
-| **Dice qué toca** | Quién llega, qué falta, qué contestar | El resumen del día, Llegadas y check-ins |
-| **Deja el trabajo preparado** | Resumen hecho, borradores, llegadas pedidas; la persona decide | Comunicaciones (antes de la llegada y durante la estancia), el visto bueno |
+| **Trabaja con todo lo que ya usáis** | PMS, correo y lo demás, en un sitio | Inicio y las conexiones de Ajustes |
+| **Deja el trabajo preparado** | Resumen hecho, borradores, llegadas pedidas; la persona decide | El resumen del día, Llegadas, Comunicaciones (antes de la llegada y durante la estancia), el visto bueno |
+| **Responde a cualquier pregunta** | Sobre el hotel, con los datos de verdad, y sobre la operativa: incidencias, quejas, casos que no sabes resolver | Pregunta: *«¿quién repite esta semana?»*, *«¿cómo va el sábado?»*, *«un huésped se queja del ruido, ¿cómo lo llevo?»*. Que el director haga su propia pregunta. **Prueba antes de cada demo las preguntas de operativa que vayas a enseñar** |
 | **Estancias más personales** | Respuestas que saben quién escribe; el huésped que repite, con su ficha | La reserva localizada al lado del borrador, la ficha del huésped. **Mañana:** el plan de estancia |
-| **Más tiempo con los huéspedes** | El tiempo que se gana vuelve al huésped | Las horas a la semana que ya no van al correo (Ruta 1) y la frase del director cuando lo cuenta |
+| **Más tiempo para dársela** | El tiempo que se gana vuelve al huésped | Las horas a la semana que ya no van al correo (Ruta 1) y la frase del director cuando lo cuenta |
+
+**El chat es el momento «wow» de la demo.** El resumen y los borradores se entienden; la pregunta libre se *siente*. Dale el móvil al director y que pregunte algo de su propio hotel. Si la respuesta sale bien, la demo está hecha.
 
 **La mañana es cómo empieza la demo, no lo que vendemos.** Lo que vendemos es todo el día; si suena a *«el resumen de la mañana»*, un director contesta *«eso lo hago yo en un rato»* (`POSITIONING_V3.md` §10).
 
@@ -74,35 +76,38 @@ El equipo es el protagonista y el huésped, el motivo.
 - *«¿Cuánto cuesta?»* → *«Los primeros sesenta días, nada. Después depende del hotel, sobre todo del tamaño, y lo hablamos al final del piloto, cuando sepas si te sirve.»* **Nunca se da una cifra:** el precio no se menciona en ningún documento ni conversación de venta (decidido el 15 oct).
 - *«¿Y si la IA se equivoca?»* → *«Nada sale sin vuestro visto bueno, y queda registrado.»* (Ruta 4)
 - *«¿Qué significa nativo en IA?»* → *«Que está hecho con IA desde el primer día, no es una IA añadida a un programa de siempre.»*
+- *«¿Y esto en qué se diferencia de ChatGPT?»* → *«ChatGPT no sabe nada de tu hotel. Fondas ve tus reservas y tu correo, y te contesta con tus datos.»*
 
 **Qué no somos** (para no perder la venta por una palabra):
 - **No sustituimos a nadie.** Repartimos el trabajo: *«La IA que lleva la operativa, y tú, a los huéspedes»*. Enginy empezó vendiendo *«la IA lo hace todo»* y tuvo que pasar a copiloto porque el mercado no lo compraba. Axelrod vende *«hoteles que funcionan solos»*; nosotros, un equipo con más tiempo para el huésped.
 - **No somos un PMS.** Trabajamos con él.
-- **No somos un chatbot para el huésped.** Hoy todo pasa por una persona del hotel.
+- **No somos un chatbot para el huésped.** El chat es para el equipo; hoy todo lo que llega al huésped pasa por una persona del hotel.
 
 ### 1.1 De dónde sale la frase, y las alternativas
 
-**De dónde sale.** La estructura es la de **Axelrod**, competidor directo (Y Combinator, verano de 2026, agentes de IA para hoteles boutique y de lujo, lema *«Hotels that run themselves»*). Su descripción: *«Axelrod orchestrates work across your existing systems to deliver hyperpersonalized stays, giving your team more time with guests and less time behind screens.»* Funciona porque dice las tres cosas en una frase: cómo funciona, qué gana el huésped y qué gana el equipo. **Nos quedamos con la estructura, no con las palabras.** En un sector tan pequeño, usar su frase tal cual nos haría parecer su copia.
+**De dónde sale.** La estructura viene de **Axelrod**, competidor directo (Y Combinator, verano de 2026, agentes de IA para hoteles boutique y de lujo, lema *«Hotels that run themselves»*). Su descripción: *«Axelrod orchestrates work across your existing systems to deliver hyperpersonalized stays, giving your team more time with guests and less time behind screens.»* Funciona porque dice tres cosas en una frase: qué hace, qué gana el huésped y qué gana el equipo. **Nos quedamos con la estructura, no con las palabras**: en un sector tan pequeño, usar su frase nos haría parecer su copia.
 
-**Las tres palabras que cambiamos, y por qué:**
-- **«Lleva el trabajo» en vez de «orquesta».** «Orquestar» es jerga técnica en español; «lleva» es la palabra del hero (*«La IA que lleva la operativa»*).
-- **«Más personal» en vez de «hiperpersonalizada».** Hoy la personalización real es la ficha del huésped y respuestas que saben quién escribe. Lo que la haría *hiper* (el plan de estancia) es «Próximamente». Cuando exista, se puede subir el tono.
-- **El equipo como sujeto, no el hotel.** Axelrod vende autonomía; nosotros, tiempo para el equipo. Esa diferencia es la nuestra y responde al miedo de *«¿esto sustituye a mi recepcionista?»*.
+**Por qué la nuestra es mejor para nosotros (decidido el 15 oct, opción D):**
+- **«La IA que trabaja con todo lo que ya usa tu hotel»** dice qué es y que no hay que cambiar nada, sin jerga («orquestar», «sistemas»).
+- **«Una estancia más personal»** en vez de «hiperpersonalizada»: es lo que el producto hace hoy (la ficha del huésped, respuestas que saben quién escribe). Lo que la haría *hiper*, el plan de estancia, es «Próximamente».
+- **«Y tu equipo, más tiempo para dársela»** une las dos ganancias: la estancia es más personal *porque* el equipo tiene tiempo. Es lo contrario de la promesa de Axelrod (el hotel funciona solo), y responde al miedo de *«¿esto sustituye a mi recepcionista?»*.
 
-**Nativo en IA (decidido 15 oct).** Va en la frase, el titular y la definición, con la misma palabra, para que se quede. Es lo que nos separa del copiloto del PMS, y es la tesis de Kai: los grandes añaden capas de IA encima de lo que ya tenían, y los nuevos rehacen el trabajo desde cero. **Nunca** se usa *LLM*, *agente*, *modelo* ni el nombre del proveedor de IA en la primera frase; si preguntan, la respuesta está en `/trust`.
+**Nativo en IA (decidido 15 oct).** Va en el titular, y como respuesta preparada. La frase ya empieza con *«la IA que…»*, así que no hace falta repetirlo. Es lo que nos separa del copiloto del PMS, y es la tesis de Kai: los grandes añaden capas de IA encima de lo que ya tenían, y los nuevos rehacen el trabajo desde cero. **Nunca** se usa *LLM*, *agente*, *modelo* ni el nombre del proveedor de IA en la primera frase; si preguntan, la respuesta está en `/trust`.
 
 **Traducciones de la frase:**
-- **EN:** *Fondas is AI-native: it runs the day's work across the systems your hotel already uses, so every stay feels more personal and your team spends more time with guests and less behind screens.*
-- **CA:** *Fondas, natiu en IA, porta la feina del dia entre els sistemes que ja fa servir el teu hotel, perquè cada estada sigui més personal i el teu equip passi més temps amb els hostes i menys davant de la pantalla.*
+- **EN:** *Fondas is the AI that works with everything your hotel already uses, so every guest gets a more personal stay, and your team has more time to give it.*
+- **CA:** *Fondas és la IA que treballa amb tot el que ja fa servir el teu hotel, perquè cada hoste tingui una estada més personal i el teu equip, més temps per donar-li.*
 
-| Alternativa | A favor | En contra |
+| Alternativa descartada | A favor | En contra |
 |---|---|---|
-| **El sistema nativo en IA que junta todo tu hotel en una sola pantalla, para que tu equipo pueda dedicarse al huésped.** (la anterior) | Más corta | No dice qué gana el huésped |
-| **Todo tu hotel en una sola pantalla, para que tu equipo pueda levantar la vista.** | Tiene una paradoja que sorprende (una pantalla para mirarla menos) | Hay que pensarla un segundo. Mejor para un post o una charla |
-| **Menos pantalla, más huésped.** | La más corta; funciona en los tres idiomas | No dice qué es Fondas. Es el origen del lema |
+| **Fondas coordina el trabajo de tu hotel sobre las herramientas que ya usáis, para que cada estancia sea más personal y tu equipo pase más tiempo con los huéspedes y menos delante de la pantalla.** (A) | La más parecida a Axelrod | Larga; «coordina» es frío |
+| **Fondas se conecta a todo lo que ya usa tu hotel y te deja el trabajo del día hecho, para que…** (B) | Centrada en el producto | Más larga y menos memorable |
+| **Fondas junta todo tu hotel en una sola pantalla y prepara el trabajo del día, para que…** (C) | Cercana a lo que teníamos | No dice que es IA |
+| **Tu PMS, tu correo y todo lo demás, trabajando juntos: Fondas prepara el día para que tu equipo esté con los huéspedes, no con la pantalla.** (E) | Contraste claro | Dos frases en una; no dice qué es |
+| **Fondas, nativo en IA, lleva el trabajo del día entre los sistemas que ya usa tu hotel…** (la del primer intento) | Sigue la estructura | Suena a traducción; «sistema… sistemas» |
 | La frase de Axelrod, traducida | Es muy buena | Es suya. No se usa |
 
-**Cómo probarla:** como primera frase en los próximos walk-ins, justo después de presentarte. Si la persona asiente o pregunta *«¿cómo?»*, funciona. Si la frase entera se hace larga en la puerta, di el titular y el lema.
+**Cómo probarla:** como primera frase en los próximos walk-ins, justo después de presentarte. Si la persona asiente o pregunta *«¿cómo?»*, funciona. Si en la puerta no da tiempo, di el titular y el lema.
 
 ---
 
@@ -285,7 +290,7 @@ Los añadidos: **P2** (el buzón), **P3** (el día empieza a ciegas, que es el p
 | En camino: el plan de estancia, revenue, housekeeping | Hoy hace planes por huésped, precios o limpieza |
 | Para hoteles | Para hoteles independientes o pequeños |
 | Cada estancia, más personal | Estancias «hiperpersonalizadas» (hasta que exista el plan de estancia) |
-| Más tiempo con los huéspedes | El hotel funciona solo (es la promesa de Axelrod, no la nuestra) |
+| Más tiempo con los huéspedes / más tiempo para dársela | El hotel funciona solo (es la promesa de Axelrod, no la nuestra) |
 | «Los primeros sesenta días, nada; después, depende del hotel» | Cualquier cifra, un «precio de fundador» o un «precio plano» |
 | Nativo en IA (y si preguntan: hecho con IA desde el primer día) | *LLM*, *agente*, *modelo* con un director (jerga) |
 | Para que el equipo tenga tiempo para el huésped | Para que el huésped no tenga que hablar con nadie |
