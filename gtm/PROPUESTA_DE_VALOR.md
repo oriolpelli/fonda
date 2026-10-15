@@ -48,11 +48,11 @@ El equipo es el protagonista y el huésped, el motivo.
 
 **La definición, en 30 segundos** (en persona, por teléfono, al empezar la demo):
 
-> Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja al equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado).
+> Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja a tu equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado).
 >
-> Y a cualquier hora le puedes preguntar lo que quieras, desde *«¿qué huéspedes que repiten llegan esta semana?»* hasta *«un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?»*.
+> Y cuando surge una duda, se la preguntas como a un compañero: desde *«¿qué huéspedes que repiten llegan esta semana?»* hasta *«un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?»*.
 >
-> El equipo solo revisa y decide. El resultado: estancias más personales y un equipo con más tiempo para los huéspedes.
+> El día empieza resuelto, no por resolver. El resultado: estancias más personales y un equipo con más tiempo para los huéspedes.
 
 **El párrafo** (web, one-pager, email):
 
@@ -60,7 +60,7 @@ El equipo es el protagonista y el huésped, el motivo.
 >
 > Cada día te deja el trabajo hecho: el resumen, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado. Y a cualquier hora le preguntas lo que quieras, del hotel o de la operativa.
 >
-> Tu equipo pasa menos tiempo delante de la pantalla y más con los huéspedes. Nativo en IA, conoce tu hotel y no envía nada sin tu visto bueno.
+> Tu equipo pasa menos tiempo delante de la pantalla y más con los huéspedes. Nativo en IA, conoce tu hotel y trabaja a vuestro ritmo, no al revés.
 
 **Lo que ya no va en el párrafo** (y dónde está): la comparación con el copiloto del PMS y con ChatGPT vive en las respuestas preparadas y en la Ruta 5. El párrafo vende; las comparaciones responden.
 

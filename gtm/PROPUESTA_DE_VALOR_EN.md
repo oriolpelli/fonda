@@ -57,11 +57,11 @@ The team is the protagonist; the guest is the reason.
 
 > Fondas is the AI that works with everything your hotel already uses: the PMS, email and the rest. Every day it leaves the team's work ready (the daily brief, arrivals and guest replies, each one knowing who is writing and what they've booked).
 >
-> And at any time you can ask it anything, from *"which returning guests arrive this week?"* to *"a guest wants a refund on a non-refundable rate, how do I reply?"*.
+> And when a question comes up, you ask it like you'd ask a colleague: from *"which returning guests arrive this week?"* to *"a guest wants a refund on a non-refundable rate, how do I reply?"*.
 >
-> The team just reviews and decides. The result: more personal stays and a team with more time for guests.
+> The day starts sorted, not waiting to be sorted. The result: more personal stays and a team with more time for guests.
 >
-> ES: *Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja al equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado). Y a cualquier hora le puedes preguntar lo que quieras, desde «¿qué huéspedes que repiten llegan esta semana?» hasta «un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?». El equipo solo revisa y decide. El resultado: estancias más personales y un equipo con más tiempo para los huéspedes.*
+> ES: *Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja a tu equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado). Y cuando surge una duda, se la preguntas como a un compañero: desde «¿qué huéspedes que repiten llegan esta semana?» hasta «un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?». El día empieza resuelto, no por resolver. El resultado: estancias más personales y un equipo con más tiempo para los huéspedes.*
 
 **The paragraph** (website, one-pager, email):
 
@@ -69,7 +69,7 @@ The team is the protagonist; the guest is the reason.
 >
 > Every day it leaves the work done: the brief, the arrivals and guest replies, each one knowing who is writing and what they've booked. And at any time you can ask it anything, about the hotel or about running it.
 >
-> Your team spends less time behind screens and more with guests. AI-native, it knows your hotel and sends nothing without your yes.
+> Your team spends less time behind screens and more with guests. AI-native, it knows your hotel and works at your pace, not the other way round.
 
 **What no longer goes in the paragraph** (and where it lives): the comparison with the PMS copilot and with ChatGPT lives in the prepared answers and Route 5. The paragraph sells; the comparisons answer.
 
