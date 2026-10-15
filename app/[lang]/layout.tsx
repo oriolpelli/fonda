@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 
 import "../globals.css";
@@ -13,18 +13,25 @@ import { isLocale, locales } from "@/lib/i18n/config";
 import { openGraphFor, SITE_URL } from "@/lib/seo";
 
 // Fonda v2 "Signal" — one grotesque for everything. No serif.
-const geist = Geist({
+//
+// Self-hosted, not next/font/google (15 Oct 2026): fetching Geist Mono from
+// Google at build time broke every Vercel build ("next/font/google queries
+// have exactly one entry"), with no change on our side. The variable files are
+// vercel/geist-font 1.7.2 under the OFL (./_fonts/OFL.txt), so one file covers
+// every weight the old config asked for (300–700 sans, 400–500 mono) and the
+// build no longer depends on a third-party network call.
+const geist = localFont({
+  src: "./_fonts/Geist-Variable.woff2",
   variable: "--font-geist",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: "100 900",
   display: "swap",
 });
 
 // Geist Mono — eyebrows, labels, metadata, code.
-const geistMono = Geist_Mono({
+const geistMono = localFont({
+  src: "./_fonts/GeistMono-Variable.woff2",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: "100 900",
   display: "swap",
 });
 
