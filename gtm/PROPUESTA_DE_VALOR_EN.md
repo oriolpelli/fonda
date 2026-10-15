@@ -59,9 +59,9 @@ The team is the protagonist; the guest is the reason.
 >
 > And at any time you can ask it anything, from *"which returning guests arrive this week?"* to *"a guest wants a refund on a non-refundable rate, how do I reply?"*.
 >
-> The team just reviews and decides. More time for guests, and more personal stays.
+> The team just reviews and decides. The result: more personal stays and a team with more time for guests.
 >
-> ES: *Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja al equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado). Y a cualquier hora le puedes preguntar lo que quieras, desde «¿qué huéspedes que repiten llegan esta semana?» hasta «un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?». El equipo solo revisa y decide. Más tiempo para los huéspedes, y estancias más personales.*
+> ES: *Fondas es la IA que trabaja con todo lo que ya usa tu hotel: el PMS, el correo y el resto. Cada día le deja al equipo el trabajo preparado (el resumen del día, las llegadas y las respuestas a los huéspedes, cada una sabiendo quién escribe y qué ha reservado). Y a cualquier hora le puedes preguntar lo que quieras, desde «¿qué huéspedes que repiten llegan esta semana?» hasta «un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?». El equipo solo revisa y decide. El resultado: estancias más personales y un equipo con más tiempo para los huéspedes.*
 
 **The paragraph** (website, one-pager, email):
 

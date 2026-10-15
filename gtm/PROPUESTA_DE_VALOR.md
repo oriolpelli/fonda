@@ -52,7 +52,7 @@ El equipo es el protagonista y el huésped, el motivo.
 >
 > Y a cualquier hora le puedes preguntar lo que quieras, desde *«¿qué huéspedes que repiten llegan esta semana?»* hasta *«un huésped pide que le devolvamos una tarifa no reembolsable, ¿cómo le contesto?»*.
 >
-> El equipo solo revisa y decide. Más tiempo para los huéspedes, y estancias más personales.
+> El equipo solo revisa y decide. El resultado: estancias más personales y un equipo con más tiempo para los huéspedes.
 
 **El párrafo** (web, one-pager, email):
 
