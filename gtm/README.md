@@ -13,6 +13,8 @@ Every document about who Fondas sells to, what it says and how it closes a hotel
 | `pitch/GUION_60S.md` | The 60-second door pitch (ES/CA/EN), used with the [Fondas Sixty Seconds](https://claude.ai/artifact/YWgnwHMNBpUEYQx4sgySkj) pass | The door version of the playbook; derives from it |
 | `pitch/Fondas_una_pagina_{ES,CA,EN}.pdf` | The one-pager you leave behind or forward to an owner | — (see known issue 1) |
 | `POSITIONING_V3.md` | What Fondas is, the site's messaging, the proof plan, the voice (§9) | Positioning and voice. **Wins over `GTM_STRATEGY.md` where they differ** |
+| `PROPUESTA_DE_VALOR.md` | What Fondas is (Route 2, *todo tu hotel en un solo sitio*), the four entry routes by who you're talking to (time, team, AI under control, category), the problems it solves (P1–P6) seen from the hotel team, five content hooks with sources (15 Oct) | **What Fondas is and how it's told to each person** (decided 15 Oct). Still to be carried into the playbook and `POSITIONING_V3.md`, which keep authority over scripts and the site |
+| `PROPUESTA_DE_VALOR_EN.md` | The English version of `PROPUESTA_DE_VALOR.md` | — the Spanish file wins if they differ |
 | `GTM_STRATEGY.md` | Market, competitors, ICP, pricing and how to frame it, legal triggers, the raise, metrics, risks | Market, ICP, pricing, metrics |
 | `Fondas_Outreach_Tracker.xlsx` | The pipeline — 40 hotels, one row each | The list. **Gitignored**: the repo is public and this holds prospects' contact details. Never commit it |
 
@@ -41,6 +43,10 @@ ROADMAP.md (root) ── when, and what comes first
 4. **Three versus four, on purpose.** The site and the door pitch say *los tres primeros hoteles*; the sprint aims to sign four because one pilot usually goes quiet.
 5. **A price above €199** was discussed on 21 Sep and not decided. The pricing questions at the day-30 review (playbook §11) are how it gets decided. Founding hotels stay at €149 whatever happens.
 6. **The [Fondas Sixty Seconds](https://claude.ai/artifact/YWgnwHMNBpUEYQx4sgySkj) screens** were written for the morning-first door pitch. `pitch/GUION_60S.md` was rewritten on 23 Sep to cover the whole day and the founding offer; check the five screens' copy matches before you use them at a door.
+
+## What changed on 15 October
+
+**No price in any sales material.** Price will depend on the hotel (size above all), so the playbook, the 60-second script, the one-pager, the walk-in cheat sheet and the website no longer state a figure, a founding price or a flat price. The answer to *«¿Cuánto cuesta?»* is: the first 60 days, nothing; after that it depends on the hotel, and it's discussed at the end of the pilot (`PROPUESTA_DE_VALOR.md` §1). `GTM_STRATEGY.md` keeps its pricing analysis as internal background. The notes below about €149/€199 are history.
 
 ## What changed on 23 September
 

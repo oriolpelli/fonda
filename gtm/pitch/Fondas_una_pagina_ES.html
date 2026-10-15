@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Fondas — una página (ES)</title>
+<!-- Source for gtm/pitch/Fondas_una_pagina_ES.pdf (v3, 15 oct 2026). Copy: gtm/PROPUESTA_DE_VALOR.md §1.
+     No price anywhere (decided 15 Oct). The stay plan is labelled «Próximamente» — it is specced
+     (GUEST_EXPERIENCE_SPEC.md), not live. Art: the site's hero (components/marketing/hero-illustration.tsx).
+     Palette: white, warm wells, ink, one blue accent — no gradient. Export: Chromium → PDF, A4. -->
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{ --well:#f6f3ee; --well2:#ece7dd; --inset:#e4e0d7; --border:#e2ddd3; --text:#1c1a16; --text2:#56534b; --text3:#6c685e; --ink:#1c1a16; --accent:#1B3BB3 }
+@page{ size:A4; margin:0 }
+*{ box-sizing:border-box; margin:0; padding:0 }
+html,body{ background:#fff; color:var(--text); font-family:Geist,system-ui,sans-serif; -webkit-print-color-adjust:exact; print-color-adjust:exact }
+.page{ width:210mm; height:297mm; position:relative; overflow:hidden; display:flex; flex-direction:column }
+.mono{ font-family:"Geist Mono",monospace; text-transform:uppercase; letter-spacing:.14em; font-size:6.6pt; color:var(--text3) }
+header{ display:flex; justify-content:space-between; align-items:center; padding:11mm 14mm 0 }
+.brand{ display:flex; align-items:center; gap:2mm; font-weight:600; font-size:13pt; letter-spacing:-.03em }
+.mk{ width:6.2mm; height:6.2mm }
+
+.top{ position:relative; height:130mm; padding:0 14mm }
+.stage{ position:absolute; right:14mm; top:4mm; width:90mm; height:120mm; border-radius:6mm; background:var(--well); overflow:hidden }
+.art{ position:absolute; left:-30mm; bottom:-6mm; width:150mm; height:auto }
+.copy{ position:relative; width:86mm; padding-top:12mm }
+.chip{ display:inline-flex; align-items:center; gap:1.6mm; background:var(--well); border-radius:999px; padding:1.4mm 3mm; font-size:7.4pt; font-weight:600 }
+.chip i{ width:1.8mm; height:1.8mm; border-radius:50%; background:var(--accent); display:inline-block }
+h1{ font-size:32pt; line-height:.98; letter-spacing:-.04em; font-weight:600; margin-top:5mm }
+.one{ font-size:11.4pt; line-height:1.4; color:var(--text2); margin-top:5mm; letter-spacing:-.01em }
+.one b{ color:var(--text); font-weight:600 }
+.ticks{ margin-top:6.5mm; display:flex; flex-direction:column; gap:2.6mm }
+.ticks div{ display:flex; align-items:center; gap:2.4mm; font-size:9.2pt; font-weight:500 }
+.ck{ width:4.4mm; height:4.4mm; padding:.9mm; border-radius:50%; background:var(--ink); color:#fff; flex-shrink:0 }
+
+.phone{ position:absolute; left:14mm; top:6mm; width:62mm; height:118mm; background:#1c1a16; border-radius:9mm; padding:2.2mm }
+.screen{ width:100%; height:100%; background:#fff; border-radius:7mm; overflow:hidden; padding:3mm 3mm; display:flex; flex-direction:column; gap:2mm }
+.sb{ display:flex; justify-content:space-between; font-size:6pt; font-weight:600; padding:0 1.5mm }
+.ph-head{ display:flex; align-items:center; gap:1.4mm; font-size:7.4pt; font-weight:600; letter-spacing:-.02em; padding:0 1mm }
+.ph-head .mk{ width:3.6mm; height:3.6mm }
+.bcard{ border-radius:4.5mm; padding:3.2mm; color:#fff; background:var(--ink) }
+.bcard .d{ font-family:"Geist Mono",monospace; font-size:5.2pt; letter-spacing:.1em; text-transform:uppercase; color:#bdb6a8 }
+.bcard .t{ font-size:11.5pt; font-weight:600; letter-spacing:-.03em; margin-top:1.2mm }
+.bcard .h{ font-size:5.8pt; color:#d9d4ca; margin-top:.4mm }
+.stats{ display:grid; grid-template-columns:1fr 1fr; gap:1.4mm; margin-top:2.4mm }
+.stats > div{ background:rgb(255 255 255/.08); border-radius:2.4mm; padding:1.6mm 2mm }
+.stats b{ display:block; font-size:12pt; font-weight:600; letter-spacing:-.03em; line-height:1 }
+.stats span{ font-size:5.4pt; color:#d9d4ca }
+.bar{ height:1mm; border-radius:1mm; background:rgb(255 255 255/.15); margin-top:1.2mm; overflow:hidden }
+.bar i{ display:block; height:100%; width:89%; background:#7f9cff }
+.mcard{ background:var(--well); border-radius:3.6mm; padding:2.6mm }
+.mcard .l{ font-family:"Geist Mono",monospace; font-size:4.9pt; letter-spacing:.1em; text-transform:uppercase; color:var(--text3) }
+.mcard .s{ font-size:7pt; font-weight:600; letter-spacing:-.01em; margin-top:1mm }
+.mcard .p{ font-size:6pt; line-height:1.4; color:var(--text2); margin-top:.8mm }
+.mcard .row{ display:flex; justify-content:space-between; align-items:center; margin-top:1.8mm }
+.btn{ background:var(--ink); color:#fff; font-size:5.8pt; font-weight:600; border-radius:1.6mm; padding:1.2mm 2.6mm }
+.tag{ font-size:5.4pt; color:var(--text2) }
+.guest{ display:flex; align-items:center; gap:2mm; margin-top:1.6mm }
+.disc{ width:5.6mm; height:5.6mm; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:5.2pt; font-weight:600; flex-shrink:0; background:var(--well2) }
+.guest .n{ font-size:6.4pt; font-weight:600 }
+.guest .x{ font-size:5.4pt; color:var(--text2) }
+.okc{ margin-left:auto; font-size:5.2pt; font-weight:500; border:1px solid var(--border); background:#fff; border-radius:99px; padding:.6mm 1.6mm; white-space:nowrap }
+
+.sec{ padding:0 14mm }
+.sec > .mono{ margin-bottom:3mm }
+.day{ display:grid; grid-template-columns:repeat(4,1fr); gap:3mm }
+.day > div{ background:var(--well); border-radius:4mm; padding:3.4mm 3.6mm 3.8mm }
+.day .tm{ font-family:"Geist Mono",monospace; font-size:6.8pt; color:var(--text3); letter-spacing:.04em }
+.day h3{ font-size:10pt; font-weight:600; letter-spacing:-.02em; line-height:1.15; margin-top:1.8mm }
+.day p{ font-size:7.4pt; line-height:1.4; color:var(--text2); margin-top:1.2mm }
+
+/* ── Coming: the stay plan ── */
+.soon{ margin:5mm 14mm 6mm; border:1px solid var(--border); border-radius:5mm; display:grid; grid-template-columns:70mm 1fr; overflow:hidden; height:54mm }
+.soon .vis{ background:var(--well); position:relative; overflow:hidden }
+.sheet{ position:absolute; left:9mm; top:5.5mm; width:52mm; height:44mm; background:#fff; border-radius:1.5mm; border:1px solid var(--border); transform:rotate(-4deg); padding:4mm 4mm }
+.sheet .k{ font-family:"Geist Mono",monospace; font-size:4.4pt; letter-spacing:.12em; text-transform:uppercase; color:var(--text3) }
+.sheet .w{ font-size:9pt; font-weight:600; letter-spacing:-.025em; line-height:1.1; margin-top:1.4mm }
+.sheet .sub{ font-size:5pt; color:var(--text2); margin-top:.8mm }
+.sheet .dd{ margin-top:2.4mm; border-top:1px solid var(--border); padding-top:1.6mm }
+.sheet .dd b{ font-size:5.4pt; font-weight:600; display:block }
+.sheet .dd span{ font-size:4.8pt; color:var(--text2); line-height:1.35; display:block; margin-top:.4mm }
+.soon .txt{ padding:6mm 7mm; display:flex; flex-direction:column; justify-content:center }
+.badge{ align-self:flex-start; font-family:"Geist Mono",monospace; font-size:6.2pt; letter-spacing:.12em; text-transform:uppercase; background:var(--ink); color:#fff; border-radius:99px; padding:1mm 2.6mm }
+.soon h3{ font-size:15pt; font-weight:600; letter-spacing:-.03em; line-height:1.08; margin-top:3mm }
+.soon p{ font-size:8.4pt; line-height:1.45; color:var(--text2); margin-top:2.2mm }
+.soon .more{ margin-top:3mm; display:flex; flex-wrap:wrap; gap:1.4mm }
+.pill{ font-size:6.8pt; border:1px solid var(--border); border-radius:99px; padding:.8mm 2.4mm; color:var(--text) }
+
+.band{ margin-top:auto; background:var(--ink); color:#fff; padding:8mm 14mm 9mm; display:grid; grid-template-columns:1.9fr 1fr auto; gap:7mm; align-items:center }
+.band .mono{ color:#bdb6a8 }
+.band .big{ font-size:18pt; font-weight:600; letter-spacing:-.03em; line-height:1.08; margin-top:2mm }
+.band .small{ font-size:8.2pt; line-height:1.45; color:#d9d4ca; margin-top:2.4mm }
+.ct .name{ font-size:11pt; font-weight:600; margin-top:2mm }
+.ct .m{ font-family:"Geist Mono",monospace; font-size:8pt; color:#d9d4ca; margin-top:.8mm }
+.qrbox{ background:#fff; border-radius:4mm; padding:3mm; display:flex; flex-direction:column; align-items:center; gap:1.8mm; width:34mm }
+.qrbox svg{ width:26mm; height:26mm; display:block }
+.qrbox span{ font-size:6.6pt; color:var(--text); text-align:center; line-height:1.25; font-weight:600 }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="brand"><svg viewBox="0 0 100 100" class="mk" aria-hidden="true"><rect x="4" y="4" width="92" height="92" rx="24" fill="#1B3BB3"/><circle cx="50" cy="40" r="15" fill="#fff"/><path d="M43 46h14l5 32H38z" fill="#fff"/></svg>FONDAS</div>
+  <div class="mono">Superinteligencia para hoteles</div>
+</header>
+
+<section class="top">
+  <div class="copy">
+    <span class="chip"><i></i>Nativo en IA</span>
+    <h1>Todo tu hotel en un solo sitio.</h1>
+    <p class="one">Fondas es la IA que trabaja con todo lo que ya usa tu hotel, para que cada huésped tenga una estancia más personal <b>y tu equipo, más tiempo para dársela.</b></p>
+    <div class="ticks">
+      <div><svg viewBox="0 0 12 12" class="ck" aria-hidden="true"><path d="M2.5 6.2 5 8.5l4.5-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Nada sale sin vuestro visto bueno</div>
+      <div><svg viewBox="0 0 12 12" class="ck" aria-hidden="true"><path d="M2.5 6.2 5 8.5l4.5-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Con MEWS, Apaleo, cualquier PMS y Gmail</div>
+      <div><svg viewBox="0 0 12 12" class="ck" aria-hidden="true"><path d="M2.5 6.2 5 8.5l4.5-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>En marcha en 30 minutos. Lo configuro yo</div>
+    </div>
+  </div>
+
+  <div class="stage"><svg viewBox="0 0 900 600" class="art" aria-hidden="true" focusable="false"><defs><filter id="hero-wc" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.011 0.015" numOctaves="2" seed="11" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap></filter><filter id="hero-wcHard" x="-8%" y="-8%" width="116%" height="116%"><feTurbulence type="fractalNoise" baseFrequency="0.022 0.03" numOctaves="2" seed="4" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap></filter><filter id="hero-wcInk" x="-8%" y="-8%" width="116%" height="116%"><feTurbulence type="fractalNoise" baseFrequency="0.035 0.05" numOctaves="1" seed="19" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="2" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap></filter><filter id="hero-bleed" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter><filter id="hero-bleedS" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.4"></feGaussianBlur></filter><filter id="hero-mottle" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="6" result="t"></feTurbulence><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.9 0 0 0 -0.15" result="a"></feColorMatrix><feComposite in="SourceGraphic" in2="a" operator="in"></feComposite></filter><filter id="hero-mottle2" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="23" result="t"></feTurbulence><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.1 0 0 0 -0.28" result="a"></feColorMatrix><feComposite in="SourceGraphic" in2="a" operator="in"></feComposite></filter><filter id="hero-grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="2" result="t"></feTurbulence><feColorMatrix in="t" type="matrix" values="0 0 0 0 0.34  0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0.075 0"></feColorMatrix></filter><pattern id="hero-balusters" width="11" height="20" patternUnits="userSpaceOnUse"><path d="M4.6 0 v20" stroke="#8DA3B6" stroke-width="3.2" stroke-linecap="round"></path></pattern><pattern id="hero-deckTile" width="34" height="34" patternUnits="userSpaceOnUse" patternTransform="rotate(0)"><path d="M17 2 L32 17 L17 32 L2 17 Z" fill="none" stroke="#D9AE92" stroke-width="1.3"></path><path d="M17 11 L23 17 L17 23 L11 17 Z" fill="#D9AE92" opacity="0.35"></path></pattern><linearGradient id="hero-poolG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BCD5E4"></stop><stop offset="0.5" stop-color="#96BAD3"></stop><stop offset="1" stop-color="#7BA2C1"></stop></linearGradient><clipPath id="hero-clipDeckA"><path d="M150 401 H770 L860 568 H58 Z"></path></clipPath><clipPath id="hero-clipWallA"><path d="M150 216 h100 v185 h-100 z M250 179 h410 v222 h-410 z M660 146 h116 v255 h-116 z"></path></clipPath><g id="hero-frondL"><path d="M0 1 C 40 -26 88 -34 128 -20 C 126 -14 122 -11 116 -10 C 84 -6 44 4 4 7 Z" fill="#6E8A5C"></path><path d="M0 0 C 44 -19 90 -26 130 -23" stroke="#4C6842" stroke-width="1.4" fill="none" opacity="0.5"></path><g stroke="#4C6842" stroke-width="0.9" opacity="0.32" fill="none"><path d="M26 -10 l7 -10"></path><path d="M48 -17 l6 -9"></path><path d="M70 -21 l5 -8"></path><path d="M94 -23 l4 -7"></path><path d="M24 0 l4 8"></path><path d="M48 -6 l4 8"></path><path d="M72 -12 l4 7"></path><path d="M96 -17 l3 7"></path></g></g><g id="hero-frondD"><path d="M0 1 C 40 -26 88 -34 128 -20 C 126 -14 122 -11 116 -10 C 84 -6 44 4 4 7 Z" fill="#5A7749"></path><path d="M0 0 C 44 -19 90 -26 130 -23" stroke="#425B39" stroke-width="1.4" fill="none" opacity="0.5"></path><g stroke="#425B39" stroke-width="0.9" opacity="0.3" fill="none"><path d="M26 -10 l7 -10"></path><path d="M48 -17 l6 -9"></path><path d="M70 -21 l5 -8"></path><path d="M94 -23 l4 -7"></path><path d="M24 0 l4 8"></path><path d="M48 -6 l4 8"></path><path d="M72 -12 l4 7"></path><path d="M96 -17 l3 7"></path></g></g><g id="hero-palm"><path d="M0 0 C -3 -72 -9 -152 -16 -262" stroke="#A68C6A" stroke-width="8" fill="none" stroke-linecap="round"></path><path d="M2 -4 C -1 -74 -7 -152 -14 -258" stroke="#7D6744" stroke-width="2.6" fill="none" opacity="0.4"></path><g stroke="#7D6744" stroke-width="1.1" opacity="0.35" fill="none"><path d="M-4 -32 h8"></path><path d="M-5 -64 h8"></path><path d="M-7 -96 h8"></path><path d="M-9 -128 h8"></path><path d="M-11 -160 h8"></path><path d="M-13 -192 h8"></path><path d="M-14 -224 h8"></path></g><g transform="translate(-16,-262)" filter="url(#hero-wcHard)"><use href="#hero-frondD" transform="rotate(-166) scale(0.9)"></use><use href="#hero-frondD" transform="rotate(-142) scale(0.8)"></use><use href="#hero-frondD" transform="rotate(-118) scale(0.72)"></use><use href="#hero-frondD" transform="rotate(178) scale(0.78)"></use><use href="#hero-frondL" transform="rotate(-184) scale(0.98)"></use><use href="#hero-frondL" transform="rotate(-156) scale(0.86)"></use><use href="#hero-frondL" transform="rotate(-131) scale(0.78)"></use><use href="#hero-frondL" transform="rotate(-106) scale(0.74)"></use><use href="#hero-frondL" transform="rotate(-84) scale(0.8)"></use><use href="#hero-frondL" transform="rotate(-62) scale(0.86)"></use><use href="#hero-frondL" transform="rotate(-40) scale(0.92)"></use><use href="#hero-frondL" transform="rotate(-18) scale(0.98)"></use><use href="#hero-frondD" transform="rotate(4) scale(0.9)"></use><use href="#hero-frondD" transform="rotate(26) scale(0.8)"></use><ellipse cx="0" cy="2" rx="9" ry="6.5" fill="#7A6448"></ellipse></g></g><g id="hero-olivepot"><path d="M-15 0 l3 -26 h24 l3 26 z" fill="#D8A277"></path><path d="M-17 -26 h34 v-5 h-34 z" fill="#C48A5E"></path><ellipse cx="0" cy="-52" rx="26" ry="22" fill="#7E9463"></ellipse><ellipse cx="-9" cy="-46" rx="13" ry="11" fill="#5C7348" opacity="0.5"></ellipse><path d="M0 -30 v-18" stroke="#75603F" stroke-width="2.4" fill="none"></path></g><g id="hero-lantern" stroke="#4A4034" stroke-width="1.6" fill="none" stroke-linecap="round"><path d="M0 0 h9"></path><path d="M9 0 v6"></path><path d="M4 6 h10 l-1.6 15 h-6.8 z" fill="#EFDCB0"></path><path d="M6.4 21 h5.2"></path></g><g id="hero-villa"><ellipse cx="460" cy="404" rx="330" ry="15" fill="#E2D7C2" filter="url(#hero-bleed)" opacity="0.85"></ellipse><g filter="url(#hero-bleed)" opacity="0.55"><path d="M146 212 h108 v192 h-108 z" fill="#EFE2C8"></path><path d="M244 174 h422 v230 h-422 z" fill="#EFE2C8"></path><path d="M654 141 h128 v263 h-128 z" fill="#EDE0C4"></path><path d="M232 176 l32 -34 h378 l32 34 z" fill="#D08C66"></path><path d="M638 148 l78 -54 l80 54 z" fill="#D08C66"></path></g><g filter="url(#hero-wcHard)"><path d="M150 216 h100 v185 h-100 z" fill="#F7F0E1"></path><path d="M250 179 h410 v222 h-410 z" fill="#F8F1E4"></path><path d="M660 146 h116 v255 h-116 z" fill="#F5ECDA"></path><path d="M624 179 h36 v222 h-36 z" fill="#E2D0AF" opacity="0.5"></path><path d="M746 146 h30 v255 h-30 z" fill="#E2D0AF" opacity="0.45"></path><path d="M228 216 h22 v185 h-22 z" fill="#E2D0AF" opacity="0.3"></path></g><g clip-path="url(#hero-clipWallA)"><rect x="140" y="140" width="650" height="270" fill="#CBB593" filter="url(#hero-mottle)" opacity="0.45"></rect></g><g fill="none" stroke="#4A4034" stroke-width="1.5" opacity="0.42" filter="url(#hero-wcInk)"><path d="M150 216 h100 M150 216 v185 M250 179 v-1 M250 179 h410 M660 146 h116 M660 146 v33 M776 146 v255 M150 401 h626"></path></g><g filter="url(#hero-wcHard)"><path d="M236 179 l30 -31 h374 l30 31 z" fill="#C6764E"></path><path d="M236 179 h468 v-7 h-468 z" fill="#A85C3C" opacity="0.45"></path><path d="M140 216 l26 -23 h68 l26 23 z" fill="#C6764E"></path><path d="M140 216 h120 v-6 h-120 z" fill="#A85C3C" opacity="0.4"></path><path d="M642 146 l74 -49 l76 49 z" fill="#C6764E"></path><path d="M716 97 l76 49 h-76 z" fill="#A85C3C" opacity="0.32"></path></g><g stroke="#A85C3C" stroke-width="1.3" opacity="0.45" fill="none" filter="url(#hero-wcInk)"><path d="M266 148 h374"></path><path d="M300 152 l-8 24 M360 152 l-6 24 M420 152 l-4 24 M480 152 l-2 24 M540 152 l1 24 M600 152 l4 24"></path><path d="M166 193 h68"></path><path d="M680 128 l-10 17 M716 108 l0 37 M752 128 l10 17"></path></g><g filter="url(#hero-wcHard)"><path d="M246 288 h418 v9 h-418 z" fill="#EFE4CE"></path><path d="M656 280 h124 v9 h-124 z" fill="#EFE4CE"></path><path d="M146 304 h108 v7 h-108 z" fill="#EFE4CE"></path></g><g filter="url(#hero-wcHard)"><path d="M268 401 V351 A30 30 0 0 1 328 351 V401 Z" fill="#7C8794" opacity="0.62"></path><path d="M346 401 V351 A30 30 0 0 1 406 351 V401 Z" fill="#7C8794" opacity="0.62"></path><path d="M424 401 V351 A30 30 0 0 1 484 351 V401 Z" fill="#EFE4CE"></path><path d="M502 401 V351 A30 30 0 0 1 562 351 V401 Z" fill="#7C8794" opacity="0.62"></path><path d="M580 401 V351 A30 30 0 0 1 640 351 V401 Z" fill="#7C8794" opacity="0.62"></path><path d="M436 401 V356 A18 18 0 0 1 472 356 V401 Z" fill="#7E5C40"></path><path d="M682 401 V330 A37 37 0 0 1 756 330 V401 Z" fill="#7C8794" opacity="0.55"></path></g><g fill="none" stroke="#4A4034" stroke-width="1.7" opacity="0.75" filter="url(#hero-wcInk)"><path d="M268 401 V351 A30 30 0 0 1 328 351 V401"></path><path d="M346 401 V351 A30 30 0 0 1 406 351 V401"></path><path d="M424 401 V351 A30 30 0 0 1 484 351 V401"></path><path d="M502 401 V351 A30 30 0 0 1 562 351 V401"></path><path d="M580 401 V351 A30 30 0 0 1 640 351 V401"></path><path d="M682 401 V330 A37 37 0 0 1 756 330 V401"></path><path d="M436 401 V356 A18 18 0 0 1 472 356 V401"></path><path d="M454 401 V338"></path></g><g fill="#EFE4CE" stroke="#4A4034" stroke-width="1.2" opacity="0.8" filter="url(#hero-wcInk)"><path d="M292 320 l3 -11 h6 l3 11 z"></path><path d="M370 320 l3 -11 h6 l3 11 z"></path><path d="M448 320 l3 -11 h6 l3 11 z"></path><path d="M526 320 l3 -11 h6 l3 11 z"></path><path d="M604 320 l3 -11 h6 l3 11 z"></path><path d="M711 291 l4 -12 h6 l4 12 z"></path></g><g filter="url(#hero-wcHard)"><path d="M281 262 V216 A17 17 0 0 1 315 216 V262 Z" fill="#7E8FA0" opacity="0.6"></path><path d="M359 262 V216 A17 17 0 0 1 393 216 V262 Z" fill="#7E8FA0" opacity="0.6"></path><path d="M437 262 V216 A17 17 0 0 1 471 216 V262 Z" fill="#7E8FA0" opacity="0.6"></path><path d="M515 262 V216 A17 17 0 0 1 549 216 V262 Z" fill="#7E8FA0" opacity="0.6"></path><path d="M593 262 V216 A17 17 0 0 1 627 216 V262 Z" fill="#7E8FA0" opacity="0.6"></path><path d="M676 258 V212 A18 18 0 0 1 712 212 V258 Z" fill="#7C8794" opacity="0.5"></path><path d="M724 258 V212 A18 18 0 0 1 760 212 V258 Z" fill="#7C8794" opacity="0.5"></path><path d="M168 380 V322 A13 13 0 0 1 194 322 V380 Z" fill="#7E8FA0" opacity="0.6"></path><path d="M206 380 V322 A13 13 0 0 1 232 322 V380 Z" fill="#7E8FA0" opacity="0.6"></path><circle cx="200" cy="256" r="11" fill="#7E8FA0" opacity="0.55"></circle></g><g fill="none" stroke="#4A4034" stroke-width="1.6" opacity="0.8" filter="url(#hero-wcInk)"><path d="M281 262 V216 A17 17 0 0 1 315 216 V262 Z M298 262 V199 M281 230 h34"></path><path d="M359 262 V216 A17 17 0 0 1 393 216 V262 Z M376 262 V199 M359 230 h34"></path><path d="M437 262 V216 A17 17 0 0 1 471 216 V262 Z M454 262 V199 M437 230 h34"></path><path d="M515 262 V216 A17 17 0 0 1 549 216 V262 Z M532 262 V199 M515 230 h34"></path><path d="M593 262 V216 A17 17 0 0 1 627 216 V262 Z M610 262 V199 M593 230 h34"></path><path d="M676 258 V212 A18 18 0 0 1 712 212 V258 Z M724 258 V212 A18 18 0 0 1 760 212 V258 Z"></path><path d="M168 380 V322 A13 13 0 0 1 194 322 V380 Z M181 380 V309 M168 344 h26"></path><path d="M206 380 V322 A13 13 0 0 1 232 322 V380 Z M219 380 V309 M206 344 h26"></path><circle cx="200" cy="256" r="11"></circle></g><g fill="#8DA3B6" opacity="0.62" filter="url(#hero-wcHard)"><path d="M268 220 h10 v42 h-10 z"></path><path d="M318 220 h10 v42 h-10 z"></path><path d="M346 220 h10 v42 h-10 z"></path><path d="M396 220 h10 v42 h-10 z"></path><path d="M502 220 h10 v42 h-10 z"></path><path d="M552 220 h10 v42 h-10 z"></path><path d="M580 220 h10 v42 h-10 z"></path><path d="M630 220 h10 v42 h-10 z"></path></g><g filter="url(#hero-wcHard)"><path d="M250 262 h410 v5 h-410 z" fill="#EFE4CE"></path><rect x="252" y="267" width="406" height="17" fill="url(#hero-balusters)" opacity="0.85"></rect><path d="M250 284 h410 v5 h-410 z" fill="#EFE4CE"></path><path d="M660 258 h116 v5 h-116 z" fill="#EFE4CE"></path><rect x="662" y="263" width="112" height="15" fill="url(#hero-balusters)" opacity="0.8"></rect><path d="M660 278 h116 v5 h-116 z" fill="#EFE4CE"></path></g><g fill="none" stroke="#4A4034" stroke-width="1" opacity="0.45" filter="url(#hero-wcInk)"><path d="M250 262 h410 M250 289 h410 M660 258 h116 M660 283 h116 M246 297 h418 M146 311 h108"></path></g><use href="#hero-lantern" transform="translate(252,326)"></use><use href="#hero-lantern" transform="translate(648,326) scale(-1,1)"></use><use href="#hero-lantern" transform="translate(660,330)"></use><use href="#hero-lantern" transform="translate(152,332)"></use><g filter="url(#hero-wcHard)"><path d="M418 401 h74 l10 13 h-94 z" fill="#F1E6D1"></path><path d="M408 414 h94 l11 12 h-116 z" fill="#EADCC2"></path></g><g filter="url(#hero-wc)"><ellipse cx="196" cy="392" rx="34" ry="14" fill="#6F8A5A" opacity="0.9"></ellipse><ellipse cx="238" cy="396" rx="22" ry="10" fill="#5C7348" opacity="0.75"></ellipse><ellipse cx="726" cy="394" rx="30" ry="13" fill="#6F8A5A" opacity="0.88"></ellipse></g><use href="#hero-olivepot" transform="translate(392,401) scale(0.72)"></use><use href="#hero-olivepot" transform="translate(520,401) scale(0.72)"></use><g stroke="#B49A72" stroke-width="1" opacity="0.35" fill="none" filter="url(#hero-wcInk)"><path d="M290 200 v86 M370 200 v86 M540 200 v86 M620 200 v86 M700 170 v82 M170 232 v66"></path></g></g></defs><path d="M150 401 H770 L860 568 H58 Z" fill="#F4EAD8" filter="url(#hero-wcHard)"></path><g clip-path="url(#hero-clipDeckA)"><rect x="58" y="398" width="806" height="172" fill="url(#hero-deckTile)" opacity="0.3"></rect><rect x="58" y="398" width="806" height="172" fill="#D9AE92" filter="url(#hero-mottle2)" opacity="0.3"></rect></g><use href="#hero-villa"></use><path d="M232 430 H692 L744 552 H176 Z" fill="#9CBFD6" filter="url(#hero-bleedS)" opacity="0.5"></path><g filter="url(#hero-wcHard)"><path d="M232 430 H692 L744 552 H176 Z" fill="url(#hero-poolG)" opacity="0.9"></path></g><g filter="url(#hero-wc)" opacity="0.32"><path d="M250 452 q120 14 250 2 q100 -8 160 6 l-14 30 q-160 -14 -300 2 q-90 10 -120 -6 z" fill="#4F7CA3"></path><path d="M300 508 q140 16 300 -6 l-10 26 q-180 16 -300 4 z" fill="#4F7CA3" opacity="0.7"></path></g><g opacity="0.5"><path d="M284 468 q-8 30 -14 60" stroke="#3F6A92" stroke-width="16" fill="none" filter="url(#hero-bleedS)" opacity="0.35"></path><path d="M596 470 q10 32 18 62" stroke="#3F6A92" stroke-width="18" fill="none" filter="url(#hero-bleedS)" opacity="0.32"></path></g><g stroke="#F1F6FA" stroke-width="4" fill="none" opacity="0.4" stroke-linecap="round" filter="url(#hero-bleedS)"><path d="M268 444 q56 -6 104 1"></path><path d="M478 448 q60 -7 110 2"></path><path d="M304 486 q70 -7 128 2"></path><path d="M506 498 q54 -6 100 2"></path><path d="M258 528 q86 -8 158 3"></path><path d="M486 534 q60 -6 108 3"></path></g><g fill="none" stroke="#5C86AC" stroke-width="2.2" opacity="0.8" filter="url(#hero-wcInk)"><path d="M232 430 H692 L744 552 H176 Z"></path></g><path d="M232 430 H692" stroke="#F6EFE0" stroke-width="4" fill="none" opacity="0.8" filter="url(#hero-wcInk)"></path><use href="#hero-palm" transform="translate(300,432)"></use><use href="#hero-palm" transform="translate(618,434) scale(-1.06,1.06)"></use><g stroke="#C9B08C" stroke-width="1.6" fill="none" opacity="0.4" filter="url(#hero-wcInk)"><path d="M150 401 H770 M96 500 H820"></path></g><rect x="0" y="0" width="900" height="600" filter="url(#hero-grain)" opacity="0.5"></rect></svg><div class="phone"><div class="screen">
+    <div class="sb"><span>6:31</span><span>●●● 5G</span></div>
+    <div class="ph-head"><svg viewBox="0 0 100 100" class="mk" aria-hidden="true"><rect x="4" y="4" width="92" height="92" rx="24" fill="#1B3BB3"/><circle cx="50" cy="40" r="15" fill="#fff"/><path d="M43 46h14l5 32H38z" fill="#fff"/></svg>FONDAS</div>
+    <div class="bcard">
+      <div class="d">Jueves · 6:30</div>
+      <div class="t">Resumen matinal</div>
+      <div class="h">Hotel Pati Blau · 45 habitaciones</div>
+      <div class="stats">
+        <div><b>12</b><span>Llegadas</span></div>
+        <div><b>7</b><span>Salidas</span></div>
+        <div><b>89%</b><span>Esta noche</span><div class="bar"><i></i></div></div>
+        <div><b>4</b><span>Respuestas listas</span></div>
+      </div>
+    </div>
+    <div class="mcard">
+      <div class="l">Respuesta redactada · revisa y envía</div>
+      <div class="s">¿Se puede subir a la terraza en ascensor?</div>
+      <div class="p">Buenas noches, Elena: sí, el ascensor llega a la terraza y arriba no hay escalones…</div>
+      <div class="row"><span class="tag">Reserva: Suite Jardín · 23–27 jun</span><span class="btn">Enviar</span></div>
+    </div>
+    <div class="mcard">
+      <div class="l">Llegadas a tener en cuenta</div>
+      <div class="guest"><span class="disc">NB</span><div><div class="n">Núria Bofill</div><div class="x">204 · 3.ª estancia</div></div><span class="okc">✓ 204 bloqueada</span></div>
+    </div>
+  </div></div></div>
+</section>
+
+<section class="sec">
+  <div class="mono">Un día con Fondas</div>
+  <div class="day">
+    <div><div class="tm">06:30</div><h3>El día, ya resumido</h3><p>Llegadas, salidas, ocupación y lo que pide atención.</p></div>
+    <div><div class="tm">Toda la mañana</div><h3>Los correos, redactados</h3><p>Con la voz del hotel y cruzados con cada reserva.</p></div>
+    <div><div class="tm">Antes de llegar</div><h3>Las horas de llegada, pedidas</h3><p>Nadie se entera de una llegada por el timbre.</p></div>
+    <div><div class="tm">A cualquier hora</div><h3>Pregúntale lo que quieras</h3><p>«¿Quién repite esta semana?» «¿Cómo va el sábado?» Contesta con tus datos.</p></div>
+  </div>
+</section>
+
+<section class="soon">
+  <div class="vis">
+    <div class="sheet">
+      <div class="k">Hotel Pati Blau · Gràcia</div>
+      <div class="w">Bienvenidos a Barcelona, Marta, Jordi y Lía.</div>
+      <div class="sub">Tres días pensados para viajar con una niña de siete años.</div>
+      <div class="dd"><b>Viernes · Llegada</b><span>Paseo hasta la plaza del Sol (6 min) y mesa reservada en Can Codina a las 20:30.</span></div>
+      <div class="dd"><b>Sábado · Concierto familiar</b><span>Palau de la Música a las 12:00. Metro L4, 18 min desde la puerta.</span></div>
+    </div>
+  </div>
+  <div class="txt">
+    <span class="badge">Próximamente</span>
+    <h3>Un plan de estancia para cada huésped.</h3>
+    <p>Impreso al llegar y hecho a su medida: sus nombres, su viaje, vuestro barrio y lo que pasa en la ciudad esos días. Lo que el huésped se lleva, y lo que enseña.</p>
+    <div class="more"><span class="pill">Reseñas</span><span class="pill">Extras antes de llegar</span><span class="pill">Revenue</span><span class="pill">Cada semana, algo nuevo</span></div>
+  </div>
+</section>
+
+<section class="band">
+  <div>
+    <div class="mono">Hoteles fundadores · Barcelona</div>
+    <div class="big">60 días de piloto gratuito<br>y sin compromiso.</div>
+    <div class="small">Todo lo que salga en ese tiempo, incluido. Y decidís qué construimos después.</div>
+  </div>
+  <div class="ct">
+    <div class="mono">Hablemos</div>
+    <div class="name">Oriol Pellicer</div>
+    <div class="m">hello@fondas.app</div>
+    <div class="m">fondas.app</div>
+  </div>
+  <div class="qrbox"><?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="116" height="116" class="segno"><path transform="scale(4)" class="qrline" stroke="#1c1a16" d="M0 0.5h7m2 0h3m2 0h1m4 0h1m2 0h7m-29 1h1m5 0h1m1 0h3m1 0h2m5 0h2m1 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h1m3 0h1m3 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h1m4 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h6m2 0h1m1 0h3m1 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m4 0h2m1 0h2m1 0h1m1 0h2m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-18 1h1m3 0h1m1 0h2m-19 1h1m1 0h1m1 0h1m1 0h1m2 0h2m1 0h1m3 0h2m6 0h1m2 0h1m-25 1h3m2 0h1m2 0h3m1 0h1m4 0h3m2 0h1m2 0h1m-28 1h2m3 0h1m1 0h2m2 0h1m1 0h1m1 0h1m5 0h1m1 0h1m1 0h3m-29 1h3m1 0h2m1 0h2m4 0h2m1 0h5m6 0h1m-28 1h3m2 0h5m1 0h2m1 0h1m1 0h2m2 0h3m2 0h1m1 0h2m-28 1h1m3 0h1m2 0h3m3 0h1m1 0h3m1 0h1m1 0h1m2 0h1m2 0h1m-26 1h6m1 0h1m1 0h2m4 0h1m3 0h1m2 0h1m1 0h2m-29 1h1m2 0h2m3 0h5m2 0h3m2 0h1m1 0h1m1 0h2m1 0h1m-28 1h2m1 0h1m2 0h1m1 0h2m6 0h2m1 0h2m1 0h1m2 0h1m1 0h2m-28 1h1m1 0h1m1 0h1m1 0h1m2 0h4m2 0h1m4 0h2m2 0h2m1 0h1m-29 1h1m1 0h2m2 0h1m1 0h3m1 0h1m1 0h1m5 0h2m1 0h1m3 0h2m-28 1h5m1 0h1m3 0h5m1 0h1m1 0h1m1 0h2m1 0h2m1 0h1m-28 1h1m5 0h3m1 0h3m1 0h4m2 0h5m-17 1h3m3 0h1m1 0h2m2 0h1m3 0h1m1 0h3m-29 1h7m2 0h1m2 0h2m2 0h1m2 0h2m1 0h1m1 0h2m1 0h2m-29 1h1m5 0h1m4 0h2m4 0h2m1 0h1m3 0h2m1 0h2m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m6 0h2m1 0h5m3 0h1m-29 1h1m1 0h3m1 0h1m2 0h2m1 0h2m2 0h1m2 0h1m3 0h2m1 0h3m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h2m2 0h1m3 0h1m2 0h3m2 0h1m-29 1h1m5 0h1m6 0h2m2 0h2m1 0h2m1 0h2m2 0h1m-28 1h7m1 0h3m2 0h1m2 0h2m1 0h6m2 0h2"/></svg>
+<span>Escanea y mira<br>un resumen de muestra</span></div>
+</section>
+
+</div>
+</body>
+</html>

@@ -31,8 +31,8 @@ día— está en el playbook, §1–§2.
 
 - No abras con «IA». Di *«Fondas lee tus datos y escribe esto»* (playbook §0.2).
 - Lo que ya hace, en presente. Lo que viene, en futuro y sin fechas (playbook §0.1).
-- No hables de precio si no lo preguntan. Si lo preguntan, la respuesta está
-  abajo.
+- No hables de precio. Si lo preguntan, la respuesta está abajo, y nunca lleva
+  una cifra (decidido el 15 oct).
 - Si el hotel está en Apaleo, **sáltate la pantalla 1** y abre por el correo:
   Apaleo Copilot ya hace resumen y no conviene invitar la comparación (playbook §6).
 - Antes de irte, llévate el correo del director. Es la excusa para volver.
@@ -48,7 +48,7 @@ día— está en el playbook, §1–§2.
 | 10–20″ | «Fondas lleva la operativa del hotel, todo el día. Empieza así: a las 6:30 el día ya está escrito —llegadas, salidas, quién no ha dicho la hora—, con los datos de tu hotel.» | Pantalla 1. Dale el móvil. Diez segundos, no más. |
 | 20–38″ | «Y sigue todo el día: cada correo de huésped, antes de llegar y durante la estancia, cruzado con su reserva y con la respuesta ya redactada con la voz del hotel. Tú la lees y la envías.» | Pantalla 2. Aquí se gana o se pierde — no corras. |
 | 38–48″ | «Las llegadas, la ficha de cada huésped con lo que pidió la última vez, cualquier pregunta sobre el hotel. No migra nada, no toca tu PMS y no sustituye a nadie: le quita el papeleo a recepción. Y cada semana hace más.» | Pantallas 3 y 4, rápido. |
-| 48–60″ | «Estoy eligiendo tres hoteles fundadores en Barcelona: sesenta días gratis, todo lo que saquemos en ese tiempo, y precio de fundador para siempre. ¿Te lo enseño veinte minutos con calma esta semana? Me acerco yo.» | Pantalla 5. Luego silencio. |
+| 48–60″ | «Estoy eligiendo tres hoteles fundadores en Barcelona: sesenta días gratis, todo lo que saquemos en ese tiempo, y decidís qué construimos después. ¿Te lo enseño veinte minutos con calma esta semana? Me acerco yo.» | Pantalla 5. Luego silencio. |
 
 **Si te preguntan**
 
@@ -64,10 +64,8 @@ día— está en el playbook, §1–§2.
   Le quita a recepción el trabajo administrativo —redactar, perseguir horas de
   llegada, cuadrar el día— para que estén con el huésped, que es lo que no se
   puede automatizar.»
-- **«¿Cuánto cuesta?»** — «Los primeros sesenta días, nada. Después, 199 € al mes,
-  plano, sin coste por habitación; los hoteles fundadores, 149 para siempre, con
-  todo lo que vaya saliendo. Pero esa conversación es dentro de un mes, y solo si
-  te resulta útil.»
+- **«¿Cuánto cuesta?»** — «Los primeros sesenta días, nada. Después depende del
+  hotel, y lo hablamos al final del piloto, cuando sepas si te sirve.» Sin cifras.
 - **«¿Y mis datos?»** — «Cifrados y alojados en la UE, solo para tu hotel, y se
   borran si te das de baja. Está todo en la hoja.»
 
@@ -95,9 +93,8 @@ día— está en el playbook, §1–§2.
 - **«Això substitueix algú de recepció?»** — «No, i no està pensat per a això. Li
   treu a recepció la feina administrativa perquè estiguin amb l'hoste, que és el
   que no es pot automatitzar.»
-- **«Quant costa?»** — «Els primers seixanta dies, res. Després, 199 € al mes, pla;
-  els hotels fundadors, 149 per sempre, amb tot el que vagi sortint. Però aquesta
-  conversa és d'aquí un mes, i només si et resulta útil.»
+- **«Quant costa?»** — «Els primers seixanta dies, res. Després depèn de l'hotel,
+  i en parlem al final del pilot, quan sàpigues si et serveix.» Sense xifres.
 
 ---
 
@@ -109,7 +106,7 @@ día— está en el playbook, §1–§2.
 | 10–20″ | "Fondas runs the hotel's back of house, all day. It starts like this: by 6:30 the day is already written — arrivals, departures, who hasn't given a time — from your hotel's own data." | Screen 1. Hand them the phone. Ten seconds, no more. |
 | 20–38″ | "And it carries on all day: every guest email, before arrival and during the stay, matched to its reservation with the reply already drafted in the hotel's voice. You read it and send it." | Screen 2. This is where it's won or lost. |
 | 38–48″ | "Arrivals, a record of every guest with what they asked for last time, any question about the hotel. Nothing migrates, it doesn't touch your PMS, and it replaces nobody — it takes the paperwork off reception. And it does more every week." | Screens 3 and 4, quickly. |
-| 48–60″ | "I'm choosing three founding hotels in Barcelona: sixty days free, everything we ship in that time, and a founding price for life. Can I show you properly, twenty minutes this week? I'll come to you." | Screen 5. Then stop talking. |
+| 48–60″ | "I'm choosing three founding hotels in Barcelona: sixty days free, everything we ship in that time, and a say in what we build next. Can I show you properly, twenty minutes this week? I'll come to you." | Screen 5. Then stop talking. |
 
 **If they ask**
 
@@ -123,9 +120,9 @@ día— está en el playbook, §1–§2.
 - **"Does this replace someone at reception?"** — "No, and it isn't meant to. It
   takes the admin off reception so they're with the guest — the part you can't
   automate."
-- **"What does it cost?"** — "The first sixty days, nothing. After that €199 a
-  month, flat; founding hotels stay at €149 for life, with everything we add. But
-  that conversation is a month away, and only if it's useful to you."
+- **"What does it cost?"** — "The first sixty days, nothing. After that it depends
+  on the hotel, and we talk about it at the end of the pilot, once you know it's
+  useful." No figures.
 
 ---
 

@@ -486,6 +486,7 @@ Held deliberately. Each has a trigger, not a date.
 | **Same night last year / pace vs last year** in the brief and Revenue Management | 365 days of `rate_snapshots` (kept 400 days from B17) |
 | **Reservations accumulate** — sync upserts today ±14 days and nothing prunes old stays | with S1's `(hotel_id, end_utc)` index it no longer slows reads, and since S3 the sync no longer rewrites unchanged rows; decide a retention window with the log pruning in §3.2 |
 | **Sentry read token (`SENTRY_AUTH_TOKEN`)** | would let Claude Code query issues directly |
+| **Soft-skills training for front-office staff** — practice for the guest moments that make a stay warm (welcome, complaint, a returning guest, a stressful arrival): short role-plays against simulated guests, house-tone guides, in es/ca/en. Fits the thesis: Fondas gives the team hours back, this helps them spend those hours on guests (`gtm/PROPUESTA_DE_VALOR.md` §2, idea of 15 Oct). **AI Act rule:** learning only — never score, rank or compare individual staff, and nothing a manager can read as a performance report; evaluating workers is Annex III point 4, high-risk (`AI_ACT_PROMPTS.md` §R, Team activity). Needs its own §R row before any build | a pilot director asks for help onboarding or training staff, or two pilots name staff turnover as a top problem in the problem-ranking (`gtm/PROPUESTA_DE_VALOR.md` §7) |
 | **Quarterly competitive review** | first one **1 October** — the only dated commitment carried over |
 
 ---

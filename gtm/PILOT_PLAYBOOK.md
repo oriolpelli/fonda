@@ -24,7 +24,7 @@ Sell it in three layers, always in this order:
 |---|---|---|
 | **1. Today, all day** | The brief before you open · every guest email, before arrival and in-house, matched to its reservation and drafted in the hotel's voice · arrival times chased · departures · each guest's record, with what they asked last time · any question about the hotel, any time | The demo, on the screen, live |
 | **2. What's coming** | Reputation (reviews and how the score moves) · the rate signal in the brief · pre-arrival extras with the hotel's prices · the stay plan for each guest · then housekeeping, F&B, staff, finance | The locked tiles in Home › *Personalizar* — the roadmap is inside the product |
-| **3. Why now** | Founding hotels get 60 days free, everything we ship in that time, the founding price for life, and a say in what gets built next | The shipping pace: **20 new product features in the last 30 days.** The guest record, saved conversations, the two communications inboxes and the customisable Home didn't exist a month ago |
+| **3. Why now** | Founding hotels get 60 days free, everything we ship in that time, and a say in what gets built next | The shipping pace: **20 new product features in the last 30 days.** The guest record, saved conversations, the two communications inboxes and the customisable Home didn't exist a month ago |
 
 **How to talk about what's coming — the line between selling and overpromising.**
 
@@ -53,7 +53,7 @@ The line to remember, and the one to say when a director asks what Fondas *is*:
 **The ladder.** Every touch asks for exactly one step up, never two:
 
 ```
-door → director's name + email → sample brief sent → 20-min demo → 30-min setup → pilot live → day-30 "we continue" → day 61, founding price
+door → director's name + email → sample brief sent → 20-min demo → 30-min setup → pilot live → day-30 "we continue" → day 61, paying customer
 ```
 
 **Every touch leaves something behind.** A one-pager, a printed brief with a handwritten note, an email with the sample link. The director should be able to meet Fondas without you in the room.
@@ -371,7 +371,7 @@ When the intro lands, reply within the hour, thank the friend (move them to BCC)
 >
 > Gracias por el rato de hoy. Me quedo con lo que me dijiste: «[sus palabras sobre dónde se os va el día]».
 >
-> Hotel fundador, en corto: 60 días gratis, con todo lo que saquemos en ese tiempo; la configuración la hacemos juntos en 30 minutos; nada sale sin tu visto bueno y no se toca nada del PMS. El día 30 lo revisamos juntos; si decides seguir, te quedas el precio de fundador —149 €/mes en vez de 199, para siempre— y no pagas nada hasta el día 61. Si no, lo dejamos, sin más. Te adjunto la hoja del piloto, una página, con qué datos se usan y cómo se borran.
+> Hotel fundador, en corto: 60 días gratis, con todo lo que saquemos en ese tiempo; la configuración la hacemos juntos en 30 minutos; nada sale sin tu visto bueno y no se toca nada del PMS. El día 30 lo revisamos juntos y decides si seguimos. Si no, lo dejamos, sin más. Te adjunto la hoja del piloto, una página, con qué datos se usan y cómo se borran.
 >
 > Para la configuración necesito un acceso al PMS y la cuenta de Gmail del hotel. ¿[Día A] a las [hora] o [día B] a las [hora]?
 >
@@ -384,7 +384,7 @@ When the intro lands, reply within the hour, thank the friend (move them to BCC)
 >
 > Hola [Nombre], como hablamos, te dejo algo que puedas reenviar tal cual.
 >
-> *Fondas lleva la operativa del hotel todo el día: el resumen antes de que abra recepción, los correos de huéspedes redactados para revisar, las llegadas y la ficha de cada huésped; y añade funciones cada semana. Lee el PMS y el Gmail del hotel; no modifica nada ni envía nada sin aprobación. Los datos se guardan cifrados en la UE y se borran si se pide. Hotel fundador: 60 días sin coste ni compromiso, con todo lo que salga en ese tiempo; después, 149 €/mes para siempre (el precio normal será 199).*
+> *Fondas lleva la operativa del hotel todo el día: el resumen antes de que abra recepción, los correos de huéspedes redactados para revisar, las llegadas y la ficha de cada huésped; y añade funciones cada semana. Lee el PMS y el Gmail del hotel; no modifica nada ni envía nada sin aprobación. Los datos se guardan cifrados en la UE y se borran si se pide. Hotel fundador: 60 días sin coste ni compromiso, con todo lo que salga en ese tiempo.*
 >
 > Adjunto la hoja de una página y la del piloto. Te llamo el [día] para ver qué os parece.
 
@@ -461,9 +461,9 @@ Walk them through **a day in their hotel, and a stay from booking to departure**
 
 **Apaleo exception:** skip minutes 3–5 and open on Communications. Apaleo Copilot ships a brief; don't invite the comparison.
 
-**The labour close.** Price against hours of a person's work — never against a person, and never against a ChatGPT subscription (reasoning and sources: `GTM_STRATEGY.md` §3.2.1). **Use their number, not ours**: ask how many hours a day go on guest email, arrivals, questions and admin across reception and management, then do the sum out loud. Say *«aunque Fondas solo os quitara la mitad»* — it's honest, and it's still a big number.
+**The labour close.** Value against hours of a person's work — never against a person, and never against a ChatGPT subscription (reasoning and sources: `GTM_STRATEGY.md` §3.2.1). **Use their number, not ours**: ask how many hours a day go on guest email, arrivals, questions and admin across reception and management, then do the sum out loud. Say *«aunque Fondas solo os quitara la mitad»* — it's honest, and it's still a big number.
 
-> ¿Cuántas horas al día se os van, entre todos, en correos de huéspedes, llegadas, preguntas y papeleo? … Vale, digamos dos. Son unas sesenta horas al mes. A coste de empresa de recepción, más de mil euros al mes. Aunque Fondas solo os quitara la mitad, son más de quinientos. Fondas cuesta 199 al mes, plano — 149 para siempre si entráis ahora como hotel fundador — y los primeros sesenta días, nada. Y lo que te he enseñado en *lo que viene* entra en ese precio.
+> ¿Cuántas horas al día se os van, entre todos, en correos de huéspedes, llegadas, preguntas y papeleo? … Vale, digamos dos. Son unas sesenta horas al mes. A coste de empresa de recepción, más de mil euros al mes. Aunque Fondas solo os quitara la mitad, son más de quinientos. Y los primeros sesenta días no pagáis nada.
 
 A cheat sheet for the sum (30 days a month; employer cost per hour from `GTM_STRATEGY.md` §3.2.1):
 
@@ -501,9 +501,9 @@ Answer once, briefly, then go back to the two time slots.
 | *«Lo tengo que hablar con el propietario.»* | *«Claro. Te mando una página para que la reenvíes, con qué datos toca, qué no toca y qué cuesta después. ¿Te llamo el martes?»* → **E9**. |
 | *«¿Están seguros mis datos?»* | *«Fondas lee tu PMS por su API oficial, igual que tu channel manager. Los datos se guardan cifrados en la UE, solo para tus resúmenes y borradores, y se borran si lo pides. Nada se envía sin que tú lo apruebes. Está todo en la hoja del piloto.»* |
 | *«¿Y si un borrador sale mal?»* | *«No sale: nada se envía sin que lo revises. En el piloto miramos juntos cuántos envías tal cual; si no llega a seis de cada diez, te lo digo yo antes de hablar de dinero.»* |
-| *«¿Cuánto cuesta?»* | *«Los primeros sesenta días, nada. Después, 199 € al mes, plano, sin coste por habitación — y los hoteles fundadores se quedan en 149 para siempre, con todo lo que vayamos sacando. Pero esa conversación es dentro de un mes, y solo si te resulta útil.»* |
+| *«¿Cuánto cuesta?»* | *«Los primeros sesenta días, nada. Después depende del hotel, sobre todo del tamaño, y lo hablamos al final del piloto, cuando sepas si te sirve.»* **No des una cifra** (decidido el 15 oct: el precio no se menciona en ningún documento ni conversación de venta). |
 | *«Somos pequeños; el correo no nos lleva tanto.»* | *«En un hotel pequeño el que contesta eres tú, y cada correo te saca del huésped o de la dirección. Y no es solo el correo: es la ficha de cada huésped, quién llega y no ha dicho la hora, qué pidió la última vez. Lo que viene —reseñas, tarifas, el plan de estancia— en un hotel de veinticinco habitaciones o lo haces tú, o no lo hace nadie.»* |
-| *«Me lo pensaré cuando tenga más cosas.»* | *«Lo entiendo. La diferencia es que si entráis ahora, lo que viene lo tenéis gratis durante el piloto, al precio de fundador después, y decidís el orden. Los que lleguen más tarde lo tendrán igual, pero a 199 y sin haber decidido nada.»* |
+| *«Me lo pensaré cuando tenga más cosas.»* | *«Lo entiendo. La diferencia es que si entráis ahora, lo que viene lo tenéis gratis durante el piloto y decidís el orden. Los que lleguen más tarde lo tendrán igual, pero sin haber decidido nada.»* |
 | *«¿Y si lo que prometes no llega?»* | *«Por eso no te pido que pagues por lo que viene. El día 60 decides con lo que tengas delante en la pantalla, no con lo que te he contado. Lo que sí te prometo es el ritmo: en el último mes han salido veinte mejoras, y lo vas a ver en tu propia cuenta.»* |
 | *«Ya usamos otra herramienta de informes.»* | *«Fondas no es una herramienta de informes: lee tus informes por ti y te dice qué importa hoy. La mayoría usa las dos.»* |
 | *«¿Cuántos hoteles tenéis?»* | *«Estáis entre los primeros, y te lo digo claro. Por eso la configuración la hago yo, leo tu resumen cada mañana antes que tú la primera semana, y tienes mi móvil.»* |
@@ -530,7 +530,7 @@ Aligned with the one-pager, so the paper and the pitch say the same thing.
 | **Roadmap** | Their requests go first in the queue; they vote the order of what's coming | Tell you what they never get round to doing | The weekly pace; no dates promised for a specific feature (§0.1) |
 | **Setup** | 30 minutes with you, a preview brief generated live | A PMS login (MEWS, Apaleo) or a daily arrivals export for the Sheet source; the hotel's Gmail | Their Google account added as an OAuth test user before the call |
 | **Support** | Your WhatsApp; anything broken fixed within 24 h | A 15-minute call in week 2, and the day-30 review | Reading their brief every morning of week 1, before they do |
-| **Money** | 60 days free, no card, no contract | A review at day 30 — continue or not — and a final decision by day 60 | €149/month from day 61 for as long as they stay, including everything shipped later (the list price will be €199) — written in the agreement |
+| **Money** | 60 days free, no card, no contract | A review at day 30 — continue or not — and a final decision by day 60 | The price is agreed per hotel at the end of the pilot, depending on the hotel. **No figure is written or said before then** (decided 15 Oct) |
 | **Proof** | Their requests shape what ships | If it works, one sentence with their name — only with written consent | No quote used without it (`ROADMAP.md` §5 #1) |
 
 ### 9.3 The one-page pilot agreement
@@ -551,7 +551,7 @@ Send it with **E8**. A draft, **not reviewed by a lawyer** — the lawyer is boo
 >
 > **6. Borrado.** Si lo pedís, o si no continuáis tras el piloto, borramos los datos en un máximo de 30 días y lo confirmamos por escrito.
 >
-> **7. Después del piloto.** El día 30 lo revisamos juntos; el día 60 decidís libremente. Si continuáis: 149 €/mes por hotel (IVA no incluido) a partir del día 61, precio de hotel fundador mientras sigáis siendo clientes, que incluye las funciones que se publiquen más adelante. El precio general será de 199 €/mes. Sin permanencia.
+> **7. Después del piloto.** El día 30 lo revisamos juntos; el día 60 decidís libremente. Si continuáis, el precio se acuerda con el hotel antes del día 61, según su tamaño, e incluye las funciones que se publiquen más adelante. Sin permanencia.
 >
 > **8. Lo que os pedimos.** Uso real diario, una llamada de 15 minutos la segunda semana, una revisión el día 30 y una decisión sincera el día 60. Si os resulta útil, una frase con vuestro nombre para la web — solo con vuestro permiso por escrito.
 >
@@ -585,7 +585,7 @@ Invoicing from day 61 needs the legal entity (`GTM_STRATEGY.md` §5). Pilots tha
 
 **Day 30, the commitment** — the real sales conversation. Ask while momentum is high, not at the end:
 
-> Llevas un mes usándolo, y has visto salir [lo que se haya publicado ese mes]. ¿Seguís a partir del día 61? Si me dices que sí ahora, os quedáis el precio de fundador —149 al mes para siempre, con todo lo que venga— y hasta el día 61 no pagáis nada. Si la respuesta es no, dime qué falta; me sirve igual.
+> Llevas un mes usándolo, y has visto salir [lo que se haya publicado ese mes]. ¿Seguís a partir del día 61? Si me dices que sí, lo hablamos con calma según vuestro hotel, y hasta el día 61 no pagáis nada. Si la respuesta es no, dime qué falta; me sirve igual.
 
 **Day 60, the decision.** A yes at day 30 gets confirmed; a *no todavía* at day 30 gets its second and last conversation, on what's on the screen that day.
 
@@ -601,7 +601,7 @@ A *no* with a reason is a good pilot outcome. A drifting *maybe* is the only bad
 
 ## Appendix A — The one-pager text
 
-The source for `pitch/Fondas_una_pagina_*.pdf`, which were exported from Chromium with no source in the repo. Carried from `POSITIONING_V3.md` §5.3 and **corrected**: *«En camino»* replaces *«Qué llega durante el piloto»* (no dates for a specific feature, §0.1), *«una herramienta»* replaces *«una capa»* (jargon, `POSITIONING_V3.md` §1.3), the connection line covers Apaleo and the daily export, and the founding price is added. Regenerate the three PDFs from this.
+The source for `pitch/Fondas_una_pagina_*.pdf`, which were exported from Chromium with no source in the repo. Carried from `POSITIONING_V3.md` §5.3 and **corrected**: *«En camino»* replaces *«Qué llega durante el piloto»* (no dates for a specific feature, §0.1), *«una herramienta»* replaces *«una capa»* (jargon, `POSITIONING_V3.md` §1.3), the connection line covers Apaleo and the daily export, and (since 15 Oct) no price is stated anywhere. Regenerate the three PDFs from this.
 
 > **Fondas — la operativa del hotel, todo el día**
 >
@@ -622,7 +622,7 @@ The source for `pitch/Fondas_una_pagina_*.pdf`, which were exported from Chromiu
 >
 > **Datos.** Se guardan cifrados y alojados en la UE, se usan solo para generar vuestros resúmenes y borradores, y se borran si os dais de baja. El hotel es el responsable del tratamiento; Fondas, el encargado.
 >
-> **Hotel fundador.** 60 días gratis, con todo lo que salga en ese tiempo. Una llamada de configuración (30 min), una de seguimiento (15 min) y una revisión el día 30. Sin contrato ni tarjeta. Después, 149 €/mes para siempre, con todo lo que venga — el precio general será 199 €/mes, plano, menos que una noche de habitación.
+> **Hotel fundador.** 60 días gratis, con todo lo que salga en ese tiempo. Una llamada de configuración (30 min), una de seguimiento (15 min) y una revisión el día 30. Sin contrato ni tarjeta.
 >
 > **Contacto.** Oriol · [móvil] · [email @fondas.app] · fondas.app
 
