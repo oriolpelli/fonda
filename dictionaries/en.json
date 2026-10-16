@@ -196,7 +196,8 @@
     "eyebrow": "Ready when you are",
     "headline": "See it running on your own hotel's data.",
     "subhead": "Twenty minutes, your hotel, nothing to migrate. A free 60-day pilot, no strings attached.",
-    "button": "Get started →"
+    "button": "Get started →",
+    "orEmail": "Or email us directly at"
   },
   "footer": {
     "rights": "© {year} Fondas. Two steps ahead.",

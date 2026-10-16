@@ -25,7 +25,8 @@ export async function generateMetadata({
 
 /**
  * Contact wears marketing chrome, not the reduced legal chrome — it is the
- * destination of the pricing band's CTA, so a visitor landing here should be
+ * destination of every CTA on the site (header, hero, pricing, final band),
+ * since pre-launch we sell by conversation rather than self-serve signup, so a visitor landing here should be
  * able to keep reading the site rather than hit a dead end with a "Home" link.
  *
  * Deliberately no gradient hero (§7): the page has one job, and the one

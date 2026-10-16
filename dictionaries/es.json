@@ -196,7 +196,8 @@
     "eyebrow": "Cuando quieras",
     "headline": "Míralo funcionando con tus propios datos.",
     "subhead": "Veinte minutos, tu hotel, sin migrar nada. 60 días de piloto gratuito y sin compromiso.",
-    "button": "Empezar →"
+    "button": "Empezar →",
+    "orEmail": "O escríbenos directamente a"
   },
   "footer": {
     "rights": "© {year} Fondas. Dos pasos por delante.",

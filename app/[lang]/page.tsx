@@ -537,7 +537,7 @@ export default async function Home({
               </p>
               <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Button asChild variant="ink" size="lg">
-                  <Link href={localizedHref(locale, "/signup")}>
+                  <Link href={localizedHref(locale, "/contact")}>
                     {dict.hero.ctaPrimary}
                   </Link>
                 </Button>
@@ -1132,8 +1132,8 @@ export default async function Home({
                       hero's ink CTA. Same reasoning as the timeline chips.
 
                       The label is hero.ctaPrimary: §3.2 ships no CTA string,
-                      and reusing the one the page already says for /signup
-                      beats inventing a fourth way to word it.
+                      and reusing the one the page already says for the
+                      contact CTA beats inventing a fourth way to word it.
 
                       size="lg" because every other button on this page is lg,
                       and because the default h-10 is 40px — under the 44px tap
@@ -1149,7 +1149,7 @@ export default async function Home({
                     size="lg"
                     className="mt-8 self-stretch sm:self-start lg:self-stretch"
                   >
-                    <Link href={localizedHref(locale, "/signup")}>
+                    <Link href={localizedHref(locale, "/contact")}>
                       {dict.hero.ctaPrimary}
                     </Link>
                   </Button>
@@ -1455,9 +1455,22 @@ export default async function Home({
                 size="lg"
                 className="bg-surface text-ink hover:bg-surface/90"
               >
-                <Link href={localizedHref(locale, "/signup")}>{dict.cta.button}</Link>
+                <Link href={localizedHref(locale, "/contact")}>{dict.cta.button}</Link>
               </Button>
             </div>
+            {/* The address itself, not only a button to a page that has it.
+                Pre-launch the site sells by conversation (no self-serve
+                signup), so the one way in is written out where a GM can copy
+                it. Same ink-band text tones as the subhead above. */}
+            <p className="mt-6 text-[15px] leading-[1.6] text-[color-mix(in_srgb,white_65%,transparent)]">
+              {dict.cta.orEmail}{" "}
+              <a
+                href={`mailto:${COMPANY.contactEmail}`}
+                className="font-medium text-[var(--fonda-text-inv)] underline decoration-[color-mix(in_srgb,white_40%,transparent)] underline-offset-4 transition-colors duration-[180ms] hover:decoration-[var(--fonda-text-inv)]"
+              >
+                {COMPANY.contactEmail}
+              </a>
+            </p>
           </Reveal>
         </section>
       </main>

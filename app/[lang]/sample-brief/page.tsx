@@ -93,7 +93,7 @@ export default async function SampleBriefPage({
               size="sm"
               className="relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             >
-              <Link href={localizedHref(locale, "/signup")}>
+              <Link href={localizedHref(locale, "/contact")}>
                 <span className="sm:hidden">{dict.nav.getEarlyAccessShort}</span>
                 <span className="hidden sm:inline">
                   {dict.nav.getEarlyAccess}

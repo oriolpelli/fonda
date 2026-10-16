@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { COMPANY } from "@/app/[lang]/(legal)/company";
 import type { Dictionary } from "@/app/[lang]/dictionaries";
 import { Wordmark } from "@/components/brand/wordmark";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
@@ -105,6 +106,21 @@ export function SiteFooter({
             <p className="mt-5 max-w-[34ch] text-[16px] leading-[1.6] text-muted-foreground">
               {dict.footer.valueProp}
             </p>
+            {/* The contact address, written out at the foot of every
+                marketing page. Pre-launch we sell by conversation, not
+                self-serve signup, so this is the site's front door — it
+                gets a real size, not a 15px line in the link columns. */}
+            <div className="mt-8">
+              <span className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-[var(--fonda-text-3)]">
+                {dict.contact.emailAction}
+              </span>
+              <a
+                href={`mailto:${COMPANY.contactEmail}`}
+                className="mt-2 block w-fit py-1 text-[22px] font-semibold tracking-[-0.01em] text-foreground underline decoration-border underline-offset-[6px] transition-colors duration-[180ms] hover:decoration-foreground"
+              >
+                {COMPANY.contactEmail}
+              </a>
+            </div>
           </div>
 
           {/* Newsletter — real: server action, double opt-in, privacy line
